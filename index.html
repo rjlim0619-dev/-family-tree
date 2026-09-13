@@ -955,7 +955,7 @@
     if(view==='members') renderMembers();
     if(view==='pinned') renderPinned();
     if(view==='settings'){ $('settingsTreeName').value=tree()?tree().name:''; $('settingsTreeDesc').value=tree()?(tree().description||''):''; }
-    if(view==='tree') setTimeout(centerTree, 20);
+    if(view==='tree') afterLayout(centerTree);
   }
   document.querySelectorAll('.nav-btn').forEach(btn=> btn.addEventListener('click', ()=>{ sfx.click(); switchView(btn.dataset.view); }));
   document.querySelectorAll('#bottomNav button').forEach(btn=> btn.addEventListener('click', ()=>{ sfx.click(); switchView(btn.dataset.view); }));
@@ -1137,7 +1137,8 @@
   }
   function centerTree(){
     const vp = $('treeViewport'); const inner = $('treeInner');
-    const vw = vp.clientWidth, vh = vp.clientHeight;
+    const vw = vp.clientWidth || window.innerWidth;
+    const vh = vp.clientHeight || (window.innerHeight - 56);
     const iw = parseFloat(inner.style.width)||vw, ih = parseFloat(inner.style.height)||vh;
     panX = (vw - iw*zoom)/2; panY = Math.max(30, (vh - ih*zoom)/2);
     applyTransform();
@@ -1146,9 +1147,16 @@
     const layout = computeLayout();
     const p0 = layout.positions[id]; if(!p0) return;
     const vp = $('treeViewport');
-    panX = vp.clientWidth/2 - (p0.x+80)*zoom;
-    panY = vp.clientHeight/2 - (p0.y+80)*zoom;
+    const vw = vp.clientWidth || window.innerWidth;
+    const vh = vp.clientHeight || (window.innerHeight - 56);
+    panX = vw/2 - (p0.x+80)*zoom;
+    panY = vh/2 - (p0.y+80)*zoom;
     applyTransform();
+  }
+  function afterLayout(fn){
+    // waits for the browser to actually finish laying out the view (more reliable
+    // than a fixed setTimeout, especially in embedded/in-app browsers)
+    requestAnimationFrame(()=> requestAnimationFrame(fn));
   }
   function resetView(){ zoom=1; centerTree(); }
 
@@ -1416,7 +1424,7 @@
     t.people.push(person);
     touchTree(); await persistDb(); closePersonModal();
     selectedId = id; renderAll(); openPanel(id);
-    setTimeout(()=>centerOnPerson(id), 30);
+    afterLayout(()=>centerOnPerson(id));
     sfx.add(); toast('Added.');
   }
   $('modalSaveBtn').onclick = saveModal;
@@ -1434,7 +1442,7 @@
       const tile=document.createElement('div'); tile.className='member-tile';
       const photoHtml = p.photo ? `<img class="card-photo" src="${p.photo}">` : `<div class="card-photo-placeholder">N/A</div>`;
       tile.innerHTML = `${p.pinned?'<div class="pin-flag">📌</div>':''}${photoHtml}<div class="card-name">${escapeHtml(fullName(p))}</div><div class="card-dates">${escapeHtml(fmtDate(p.birthDate))}</div>`;
-      tile.onclick = ()=>{ switchView('tree'); renderTree(); openPanel(p.id); setTimeout(()=>centerOnPerson(p.id),30); };
+      tile.onclick = ()=>{ switchView('tree'); renderTree(); openPanel(p.id); afterLayout(()=>centerOnPerson(p.id)); };
       grid.appendChild(tile);
     });
   }
@@ -1449,7 +1457,7 @@
       const tile=document.createElement('div'); tile.className='member-tile';
       const photoHtml = p.photo ? `<img class="card-photo" src="${p.photo}">` : `<div class="card-photo-placeholder">N/A</div>`;
       tile.innerHTML = `${photoHtml}<div class="card-name">${escapeHtml(fullName(p))}</div><div class="card-dates">Pinned ${escapeHtml(fmtRelative(p.pinnedAt))}</div>`;
-      tile.onclick = ()=>{ switchView('tree'); renderTree(); openPanel(p.id); setTimeout(()=>centerOnPerson(p.id),30); };
+      tile.onclick = ()=>{ switchView('tree'); renderTree(); openPanel(p.id); afterLayout(()=>centerOnPerson(p.id)); };
       grid.appendChild(tile);
     });
   }
@@ -1505,7 +1513,7 @@
 
   function renderAll(){
     renderTree();
-    if(peopleArr().length) setTimeout(centerTree, 30);
+    if(peopleArr().length) afterLayout(centerTree);
     if(currentView==='members') renderMembers();
     if(currentView==='pinned') renderPinned();
   }
