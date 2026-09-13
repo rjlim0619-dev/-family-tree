@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Family Tree</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
@@ -31,7 +31,7 @@
     --text-faint:#5C6478;
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--text);
+  html,body{margin:0;padding:0;height:100%;height:100dvh;background:var(--bg);color:var(--text);
     font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;overflow:hidden;
     -webkit-tap-highlight-color:transparent;}
   button,input,select,textarea{font-family:inherit;}
@@ -46,7 +46,8 @@
 
   /* ============ LOCK SCREEN ============ */
   #lockScreen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
-    background:radial-gradient(circle at 30% 20%, #0d1526 0%, var(--bg) 60%);z-index:300;padding:20px;}
+    background:radial-gradient(circle at 30% 20%, #0d1526 0%, var(--bg) 60%);z-index:300;
+    padding:calc(20px + env(safe-area-inset-top)) calc(20px + env(safe-area-inset-right)) calc(20px + env(safe-area-inset-bottom)) calc(20px + env(safe-area-inset-left));}
   .lock-card{background:linear-gradient(180deg, var(--panel-2), var(--panel));border:1px solid var(--border-2);
     border-radius:18px;padding:44px 38px;max-width:400px;width:100%;
     box-shadow:0 30px 80px rgba(0,0,0,0.65);}
@@ -64,7 +65,7 @@
   .inline-confirm p{font-size:0.82rem;margin:0 0 10px 0;color:var(--text-dim);}
 
   /* ============ APP SHELL ============ */
-  #app{display:none;height:100vh;width:100vw;position:relative;}
+  #app{display:none;height:100vh;height:100dvh;width:100vw;position:relative;}
   .shell{display:grid;grid-template-columns:220px 1fr;grid-template-rows:60px 1fr;height:100%;}
   #particleCanvas{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:0.6;}
 
@@ -94,6 +95,10 @@
     background:rgba(0,0,0,0.28);color:var(--text);font-size:0.83rem;}
   #searchInput:focus{outline:none;border-color:var(--accent);}
   .topbar-spacer{flex:1;}
+  #backBtn{display:none;}
+  .topbar-extras{display:flex;align-items:center;gap:10px;}
+  #moreMenuBtn{display:none;}
+  #topbarExtrasBackdrop{display:none;position:fixed;inset:0;z-index:29;background:rgba(0,0,0,0.4);}
   .zoom-controls{display:flex;align-items:center;gap:2px;background:rgba(0,0,0,0.28);
     border:1px solid var(--border-2);border-radius:9px;padding:3px;}
   .icon-btn{width:30px;height:30px;border-radius:7px;background:none;border:none;color:var(--text-dim);
@@ -270,16 +275,30 @@
   #bottomNav button .bn-icon{font-size:1.15rem;}
 
   @media (max-width:820px){
-    .shell{grid-template-columns:1fr;grid-template-rows:56px 1fr;}
+    .shell{grid-template-columns:1fr;grid-template-rows:calc(56px + env(safe-area-inset-top)) 1fr;}
     #sidebar{display:none;}
     #bottomNav{display:flex;}
-    #mainArea{padding-bottom:62px;}
-    #treeNameInput{width:110px;font-size:0.9rem;}
-    #searchInput{max-width:110px;}
-    .zoom-controls{display:none;}
-    .tb-btn{padding:6px 9px;font-size:0.72rem;}
-    #sidePanel{width:100vw;max-width:100vw;}
-    .view-scroll{padding:18px 16px 90px 16px;}
+    #mainArea{padding-bottom:calc(62px + env(safe-area-inset-bottom));}
+    #topbar{padding-top:env(safe-area-inset-top);padding-left:calc(12px + env(safe-area-inset-left));padding-right:calc(12px + env(safe-area-inset-right));}
+    #treeNameInput{width:90px;font-size:0.85rem;}
+    #backBtn{display:flex;}
+    #moreMenuBtn{display:flex;}
+    .topbar-extras{
+      display:none;position:fixed;top:calc(56px + env(safe-area-inset-top));left:0;right:0;z-index:30;
+      background:linear-gradient(180deg, var(--panel-2), var(--panel));border-bottom:1px solid var(--border-2);
+      flex-direction:column;align-items:stretch;gap:10px;padding:14px 16px;
+      box-shadow:0 20px 40px rgba(0,0,0,0.5);
+    }
+    .topbar-extras.open{display:flex;}
+    .topbar-extras #searchInput{max-width:none;width:100%;}
+    .topbar-extras .zoom-controls{align-self:flex-start;}
+    .topbar-extras .tb-btn{width:100%;text-align:center;padding:11px;font-size:0.85rem;}
+    #topbarExtrasBackdrop.open{display:block;}
+    #sidePanel{width:100vw;max-width:100vw;padding-bottom:env(safe-area-inset-bottom);}
+    .panel-actions{padding-bottom:calc(20px + env(safe-area-inset-bottom));}
+    #bottomNav{padding-bottom:env(safe-area-inset-bottom);height:calc(62px + env(safe-area-inset-bottom));}
+    .view-scroll{padding:18px 16px calc(90px + env(safe-area-inset-bottom)) 16px;}
+    .modal{max-height:calc(88vh - env(safe-area-inset-bottom));}
   }
 </style>
 </head>
@@ -331,20 +350,26 @@
     </div>
 
     <div id="topbar">
+      <button class="icon-btn" id="backBtn" title="Back to My Trees">←</button>
       <input id="treeNameInput" value="" spellcheck="false">
       <span id="saveStatus">Saved ✓</span>
       <div class="topbar-spacer"></div>
-      <input id="searchInput" placeholder="Search members…">
-      <div class="zoom-controls">
-        <button class="icon-btn" id="zoomOutBtn">−</button>
-        <span id="zoomLabel">100%</span>
-        <button class="icon-btn" id="zoomInBtn">+</button>
+      <div class="topbar-extras" id="topbarExtras">
+        <input id="searchInput" placeholder="Search members…">
+        <div class="zoom-controls">
+          <button class="icon-btn" id="zoomOutBtn">−</button>
+          <span id="zoomLabel">100%</span>
+          <button class="icon-btn" id="zoomInBtn">+</button>
+        </div>
+        <button class="tb-btn" id="centerBtn">Center</button>
+        <button class="tb-btn" id="resetViewBtn">Reset</button>
+        <button class="tb-btn" id="fullscreenBtn">Fullscreen</button>
+        <button class="tb-btn save" id="saveBtn">Save</button>
       </div>
-      <button class="tb-btn" id="centerBtn">Center</button>
-      <button class="tb-btn" id="resetViewBtn">Reset</button>
-      <button class="tb-btn" id="fullscreenBtn">Fullscreen</button>
-      <button class="tb-btn save" id="saveBtn">Save</button>
+      <button class="icon-btn" id="moreMenuBtn" title="More">⋯</button>
+      <button class="icon-btn" id="lockAppBtn" title="Lock app">🔒</button>
     </div>
+    <div id="topbarExtrasBackdrop"></div>
 
     <div id="mainArea">
       <div class="view-panel active" id="viewTree">
@@ -651,14 +676,34 @@
       ctx.clearRect(0,0,canvas.width,canvas.height);
       particles.forEach(p=>{
         p.x+=p.vx; p.y+=p.vy;
-        if(p.x<0) p.x=canvas.width; if(p.x>canvas.width) p.x=0;
-        if(p.y<0) p.y=canvas.height; if(p.y>canvas.height) p.y=0;
+        if(p.burst){
+          p.vx*=0.96; p.vy*=0.96; p.life-=0.015; p.a = Math.max(0, p.life*0.85);
+        } else {
+          if(p.x<0) p.x=canvas.width; if(p.x>canvas.width) p.x=0;
+          if(p.y<0) p.y=canvas.height; if(p.y>canvas.height) p.y=0;
+        }
         ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
         ctx.fillStyle = `rgba(140,180,255,${p.a})`; ctx.fill();
       });
+      particles = particles.filter(p=> !p.burst || p.life>0);
       particleAnim = requestAnimationFrame(loop);
     }
     loop();
+  }
+
+  function burstParticles(x, y, count){
+    if(!db.settings.particles) return;
+    x = x==null ? window.innerWidth/2 : x;
+    y = y==null ? window.innerHeight/2 : y;
+    for(let i=0;i<(count||26);i++){
+      const angle = Math.random()*Math.PI*2;
+      const speed = Math.random()*2.4+0.6;
+      particles.push({
+        x, y, r: Math.random()*1.8+0.8,
+        vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed,
+        a: 0.85, burst:true, life: 1
+      });
+    }
   }
 
   // ---------- storage ----------
@@ -843,6 +888,7 @@
     } else {
       const t = { id:newId(), name, description:desc, createdAt:new Date().toISOString(), updatedAt:new Date().toISOString(), people:[] };
       db.trees.push(t);
+      burstParticles(window.innerWidth/2, window.innerHeight*0.4, 32);
     }
     await persistDb();
     $('treeModalBackdrop').style.display='none';
@@ -871,10 +917,27 @@
     $('settingsTreeDesc').value = t.description||'';
     $('viewDashboard').style.display='none';
     $('treeShell').style.display='grid';
+    burstParticles(window.innerWidth/2, window.innerHeight*0.35, 16);
     switchView('tree');
     renderAll();
   }
   $('backToTreesBtn').onclick = ()=>{ closePanel(); showDashboard(); };
+  $('backBtn').onclick = ()=>{ closePanel(); showDashboard(); };
+  $('lockAppBtn').onclick = ()=>{
+    closePanel();
+    stopMusic();
+    $('app').style.display='none';
+    $('lockScreen').style.display='flex';
+    initLock();
+  };
+  $('moreMenuBtn').onclick = ()=>{
+    $('topbarExtras').classList.toggle('open');
+    $('topbarExtrasBackdrop').classList.toggle('open');
+  };
+  $('topbarExtrasBackdrop').addEventListener('click', ()=>{
+    $('topbarExtras').classList.remove('open');
+    $('topbarExtrasBackdrop').classList.remove('open');
+  });
 
   function tree(){ return db.trees.find(t=>t.id===currentTreeId); }
   function peopleArr(){ const t=tree(); return t ? t.people : []; }
@@ -1091,13 +1154,18 @@
 
   $('zoomInBtn').onclick = ()=>{ zoom=Math.min(2, zoom+0.1); applyTransform(); };
   $('zoomOutBtn').onclick = ()=>{ zoom=Math.max(0.4, zoom-0.1); applyTransform(); };
-  $('centerBtn').onclick = centerTree;
-  $('resetViewBtn').onclick = resetView;
+  function closeTopbarExtras(){
+    $('topbarExtras').classList.remove('open');
+    $('topbarExtrasBackdrop').classList.remove('open');
+  }
+  $('centerBtn').onclick = ()=>{ centerTree(); closeTopbarExtras(); };
+  $('resetViewBtn').onclick = ()=>{ resetView(); closeTopbarExtras(); };
   $('fullscreenBtn').onclick = ()=>{
     try{ if(document.fullscreenElement) document.exitFullscreen(); else $('mainArea').requestFullscreen(); }
     catch(e){ toast('Fullscreen is not available here.'); }
+    closeTopbarExtras();
   };
-  $('saveBtn').onclick = async ()=>{ await persistDb(); toast('Saved.'); };
+  $('saveBtn').onclick = async ()=>{ await persistDb(); toast('Saved.'); closeTopbarExtras(); };
   $('searchInput').addEventListener('input', ()=>{
     if(currentView==='tree'){
       renderTree();
