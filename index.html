@@ -129,6 +129,8 @@
   #treeViewport.dragging{cursor:grabbing;}
   #treeInner{position:absolute;top:0;left:0;transform-origin:0 0;}
   #linesSvg{position:absolute;top:0;left:0;overflow:visible;pointer-events:none;}
+  .flow-line{animation-name:lineFlow;animation-timing-function:linear;animation-iteration-count:infinite;}
+  @keyframes lineFlow{to{stroke-dashoffset:-31;}}
   #cardsLayer{position:absolute;top:0;left:0;}
 
   .person-node{position:absolute;width:84px;display:flex;flex-direction:column;align-items:center;
@@ -182,8 +184,8 @@
   #quickInfo .qi-name{font-weight:700;font-size:0.85rem;}
   #quickInfo .qi-row{color:var(--text-dim);}
   #quickInfo .qi-row b{color:var(--text);font-weight:500;}
-  #quickInfo .qi-close{position:absolute;top:8px;right:10px;background:none;border:none;color:var(--text-dim);
-    font-size:1rem;line-height:1;cursor:pointer;padding:4px;}
+  #quickInfo .qi-close{position:absolute;top:7px;right:8px;background:none;border:none;color:var(--text-dim);
+    cursor:pointer;padding:6px;display:flex;align-items:center;justify-content:center;}
   #quickInfo .qi-close:hover{color:var(--text);}
 
   /* Side panel */
@@ -1135,6 +1137,17 @@
       l.setAttribute('x1',sx);l.setAttribute('y1',sy);l.setAttribute('x2',ex);l.setAttribute('y2',ey);
       l.setAttribute('stroke',`rgba(180,210,255,${Math.min(1,baseOp+0.25)})`);l.setAttribute('stroke-width','1.1');
       svg.appendChild(l);
+      // animated flowing pulse riding along the line
+      if(db.settings.animations){
+        const flow=document.createElementNS(svgNS,'line');
+        flow.setAttribute('x1',sx);flow.setAttribute('y1',sy);flow.setAttribute('x2',ex);flow.setAttribute('y2',ey);
+        flow.setAttribute('stroke','rgba(220,235,255,0.85)');flow.setAttribute('stroke-width','1.6');
+        flow.setAttribute('stroke-dasharray','5 26');
+        flow.setAttribute('class','flow-line');
+        flow.style.animationDuration = (2.4 + Math.random()*1.4).toFixed(2)+'s';
+        flow.style.animationDelay = (-Math.random()*3).toFixed(2)+'s';
+        svg.appendChild(flow);
+      }
     }
     // circle-center Y sits near the top of each node box (photo is top-aligned, label below)
     const circleCenterY = id => pos[id].y - CARD_H/2 + NODE_R;
@@ -1220,7 +1233,11 @@
     const el = $('quickInfo');
     const photoHtml = p.photo ? `<img class="qi-photo" src="${p.photo}">` : `<div class="qi-photo-placeholder">N/A</div>`;
     el.innerHTML = `
-      <button class="qi-close" type="button">✕</button>
+      <button class="qi-close" type="button" aria-label="Close">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 1L11 11M11 1L1 11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </button>
       <div class="qi-top">${photoHtml}<div class="qi-name">${escapeHtml(fullName(p))}${p.nickname?` "${escapeHtml(p.nickname)}"`:''}</div></div>
       <div class="qi-row"><b>${escapeHtml(disp(p.gender))}</b></div>
       <div class="qi-row">Born: <b>${escapeHtml(fmtDate(p.birthDate))}</b></div>
