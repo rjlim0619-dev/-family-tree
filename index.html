@@ -170,18 +170,21 @@
   .node-dates{font-size:0.64rem;color:var(--text-dim);margin-top:1px;}
 
   #quickInfo{
-    position:fixed;z-index:120;pointer-events:none;display:none;
+    position:fixed;z-index:120;pointer-events:auto;display:none;
     background:linear-gradient(180deg, var(--panel-2), var(--panel));
     border:1px solid var(--border-2);border-radius:12px;padding:12px 14px;width:200px;
     box-shadow:0 16px 40px rgba(0,0,0,0.55);font-size:0.78rem;line-height:1.4;
   }
-  #quickInfo .qi-top{display:flex;align-items:center;gap:9px;margin-bottom:7px;}
+  #quickInfo .qi-top{display:flex;align-items:center;gap:9px;margin-bottom:7px;padding-right:18px;}
   #quickInfo .qi-photo{width:38px;height:38px;border-radius:50%;object-fit:cover;border:1px solid rgba(255,255,255,0.15);background:#1a2438;flex-shrink:0;}
   #quickInfo .qi-photo-placeholder{width:38px;height:38px;border-radius:50%;background:#1a2438;border:1px solid rgba(255,255,255,0.15);
     display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--text-faint);flex-shrink:0;}
   #quickInfo .qi-name{font-weight:700;font-size:0.85rem;}
   #quickInfo .qi-row{color:var(--text-dim);}
   #quickInfo .qi-row b{color:var(--text);font-weight:500;}
+  #quickInfo .qi-close{position:absolute;top:8px;right:10px;background:none;border:none;color:var(--text-dim);
+    font-size:1rem;line-height:1;cursor:pointer;padding:4px;}
+  #quickInfo .qi-close:hover{color:var(--text);}
 
   /* Side panel */
   #sidePanel{position:fixed;top:0;right:0;height:100vh;width:340px;max-width:92vw;
@@ -1201,6 +1204,11 @@
         if(lpFired){ hideQuickInfo(); e.preventDefault(); }
         lpFired=false;
       }, {passive:false});
+      node.addEventListener('touchcancel', ()=>{
+        clearTimeout(lpTimer);
+        hideQuickInfo();
+        lpFired=false;
+      });
 
       cardsLayer.appendChild(node);
     });
@@ -1212,11 +1220,13 @@
     const el = $('quickInfo');
     const photoHtml = p.photo ? `<img class="qi-photo" src="${p.photo}">` : `<div class="qi-photo-placeholder">N/A</div>`;
     el.innerHTML = `
+      <button class="qi-close" type="button">✕</button>
       <div class="qi-top">${photoHtml}<div class="qi-name">${escapeHtml(fullName(p))}${p.nickname?` "${escapeHtml(p.nickname)}"`:''}</div></div>
       <div class="qi-row"><b>${escapeHtml(disp(p.gender))}</b></div>
       <div class="qi-row">Born: <b>${escapeHtml(fmtDate(p.birthDate))}</b></div>
       <div class="qi-row">${p.living?'Living':'Died: '}${p.living?'':'<b>'+escapeHtml(fmtDate(p.deathDate))+'</b>'}</div>
     `;
+    el.querySelector('.qi-close').addEventListener('click', hideQuickInfo);
     el.style.display='block';
     positionQuickInfo(x,y);
   }
@@ -1626,6 +1636,13 @@
       navigator.serviceWorker.register('sw.js').catch(()=>{});
     });
   }
+
+  document.addEventListener('touchstart', (e)=>{
+    const qi = $('quickInfo');
+    if(qi.style.display==='block' && !e.target.closest('#quickInfo') && !e.target.closest('.person-node')){
+      hideQuickInfo();
+    }
+  }, {passive:true});
 
   initLock();
 })();
