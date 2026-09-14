@@ -134,9 +134,14 @@
   .person-node{position:absolute;width:84px;display:flex;flex-direction:column;align-items:center;
     cursor:pointer;animation:nodeIn .3s ease;}
   @keyframes nodeIn{from{opacity:0;transform:scale(0.6);}to{opacity:1;transform:scale(1);}}
-  .node-float{animation-name:floaty;animation-timing-function:ease-in-out;animation-iteration-count:infinite;
-    animation-direction:alternate;}
-  @keyframes floaty{from{transform:translateY(-4px);}to{transform:translateY(4px);}}
+  .node-float{animation-name:floaty;animation-timing-function:ease-in-out;animation-iteration-count:infinite;}
+  @keyframes floaty{
+    0%{transform:translate(0px,-6px);}
+    25%{transform:translate(5px,0px);}
+    50%{transform:translate(0px,7px);}
+    75%{transform:translate(-5px,1px);}
+    100%{transform:translate(0px,-6px);}
+  }
   .node-photo{width:72px;height:72px;border-radius:50%;object-fit:cover;display:block;
     border:2px solid rgba(124,176,255,0.35);background:#1a2438;
     box-shadow:0 0 0 4px rgba(76,141,255,0.06), 0 8px 20px rgba(0,0,0,0.5);
@@ -157,6 +162,20 @@
   .node-name{font-size:0.76rem;font-weight:600;margin-top:7px;text-align:center;line-height:1.2;
     max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .node-dates{font-size:0.64rem;color:var(--text-dim);margin-top:1px;}
+
+  #quickInfo{
+    position:fixed;z-index:120;pointer-events:none;display:none;
+    background:linear-gradient(180deg, var(--panel-2), var(--panel));
+    border:1px solid var(--border-2);border-radius:12px;padding:12px 14px;width:200px;
+    box-shadow:0 16px 40px rgba(0,0,0,0.55);font-size:0.78rem;line-height:1.4;
+  }
+  #quickInfo .qi-top{display:flex;align-items:center;gap:9px;margin-bottom:7px;}
+  #quickInfo .qi-photo{width:38px;height:38px;border-radius:50%;object-fit:cover;border:1px solid rgba(255,255,255,0.15);background:#1a2438;flex-shrink:0;}
+  #quickInfo .qi-photo-placeholder{width:38px;height:38px;border-radius:50%;background:#1a2438;border:1px solid rgba(255,255,255,0.15);
+    display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--text-faint);flex-shrink:0;}
+  #quickInfo .qi-name{font-weight:700;font-size:0.85rem;}
+  #quickInfo .qi-row{color:var(--text-dim);}
+  #quickInfo .qi-row b{color:var(--text);font-weight:500;}
 
   /* Side panel */
   #sidePanel{position:fixed;top:0;right:0;height:100vh;width:340px;max-width:92vw;
@@ -585,6 +604,7 @@
 </div>
 
 <div class="toast" id="toast"></div>
+<div id="quickInfo"></div>
 
 <script>
 (function(){
@@ -1143,11 +1163,59 @@
       const dYear = p.living ? 'Living' : (p.deathDate ? new Date(p.deathDate).getFullYear() : 'N/A');
       node.innerHTML = `<div style="position:relative;">${p.pinned?'<div class="node-pin">📌</div>':''}${photoHtml}</div><div class="node-name">${escapeHtml(fullName(p))}</div><div class="node-dates">${bYear} – ${dYear}</div>`;
       node.addEventListener('click', (e)=>{ e.stopPropagation(); openPanel(p.id); });
+
+      // Hover (desktop) / long-press (mobile) quick-info popup
+      node.addEventListener('mouseenter', (e)=> showQuickInfo(p, e.clientX, e.clientY));
+      node.addEventListener('mousemove', (e)=> positionQuickInfo(e.clientX, e.clientY));
+      node.addEventListener('mouseleave', hideQuickInfo);
+      let lpTimer=null, lpFired=false;
+      node.addEventListener('touchstart', (e)=>{
+        lpFired=false;
+        const t=e.touches[0];
+        lpTimer=setTimeout(()=>{
+          lpFired=true;
+          showQuickInfo(p, t.clientX, t.clientY);
+          if(navigator.vibrate) navigator.vibrate(6);
+        }, 400);
+      }, {passive:true});
+      node.addEventListener('touchmove', (e)=>{
+        clearTimeout(lpTimer);
+        if(lpFired) positionQuickInfo(e.touches[0].clientX, e.touches[0].clientY);
+      }, {passive:true});
+      node.addEventListener('touchend', (e)=>{
+        clearTimeout(lpTimer);
+        if(lpFired){ hideQuickInfo(); e.preventDefault(); }
+        lpFired=false;
+      }, {passive:false});
+
       cardsLayer.appendChild(node);
     });
 
     applyTransform();
   }
+
+  function showQuickInfo(p, x, y){
+    const el = $('quickInfo');
+    const photoHtml = p.photo ? `<img class="qi-photo" src="${p.photo}">` : `<div class="qi-photo-placeholder">N/A</div>`;
+    el.innerHTML = `
+      <div class="qi-top">${photoHtml}<div class="qi-name">${escapeHtml(fullName(p))}${p.nickname?` "${escapeHtml(p.nickname)}"`:''}</div></div>
+      <div class="qi-row"><b>${escapeHtml(disp(p.gender))}</b></div>
+      <div class="qi-row">Born: <b>${escapeHtml(fmtDate(p.birthDate))}</b></div>
+      <div class="qi-row">${p.living?'Living':'Died: '}${p.living?'':'<b>'+escapeHtml(fmtDate(p.deathDate))+'</b>'}</div>
+    `;
+    el.style.display='block';
+    positionQuickInfo(x,y);
+  }
+  function positionQuickInfo(x,y){
+    const el = $('quickInfo');
+    const pad=16;
+    let left = x+pad, top = y+pad;
+    const rect = el.getBoundingClientRect();
+    if(left+rect.width > window.innerWidth-10) left = x-rect.width-pad;
+    if(top+rect.height > window.innerHeight-10) top = y-rect.height-pad;
+    el.style.left=left+'px'; el.style.top=top+'px';
+  }
+  function hideQuickInfo(){ $('quickInfo').style.display='none'; }
 
   function applyTransform(){
     $('treeInner').style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`;
@@ -1443,6 +1511,7 @@
     touchTree(); await persistDb(); closePersonModal();
     selectedId = id; renderAll(); openPanel(id);
     afterLayout(()=>centerOnPerson(id));
+    burstParticles(window.innerWidth/2, window.innerHeight*0.4, 18);
     sfx.add(); toast('Added.');
   }
   $('modalSaveBtn').onclick = saveModal;
