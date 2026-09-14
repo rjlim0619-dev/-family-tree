@@ -131,23 +131,32 @@
   #linesSvg{position:absolute;top:0;left:0;overflow:visible;pointer-events:none;}
   #cardsLayer{position:absolute;top:0;left:0;}
 
-  .person-card{position:absolute;width:168px;background:linear-gradient(180deg, var(--card-hover), var(--card));
-    border:1px solid var(--border-2);border-radius:16px;padding:15px 13px 13px 13px;text-align:center;cursor:pointer;
-    box-shadow:0 10px 26px rgba(0,0,0,0.5);transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-    animation:cardIn .28s ease;}
-  @keyframes cardIn{from{opacity:0;transform:scale(0.85);}to{opacity:1;transform:scale(1);}}
-  .person-card:hover{transform:translateY(-4px);border-color:rgba(76,141,255,0.5);}
-  .person-card.selected{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent), 0 16px 36px var(--accent-glow);}
-  .person-card.dimmed{opacity:0.25;}
-  .person-card.highlight{border-color:var(--accent-2);box-shadow:0 0 0 2px var(--accent-2), 0 0 22px var(--accent-glow);}
-  .pin-flag{position:absolute;top:8px;right:10px;font-size:0.8rem;}
-  .card-photo{width:58px;height:58px;border-radius:50%;object-fit:cover;margin:0 auto 8px auto;display:block;
-    border:2px solid rgba(255,255,255,0.15);background:#1a2438;}
-  .card-photo-placeholder{width:58px;height:58px;border-radius:50%;margin:0 auto 8px auto;background:#1a2438;
-    border:2px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;
-    font-size:1.2rem;color:var(--text-faint);}
-  .card-name{font-size:0.88rem;font-weight:600;margin:0 0 2px 0;line-height:1.25;}
-  .card-dates{font-size:0.7rem;color:var(--text-dim);}
+  .person-node{position:absolute;width:84px;display:flex;flex-direction:column;align-items:center;
+    cursor:pointer;animation:nodeIn .3s ease;}
+  @keyframes nodeIn{from{opacity:0;transform:scale(0.6);}to{opacity:1;transform:scale(1);}}
+  .node-float{animation-name:floaty;animation-timing-function:ease-in-out;animation-iteration-count:infinite;
+    animation-direction:alternate;}
+  @keyframes floaty{from{transform:translateY(-4px);}to{transform:translateY(4px);}}
+  .node-photo{width:72px;height:72px;border-radius:50%;object-fit:cover;display:block;
+    border:2px solid rgba(124,176,255,0.35);background:#1a2438;
+    box-shadow:0 0 0 4px rgba(76,141,255,0.06), 0 8px 20px rgba(0,0,0,0.5);
+    transition:border-color .18s ease, box-shadow .18s ease, transform .18s ease;}
+  .node-photo-placeholder{width:72px;height:72px;border-radius:50%;background:#1a2438;
+    border:2px solid rgba(124,176,255,0.3);display:flex;align-items:center;justify-content:center;
+    font-size:1.5rem;color:var(--text-faint);
+    box-shadow:0 0 0 4px rgba(76,141,255,0.06), 0 8px 20px rgba(0,0,0,0.5);
+    transition:border-color .18s ease, box-shadow .18s ease, transform .18s ease;}
+  .person-node:hover .node-photo, .person-node:hover .node-photo-placeholder{transform:scale(1.08);
+    border-color:rgba(76,141,255,0.7);}
+  .person-node.selected .node-photo, .person-node.selected .node-photo-placeholder{
+    border-color:var(--accent);box-shadow:0 0 0 5px var(--accent-glow), 0 8px 22px rgba(0,0,0,0.5);}
+  .person-node.dimmed{opacity:0.22;}
+  .person-node.highlight .node-photo, .person-node.highlight .node-photo-placeholder{
+    border-color:var(--accent-2);box-shadow:0 0 0 5px var(--accent-glow), 0 0 22px var(--accent-glow);}
+  .node-pin{position:absolute;top:-2px;right:6px;font-size:0.72rem;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.6));}
+  .node-name{font-size:0.76rem;font-weight:600;margin-top:7px;text-align:center;line-height:1.2;
+    max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .node-dates{font-size:0.64rem;color:var(--text-dim);margin-top:1px;}
 
   /* Side panel */
   #sidePanel{position:fixed;top:0;right:0;height:100vh;width:340px;max-width:92vw;
@@ -185,6 +194,14 @@
   .member-tile, .tree-tile{background:linear-gradient(180deg, var(--card-hover), var(--card));border:1px solid var(--border-2);
     border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:transform .15s ease;position:relative;}
   .member-tile:hover, .tree-tile:hover{transform:translateY(-3px);border-color:rgba(76,141,255,0.4);}
+  .card-photo{width:56px;height:56px;border-radius:50%;object-fit:cover;margin:0 auto 8px auto;display:block;
+    border:2px solid rgba(255,255,255,0.15);background:#1a2438;}
+  .card-photo-placeholder{width:56px;height:56px;border-radius:50%;margin:0 auto 8px auto;background:#1a2438;
+    border:2px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;
+    font-size:1.1rem;color:var(--text-faint);}
+  .card-name{font-size:0.86rem;font-weight:600;margin:0 0 2px 0;line-height:1.25;}
+  .card-dates{font-size:0.7rem;color:var(--text-dim);}
+  .pin-flag{margin-bottom:2px;font-size:0.8rem;}
   .tree-tile{text-align:left;}
   .tree-tile .t-name{font-weight:700;font-size:0.98rem;margin-bottom:4px;}
   .tree-tile .t-desc{font-size:0.78rem;color:var(--text-dim);margin-bottom:10px;min-height:1.1em;}
@@ -573,7 +590,7 @@
 (function(){
   const PASS_KEY = 'family-tree-pass';
   const DATA_KEY = 'family-tree-data-v3';
-  const CARD_W = 168, CARD_H = 148, H_GAP = 38, ROW_GAP = 96;
+  const CARD_W = 96, CARD_H = 116, H_GAP = 22, ROW_GAP = 60, NODE_R = 36;
   const MAX_DIM = 220;
 
   let passcode = null;
@@ -1070,34 +1087,26 @@
     const pos = {};
     Object.keys(layout.positions).forEach(id=>{ pos[id] = { x: layout.positions[id].x+pad, y: layout.positions[id].y+pad }; });
 
-    const groups = {};
-    people.forEach(p=>{
-      const parents = (p.parents||[]).filter(pid=>personById(pid));
-      if(parents.length===0) return;
-      const key = parents.slice().sort().join('|');
-      groups[key] = groups[key] || { parents, children: [] };
-      groups[key].children.push(p.id);
-    });
-
     const svgNS='http://www.w3.org/2000/svg';
-    function line(x1,y1,x2,y2){
+    function edgeLine(x1,y1,x2,y2,r1,r2,opacity){
+      const dx=x2-x1, dy=y2-y1;
+      const dist=Math.hypot(dx,dy)||1;
+      const ux=dx/dist, uy=dy/dist;
+      const sx=x1+ux*r1, sy=y1+uy*(r1*1.35); // slightly larger vertical offset clears the name label
+      const ex=x2-ux*r2, ey=y2-uy*(r2*1.35);
       const l=document.createElementNS(svgNS,'line');
-      l.setAttribute('x1',x1);l.setAttribute('y1',y1);l.setAttribute('x2',x2);l.setAttribute('y2',y2);
-      l.setAttribute('stroke','rgba(124,176,255,0.4)');l.setAttribute('stroke-width','2');
+      l.setAttribute('x1',sx);l.setAttribute('y1',sy);l.setAttribute('x2',ex);l.setAttribute('y2',ey);
+      l.setAttribute('stroke',`rgba(124,176,255,${opacity==null?0.35:opacity})`);l.setAttribute('stroke-width','1.3');
       svg.appendChild(l);
     }
-    Object.values(groups).forEach(g=>{
-      const parentXs = g.parents.map(pid=>pos[pid].x);
-      const parentY = pos[g.parents[0]].y + CARD_H/2;
-      const anchorX = parentXs.reduce((a,b)=>a+b,0)/parentXs.length;
-      const childXs = g.children.map(cid=>pos[cid].x);
-      const childY = pos[g.children[0]].y - CARD_H/2;
-      const busY = (parentY + childY)/2;
-      const allXs = childXs.concat([anchorX]);
-      const minX = Math.min(...allXs), maxX = Math.max(...allXs);
-      line(anchorX, parentY, anchorX, busY);
-      line(minX, busY, maxX, busY);
-      g.children.forEach(cid=>{ line(pos[cid].x, busY, pos[cid].x, childY); });
+    // circle-center Y sits near the top of each node box (photo is top-aligned, label below)
+    const circleCenterY = id => pos[id].y - CARD_H/2 + NODE_R;
+
+    people.forEach(p=>{
+      (p.parents||[]).forEach(pid=>{
+        if(!personById(pid) || !pos[pid]) return;
+        edgeLine(pos[pid].x, circleCenterY(pid), pos[p.id].x, circleCenterY(p.id), NODE_R, NODE_R);
+      });
     });
     const drawnSpouse = new Set();
     people.forEach(p=>{
@@ -1105,8 +1114,7 @@
         drawnSpouse.add(p.id); drawnSpouse.add(p.spouseId);
         const a=pos[p.id], b=pos[p.spouseId];
         if(Math.abs(a.y-b.y) < 5){
-          const x1 = Math.min(a.x,b.x)+CARD_W/2, x2 = Math.max(a.x,b.x)-CARD_W/2;
-          line(x1, a.y, x2, a.y);
+          edgeLine(a.x, circleCenterY(p.id), b.x, circleCenterY(p.spouseId), NODE_R, NODE_R, 0.5);
         }
       }
     });
@@ -1114,22 +1122,28 @@
     const searchQ = $('searchInput').value.trim().toLowerCase();
     people.forEach(p=>{
       const p0 = pos[p.id];
-      const card = document.createElement('div');
-      card.className='person-card';
-      if(!db.settings.animations) card.style.animation='none';
-      if(p.id===selectedId) card.classList.add('selected');
+      const node = document.createElement('div');
+      node.className='person-node';
+      if(db.settings.animations){
+        node.classList.add('node-float');
+        node.style.animationDuration = (3.2 + (Math.random()*1.6)).toFixed(2)+'s';
+        node.style.animationDelay = (-Math.random()*3).toFixed(2)+'s';
+      } else {
+        node.style.animation='none';
+      }
+      if(p.id===selectedId) node.classList.add('selected');
       if(searchQ){
         const match = fullName(p).toLowerCase().includes(searchQ) || (p.nickname||'').toLowerCase().includes(searchQ);
-        card.classList.add(match?'highlight':'dimmed');
+        node.classList.add(match?'highlight':'dimmed');
       }
-      card.style.left=(p0.x-CARD_W/2)+'px';
-      card.style.top=(p0.y-CARD_H/2)+'px';
-      const photoHtml = p.photo ? `<img class="card-photo" src="${p.photo}">` : `<div class="card-photo-placeholder">N/A</div>`;
+      node.style.left=(p0.x-CARD_W/2)+'px';
+      node.style.top=(p0.y-CARD_H/2)+'px';
+      const photoHtml = p.photo ? `<img class="node-photo" src="${p.photo}">` : `<div class="node-photo-placeholder">N/A</div>`;
       const bYear = p.birthDate ? new Date(p.birthDate).getFullYear() : '?';
       const dYear = p.living ? 'Living' : (p.deathDate ? new Date(p.deathDate).getFullYear() : 'N/A');
-      card.innerHTML = `${p.pinned?'<div class="pin-flag">📌</div>':''}${photoHtml}<div class="card-name">${escapeHtml(fullName(p))}</div><div class="card-dates">${bYear} – ${dYear}</div>`;
-      card.addEventListener('click', (e)=>{ e.stopPropagation(); openPanel(p.id); });
-      cardsLayer.appendChild(card);
+      node.innerHTML = `<div style="position:relative;">${p.pinned?'<div class="node-pin">📌</div>':''}${photoHtml}</div><div class="node-name">${escapeHtml(fullName(p))}</div><div class="node-dates">${bYear} – ${dYear}</div>`;
+      node.addEventListener('click', (e)=>{ e.stopPropagation(); openPanel(p.id); });
+      cardsLayer.appendChild(node);
     });
 
     applyTransform();
@@ -1191,7 +1205,7 @@
 
   const viewport = $('treeViewport');
   viewport.addEventListener('mousedown', (e)=>{
-    if(e.target.closest('.person-card')) return;
+    if(e.target.closest('.person-node')) return;
     dragging=true; viewport.classList.add('dragging');
     dragStart={x:e.clientX,y:e.clientY}; panStart={x:panX,y:panY};
   });
@@ -1209,7 +1223,7 @@
 
   function touchDist(t1,t2){ return Math.hypot(t1.clientX-t2.clientX, t1.clientY-t2.clientY); }
   viewport.addEventListener('touchstart', (e)=>{
-    if(e.target.closest('.person-card')) return;
+    if(e.target.closest('.person-node')) return;
     if(e.touches.length===1){
       dragging=true; dragStart={x:e.touches[0].clientX,y:e.touches[0].clientY}; panStart={x:panX,y:panY};
     } else if(e.touches.length===2){
