@@ -11,6 +11,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Family Tree">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <style>
   :root{
     --bg:#05070D;
@@ -24,15 +28,23 @@
     --accent:#4C8DFF;
     --accent-2:#7CB0FF;
     --accent-glow:rgba(76,141,255,0.30);
+    /* Warm "heirloom" accent — reserved for emotionally significant things:
+       pinned people, the dashboard welcome, milestones. Blue stays the
+       structural color (nav, buttons); gold is the memory color. */
+    --warm:#E3A555;
+    --warm-2:#F0C585;
+    --warm-glow:rgba(227,165,85,0.30);
     --danger:#E5646B;
     --success:#5FCB8F;
     --text:#FFFFFF;
     --text-dim:#9AA6BE;
     --text-faint:#5C6478;
+    --font-display:'Fraunces', Georgia, serif;
+    --font-body:'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;height:100%;height:100dvh;background:var(--bg);color:var(--text);
-    font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;overflow:hidden;
+    font-family:var(--font-body);overflow:hidden;
     -webkit-tap-highlight-color:transparent;}
   button,input,select,textarea{font-family:inherit;}
   ::-webkit-scrollbar{width:8px;height:8px;}
@@ -51,18 +63,28 @@
   .lock-card{background:linear-gradient(180deg, var(--panel-2), var(--panel));border:1px solid var(--border-2);
     border-radius:18px;padding:44px 38px;max-width:400px;width:100%;
     box-shadow:0 30px 80px rgba(0,0,0,0.65);}
-  .lock-card h1{margin:0 0 6px 0;font-size:1.5rem;font-weight:600;}
+  .lock-card h1{margin:0 0 6px 0;font-size:1.7rem;font-weight:600;font-family:var(--font-display);}
   .lock-card p.sub{margin:0 0 26px 0;color:var(--text-dim);font-size:0.9rem;line-height:1.5;}
-  .lock-card input[type=password]{width:100%;padding:14px;font-size:1.3rem;letter-spacing:6px;text-align:center;
-    border:1px solid var(--border-2);background:rgba(0,0,0,0.3);border-radius:10px;color:var(--text);margin-bottom:14px;}
+  .lock-card input[type=password],.lock-card input[type=email],.lock-card input[type=text]{
+    width:100%;padding:13px 14px;font-size:0.95rem;text-align:left;
+    border:1px solid var(--border-2);background:rgba(0,0,0,0.3);border-radius:10px;color:var(--text);margin-bottom:10px;}
   .lock-card input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow);}
   .lock-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),#3568D4);color:#fff;border:none;
-    border-radius:10px;font-size:0.95rem;cursor:pointer;font-weight:600;box-shadow:0 8px 24px var(--accent-glow);}
-  .lock-error{color:var(--danger);font-size:0.82rem;margin:-6px 0 14px 0;min-height:1.1em;}
-  .lock-footnote{margin-top:18px;font-size:0.78rem;color:var(--text-faint);}
-  .lock-footnote button{background:none;border:none;color:var(--danger);text-decoration:underline;cursor:pointer;font-size:0.78rem;padding:0;}
+    border-radius:10px;font-size:0.95rem;cursor:pointer;font-weight:600;box-shadow:0 8px 24px var(--accent-glow);margin-top:4px;}
+  .lock-btn:disabled{opacity:0.6;cursor:default;}
+  .lock-error{color:var(--danger);font-size:0.82rem;margin:4px 0 10px 0;min-height:1.1em;}
+  .lock-success{color:#4CAF7D;font-size:0.82rem;margin:4px 0 10px 0;min-height:1.1em;}
+  .lock-footnote{margin-top:18px;font-size:0.78rem;color:var(--text-faint);line-height:1.9;}
+  .lock-footnote button,.lock-footnote a{background:none;border:none;color:var(--accent-2);text-decoration:underline;cursor:pointer;font-size:0.78rem;padding:0;}
+  .lock-footnote .sep{margin:0 8px;color:var(--border-2);}
   .inline-confirm{margin-top:12px;padding:14px;background:rgba(0,0,0,0.3);border:1px solid var(--border-2);border-radius:10px;}
   .inline-confirm p{font-size:0.82rem;margin:0 0 10px 0;color:var(--text-dim);}
+  .auth-spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;
+    border-radius:50%;animation:authSpin .7s linear infinite;vertical-align:-2px;margin-right:8px;}
+  @keyframes authSpin{to{transform:rotate(360deg);}}
+  .migration-list{max-height:160px;overflow-y:auto;margin:10px 0;padding:10px 12px;background:rgba(0,0,0,0.25);
+    border:1px solid var(--border);border-radius:10px;font-size:0.84rem;color:var(--text-dim);}
+  .migration-list div{padding:3px 0;}
 
   /* ============ APP SHELL ============ */
   #app{display:none;height:100vh;height:100dvh;width:100vw;position:relative;}
@@ -75,7 +97,7 @@
   .back-link{display:flex;align-items:center;gap:8px;padding:8px 10px;margin-bottom:14px;border-radius:9px;
     background:none;border:none;color:var(--text-dim);font-size:0.8rem;cursor:pointer;}
   .back-link:hover{color:var(--text);background:rgba(255,255,255,0.04);}
-  .brand{font-weight:700;font-size:1.0rem;margin:0 8px 16px 8px;color:var(--text);}
+  .brand{font-weight:700;font-size:1.05rem;margin:0 8px 16px 8px;color:var(--text);font-family:var(--font-display);}
   .brand small{display:block;font-weight:400;color:var(--text-dim);font-size:0.72rem;margin-top:2px;}
   .nav-btn{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;background:none;border:none;
     color:var(--text-dim);font-size:0.86rem;cursor:pointer;text-align:left;transition:background .15s,color .15s;}
@@ -118,7 +140,10 @@
   #treeEmptyState{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
     text-align:center;gap:8px;padding:20px;}
   #treeEmptyState .big-emoji{font-size:2.6rem;margin-bottom:4px;}
-  #treeEmptyState h2{font-size:1.5rem;margin:0;font-weight:600;}
+  .empty-glow-icon{width:84px;height:84px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:2.1rem;margin-bottom:6px;background:radial-gradient(circle, rgba(227,165,85,0.16), transparent 70%);
+    border:1px solid rgba(227,165,85,0.3);box-shadow:0 0 30px 6px rgba(227,165,85,0.14);}
+  #treeEmptyState h2{font-size:1.7rem;margin:0;font-weight:600;font-family:var(--font-display);}
   #treeEmptyState p{color:var(--text-dim);margin:0 0 16px 0;max-width:320px;font-size:0.9rem;}
   .big-create-btn{padding:14px 30px;font-size:0.95rem;font-weight:700;border-radius:14px;border:none;color:#fff;
     background:linear-gradient(135deg,var(--accent),#3568D4);cursor:pointer;box-shadow:0 14px 40px var(--accent-glow);
@@ -127,6 +152,21 @@
 
   #treeViewport{position:absolute;inset:0;overflow:hidden;cursor:grab;touch-action:none;}
   #treeViewport.dragging{cursor:grabbing;}
+  #treeLegend{display:none;position:absolute;left:14px;bottom:14px;z-index:4;pointer-events:none;
+    flex-direction:column;gap:5px;background:rgba(10,12,20,0.55);backdrop-filter:blur(6px);
+    border:1px solid var(--border-2);border-radius:10px;padding:8px 12px;font-size:0.68rem;color:var(--text-dim);}
+  .leg-item{display:flex;align-items:center;gap:7px;}
+  .leg-line{display:inline-block;width:22px;height:0;border-top:2px solid;}
+  .leg-line-parent{border-top-color:rgba(130,175,255,0.9);}
+  .leg-line-spouse{border-top-style:dashed;border-top-color:rgba(240,197,133,0.9);}
+  @media (max-width:820px){ #treeLegend{display:none !important;} }
+  #firstRunTip{display:none;position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:4;
+    max-width:min(92vw,420px);align-items:center;gap:10px;background:rgba(10,12,20,0.75);backdrop-filter:blur(8px);
+    border:1px solid var(--border-2);border-radius:12px;padding:10px 12px 10px 14px;font-size:0.78rem;
+    color:var(--text-dim);box-shadow:0 10px 30px rgba(0,0,0,0.4);}
+  #firstRunTip.show{display:flex;}
+  #firstRunTip button{flex-shrink:0;background:none;border:none;color:var(--text-faint);cursor:pointer;padding:4px 6px;font-size:0.8rem;}
+  #firstRunTip button:hover{color:var(--text);}
   #treeInner{position:absolute;top:0;left:0;transform-origin:0 0;}
   #linesSvg{position:absolute;top:0;left:0;overflow:visible;pointer-events:none;}
   .flow-line{animation-name:lineFlow;animation-timing-function:linear;animation-iteration-count:infinite;}
@@ -166,10 +206,34 @@
   .person-node.dimmed{opacity:0.22;}
   .person-node.highlight .node-photo, .person-node.highlight .node-photo-placeholder{
     border-color:var(--accent-2);box-shadow:0 0 0 5px var(--accent-glow), 0 0 22px var(--accent-glow);}
+  /* Selecting someone highlights their immediate family and quietly recedes
+     everyone else, so the relationships around that person stand out. */
+  .person-node.kin-dim{opacity:0.4;}
+  .person-node.kin .node-photo, .person-node.kin .node-photo-placeholder{
+    border-color:rgba(255,255,255,0.6);box-shadow:0 0 0 4px rgba(255,255,255,0.14), 0 8px 20px rgba(0,0,0,0.5);}
+  .person-node:active .node-photo, .person-node:active .node-photo-placeholder{transform:scale(0.94);}
+  /* Pinned people get the warm "heirloom" treatment instead of the structural
+     blue — a visual cue that this person has been marked as significant. */
+  .person-node.pinned .node-photo, .person-node.pinned .node-photo-placeholder{
+    border-color:rgba(240,197,133,0.75);
+    box-shadow:0 0 0 5px rgba(227,165,85,0.16), 0 0 20px 4px rgba(227,165,85,0.3), 0 8px 20px rgba(0,0,0,0.5);
+    animation:nodeGlowWarm 4.5s ease-in-out infinite;}
+  @keyframes nodeGlowWarm{
+    0%,100%{box-shadow:0 0 0 5px rgba(227,165,85,0.12), 0 0 14px 2px rgba(227,165,85,0.22), 0 8px 20px rgba(0,0,0,0.5);}
+    50%{box-shadow:0 0 0 6px rgba(227,165,85,0.22), 0 0 28px 6px rgba(227,165,85,0.4), 0 8px 20px rgba(0,0,0,0.5);}
+  }
   .node-pin{position:absolute;top:-2px;right:6px;font-size:0.72rem;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.6));}
-  .node-name{font-size:0.76rem;font-weight:600;margin-top:7px;text-align:center;line-height:1.2;
-    max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .node-dates{font-size:0.64rem;color:var(--text-dim);margin-top:1px;}
+  /* Name + dates sit on a small frosted pill rather than bare on the canvas —
+     keeps text legible over connector lines, particles, and other nodes. */
+  .node-label{margin-top:7px;padding:3px 9px 4px;border-radius:10px;background:rgba(5,7,13,0.6);
+    backdrop-filter:blur(3px);max-width:98px;}
+  .node-name{font-size:0.76rem;font-weight:600;text-align:center;line-height:1.2;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .node-dates{font-size:0.64rem;color:var(--text-dim);margin-top:1px;text-align:center;}
+  @media (max-width:820px){
+    .node-name{font-size:0.82rem;}
+    .node-dates{font-size:0.68rem;}
+  }
 
   #quickInfo{
     position:fixed;z-index:120;pointer-events:auto;display:none;
@@ -181,7 +245,7 @@
   #quickInfo .qi-photo{width:38px;height:38px;border-radius:50%;object-fit:cover;border:1px solid rgba(255,255,255,0.15);background:#1a2438;flex-shrink:0;}
   #quickInfo .qi-photo-placeholder{width:38px;height:38px;border-radius:50%;background:#1a2438;border:1px solid rgba(255,255,255,0.15);
     display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--text-faint);flex-shrink:0;}
-  #quickInfo .qi-name{font-weight:700;font-size:0.85rem;}
+  #quickInfo .qi-name{font-weight:700;font-size:0.92rem;font-family:var(--font-display);}
   #quickInfo .qi-row{color:var(--text-dim);}
   #quickInfo .qi-row b{color:var(--text);font-weight:500;}
   #quickInfo .qi-close{position:absolute;top:7px;right:8px;background:none;border:none;color:var(--text-dim);
@@ -201,13 +265,28 @@
   .panel-photo-placeholder{width:80px;height:80px;border-radius:50%;margin:0 auto 10px auto;background:#1a2438;
     border:2px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;
     font-size:1.5rem;color:var(--text-faint);}
-  .panel-name{text-align:center;font-size:1.1rem;font-weight:700;margin:0 0 3px 0;}
+  .panel-name{text-align:center;font-size:1.25rem;font-weight:700;margin:0 0 3px 0;font-family:var(--font-display);}
   .panel-sub{text-align:center;font-size:0.78rem;color:var(--text-dim);}
   .panel-body{padding:16px 20px;overflow-y:auto;flex:1;}
   .detail-row{display:flex;justify-content:space-between;font-size:0.82rem;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
   .detail-row b{color:var(--text-dim);font-weight:500;}
   .detail-row span{color:var(--text);text-align:right;max-width:60%;}
   .panel-notes{font-size:0.8rem;color:var(--text-dim);margin-top:10px;line-height:1.5;}
+  #panelRelations{margin-top:14px;}
+  .rel-section{margin-bottom:14px;}
+  .rel-section h4{font-size:0.7rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.05em;
+    margin:0 0 7px 0;font-weight:700;}
+  .rel-chip{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:9px;
+    background:rgba(255,255,255,0.03);border:1px solid var(--border);margin-bottom:5px;font-size:0.82rem;cursor:pointer;transition:.15s;}
+  .rel-chip:hover{background:rgba(76,141,255,0.1);border-color:rgba(76,141,255,0.3);}
+  .rel-chip .rel-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .rel-chip .rel-x{flex-shrink:0;background:none;border:none;color:var(--text-faint);cursor:pointer;padding:3px 6px;font-size:0.8rem;line-height:1;}
+  .rel-chip .rel-x:hover{color:var(--danger);}
+  .rel-empty{font-size:0.78rem;color:var(--text-faint);}
+  .candidate-row{display:flex;align-items:center;gap:10px;}
+  .candidate-row .cand-photo{width:28px;height:28px;border-radius:50%;object-fit:cover;flex-shrink:0;background:#1a2438;}
+  .candidate-row .cand-photo-ph{width:28px;height:28px;border-radius:50%;flex-shrink:0;background:#1a2438;display:flex;
+    align-items:center;justify-content:center;font-size:0.55rem;color:var(--text-faint);}
   .panel-actions{padding:14px 20px 20px 20px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:7px;}
   .action-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.03);
     border:1px solid var(--border-2);color:var(--text);font-size:0.83rem;cursor:pointer;text-align:left;transition:.15s;}
@@ -219,7 +298,14 @@
   /* Scroll views */
   .view-scroll{position:absolute;inset:0;overflow-y:auto;padding:26px 30px 90px 30px;}
   #viewDashboard .view-scroll{padding-top:calc(26px + env(safe-area-inset-top));}
-  .section-title{font-size:1.25rem;font-weight:700;margin:0 0 16px 0;}
+  .section-title{font-size:1.6rem;font-weight:600;margin:0 0 16px 0;font-family:var(--font-display);}
+  .dash-hero{position:relative;border-radius:20px;padding:28px 26px;overflow:hidden;
+    background:radial-gradient(circle at 15% 0%, rgba(227,165,85,0.14) 0%, transparent 55%),
+               radial-gradient(circle at 100% 100%, rgba(76,141,255,0.10) 0%, transparent 60%),
+               linear-gradient(180deg, var(--panel-2), var(--panel));
+    border:1px solid var(--border-2);}
+  .dash-hero-sub{color:var(--text-dim);font-size:0.88rem;margin:0 0 18px 0;}
+  .dash-hero .stats-grid{margin-bottom:0;}
   #membersGrid, #pinnedGrid, #treesGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;}
   .member-tile, .tree-tile{background:linear-gradient(180deg, var(--card-hover), var(--card));border:1px solid var(--border-2);
     border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:transform .15s ease;position:relative;}
@@ -229,11 +315,13 @@
   .card-photo-placeholder{width:56px;height:56px;border-radius:50%;margin:0 auto 8px auto;background:#1a2438;
     border:2px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;
     font-size:1.1rem;color:var(--text-faint);}
-  .card-name{font-size:0.86rem;font-weight:600;margin:0 0 2px 0;line-height:1.25;}
+  .member-tile.pinned .card-photo, .member-tile.pinned .card-photo-placeholder{
+    border-color:rgba(240,197,133,0.75);box-shadow:0 0 0 4px rgba(227,165,85,0.16);}
+  .card-name{font-size:0.86rem;font-weight:600;margin:0 0 2px 0;line-height:1.25;font-family:var(--font-display);}
   .card-dates{font-size:0.7rem;color:var(--text-dim);}
   .pin-flag{margin-bottom:2px;font-size:0.8rem;}
   .tree-tile{text-align:left;}
-  .tree-tile .t-name{font-weight:700;font-size:0.98rem;margin-bottom:4px;}
+  .tree-tile .t-name{font-weight:700;font-size:1.08rem;margin-bottom:4px;font-family:var(--font-display);}
   .tree-tile .t-desc{font-size:0.78rem;color:var(--text-dim);margin-bottom:10px;min-height:1.1em;}
   .tree-tile .t-meta{font-size:0.72rem;color:var(--text-faint);}
   .tree-tile .t-menu-btn{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--text-dim);
@@ -249,7 +337,8 @@
   .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px;}
   .stat-card{background:linear-gradient(180deg, var(--card-hover), var(--card));border:1px solid var(--border-2);
     border-radius:14px;padding:16px;}
-  .stat-num{font-size:1.6rem;font-weight:700;}
+  .stat-num{font-size:1.8rem;font-weight:700;font-family:var(--font-display);}
+  .stat-num.warm{color:var(--warm-2);}
   .stat-label{font-size:0.76rem;color:var(--text-dim);margin-top:2px;}
 
   .settings-block{max-width:440px;background:linear-gradient(180deg, var(--card-hover), var(--card));
@@ -291,7 +380,7 @@
     border-radius:16px;padding:24px;width:100%;max-width:440px;max-height:88vh;overflow-y:auto;
     box-shadow:0 30px 80px rgba(0,0,0,0.7);animation:modalIn .2s ease;}
   @keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(0.98);}to{opacity:1;transform:none;}}
-  .modal h2{margin:0 0 4px 0;font-size:1.15rem;}
+  .modal h2{margin:0 0 4px 0;font-size:1.3rem;font-family:var(--font-display);}
   .modal .modal-sub{color:var(--text-dim);font-size:0.78rem;margin-bottom:16px;}
   .photo-row{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
   .photo-preview{width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.15);background:#1a2438;}
@@ -333,6 +422,11 @@
     #treeNameInput{width:90px;font-size:0.85rem;}
     #backBtn{display:flex;}
     #moreMenuBtn{display:flex;}
+    /* Comfortable tap targets — 30px icon buttons are too small to hit
+       reliably with a finger; 40px+ matches common touch-target guidance. */
+    .icon-btn{width:40px;height:40px;font-size:1rem;}
+    .zoom-controls{padding:4px;}
+    #zoomLabel{width:34px;}
     .topbar-extras{
       display:none;position:fixed;top:calc(56px + env(safe-area-inset-top));left:0;right:0;z-index:30;
       background:linear-gradient(180deg, var(--panel-2), var(--panel));border-bottom:1px solid var(--border-2);
@@ -357,19 +451,59 @@
 
 <canvas id="particleCanvas"></canvas>
 
-<!-- ============ LOCK SCREEN ============ -->
+<!-- ============ AUTH SCREEN (sign in / sign up / forgot password / reset password) ============ -->
 <div id="lockScreen">
   <div class="lock-card">
-    <h1 id="lockTitle">Welcome</h1>
-    <p class="sub" id="lockSub">Loading…</p>
-    <input type="password" id="passInput" maxlength="24" autocomplete="off" placeholder="••••">
-    <div class="lock-error" id="lockError"></div>
-    <button class="lock-btn" id="lockBtn">Continue</button>
-    <div class="lock-footnote" id="lockFootnote"></div>
-    <div class="inline-confirm" id="resetConfirmBox" style="display:none;">
-      <p>Reset your passcode? Your family trees stay safe — only the passcode is cleared.</p>
-      <button class="lock-btn" id="resetYesBtn" type="button" style="margin-bottom:8px;">Yes, reset it</button>
-      <button class="btn-flat" id="resetNoBtn" type="button" style="width:100%;">Cancel</button>
+    <h1 id="authTitle">Welcome back</h1>
+    <p class="sub" id="authSub">Sign in to access your family trees, synced across your devices.</p>
+
+    <form id="authForm" autocomplete="on">
+      <input type="email" id="authEmail" autocomplete="email" placeholder="Email" required>
+      <input type="password" id="authPassword" autocomplete="current-password" placeholder="Password" minlength="6" required>
+      <div class="lock-error" id="authError"></div>
+      <div class="lock-success" id="authSuccess"></div>
+      <button class="lock-btn" type="submit" id="authSubmitBtn">Sign In</button>
+    </form>
+
+    <div class="lock-footnote">
+      <a href="#" id="authToggleModeLink">Need an account? Sign up</a>
+      <span class="sep">·</span>
+      <a href="#" id="authForgotLink">Forgot password?</a>
+    </div>
+
+    <!-- Forgot-password: email only -->
+    <form id="authResetRequestForm" style="display:none;" autocomplete="on">
+      <p class="sub" style="margin-bottom:14px;">Enter your email and we'll send you a link to reset your password.</p>
+      <input type="email" id="authResetEmail" autocomplete="email" placeholder="Email" required>
+      <div class="lock-error" id="authResetError"></div>
+      <div class="lock-success" id="authResetSuccess"></div>
+      <button class="lock-btn" type="submit" id="authResetSubmitBtn">Send reset link</button>
+      <div class="lock-footnote"><a href="#" id="authResetBackLink">← Back to sign in</a></div>
+    </form>
+
+    <!-- Reached via the password-reset email link: set a new password -->
+    <form id="authNewPasswordForm" style="display:none;" autocomplete="on">
+      <p class="sub" style="margin-bottom:14px;">Choose a new password for your account.</p>
+      <input type="password" id="authNewPassword" autocomplete="new-password" placeholder="New password" minlength="6" required>
+      <input type="password" id="authNewPasswordConfirm" autocomplete="new-password" placeholder="Confirm new password" minlength="6" required>
+      <div class="lock-error" id="authNewPasswordError"></div>
+      <div class="lock-success" id="authNewPasswordSuccess"></div>
+      <button class="lock-btn" type="submit" id="authNewPasswordSubmitBtn">Set new password</button>
+    </form>
+  </div>
+</div>
+
+<!-- ============ MIGRATION MODAL (one-time: import trees already on this device) ============ -->
+<div class="modal-backdrop" id="migrationModalBackdrop">
+  <div class="modal" style="max-width:440px;">
+    <h2>Family trees found on this device</h2>
+    <div class="modal-sub" id="migrationModalSub"></div>
+    <div class="migration-list" id="migrationTreeList"></div>
+    <div class="lock-error" id="migrationError"></div>
+    <div class="lock-success" id="migrationSuccess"></div>
+    <div class="modal-actions">
+      <button class="btn-flat" id="migrationSkipBtn">Don't import</button>
+      <div class="right"><button class="btn-primary" id="migrationImportBtn">Import into my account</button></div>
     </div>
   </div>
 </div>
@@ -379,7 +513,14 @@
   <!-- ===== DASHBOARD (My Family Trees) ===== -->
   <div class="view-panel active" id="viewDashboard" style="position:absolute;inset:0;">
     <div class="view-scroll">
-      <h2 class="section-title">My Family Trees</h2>
+      <div class="dash-hero" id="dashHero">
+        <h2 class="section-title" id="dashGreeting" style="margin-bottom:4px;">My Family Trees</h2>
+        <p class="dash-hero-sub" id="dashHeroSub"></p>
+        <div class="stats-grid" id="dashStats" style="display:none;"></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin:28px 0 16px 0;">
+        <h3 style="margin:0;font-size:1rem;color:var(--text-dim);font-weight:600;letter-spacing:.01em;">Your Trees</h3>
+      </div>
       <button class="big-create-btn" id="createTreeFromDashBtn" style="margin-bottom:24px;">+ Create Family Tree</button>
       <div id="treesGrid"></div>
 
@@ -412,22 +553,23 @@
           <span id="zoomLabel">100%</span>
           <button class="icon-btn" id="zoomInBtn">+</button>
         </div>
+        <button class="tb-btn" id="fitBtn">Fit</button>
         <button class="tb-btn" id="centerBtn">Center</button>
         <button class="tb-btn" id="resetViewBtn">Reset</button>
         <button class="tb-btn" id="fullscreenBtn">Fullscreen</button>
         <button class="tb-btn save" id="saveBtn">Save</button>
       </div>
       <button class="icon-btn" id="moreMenuBtn" title="More">⋯</button>
-      <button class="icon-btn" id="lockAppBtn" title="Lock app">🔒</button>
+      <button class="icon-btn" id="lockAppBtn" title="Sign out">🔒</button>
     </div>
     <div id="topbarExtrasBackdrop"></div>
 
     <div id="mainArea">
       <div class="view-panel active" id="viewTree">
         <div id="treeEmptyState">
-          <div class="big-emoji">🌳</div>
-          <h2>Your family tree is empty</h2>
-          <p>Start building your family history by adding your first family member.</p>
+          <div class="empty-glow-icon">🌳</div>
+          <h2>Where your family's story begins</h2>
+          <p>Add the first person — yourself, a parent, a grandparent — and build outward from there.</p>
           <button class="big-create-btn" id="createFirstPersonBtn">+ Add Family Member</button>
         </div>
         <div id="treeViewport" style="display:none;">
@@ -435,6 +577,14 @@
             <svg id="linesSvg"></svg>
             <div id="cardsLayer"></div>
           </div>
+        </div>
+        <div id="treeLegend">
+          <span class="leg-item"><span class="leg-line leg-line-parent"></span>Parent → Child</span>
+          <span class="leg-item"><span class="leg-line leg-line-spouse"></span>Spouse / Partner</span>
+        </div>
+        <div id="firstRunTip">
+          <span>💡 Pinch or scroll to zoom, drag to pan, tap anyone to see their details.</span>
+          <button type="button" id="firstRunTipClose" aria-label="Dismiss tip">✕</button>
         </div>
       </div>
 
@@ -491,16 +641,19 @@
           </div>
 
           <div class="settings-block">
-            <h3>Passcode</h3>
-            <div class="field"><label>New passcode</label><input type="password" id="newPassInput"></div>
-            <div class="field"><label>Confirm new passcode</label><input type="password" id="confirmPassInput"></div>
-            <button class="btn-primary" id="changePassBtn">Update passcode</button>
+            <h3>Account</h3>
+            <p style="font-size:0.8rem;color:var(--text-dim);margin:0 0 12px 0;">Signed in as <span id="accountEmail" style="color:var(--text);font-weight:600;"></span></p>
+            <div class="field"><label>New password</label><input type="password" id="newPassInput" autocomplete="new-password"></div>
+            <div class="field"><label>Confirm new password</label><input type="password" id="confirmPassInput" autocomplete="new-password"></div>
+            <button class="btn-primary" id="changePassBtn">Update password</button>
             <div class="lock-error" id="changePassError" style="margin-top:8px;"></div>
+            <div class="lock-success" id="changePassSuccess" style="margin-top:8px;"></div>
+            <button class="link-danger" id="signOutBtn" style="margin-top:16px;">Sign out</button>
           </div>
 
           <div class="settings-block">
             <h3>Danger zone</h3>
-            <p style="font-size:0.8rem;color:var(--text-dim);margin:0 0 10px 0;">Delete every member in this family tree. Your passcode and other trees are not affected.</p>
+            <p style="font-size:0.8rem;color:var(--text-dim);margin:0 0 10px 0;">Delete every member in this family tree. Your account and other trees are not affected.</p>
             <button class="link-danger" id="clearDataBtn">Clear this family tree</button>
             <div class="inline-confirm" id="clearConfirmBox" style="display:none;">
               <p>Delete everyone in this tree? This can't be undone.</p>
@@ -535,6 +688,7 @@
     <div class="detail-row"><b>Born</b><span id="panelBirth"></span></div>
     <div class="detail-row"><b>Died</b><span id="panelDeath"></span></div>
     <div class="panel-notes" id="panelNotes"></div>
+    <div id="panelRelations"></div>
   </div>
   <div class="panel-actions">
     <button class="action-btn" id="addChildBtn">➕ Add Child</button>
@@ -614,17 +768,54 @@
   </div>
 </div>
 
+<!-- ============ RELATION PICKER MODAL (new vs. existing person) ============ -->
+<div class="modal-backdrop" id="relationPickerBackdrop">
+  <div class="modal" style="max-width:420px;">
+    <h2 id="relationPickerTitle">Add Relative</h2>
+    <div class="modal-sub" id="relationPickerSub"></div>
+    <div class="field" id="coParentField" style="display:none;">
+      <label>Other parent (optional)</label>
+      <select id="coParentSelect"></select>
+    </div>
+    <div id="relationPickerChoice" style="display:flex;flex-direction:column;gap:10px;">
+      <button class="action-btn" type="button" id="relationNewBtn">🆕 Create a new person</button>
+      <button class="action-btn" type="button" id="relationExistingBtn">🔗 Link an existing person in this tree</button>
+    </div>
+    <div id="relationExistingPicker" style="display:none;">
+      <div class="field"><input type="text" id="relationSearchInput" placeholder="Search by name…"></div>
+      <div id="relationCandidateList" style="max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;"></div>
+      <button class="btn-flat" type="button" id="relationBackBtn" style="margin-top:10px;">← Back</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-flat" type="button" id="relationPickerCancelBtn">Cancel</button>
+      <div></div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 <div id="quickInfo"></div>
 
 <script>
 (function(){
-  const PASS_KEY = 'family-tree-pass';
-  const DATA_KEY = 'family-tree-data-v3';
+  const DATA_KEY = 'family-tree-data-v3'; // legacy localStorage key, read once during the one-time cloud migration
   const CARD_W = 96, CARD_H = 116, H_GAP = 22, ROW_GAP = 60, NODE_R = 36;
   const MAX_DIM = 220;
 
-  let passcode = null;
+  // ---------- Supabase ----------
+  const SUPABASE_URL = 'https://jfnuqozxhljkhlcnfnxh.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_th-gd1or6hgy0XRMXhU4ew_Sg8rWmuv'; // publishable key — safe for client code, cannot bypass RLS
+  // Guarded, not a bare top-level call: if the Supabase library's CDN script
+  // ever fails to load (flaky connection, blocked request, ad blocker), this
+  // used to throw here and silently kill every line of JS below it in this
+  // file — including the click handlers for every button in the app, not
+  // just sign-in. Now it degrades to a clear on-screen message instead.
+  let sb = null, sdkLoadFailed = false;
+  try{
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true, autoRefreshToken: true } });
+  }catch(e){ sdkLoadFailed = true; }
+  let currentUser = null;
+
   let db = { trees: [], settings: { sound:true, particles:true, animations:true, music:false, musicVolume:0.15 } };
   let currentTreeId = null;
   let currentView = 'tree';
@@ -662,6 +853,28 @@
     clearTimeout(t._timer);
     t._timer = setTimeout(()=>{ t.style.display='none'; }, 2200);
   }
+  function toastWithUndo(msg, undoFn){
+    const t = $('toast');
+    clearTimeout(t._timer);
+    t.innerHTML = `<span>${escapeHtml(msg)}</span><button id="toastUndoBtn" type="button" style="margin-left:12px;background:none;border:none;color:var(--accent-2);font-weight:700;cursor:pointer;font-size:0.83rem;">Undo</button>`;
+    t.style.display='block';
+    $('toastUndoBtn').onclick = ()=>{ t.style.display='none'; clearTimeout(t._timer); undoFn(); toast('Undone.'); };
+    t._timer = setTimeout(()=>{ t.style.display='none'; }, 6000);
+  }
+
+  // ---------- first-run tip (shown once, on first tree with people) ----------
+  const TIP_SEEN_KEY = 'family-tree-seen-tip';
+  function maybeShowFirstRunTip(hasPeople){
+    if(!hasPeople){ $('firstRunTip').classList.remove('show'); return; }
+    let seen = true;
+    try{ seen = localStorage.getItem(TIP_SEEN_KEY)==='1'; }catch(e){}
+    $('firstRunTip').classList.toggle('show', !seen);
+  }
+  function dismissFirstRunTip(){
+    $('firstRunTip').classList.remove('show');
+    try{ localStorage.setItem(TIP_SEEN_KEY, '1'); }catch(e){}
+  }
+  $('firstRunTipClose').onclick = dismissFirstRunTip;
 
   // ---------- audio (synthesized, subtle) ----------
   let actx = null;
@@ -758,27 +971,62 @@
     }
   }
 
-  // ---------- storage ----------
-  async function loadPass(){ try{ return localStorage.getItem(PASS_KEY); }catch(e){ return null; } }
-  async function savePass(p){ try{ localStorage.setItem(PASS_KEY,p); }catch(e){ toast('Could not save passcode.'); } }
+  // ---------- storage (Supabase — one row per tree, one row of settings, per authenticated user) ----------
+  // Upgrades data saved by earlier versions (single spouseId) to the current
+  // shape (spouseIds array, supporting remarriage / multiple partners).
+  function migrateDb(data){
+    (data.trees||[]).forEach(t=>{
+      (t.people||[]).forEach(p=>{
+        if(!Array.isArray(p.spouseIds)){
+          p.spouseIds = p.spouseId ? [p.spouseId] : [];
+        }
+        delete p.spouseId;
+        if(!Array.isArray(p.parents)) p.parents = [];
+        if(!Array.isArray(p.children)) p.children = [];
+      });
+    });
+    return data;
+  }
+  const DEFAULT_SETTINGS = { sound:true, particles:true, animations:true, music:false, musicVolume:0.15 };
   async function loadDb(){
     try{
-      const raw = localStorage.getItem(DATA_KEY);
-      if(raw) return JSON.parse(raw);
-    }catch(e){}
-    return { trees: [], settings: { sound:true, particles:true, animations:true, music:false, musicVolume:0.15 } };
+      const [{ data: treeRows, error: treesErr }, { data: settingsRow, error: settingsErr }] = await Promise.all([
+        sb.from('trees').select('local_id, tree_data').eq('user_id', currentUser.id),
+        sb.from('user_settings').select('settings').eq('user_id', currentUser.id).maybeSingle()
+      ]);
+      if(treesErr) throw treesErr;
+      if(settingsErr) throw settingsErr;
+      const trees = (treeRows||[]).map(r=>r.tree_data);
+      const settings = (settingsRow && settingsRow.settings && Object.keys(settingsRow.settings).length) ? settingsRow.settings : {...DEFAULT_SETTINGS};
+      return migrateDb({ trees, settings });
+    }catch(e){
+      toast('Could not load your family trees — check your connection and reload.');
+      return { trees: [], settings: {...DEFAULT_SETTINGS} };
+    }
   }
+  // Saves every tree + settings for the signed-in user. Deletions of whole
+  // trees are handled immediately in deleteTree() (not here), so this never
+  // needs to guess which rows to remove — it only ever upserts what's current.
   async function persistDb(){
     $('saveStatus').textContent = 'Saving…';
     try{
-      localStorage.setItem(DATA_KEY, JSON.stringify(db));
+      if(db.trees.length){
+        const rows = db.trees.map(t=>({ user_id: currentUser.id, local_id: t.id, tree_data: t, updated_at: new Date().toISOString() }));
+        const { error } = await sb.from('trees').upsert(rows, { onConflict: 'user_id,local_id' });
+        if(error) throw error;
+      }
+      const { error: settingsErr } = await sb.from('user_settings')
+        .upsert({ user_id: currentUser.id, settings: db.settings, updated_at: new Date().toISOString() }, { onConflict: 'user_id' });
+      if(settingsErr) throw settingsErr;
       lastSavedAt = new Date().toISOString();
       $('saveStatus').textContent = 'Saved ✓';
       sfx.save();
     }catch(e){
+      // db stays exactly as it was in memory — nothing is lost, the next
+      // edit (or a manual retry) will simply try saving again.
       $('saveStatus').textContent = 'Could not save';
       sfx.error();
-      toast('Could not save — try a smaller photo, storage may be full.');
+      toast('Could not save — check your connection. Your changes are kept and will save once you\'re back online.');
     }
   }
   function scheduleSave(){
@@ -792,48 +1040,190 @@
     }
   }, 30000);
 
-  // ---------- lock screen ----------
-  async function initLock(){
-    passcode = await loadPass();
-    const title=$('lockTitle'), sub=$('lockSub'), foot=$('lockFootnote');
-    foot.innerHTML=''; $('resetConfirmBox').style.display='none';
-    if(passcode===null){
-      title.textContent='Set a passcode';
-      sub.textContent="Choose a passcode. You'll need it every time you open this on this device.";
+  // ---------- auth screen ----------
+  let authMode = 'signin'; // 'signin' | 'signup'
+  function renderAuthMode(){
+    $('authError').textContent=''; $('authSuccess').textContent='';
+    if(authMode==='signup'){
+      $('authTitle').textContent='Create your account';
+      $('authSub').textContent='Your family trees will be saved to this account and kept in sync across your devices.';
+      $('authSubmitBtn').textContent='Sign Up';
+      $('authPassword').setAttribute('autocomplete','new-password');
+      $('authToggleModeLink').textContent='Already have an account? Sign in';
     } else {
-      title.textContent='Family Tree';
-      sub.textContent='Enter your passcode to continue.';
-      const resetBtn=document.createElement('button');
-      resetBtn.type='button'; resetBtn.textContent='Forgot it? Reset (clears passcode only)';
-      resetBtn.onclick=()=>{ $('resetConfirmBox').style.display='block'; };
-      foot.appendChild(resetBtn);
-    }
-    $('passInput').value=''; $('lockError').textContent='';
-  }
-  async function handleLockSubmit(){
-    const val=$('passInput').value.trim();
-    if(!val){ $('lockError').textContent='Please enter a passcode.'; return; }
-    if(passcode===null){
-      if(val.length<3){ $('lockError').textContent='Use at least 3 characters.'; return; }
-      passcode=val; await savePass(val); enterApp();
-    } else {
-      if(val===passcode) enterApp();
-      else { $('lockError').textContent='That passcode is not right.'; $('passInput').value=''; }
+      $('authTitle').textContent='Welcome back';
+      $('authSub').textContent='Sign in to access your family trees, synced across your devices.';
+      $('authSubmitBtn').textContent='Sign In';
+      $('authPassword').setAttribute('autocomplete','current-password');
+      $('authToggleModeLink').textContent='Need an account? Sign up';
     }
   }
-  $('resetYesBtn').onclick = async ()=>{
-    passcode=null; try{ localStorage.removeItem(PASS_KEY); }catch(e){}
-    $('resetConfirmBox').style.display='none'; initLock();
+  function showAuthScreen(){
+    stopMusic();
+    $('app').style.display='none';
+    $('lockScreen').style.display='flex';
+    $('authForm').style.display='block';
+    $('authResetRequestForm').style.display='none';
+    $('authNewPasswordForm').style.display='none';
+    authMode='signin';
+    renderAuthMode();
+    $('authEmail').value=''; $('authPassword').value='';
+  }
+  $('authToggleModeLink').onclick = (e)=>{ e.preventDefault(); authMode = authMode==='signin' ? 'signup' : 'signin'; renderAuthMode(); };
+  $('authForgotLink').onclick = (e)=>{
+    e.preventDefault();
+    $('authForm').style.display='none';
+    $('authResetRequestForm').style.display='block';
+    $('authResetEmail').value = $('authEmail').value;
+    $('authResetError').textContent=''; $('authResetSuccess').textContent='';
   };
-  $('resetNoBtn').onclick = ()=>{ $('resetConfirmBox').style.display='none'; };
-  $('lockBtn').onclick = handleLockSubmit;
-  $('passInput').addEventListener('keydown', e=>{ if(e.key==='Enter') handleLockSubmit(); });
+  $('authResetBackLink').onclick = (e)=>{
+    e.preventDefault();
+    $('authResetRequestForm').style.display='none';
+    $('authForm').style.display='block';
+  };
+  $('authForm').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const email = $('authEmail').value.trim();
+    const password = $('authPassword').value;
+    $('authError').textContent=''; $('authSuccess').textContent='';
+    if(!email || !password){ $('authError').textContent='Please enter both email and password.'; return; }
+    if(password.length<6){ $('authError').textContent='Password must be at least 6 characters.'; return; }
+    const btn = $('authSubmitBtn'); btn.disabled=true; const origLabel=btn.textContent;
+    btn.innerHTML = '<span class="auth-spinner"></span>'+(authMode==='signup' ? 'Creating account…' : 'Signing in…');
+    try{
+      if(authMode==='signup'){
+        const { data, error } = await sb.auth.signUp({ email, password });
+        if(error) throw error;
+        if(!data.session){
+          // Email confirmation is required for this project before a session is issued.
+          $('authSuccess').textContent = 'Account created! Check your email to confirm it, then sign in.';
+          authMode='signin'; renderAuthMode();
+        }
+      } else {
+        const { error } = await sb.auth.signInWithPassword({ email, password });
+        if(error) throw error;
+      }
+      // onAuthStateChange picks up the resulting session and moves the app forward.
+    }catch(err){
+      $('authError').textContent = humanizeAuthError(err);
+    }finally{
+      btn.disabled=false; btn.textContent=origLabel;
+    }
+  });
+  $('authResetRequestForm').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const email = $('authResetEmail').value.trim();
+    $('authResetError').textContent=''; $('authResetSuccess').textContent='';
+    if(!email){ $('authResetError').textContent='Please enter your email.'; return; }
+    const btn = $('authResetSubmitBtn'); btn.disabled=true; const origLabel=btn.textContent; btn.innerHTML='<span class="auth-spinner"></span>Sending…';
+    try{
+      const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.href });
+      if(error) throw error;
+      $('authResetSuccess').textContent = 'If that email has an account, a reset link is on its way. Check your inbox.';
+    }catch(err){
+      $('authResetError').textContent = humanizeAuthError(err);
+    }finally{
+      btn.disabled=false; btn.textContent=origLabel;
+    }
+  });
+  $('authNewPasswordForm').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const p1 = $('authNewPassword').value, p2 = $('authNewPasswordConfirm').value;
+    $('authNewPasswordError').textContent=''; $('authNewPasswordSuccess').textContent='';
+    if(p1.length<6){ $('authNewPasswordError').textContent='Use at least 6 characters.'; return; }
+    if(p1!==p2){ $('authNewPasswordError').textContent='Passwords do not match.'; return; }
+    const btn = $('authNewPasswordSubmitBtn'); btn.disabled=true; const origLabel=btn.textContent; btn.innerHTML='<span class="auth-spinner"></span>Saving…';
+    try{
+      const { error } = await sb.auth.updateUser({ password: p1 });
+      if(error) throw error;
+      $('authNewPasswordSuccess').textContent = 'Password updated! Signing you in…';
+      setTimeout(()=>{ $('authNewPasswordForm').style.display='none'; $('authForm').style.display='block'; }, 900);
+    }catch(err){
+      $('authNewPasswordError').textContent = humanizeAuthError(err);
+    }finally{
+      btn.disabled=false; btn.textContent=origLabel;
+    }
+  });
+  function humanizeAuthError(err){
+    const msg = (err && err.message) || 'Something went wrong. Please try again.';
+    if(/invalid login credentials/i.test(msg)) return 'Incorrect email or password.';
+    if(/already registered|already exists/i.test(msg)) return 'An account with this email already exists — try signing in instead.';
+    if(/network/i.test(msg)) return 'Could not reach the server — check your connection.';
+    return msg;
+  }
 
-  async function enterApp(){
+  // ---------- one-time local → cloud migration ----------
+  function readLocalTreesOnce(){
+    try{
+      const raw = localStorage.getItem(DATA_KEY);
+      if(!raw) return [];
+      const parsed = migrateDb(JSON.parse(raw));
+      return parsed.trees || [];
+    }catch(e){ return []; }
+  }
+  async function checkMigration(){
+    const { data: statusRow } = await sb.from('migration_status').select('*').eq('user_id', currentUser.id).maybeSingle();
+    if(statusRow && statusRow.migrated) return { show:false };
+    const localTrees = readLocalTreesOnce();
+    if(localTrees.length===0){
+      // Nothing on this device to offer — quietly mark migration resolved so we never check again.
+      await sb.from('migration_status').upsert({ user_id: currentUser.id, migrated:true, decision:'skipped', migrated_at:new Date().toISOString() }, { onConflict:'user_id' });
+      return { show:false };
+    }
+    const { count } = await sb.from('trees').select('id', { count:'exact', head:true }).eq('user_id', currentUser.id);
+    return { show:true, localTrees, cloudHasTrees: (count||0) > 0 };
+  }
+  function openMigrationModal(info){
+    const n = info.localTrees.length;
+    $('migrationModalSub').textContent = `We found ${n} family tree${n===1?'':'s'} saved on this device, from before you signed in. Import ${n===1?'it':'them'} into your account so it's backed up and available on your other devices too — nothing on this device will be changed or deleted either way.`;
+    $('migrationTreeList').innerHTML = info.localTrees.map(t=>`<div>🌳 ${escapeHtml(t.name||'Untitled tree')} — ${(t.people||[]).length} ${((t.people||[]).length===1?'person':'people')}</div>`).join('');
+    $('migrationError').textContent='';
+    $('migrationSuccess').textContent = info.cloudHasTrees ? 'You already have trees in your account — importing will add these as additional trees; nothing already there will be replaced or removed.' : '';
+    $('migrationModalBackdrop').style.display='flex';
+    $('migrationImportBtn').onclick = ()=>importLocalTrees(info.localTrees);
+    $('migrationSkipBtn').onclick = ()=>skipMigration();
+  }
+  async function importLocalTrees(localTrees){
+    const btn = $('migrationImportBtn'); btn.disabled=true; const origLabel=btn.textContent; btn.innerHTML='<span class="auth-spinner"></span>Importing…';
+    $('migrationError').textContent='';
+    try{
+      const rows = localTrees.map(t=>({ user_id: currentUser.id, local_id: t.id, tree_data: t }));
+      const { error } = await sb.from('trees').upsert(rows, { onConflict: 'user_id,local_id' });
+      if(error) throw error;
+      // Only mark migration complete once the upload is confirmed — if this
+      // line is never reached, the prompt will correctly appear again next
+      // time, and the upsert above is naturally safe to retry (same ids).
+      const { error: statusErr } = await sb.from('migration_status')
+        .upsert({ user_id: currentUser.id, migrated:true, decision:'imported', migrated_at:new Date().toISOString() }, { onConflict:'user_id' });
+      if(statusErr) throw statusErr;
+      $('migrationSuccess').textContent = 'Imported! Opening your trees…';
+      setTimeout(async ()=>{ $('migrationModalBackdrop').style.display='none'; await finishEnteringApp(); }, 700);
+    }catch(err){
+      // Local data is untouched; nothing was marked migrated, so the user can just try again.
+      $('migrationError').textContent = 'Could not import — check your connection and try again. Your data on this device is safe and unchanged.';
+      btn.disabled=false; btn.textContent=origLabel;
+    }
+  }
+  async function skipMigration(){
+    try{ await sb.from('migration_status').upsert({ user_id: currentUser.id, migrated:true, decision:'skipped', migrated_at:new Date().toISOString() }, { onConflict:'user_id' }); }catch(e){}
+    $('migrationModalBackdrop').style.display='none';
+    finishEnteringApp();
+  }
+
+  // ---------- auth state / app entry ----------
+  async function onAuthenticated(user){
+    currentUser = user;
+    $('accountEmail').textContent = user.email || '';
+    const migration = await checkMigration();
+    if(migration.show) openMigrationModal(migration);
+    else await finishEnteringApp();
+  }
+  async function finishEnteringApp(){
     $('lockScreen').style.display='none';
     $('app').style.display='block';
     db = await loadDb();
-    if(!db.settings) db.settings = { sound:true, particles:true, animations:true, music:false, musicVolume:0.15 };
+    if(!db.settings) db.settings = {...DEFAULT_SETTINGS};
     $('toggleSound').checked = db.settings.sound;
     $('toggleParticles').checked = db.settings.particles;
     $('toggleAnimations').checked = db.settings.animations;
@@ -844,18 +1234,76 @@
     renderGuidelines();
     showDashboard();
   }
+  let appEntered = false;
+  async function boot(){
+    const { data: { session } } = await sb.auth.getSession();
+    if(session && session.user){ appEntered=true; await onAuthenticated(session.user); }
+    else showAuthScreen();
+    sb.auth.onAuthStateChange(async (event, session)=>{
+      if(event==='PASSWORD_RECOVERY'){
+        $('authForm').style.display='none';
+        $('authResetRequestForm').style.display='none';
+        $('authNewPasswordForm').style.display='block';
+        $('lockScreen').style.display='flex';
+        $('app').style.display='none';
+        return;
+      }
+      if(event==='SIGNED_OUT'){
+        appEntered=false; currentUser=null; showAuthScreen();
+        return;
+      }
+      if(event==='SIGNED_IN' && session && session.user && !appEntered){
+        appEntered=true;
+        await onAuthenticated(session.user);
+      }
+    });
+  }
 
   // ---------- dashboard (My Family Trees) ----------
+  // The bottom nav's tabs (Tree/Members/Pinned/More) only make sense inside
+  // an open tree, so it's shown only on mobile AND only once a tree is open —
+  // this is set as an inline style, so it must be re-evaluated every time
+  // either condition could have changed (dashboard, tree open, resize),
+  // otherwise a stale inline value permanently overrides the CSS breakpoint.
+  function syncBottomNav(){
+    $('bottomNav').style.display = (window.innerWidth<=820 && currentTreeId) ? 'flex' : 'none';
+  }
   function showDashboard(){
     currentTreeId = null;
     $('viewDashboard').style.display='block';
     $('treeShell').style.display='none';
-    $('bottomNav').style.display = window.innerWidth<=820 ? 'none' : 'none';
+    syncBottomNav();
     renderDashboard();
   }
   function newId(){ return 'x'+Date.now()+Math.floor(Math.random()*1000); }
 
+  function greetingText(){
+    const h = new Date().getHours();
+    if(h<5) return 'Still up? 🌙';
+    if(h<12) return 'Good morning ☀️';
+    if(h<18) return 'Good afternoon 👋';
+    return 'Good evening 🌙';
+  }
+
   function renderDashboard(){
+    $('dashGreeting').textContent = db.trees.length ? greetingText() : 'My Family Trees';
+    const statsEl = $('dashStats');
+    if(db.trees.length){
+      const totalPeople = db.trees.reduce((s,t)=>s+t.people.length,0);
+      const totalPinned = db.trees.reduce((s,t)=>s+t.people.filter(p=>p.pinned).length,0);
+      $('dashHeroSub').textContent = totalPeople===0
+        ? "You've started a tree — add your first family member whenever you're ready."
+        : `${totalPeople} ${totalPeople===1?'person':'people'} documented across ${db.trees.length} family tree${db.trees.length===1?'':'s'}.`;
+      statsEl.style.display='grid';
+      statsEl.innerHTML = `
+        <div class="stat-card"><div class="stat-num">${db.trees.length}</div><div class="stat-label">Family Tree${db.trees.length===1?'':'s'}</div></div>
+        <div class="stat-card"><div class="stat-num">${totalPeople}</div><div class="stat-label">People Added</div></div>
+        <div class="stat-card"><div class="stat-num warm">${totalPinned}</div><div class="stat-label">Pinned</div></div>
+      `;
+    } else {
+      $('dashHeroSub').textContent = 'Every family has a story worth keeping. Start with the first tree below.';
+      statsEl.style.display='none';
+    }
     const grid = $('treesGrid');
     grid.innerHTML='';
     if(db.trees.length===0){
@@ -903,15 +1351,19 @@
     const pinnedGrid = $('dashPinnedGrid');
     pinnedGrid.innerHTML='';
     const pinned = [];
-    db.trees.forEach(t=> t.people.filter(p=>p.pinned).forEach(p=> pinned.push({p,treeName:t.name})));
+    db.trees.forEach(t=> t.people.filter(p=>p.pinned).forEach(p=> pinned.push({p,treeId:t.id,treeName:t.name})));
     if(pinned.length===0){
       pinnedGrid.innerHTML = `<p style="color:var(--text-dim);grid-column:1/-1;">No pinned members yet.</p>`;
     } else {
-      pinned.sort((a,b)=> new Date(b.p.pinnedAt||0)-new Date(a.p.pinnedAt||0)).forEach(({p,treeName})=>{
+      pinned.sort((a,b)=> new Date(b.p.pinnedAt||0)-new Date(a.p.pinnedAt||0)).forEach(({p,treeId,treeName})=>{
         const tile=document.createElement('div');
-        tile.className='member-tile';
+        tile.className='member-tile pinned';
         const photoHtml = p.photo ? `<img class="card-photo" src="${p.photo}">` : `<div class="card-photo-placeholder">N/A</div>`;
         tile.innerHTML = `${photoHtml}<div class="card-name">${escapeHtml(fullName(p))}</div><div class="card-dates">${escapeHtml(treeName)}</div>`;
+        tile.onclick = ()=>{
+          openTree(treeId);
+          afterLayout(()=>{ openPanel(p.id); centerOnPerson(p.id); });
+        };
         pinnedGrid.appendChild(tile);
       });
     }
@@ -955,9 +1407,13 @@
     db.trees.push(copy);
     persistDb(); renderDashboard(); toast('Tree duplicated.');
   }
-  function deleteTree(id){
+  async function deleteTree(id){
     db.trees = db.trees.filter(t=>t.id!==id);
-    persistDb(); renderDashboard(); toast('Tree deleted.');
+    renderDashboard(); toast('Tree deleted.');
+    // Deleted explicitly here (not inferred later from a diff in persistDb) —
+    // upserts only ever add/update rows, so the row has to be removed directly.
+    try{ await sb.from('trees').delete().eq('user_id', currentUser.id).eq('local_id', id); }catch(e){}
+    persistDb();
   }
 
   function openTree(id){
@@ -969,18 +1425,20 @@
     $('settingsTreeDesc').value = t.description||'';
     $('viewDashboard').style.display='none';
     $('treeShell').style.display='grid';
+    syncBottomNav();
     burstParticles(window.innerWidth/2, window.innerHeight*0.35, 16);
     switchView('tree');
-    renderAll();
+    renderTree();
+    // Fit the whole tree in view on open, rather than centering at a fixed
+    // 100% — a tree of 30 people shouldn't open half off-screen.
+    if(peopleArr().length) afterLayout(fitToScreen);
   }
   $('backToTreesBtn').onclick = ()=>{ closePanel(); showDashboard(); };
   $('backBtn').onclick = ()=>{ closePanel(); showDashboard(); };
-  $('lockAppBtn').onclick = ()=>{
+  $('lockAppBtn').onclick = async ()=>{
     closePanel();
-    stopMusic();
-    $('app').style.display='none';
-    $('lockScreen').style.display='flex';
-    initLock();
+    await sb.auth.signOut();
+    // onAuthStateChange's SIGNED_OUT handler takes it from here (shows the auth screen).
   };
   $('moreMenuBtn').onclick = ()=>{
     $('topbarExtras').classList.toggle('open');
@@ -1041,6 +1499,36 @@
       return g;
     }
     people.forEach(p=>gen(p));
+    // A spouse who has no parents recorded (very common — most trees don't
+    // bother entering in-laws' own parents) defaults to generation 0, even
+    // when they married into a much later generation. Left alone, that
+    // silently breaks the spouse line (it's only drawn within the same row)
+    // and visually strands them up with the grandparents. Pull every spouse
+    // pair to the same (higher) generation until it settles. This can only
+    // raise a generation, never lower one, so descendants — already computed
+    // from the max of their parents — stay correctly below their parents.
+    // The same stranding happens to an unmarried or divorced co-parent with
+    // no parents of their own recorded — they share a child, but nothing
+    // married them into that child's generation. A child's parents belong on
+    // the same row above them whether or not they were ever a couple, so
+    // that rule runs alongside the spouse rule below.
+    let stabilizing = true, guard = 0;
+    while(stabilizing && guard++ < 25){
+      stabilizing = false;
+      people.forEach(p=>{
+        (p.spouseIds||[]).forEach(spId=>{
+          if(genCache[spId]===undefined) return;
+          const mx = Math.max(genCache[p.id], genCache[spId]);
+          if(genCache[p.id]!==mx){ genCache[p.id]=mx; stabilizing=true; }
+          if(genCache[spId]!==mx){ genCache[spId]=mx; stabilizing=true; }
+        });
+        const parentIds = (p.parents||[]).filter(pid=>genCache[pid]!==undefined);
+        if(parentIds.length>1){
+          const mx = Math.max(...parentIds.map(pid=>genCache[pid]));
+          parentIds.forEach(pid=>{ if(genCache[pid]!==mx){ genCache[pid]=mx; stabilizing=true; } });
+        }
+      });
+    }
     const maxGen = people.length ? Math.max(...people.map(p=>genCache[p.id])) : 0;
 
     function clusterSpouses(idList){
@@ -1049,9 +1537,9 @@
         if(done.has(id)) return;
         out.push(id); done.add(id);
         const p=personById(id);
-        if(p && p.spouseId && idList.includes(p.spouseId) && !done.has(p.spouseId)){
-          out.push(p.spouseId); done.add(p.spouseId);
-        }
+        (p && p.spouseIds || []).forEach(spId=>{
+          if(idList.includes(spId) && !done.has(spId)){ out.push(spId); done.add(spId); }
+        });
       });
       return out;
     }
@@ -1100,6 +1588,8 @@
     const hasPeople = people.length>0;
     $('treeEmptyState').style.display = hasPeople ? 'none' : 'flex';
     $('treeViewport').style.display = hasPeople ? 'block' : 'none';
+    $('treeLegend').style.display = hasPeople ? 'flex' : 'none';
+    maybeShowFirstRunTip(hasPeople);
     if(!hasPeople) return;
 
     const layout = computeLayout();
@@ -1119,29 +1609,69 @@
     Object.keys(layout.positions).forEach(id=>{ pos[id] = { x: layout.positions[id].x+pad, y: layout.positions[id].y+pad }; });
 
     const svgNS='http://www.w3.org/2000/svg';
-    function edgeLine(x1,y1,x2,y2,r1,r2,opacity){
+    // Two visually distinct line languages, so relationships read at a glance
+    // instead of every connection looking like every other one:
+    //   parent → child: solid blue, glowing, animated flow (generational descent)
+    //   spouse / partner: dashed warm gold, static, with a small union ring at
+    //     the midpoint (a lateral bond, not a line of descent)
+    const searchQ = $('searchInput').value.trim().toLowerCase();
+    // When someone is selected (and search isn't active), highlight their
+    // direct family — parents, spouses, children — and dim everyone else,
+    // so "who is this person connected to" is visible without clicking
+    // through to each one individually.
+    const kinIds = new Set();
+    if(selectedId && !searchQ){
+      const sel = personById(selectedId);
+      if(sel){
+        (sel.parents||[]).forEach(id=>kinIds.add(id));
+        (sel.children||[]).forEach(id=>kinIds.add(id));
+        (sel.spouseIds||[]).forEach(id=>kinIds.add(id));
+      }
+    }
+    const touchesSelection = (...ids) => !!(selectedId && !searchQ && ids.includes(selectedId));
+
+    function edgeLine(x1,y1,x2,y2,r1,r2,kind,emph){
       const dx=x2-x1, dy=y2-y1;
       const dist=Math.hypot(dx,dy)||1;
       const ux=dx/dist, uy=dy/dist;
       const sx=x1+ux*r1, sy=y1+uy*(r1*1.35); // slightly larger vertical offset clears the name label
       const ex=x2-ux*r2, ey=y2-uy*(r2*1.35);
-      const baseOp = opacity==null?0.35:opacity;
+      const dim = selectedId && !searchQ && !emph;
+      if(kind==='spouse'){
+        const glow=document.createElementNS(svgNS,'line');
+        glow.setAttribute('x1',sx);glow.setAttribute('y1',sy);glow.setAttribute('x2',ex);glow.setAttribute('y2',ey);
+        glow.setAttribute('stroke',`rgba(227,165,85,${emph?0.4:(dim?0.08:0.22)})`);glow.setAttribute('stroke-width',emph?'7':'5');
+        glow.setAttribute('filter','url(#lineGlow)');
+        svg.appendChild(glow);
+        const l=document.createElementNS(svgNS,'line');
+        l.setAttribute('x1',sx);l.setAttribute('y1',sy);l.setAttribute('x2',ex);l.setAttribute('y2',ey);
+        l.setAttribute('stroke',`rgba(240,197,133,${emph?0.95:(dim?0.25:0.75)})`);l.setAttribute('stroke-width',emph?'2':'1.4');
+        l.setAttribute('stroke-dasharray','1.5 6');l.setAttribute('stroke-linecap','round');
+        svg.appendChild(l);
+        const mx=(sx+ex)/2, my=(sy+ey)/2;
+        const ring=document.createElementNS(svgNS,'circle');
+        ring.setAttribute('cx',mx);ring.setAttribute('cy',my);ring.setAttribute('r',emph?'5':'4');
+        ring.setAttribute('fill','rgba(10,12,20,0.9)');ring.setAttribute('stroke',`rgba(240,197,133,${dim?0.3:0.9})`);ring.setAttribute('stroke-width','1.4');
+        svg.appendChild(ring);
+        return;
+      }
+      const baseOp = emph?0.75:(dim?0.08:0.35);
       // blurred glow underlay
       const glow=document.createElementNS(svgNS,'line');
       glow.setAttribute('x1',sx);glow.setAttribute('y1',sy);glow.setAttribute('x2',ex);glow.setAttribute('y2',ey);
-      glow.setAttribute('stroke',`rgba(90,150,255,${baseOp*0.55})`);glow.setAttribute('stroke-width','5');
+      glow.setAttribute('stroke',`rgba(90,150,255,${baseOp*0.55})`);glow.setAttribute('stroke-width',emph?'7':'5');
       glow.setAttribute('filter','url(#lineGlow)');
       svg.appendChild(glow);
       // crisp line on top
       const l=document.createElementNS(svgNS,'line');
       l.setAttribute('x1',sx);l.setAttribute('y1',sy);l.setAttribute('x2',ex);l.setAttribute('y2',ey);
-      l.setAttribute('stroke',`rgba(180,210,255,${Math.min(1,baseOp+0.25)})`);l.setAttribute('stroke-width','1.1');
+      l.setAttribute('stroke',`rgba(180,210,255,${dim?0.18:Math.min(1,baseOp+0.25)})`);l.setAttribute('stroke-width',emph?'2':'1.1');
       svg.appendChild(l);
       // animated flowing pulse riding along the line
-      if(db.settings.animations){
+      if(db.settings.animations && !dim){
         const flow=document.createElementNS(svgNS,'line');
         flow.setAttribute('x1',sx);flow.setAttribute('y1',sy);flow.setAttribute('x2',ex);flow.setAttribute('y2',ey);
-        flow.setAttribute('stroke','rgba(220,235,255,0.85)');flow.setAttribute('stroke-width','1.6');
+        flow.setAttribute('stroke','rgba(220,235,255,0.85)');flow.setAttribute('stroke-width',emph?'2.1':'1.6');
         flow.setAttribute('stroke-dasharray','5 26');
         flow.setAttribute('class','flow-line');
         flow.style.animationDuration = (2.4 + Math.random()*1.4).toFixed(2)+'s';
@@ -1155,25 +1685,31 @@
     people.forEach(p=>{
       (p.parents||[]).forEach(pid=>{
         if(!personById(pid) || !pos[pid]) return;
-        edgeLine(pos[pid].x, circleCenterY(pid), pos[p.id].x, circleCenterY(p.id), NODE_R, NODE_R);
+        edgeLine(pos[pid].x, circleCenterY(pid), pos[p.id].x, circleCenterY(p.id), NODE_R, NODE_R, undefined, touchesSelection(p.id, pid));
       });
     });
-    const drawnSpouse = new Set();
+    // Draw one line per unique spouse pair — a person can have more than one
+    // spouse/partner over time (remarriage, blended families), so this is no
+    // longer limited to a single partner per person.
+    const drawnPairs = new Set();
     people.forEach(p=>{
-      if(p.spouseId && !drawnSpouse.has(p.id) && !drawnSpouse.has(p.spouseId) && pos[p.spouseId]){
-        drawnSpouse.add(p.id); drawnSpouse.add(p.spouseId);
-        const a=pos[p.id], b=pos[p.spouseId];
+      (p.spouseIds||[]).forEach(spId=>{
+        if(!pos[spId]) return;
+        const pairKey = [p.id, spId].sort().join('|');
+        if(drawnPairs.has(pairKey)) return;
+        drawnPairs.add(pairKey);
+        const a=pos[p.id], b=pos[spId];
         if(Math.abs(a.y-b.y) < 5){
-          edgeLine(a.x, circleCenterY(p.id), b.x, circleCenterY(p.spouseId), NODE_R, NODE_R, 0.5);
+          edgeLine(a.x, circleCenterY(p.id), b.x, circleCenterY(spId), NODE_R, NODE_R, 'spouse', touchesSelection(p.id, spId));
         }
-      }
+      });
     });
 
-    const searchQ = $('searchInput').value.trim().toLowerCase();
     people.forEach(p=>{
       const p0 = pos[p.id];
       const node = document.createElement('div');
       node.className='person-node';
+      if(p.pinned) node.classList.add('pinned');
       if(db.settings.animations){
         node.classList.add('node-float');
         node.style.animationDuration = (3.2 + (Math.random()*1.6)).toFixed(2)+'s';
@@ -1185,13 +1721,16 @@
       if(searchQ){
         const match = fullName(p).toLowerCase().includes(searchQ) || (p.nickname||'').toLowerCase().includes(searchQ);
         node.classList.add(match?'highlight':'dimmed');
+      } else if(selectedId){
+        if(kinIds.has(p.id)) node.classList.add('kin');
+        else if(p.id!==selectedId) node.classList.add('kin-dim');
       }
       node.style.left=(p0.x-CARD_W/2)+'px';
       node.style.top=(p0.y-CARD_H/2)+'px';
       const photoHtml = p.photo ? `<img class="node-photo" src="${p.photo}">` : `<div class="node-photo-placeholder">N/A</div>`;
       const bYear = p.birthDate ? new Date(p.birthDate).getFullYear() : '?';
       const dYear = p.living ? 'Living' : (p.deathDate ? new Date(p.deathDate).getFullYear() : 'N/A');
-      node.innerHTML = `<div style="position:relative;">${p.pinned?'<div class="node-pin">📌</div>':''}${photoHtml}</div><div class="node-name">${escapeHtml(fullName(p))}</div><div class="node-dates">${bYear} – ${dYear}</div>`;
+      node.innerHTML = `<div style="position:relative;">${p.pinned?'<div class="node-pin">📌</div>':''}${photoHtml}</div><div class="node-label"><div class="node-name">${escapeHtml(fullName(p))}</div><div class="node-dates">${bYear} – ${dYear}</div></div>`;
       node.addEventListener('click', (e)=>{ e.stopPropagation(); openPanel(p.id); });
 
       // Hover (desktop) / long-press (mobile) quick-info popup
@@ -1214,7 +1753,19 @@
       }, {passive:true});
       node.addEventListener('touchend', (e)=>{
         clearTimeout(lpTimer);
-        if(lpFired){ hideQuickInfo(); e.preventDefault(); }
+        if(lpFired){
+          // Long-press already showed quick info — end the gesture here and
+          // suppress the browser's synthetic click so the panel doesn't also pop open.
+          hideQuickInfo();
+          e.preventDefault();
+        } else {
+          // A plain tap. Open the panel directly and suppress the browser's
+          // compatibility mouse-event sequence (mouseenter → click) that would
+          // otherwise follow — on a touchscreen that sequence just flashes the
+          // hover quick-info card open and shut right before the panel appears.
+          e.preventDefault();
+          openPanel(p.id);
+        }
         lpFired=false;
       }, {passive:false});
       node.addEventListener('touchcancel', ()=>{
@@ -1230,6 +1781,13 @@
   }
 
   function showQuickInfo(p, x, y){
+    // Selecting a node re-renders the tree (for kin highlighting), which recreates
+    // the DOM element under a stationary cursor — the browser then fires a fresh
+    // 'mouseenter' on the new element even though the user didn't move the mouse,
+    // which would otherwise pop this card back open right over the side panel that
+    // just opened. The full panel already shows everything this card would, so skip
+    // it entirely whenever the panel is open.
+    if($('sidePanel').classList.contains('open')) return;
     const el = $('quickInfo');
     const photoHtml = p.photo ? `<img class="qi-photo" src="${p.photo}">` : `<div class="qi-photo-placeholder">N/A</div>`;
     el.innerHTML = `
@@ -1286,6 +1844,17 @@
     requestAnimationFrame(()=> requestAnimationFrame(fn));
   }
   function resetView(){ zoom=1; centerTree(); }
+  // Scales the whole tree down (or up, capped at 100%) so it fits entirely
+  // on screen in one glance — the thing "Reset" doesn't do for a large tree.
+  function fitToScreen(){
+    const vp = $('treeViewport'); const inner = $('treeInner');
+    const vw = vp.clientWidth || window.innerWidth;
+    const vh = vp.clientHeight || (window.innerHeight - 56);
+    const iw = parseFloat(inner.style.width)||vw, ih = parseFloat(inner.style.height)||vh;
+    const scale = Math.min((vw*0.92)/iw, (vh*0.92)/ih, 1);
+    zoom = Math.max(0.4, Math.min(2, scale));
+    centerTree();
+  }
 
   $('zoomInBtn').onclick = ()=>{ zoom=Math.min(2, zoom+0.1); applyTransform(); };
   $('zoomOutBtn').onclick = ()=>{ zoom=Math.max(0.4, zoom-0.1); applyTransform(); };
@@ -1293,6 +1862,7 @@
     $('topbarExtras').classList.remove('open');
     $('topbarExtrasBackdrop').classList.remove('open');
   }
+  $('fitBtn').onclick = ()=>{ fitToScreen(); closeTopbarExtras(); };
   $('centerBtn').onclick = ()=>{ centerTree(); closeTopbarExtras(); };
   $('resetViewBtn').onclick = ()=>{ resetView(); closeTopbarExtras(); };
   $('fullscreenBtn').onclick = ()=>{
@@ -1315,6 +1885,7 @@
   const viewport = $('treeViewport');
   viewport.addEventListener('mousedown', (e)=>{
     if(e.target.closest('.person-node')) return;
+    dismissFirstRunTip();
     dragging=true; viewport.classList.add('dragging');
     dragStart={x:e.clientX,y:e.clientY}; panStart={x:panX,y:panY};
   });
@@ -1333,6 +1904,7 @@
   function touchDist(t1,t2){ return Math.hypot(t1.clientX-t2.clientX, t1.clientY-t2.clientY); }
   viewport.addEventListener('touchstart', (e)=>{
     if(e.target.closest('.person-node')) return;
+    dismissFirstRunTip();
     if(e.touches.length===1){
       dragging=true; dragStart={x:e.touches[0].clientX,y:e.touches[0].clientY}; panStart={x:panX,y:panY};
     } else if(e.touches.length===2){
@@ -1360,6 +1932,10 @@
     selectedId = id;
     const p = personById(id);
     if(!p) return;
+    // A mouse click fires 'mouseenter' just before 'click', so the small
+    // hover quick-info card would otherwise still be sitting on screen,
+    // overlapping the full panel that just opened with the same information.
+    hideQuickInfo();
     sfx.open();
     $('panelPhoto').style.display = p.photo ? 'block':'none';
     $('panelPhotoPlaceholder').style.display = p.photo ? 'none':'flex';
@@ -1371,9 +1947,9 @@
     $('panelDeath').textContent = p.living ? 'Living' : fmtDate(p.deathDate);
     $('panelNotes').textContent = p.notes ? p.notes : '';
     $('addParentBtn').disabled = (p.parents||[]).length>=2;
-    $('addSpouseBtn').textContent = p.spouseId ? '💍 Remove Spouse/Partner' : '💍 Add Spouse/Partner';
     $('pinToggleBtn').textContent = p.pinned ? '📌 Unpin Member' : '📌 Pin Member';
     $('deleteConfirmBox').style.display='none';
+    renderPanelRelationships(p);
     $('sidePanel').classList.add('open');
     if(currentView==='tree') renderTree();
   }
@@ -1383,20 +1959,78 @@
   }
   $('panelCloseBtn').onclick = closePanel;
 
-  $('addChildBtn').onclick = ()=>{ pendingRelation={type:'child',anchorId:selectedId}; openPersonModal(); };
-  $('addParentBtn').onclick = ()=>{ pendingRelation={type:'parent',anchorId:selectedId}; openPersonModal(); };
-  $('addSiblingBtn').onclick = ()=>{ pendingRelation={type:'sibling',anchorId:selectedId}; openPersonModal(); };
-  $('addSpouseBtn').onclick = async ()=>{
-    const p = personById(selectedId);
-    if(p.spouseId){
-      const sp = personById(p.spouseId);
-      if(sp) sp.spouseId=null;
-      p.spouseId=null; touchTree(); scheduleSave();
-      openPanel(selectedId); renderTree(); toast('Spouse link removed.');
-    } else {
-      pendingRelation={type:'spouse',anchorId:selectedId}; openPersonModal();
-    }
-  };
+  // ---------- relationships list in the panel (view, navigate, unlink) ----------
+  function relSection(title, list){
+    if(list.length===0) return `<div class="rel-section"><h4>${escapeHtml(title)}</h4><div class="rel-empty">None yet</div></div>`;
+    const rows = list.map(x=>`
+      <div class="rel-chip" data-id="${x.id}">
+        <span class="rel-name">${x.pinned?'📌 ':''}${escapeHtml(fullName(x))}</span>
+        <button class="rel-x" type="button" data-unlink="${x.id}" title="Remove this link">✕</button>
+      </div>`).join('');
+    return `<div class="rel-section"><h4>${escapeHtml(title)}</h4>${rows}</div>`;
+  }
+  function renderPanelRelationships(p){
+    const parents = (p.parents||[]).map(personById).filter(Boolean);
+    const spouses = (p.spouseIds||[]).map(personById).filter(Boolean);
+    const children = (p.children||[]).map(personById).filter(Boolean);
+    const el = $('panelRelations');
+    el.innerHTML =
+      relSection('Parents', parents) +
+      relSection(spouses.length>1 ? 'Spouses / Partners' : 'Spouse / Partner', spouses) +
+      relSection('Children', children);
+    el.querySelectorAll('.rel-chip').forEach(chip=>{
+      chip.addEventListener('click', (e)=>{
+        if(e.target.closest('.rel-x')) return;
+        const id = chip.dataset.id;
+        switchView('tree'); renderTree(); openPanel(id); afterLayout(()=>centerOnPerson(id));
+      });
+    });
+    el.querySelectorAll('.rel-x').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{ e.stopPropagation(); unlinkRelation(p.id, btn.dataset.unlink); });
+    });
+  }
+  function unlinkRelation(anchorId, otherId){
+    const anchor = personById(anchorId), other = personById(otherId);
+    if(!anchor || !other) return;
+    let label='', undoFn=null;
+    if((anchor.parents||[]).includes(otherId)){
+      anchor.parents = anchor.parents.filter(x=>x!==otherId);
+      other.children = (other.children||[]).filter(x=>x!==anchorId);
+      label = `Removed ${fullName(other)} as a parent of ${fullName(anchor)}.`;
+      undoFn = ()=>{
+        anchor.parents.push(otherId);
+        other.children = other.children||[]; other.children.push(anchorId);
+        touchTree(); persistDb(); renderAll(); if(selectedId===anchorId) openPanel(anchorId);
+      };
+    } else if((anchor.children||[]).includes(otherId)){
+      anchor.children = anchor.children.filter(x=>x!==otherId);
+      other.parents = (other.parents||[]).filter(x=>x!==anchorId);
+      label = `Removed ${fullName(other)} as a child of ${fullName(anchor)}.`;
+      undoFn = ()=>{
+        anchor.children.push(otherId);
+        other.parents = other.parents||[]; other.parents.push(anchorId);
+        touchTree(); persistDb(); renderAll(); if(selectedId===anchorId) openPanel(anchorId);
+      };
+    } else if((anchor.spouseIds||[]).includes(otherId)){
+      anchor.spouseIds = anchor.spouseIds.filter(x=>x!==otherId);
+      other.spouseIds = (other.spouseIds||[]).filter(x=>x!==anchorId);
+      label = `Removed the link between ${fullName(anchor)} and ${fullName(other)}.`;
+      undoFn = ()=>{
+        anchor.spouseIds.push(otherId); other.spouseIds=other.spouseIds||[]; other.spouseIds.push(anchorId);
+        touchTree(); persistDb(); renderAll(); if(selectedId===anchorId) openPanel(anchorId);
+      };
+    } else return;
+    touchTree(); persistDb();
+    renderAll();
+    if(selectedId===anchorId) openPanel(anchorId);
+    sfx.del();
+    toastWithUndo(label, undoFn);
+  }
+
+  $('addChildBtn').onclick = ()=> openRelationPicker('child', selectedId);
+  $('addParentBtn').onclick = ()=> openRelationPicker('parent', selectedId);
+  $('addSiblingBtn').onclick = ()=> openRelationPicker('sibling', selectedId);
+  $('addSpouseBtn').onclick = ()=> openRelationPicker('spouse', selectedId);
   $('pinToggleBtn').onclick = ()=>{
     const p = personById(selectedId);
     p.pinned = !p.pinned;
@@ -1412,14 +2046,24 @@
   $('deleteYesBtn').onclick = async ()=>{
     const id=selectedId;
     const t = tree();
+    const removedName = fullName(personById(id));
+    // Full snapshot, not a partial field-by-field undo — deleting a person
+    // touches every other person who referenced them, and restoring exactly
+    // what was there beats trying to re-derive it.
+    const snapshot = JSON.parse(JSON.stringify(t.people));
     t.people = t.people.filter(p=>p.id!==id);
     t.people.forEach(p=>{
       p.parents = (p.parents||[]).filter(pid=>pid!==id);
       p.children = (p.children||[]).filter(cid=>cid!==id);
-      if(p.spouseId===id) p.spouseId=null;
+      p.spouseIds = (p.spouseIds||[]).filter(sid=>sid!==id);
     });
     touchTree(); await persistDb(); sfx.del();
-    closePanel(); renderAll(); toast('Person removed.');
+    closePanel(); renderAll();
+    toastWithUndo(`Removed ${removedName}.`, ()=>{
+      t.people = snapshot;
+      touchTree(); persistDb(); renderAll();
+      if(currentTreeId===t.id){ selectedId=id; openPanel(id); }
+    });
   };
 
   // ---------- person modal ----------
@@ -1440,6 +2084,145 @@
   }
   $('fLiving').addEventListener('change', toggleDeathField);
 
+  // ---------- relation picker: new person vs. link an existing one ----------
+  // True if ancestorId is somewhere in descendantId's chain of parents.
+  function isAncestorOf(ancestorId, descendantId, seen){
+    seen = seen || new Set();
+    if(seen.has(descendantId)) return false;
+    seen.add(descendantId);
+    const p = personById(descendantId);
+    if(!p) return false;
+    for(const pid of (p.parents||[])){
+      if(pid===ancestorId) return true;
+      if(isAncestorOf(ancestorId, pid, seen)) return true;
+    }
+    return false;
+  }
+  function arraysSameSet(a,b){
+    if(a.length!==b.length) return false;
+    const sa=a.slice().sort(), sb=b.slice().sort();
+    return sa.every((v,i)=>v===sb[i]);
+  }
+  function openRelationPicker(type, anchorId){
+    const anchor = personById(anchorId);
+    if(!anchor) return;
+    pendingRelation = { type, anchorId, coParentId:null };
+    const labels = {child:'Child', parent:'Parent', sibling:'Sibling', spouse:'Spouse / Partner'};
+    $('relationPickerTitle').textContent = 'Add '+labels[type];
+    $('relationPickerSub').textContent = `For ${fullName(anchor)}`;
+    $('relationPickerChoice').style.display='flex';
+    $('relationExistingPicker').style.display='none';
+    $('relationSearchInput').value='';
+    if(type==='child'){
+      const spouses = (anchor.spouseIds||[]).map(personById).filter(Boolean);
+      if(spouses.length){
+        $('coParentField').style.display='block';
+        $('coParentSelect').innerHTML = '<option value="">No second parent / N/A</option>' +
+          spouses.map(sp=>`<option value="${sp.id}">${escapeHtml(fullName(sp))}</option>`).join('');
+        $('coParentSelect').value = spouses[0].id;
+      } else {
+        $('coParentField').style.display='none';
+        $('coParentSelect').innerHTML='';
+      }
+    } else {
+      $('coParentField').style.display='none';
+    }
+    $('relationPickerBackdrop').style.display='flex';
+  }
+  function relationCandidates(type, anchorId){
+    const anchor = personById(anchorId);
+    let list = peopleArr().filter(p=>p.id!==anchorId);
+    if(type==='parent'){
+      list = list.filter(p=> !(anchor.parents||[]).includes(p.id) && !isAncestorOf(anchorId, p.id));
+    } else if(type==='child'){
+      list = list.filter(p=> !(anchor.children||[]).includes(p.id) && (p.parents||[]).length<2 && !isAncestorOf(p.id, anchorId));
+    } else if(type==='spouse'){
+      list = list.filter(p=> !(anchor.spouseIds||[]).includes(p.id));
+    } else if(type==='sibling'){
+      list = list.filter(p=>{
+        const alreadySibling = (anchor.parents||[]).some(pid=>{ const par=personById(pid); return par && (par.children||[]).includes(p.id); });
+        if(alreadySibling) return false;
+        return (p.parents||[]).length===0 || arraysSameSet(p.parents||[], anchor.parents||[]);
+      });
+    }
+    return list;
+  }
+  function renderRelationCandidates(){
+    const { type, anchorId } = pendingRelation;
+    const q = $('relationSearchInput').value.trim().toLowerCase();
+    let candidates = relationCandidates(type, anchorId);
+    if(q) candidates = candidates.filter(p=> fullName(p).toLowerCase().includes(q));
+    const listEl = $('relationCandidateList');
+    if(candidates.length===0){
+      listEl.innerHTML = `<p style="color:var(--text-dim);font-size:0.82rem;padding:6px 0;">No eligible existing members for this relation${type==='sibling'?' — if this is a half-sibling, use "Add Child" on the shared parent instead.':'.'}</p>`;
+      return;
+    }
+    listEl.innerHTML='';
+    candidates.forEach(p=>{
+      const row=document.createElement('button');
+      row.type='button'; row.className='action-btn';
+      const photoHtml = p.photo ? `<img class="cand-photo" src="${p.photo}">` : `<span class="cand-photo-ph">N/A</span>`;
+      row.innerHTML = `<span class="candidate-row">${photoHtml}<span>${escapeHtml(fullName(p))}</span></span>`;
+      row.onclick = ()=>{
+        if(pendingRelation.type==='child') pendingRelation.coParentId = $('coParentSelect').value || null;
+        linkExistingPerson(pendingRelation.type, pendingRelation.anchorId, p.id);
+      };
+      listEl.appendChild(row);
+    });
+  }
+  function linkExistingPerson(type, anchorId, otherId){
+    const anchor = personById(anchorId), other = personById(otherId);
+    if(!anchor || !other) return;
+    if(type==='parent'){
+      anchor.parents = anchor.parents||[];
+      if(anchor.parents.length>=2){ toast('This person already has two parents.'); return; }
+      anchor.parents.push(otherId);
+      other.children = other.children||[]; if(!other.children.includes(anchorId)) other.children.push(anchorId);
+    } else if(type==='child'){
+      other.parents = other.parents||[];
+      if(other.parents.length>=2){ toast('That person already has two parents.'); return; }
+      other.parents.push(anchorId);
+      anchor.children = anchor.children||[]; if(!anchor.children.includes(otherId)) anchor.children.push(otherId);
+      const coId = pendingRelation && pendingRelation.coParentId;
+      if(coId && other.parents.length<2 && !other.parents.includes(coId)){
+        other.parents.push(coId);
+        const sp = personById(coId);
+        if(sp){ sp.children = sp.children||[]; if(!sp.children.includes(otherId)) sp.children.push(otherId); }
+      }
+    } else if(type==='sibling'){
+      other.parents = (anchor.parents||[]).slice();
+      (anchor.parents||[]).forEach(pid=>{ const par=personById(pid); if(par){ par.children=par.children||[]; if(!par.children.includes(otherId)) par.children.push(otherId); } });
+    } else if(type==='spouse'){
+      anchor.spouseIds = anchor.spouseIds||[]; other.spouseIds = other.spouseIds||[];
+      if(!anchor.spouseIds.includes(otherId)) anchor.spouseIds.push(otherId);
+      if(!other.spouseIds.includes(anchorId)) other.spouseIds.push(anchorId);
+    } else return;
+    touchTree(); persistDb();
+    $('relationPickerBackdrop').style.display='none';
+    pendingRelation=null;
+    renderAll();
+    openPanel(anchorId);
+    sfx.add();
+    toast('Linked.');
+  }
+  $('relationNewBtn').onclick = ()=>{
+    if(pendingRelation.type==='child') pendingRelation.coParentId = $('coParentSelect').value || null;
+    $('relationPickerBackdrop').style.display='none';
+    openPersonModal();
+  };
+  $('relationExistingBtn').onclick = ()=>{
+    $('relationPickerChoice').style.display='none';
+    $('relationExistingPicker').style.display='block';
+    renderRelationCandidates();
+  };
+  $('relationBackBtn').onclick = ()=>{
+    $('relationExistingPicker').style.display='none';
+    $('relationPickerChoice').style.display='flex';
+  };
+  $('relationPickerCancelBtn').onclick = ()=>{ $('relationPickerBackdrop').style.display='none'; pendingRelation=null; };
+  $('relationPickerBackdrop').addEventListener('click', e=>{ if(e.target.id==='relationPickerBackdrop'){ $('relationPickerBackdrop').style.display='none'; pendingRelation=null; } });
+  $('relationSearchInput').addEventListener('input', renderRelationCandidates);
+
   function openPersonModal(personId){
     editingId = personId || null;
     const p = editingId ? personById(editingId) : null;
@@ -1448,7 +2231,12 @@
     else if(pendingRelation){
       const anchor = personById(pendingRelation.anchorId);
       const nm = anchor ? fullName(anchor) : 'this person';
-      const labels={child:'Adding as: Child of '+nm, parent:'Adding as: Parent of '+nm, sibling:'Adding as: Sibling of '+nm, spouse:'Adding as: Spouse/Partner of '+nm};
+      let childLabel = 'Adding as: Child of '+nm;
+      if(pendingRelation.type==='child' && pendingRelation.coParentId){
+        const co = personById(pendingRelation.coParentId);
+        if(co) childLabel += ' and '+fullName(co);
+      }
+      const labels={child:childLabel, parent:'Adding as: Parent of '+nm, sibling:'Adding as: Sibling of '+nm, spouse:'Adding as: Spouse/Partner of '+nm};
       sub = labels[pendingRelation.type] || '';
     } else {
       title = 'Add Family Member';
@@ -1524,7 +2312,7 @@
 
     const id = newPersonId();
     const person = Object.assign({
-      id, parents:[], children:[], spouseId:null, pinned:false, pinnedAt:null,
+      id, parents:[], children:[], spouseIds:[], pinned:false, pinnedAt:null,
       createdAt:new Date().toISOString(), updatedAt:new Date().toISOString(),
       photo: (pendingPhoto && pendingPhoto!=='REMOVE') ? pendingPhoto : null
     }, data);
@@ -1532,19 +2320,27 @@
     if(pendingRelation){
       const anchor = personById(pendingRelation.anchorId);
       if(pendingRelation.type==='child'){
+        // Co-parent is explicit (chosen in the relation picker when the anchor
+        // has a spouse/partner) rather than guessed, so blended families with
+        // more than one partner, or kids with only one known parent, work correctly.
         const parentIds = [anchor.id];
-        if(anchor.spouseId) parentIds.push(anchor.spouseId);
+        if(pendingRelation.coParentId) parentIds.push(pendingRelation.coParentId);
         person.parents = parentIds;
         parentIds.forEach(pid=>{ const par=personById(pid); if(par){ par.children=par.children||[]; par.children.push(id); } });
       } else if(pendingRelation.type==='parent'){
         anchor.parents = anchor.parents || [];
         if(anchor.parents.length<2) anchor.parents.push(id);
         person.children = [anchor.id];
+        // Two parents of the same child are NOT assumed to be a couple — that
+        // would misrepresent divorced, unmarried, or unrelated co-parents.
+        // Spouse links are only ever created explicitly via "Add Spouse/Partner".
       } else if(pendingRelation.type==='sibling'){
         person.parents = (anchor.parents||[]).slice();
         person.parents.forEach(pid=>{ const par=personById(pid); if(par){ par.children=par.children||[]; par.children.push(id); } });
       } else if(pendingRelation.type==='spouse'){
-        person.spouseId = anchor.id; anchor.spouseId = id;
+        person.spouseIds = [anchor.id];
+        anchor.spouseIds = anchor.spouseIds || [];
+        anchor.spouseIds.push(id);
       }
     }
 
@@ -1567,7 +2363,7 @@
       return;
     }
     list.forEach(p=>{
-      const tile=document.createElement('div'); tile.className='member-tile';
+      const tile=document.createElement('div'); tile.className='member-tile'+(p.pinned?' pinned':'');
       const photoHtml = p.photo ? `<img class="card-photo" src="${p.photo}">` : `<div class="card-photo-placeholder">N/A</div>`;
       tile.innerHTML = `${p.pinned?'<div class="pin-flag">📌</div>':''}${photoHtml}<div class="card-name">${escapeHtml(fullName(p))}</div><div class="card-dates">${escapeHtml(fmtDate(p.birthDate))}</div>`;
       tile.onclick = ()=>{ switchView('tree'); renderTree(); openPanel(p.id); afterLayout(()=>centerOnPerson(p.id)); };
@@ -1582,7 +2378,7 @@
       return;
     }
     list.forEach(p=>{
-      const tile=document.createElement('div'); tile.className='member-tile';
+      const tile=document.createElement('div'); tile.className='member-tile pinned';
       const photoHtml = p.photo ? `<img class="card-photo" src="${p.photo}">` : `<div class="card-photo-placeholder">N/A</div>`;
       tile.innerHTML = `${photoHtml}<div class="card-name">${escapeHtml(fullName(p))}</div><div class="card-dates">Pinned ${escapeHtml(fmtRelative(p.pinnedAt))}</div>`;
       tile.onclick = ()=>{ switchView('tree'); renderTree(); openPanel(p.id); afterLayout(()=>centerOnPerson(p.id)); };
@@ -1594,13 +2390,15 @@
   function renderGuidelines(){
     const items = [
       ['🌳 Family Tree','View and organize your family members visually, connected by generation.'],
-      ['➕ Add Child','Adds a child underneath the selected family member (linked to both parents if they have a spouse).'],
-      ['⬆️ Add Parent','Adds a parent above the selected member. Each person can have up to two parents.'],
-      ['↔️ Add Sibling','Adds a sibling beside the selected member, sharing the same parents.'],
-      ['💍 Add Spouse/Partner','Connects a spouse or partner to the selected member.'],
+      ['➕ Add Child','Adds a child under the selected member. If they have more than one spouse/partner, you choose who the other parent is (or none).'],
+      ['⬆️ Add Parent','Adds a parent above the selected member. Each person can have up to two parents — they are not assumed to be a couple unless you link them as spouses too.'],
+      ['↔️ Add Sibling','Adds a full sibling beside the selected member, sharing the same parents. For a half-sibling who only shares one parent, use "Add Child" on that shared parent instead.'],
+      ['💍 Add Spouse/Partner','Connects a spouse or partner. A person can have more than one over time — remarriages and blended families are fully supported.'],
+      ['🔗 Link existing person','Every "Add" button also lets you link someone already in this tree instead of creating a duplicate — useful whenever a relative already exists elsewhere in the family.'],
+      ['✕ Unlink','Each parent, spouse, and child listed on a member\'s panel has a small ✕ to remove just that link, without deleting the person. Mistakes can be undone from the confirmation toast.'],
       ['📌 Pin','Saves an important family member to your Pinned list for quick access.'],
       ['✏️ Edit Member',"Change a family member's information, including their photo."],
-      ['🗑️ Delete','Removes a family member from the tree and cleans up their connections.'],
+      ['🗑️ Delete','Removes a family member entirely from the tree and cleans up their connections.'],
       ['🔍 Search','Find a family member by name — matches are highlighted and centered.'],
       ['🎯 Center / Reset','Centers the tree on screen, or resets zoom and position.'],
       ['🔎 Zoom','Zoom in or out using the buttons, your scroll wheel, or pinch on mobile.'],
@@ -1624,13 +2422,24 @@
     scheduleSave();
   });
   $('changePassBtn').onclick = async ()=>{
-    const a=$('newPassInput').value.trim(), b=$('confirmPassInput').value.trim();
-    if(a.length<3){ $('changePassError').textContent='Use at least 3 characters.'; return; }
-    if(a!==b){ $('changePassError').textContent='Passcodes do not match.'; return; }
-    passcode=a; await savePass(a);
-    $('newPassInput').value=''; $('confirmPassInput').value=''; $('changePassError').textContent='';
-    toast('Passcode updated.');
+    const a=$('newPassInput').value, b=$('confirmPassInput').value;
+    $('changePassError').textContent=''; $('changePassSuccess').textContent='';
+    if(a.length<6){ $('changePassError').textContent='Use at least 6 characters.'; return; }
+    if(a!==b){ $('changePassError').textContent='Passwords do not match.'; return; }
+    const btn = $('changePassBtn'); btn.disabled=true; const origLabel=btn.textContent; btn.textContent='Saving…';
+    try{
+      const { error } = await sb.auth.updateUser({ password: a });
+      if(error) throw error;
+      $('newPassInput').value=''; $('confirmPassInput').value='';
+      $('changePassSuccess').textContent = 'Password updated.';
+      toast('Password updated.');
+    }catch(err){
+      $('changePassError').textContent = humanizeAuthError(err);
+    }finally{
+      btn.disabled=false; btn.textContent=origLabel;
+    }
   };
+  $('signOutBtn').onclick = async ()=>{ await sb.auth.signOut(); };
   $('clearDataBtn').onclick = ()=>{ $('clearConfirmBox').style.display='block'; };
   $('clearNoBtn').onclick = ()=>{ $('clearConfirmBox').style.display='none'; };
   $('clearYesBtn').onclick = async ()=>{
@@ -1646,7 +2455,10 @@
     if(currentView==='pinned') renderPinned();
   }
 
-  window.addEventListener('resize', ()=>{ if(currentTreeId && currentView==='tree' && peopleArr().length) centerTree(); });
+  window.addEventListener('resize', ()=>{
+    syncBottomNav();
+    if(currentTreeId && currentView==='tree' && peopleArr().length) centerTree();
+  });
 
   if('serviceWorker' in navigator){
     window.addEventListener('load', ()=>{
@@ -1661,7 +2473,16 @@
     }
   }, {passive:true});
 
-  initLock();
+  if(sdkLoadFailed){
+    // The Supabase library itself never loaded — show this plainly instead of
+    // a sign-in form that looks normal but can never actually submit.
+    $('authForm').style.display='none';
+    $('authTitle').textContent = 'Could not load';
+    $('authSub').textContent = '';
+    $('authError').textContent = "Couldn't load a required library — check your internet connection and reload this page. If it keeps happening, try disabling any ad blocker or content blocker for this site.";
+  } else {
+    boot();
+  }
 })();
 </script>
 </body>
