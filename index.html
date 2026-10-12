@@ -514,6 +514,7 @@
   <div class="view-panel active" id="viewDashboard" style="position:absolute;inset:0;">
     <div class="view-scroll">
       <div class="dash-hero" id="dashHero">
+        <button class="icon-btn" id="dashSignOutBtn" title="Sign out" style="position:absolute;top:18px;right:18px;z-index:2;">🔒</button>
         <h2 class="section-title" id="dashGreeting" style="margin-bottom:4px;">My Family Trees</h2>
         <p class="dash-hero-sub" id="dashHeroSub"></p>
         <div class="stats-grid" id="dashStats" style="display:none;"></div>
@@ -1446,6 +1447,10 @@
     await sb.auth.signOut();
     // onAuthStateChange's SIGNED_OUT handler takes it from here (shows the auth screen).
   };
+  // Same sign-out, reachable from the dashboard itself — the topbar's version
+  // only exists inside an open tree, so anyone with zero trees (or who hasn't
+  // opened one yet) would otherwise have no way to sign out at all.
+  $('dashSignOutBtn').onclick = async ()=>{ await sb.auth.signOut(); };
   $('moreMenuBtn').onclick = ()=>{
     $('topbarExtras').classList.toggle('open');
     $('topbarExtrasBackdrop').classList.toggle('open');
