@@ -375,7 +375,7 @@
 
   /* Modal */
   .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(2px);
-    align-items:center;justify-content:center;z-index:150;padding:16px;}
+    align-items:center;justify-content:center;z-index:350;padding:16px;} /* above #lockScreen (300) so a modal opened during/after auth is never buried invisibly behind it */
   .modal{background:linear-gradient(180deg, var(--panel-2), var(--panel));border:1px solid var(--border-2);
     border-radius:16px;padding:24px;width:100%;max-width:440px;max-height:88vh;overflow-y:auto;
     box-shadow:0 30px 80px rgba(0,0,0,0.7);animation:modalIn .2s ease;}
@@ -1215,6 +1215,12 @@
   async function onAuthenticated(user){
     currentUser = user;
     $('accountEmail').textContent = user.email || '';
+    // Hide the lock screen now, before deciding what comes next — it sits at
+    // a higher stacking layer than the migration modal, so leaving it up
+    // while that modal opens would bury the modal invisibly behind it,
+    // leaving the person stuck looking at an unchanged sign-in screen with
+    // no sign anything happened.
+    $('lockScreen').style.display='none';
     const migration = await checkMigration();
     if(migration.show) openMigrationModal(migration);
     else await finishEnteringApp();
