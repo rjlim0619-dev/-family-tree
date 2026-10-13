@@ -1655,6 +1655,38 @@
   .pz-who{display:flex;justify-content:center;margin-top:10px;flex-shrink:0;} .pz-who-av{width:50px;height:50px;border-radius:50%;margin:0 -7px;border:2px solid var(--cy);background:#07162a;color:var(--cy-2);display:inline-flex;align-items:center;justify-content:center;overflow:hidden;font-family:var(--font-display);font-size:1rem;font-weight:600;box-shadow:0 0 16px var(--cy-glow);} .pz-who-av img{width:100%;height:100%;object-fit:cover;} .pz-who-more{background:rgba(39,230,255,.14);font-size:.82rem;}
   .pz-who-names{margin-top:8px;font-size:.78rem;color:var(--text);text-align:center;max-width:90%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .pz-bigcount{margin-top:auto;} .pz-bigcount b{font-size:1.8rem;} .pz-who-names{flex-shrink:0;}
+
+  /* ===== PERSON MODAL (holographic) ===== */
+  #personModalBackdrop{background:radial-gradient(circle at 50% 30%,rgba(10,40,70,.7),rgba(0,0,0,.82));backdrop-filter:blur(4px);}
+  .modal.pm{position:relative;width:min(calc(100vw - 24px),520px);border:1px solid var(--cy);box-shadow:0 0 0 1px rgba(39,230,255,.15),0 0 38px rgba(39,230,255,.22),0 30px 80px rgba(0,0,0,.75);border-radius:18px;background:linear-gradient(rgba(39,230,255,.035) 1px,transparent 1px) 0 0/100% 22px,linear-gradient(90deg,rgba(39,230,255,.035) 1px,transparent 1px) 0 0/22px 100%,linear-gradient(180deg,#0b1a2e,#060f1c);}
+  .pm-scan{position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--cy),transparent);opacity:.7;animation:pmScan 4s linear infinite;pointer-events:none;z-index:3;} @keyframes pmScan{0%{top:0;opacity:0}10%{opacity:.8}90%{opacity:.8}100%{top:100%;opacity:0}}
+  .pm .modal-header{padding:18px 12px 8px 22px;} .pm h2{font-size:1.4rem;margin:3px 0 2px;} .pm .modal-close{color:var(--cy-2);border:1px solid var(--cy-line);background:var(--cy-faint);} .pm .modal-close:hover{border-color:var(--cy);box-shadow:0 0 14px var(--cy-glow);}
+  .pm-meter{padding:0 22px 12px;} .pm-meter-t{display:flex;justify-content:space-between;font-size:.58rem;letter-spacing:.28em;color:var(--cy);margin-bottom:5px;} .pm-meter-t b{letter-spacing:.06em;color:var(--cy-2);font-variant-numeric:tabular-nums;}
+  .pm-meter-b{height:5px;border-radius:5px;background:rgba(39,230,255,.12);overflow:hidden;} .pm-meter-b i{display:block;height:100%;width:0;border-radius:5px;background:linear-gradient(90deg,var(--cy),#7fb6ff);box-shadow:0 0 12px var(--cy-glow);transition:width .35s ease;}
+  .pm .modal-body{padding:0 22px;}
+  .pm .photo-row{gap:18px;padding:12px;border:1px dashed var(--cy-line);border-radius:14px;background:var(--cy-faint);transition:border-color .15s,background .15s;margin-bottom:18px;} .pm .photo-row.pm-over{border-color:var(--cy);background:rgba(39,230,255,.16);box-shadow:0 0 22px var(--cy-glow);}
+  .pm-orb{position:relative;flex:0 0 auto;width:84px;height:84px;} .pm-orb-r{position:absolute;inset:-7px;border-radius:50%;border:1.5px dashed rgba(39,230,255,.5);animation:meSpin 16s linear infinite;pointer-events:none;}
+  .pm .photo-preview,.pm .photo-preview-placeholder{width:84px;height:84px;border:2px solid var(--cy);box-shadow:0 0 22px var(--cy-glow),inset 0 0 16px rgba(39,230,255,.2);background:radial-gradient(circle at 35% 30%,#12335a,#06101e 70%);}
+  .pm .photo-preview-placeholder{color:var(--text-faint);font-size:.78rem;letter-spacing:.1em;} .pm .photo-preview-placeholder.pm-ini{color:#e8fdff;font-family:var(--font-display);font-size:1.9rem;letter-spacing:0;text-shadow:0 0 14px var(--cy-glow);}
+  .pm .photo-actions{gap:8px;align-items:flex-start;min-width:0;}
+  .pm-file{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);} .pm-file:focus-visible + .pm-hint,.pm-file:focus-visible ~ .pm-hint{outline:none;}
+  .pm-up{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:12px;background:linear-gradient(135deg,var(--cy),#7fb6ff);color:#04141c;font-weight:700;font-size:.86rem;cursor:pointer;box-shadow:0 0 18px var(--cy-glow);} .pm-file:focus-visible ~ .pm-up,.pm-up:focus-within{outline:2px solid #fff;}
+  .pm-hint{font-size:.7rem;color:var(--text-faint);}
+  .pm-sec{margin-bottom:18px;} .pm-lab{display:flex;align-items:center;gap:8px;font-size:.6rem;letter-spacing:.28em;color:var(--cy);margin-bottom:10px;font-weight:600;} .pm-lab i{width:6px;height:6px;border-radius:50%;background:var(--cy);box-shadow:0 0 8px var(--cy);} .pm-lab::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--cy-line),transparent);} .pm-lab .field-optional{order:2;letter-spacing:.04em;font-size:.66rem;color:var(--text-faint);text-transform:none;}
+  .pm .field label{font-size:.72rem;color:var(--text-dim);letter-spacing:.04em;} .pm-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+  .pm .field input:not([type=checkbox]),.pm .field select,.pm .field textarea{min-height:46px;border-radius:11px;border:1px solid var(--cy-line);background:rgba(4,10,20,.75);color:var(--text);color-scheme:dark;transition:border-color .15s,box-shadow .15s;font-size:16px;}
+  .pm .field textarea{min-height:76px;} .pm .field input:focus,.pm .field select:focus,.pm .field textarea:focus{outline:none;border-color:var(--cy);box-shadow:0 0 0 3px rgba(39,230,255,.18),0 0 16px var(--cy-glow);}
+  .pm input[type=date]::-webkit-calendar-picker-indicator{filter:invert(78%) sepia(60%) saturate(500%) hue-rotate(140deg);cursor:pointer;opacity:.9;}
+  .pm .pm-living{display:flex;align-items:center;gap:12px;min-height:44px;margin-top:2px;cursor:pointer;font-size:.86rem;color:var(--text);} .pm .pm-living input{position:absolute;opacity:0;width:1px;height:1px;}
+  .pm-sw{position:relative;width:50px;height:28px;flex:0 0 auto;border-radius:28px;border:1px solid var(--cy-line);background:rgba(4,10,20,.8);transition:background .2s,box-shadow .2s;} .pm-sw::before{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#7fa9bd;transition:transform .2s,background .2s;}
+  .pm-living input:checked + .pm-sw{background:linear-gradient(135deg,rgba(39,230,255,.55),rgba(127,182,255,.5));border-color:var(--cy);box-shadow:0 0 16px var(--cy-glow);} .pm-living input:checked + .pm-sw::before{transform:translateX(22px);background:#fff;} .pm-living input:focus-visible + .pm-sw{outline:2px solid var(--cy);outline-offset:3px;}
+  .pm .trait-chip-row .trait-chip,.pm .trait-chip-row > *{border-color:var(--cy-line);}
+  .pm .action-btn{min-height:46px;border-radius:12px;border:1px solid var(--cy-line);background:var(--cy-faint);color:var(--text);} .pm .action-btn:hover{border-color:var(--cy);background:rgba(39,230,255,.14);box-shadow:0 0 14px var(--cy-glow);}
+  .pm .modal-actions{border-top:1px solid var(--cy-line);background:rgba(4,10,20,.6);padding:12px 22px calc(14px + env(safe-area-inset-bottom));}
+  .pm .btn-flat{min-height:46px;padding:0 20px;border-radius:12px;border:1px solid var(--cy-line);background:var(--cy-faint);color:var(--text);} .pm .btn-flat:hover{border-color:var(--cy);box-shadow:0 0 12px var(--cy-glow);}
+  .pm .btn-primary{min-height:46px;padding:0 26px;border-radius:12px;background:linear-gradient(135deg,var(--cy),#7fb6ff);color:#04141c;font-weight:700;box-shadow:0 0 18px var(--cy-glow);} .pm .btn-primary:hover{box-shadow:0 0 28px var(--cy-glow);}
+  @media(prefers-reduced-motion:reduce){ .pm-scan,.pm-orb-r{animation:none;} .pm-scan{display:none;} .pm-meter-b i,.pm-sw,.pm-sw::before{transition:none;} }
+  .pm .field-row .field{min-width:0;} .pm input[type=date]{min-width:0;width:100%;max-width:100%;-webkit-appearance:none;appearance:none;}
 </style>
 </head>
 <body>
@@ -2087,53 +2119,56 @@
 
 <!-- ============ PERSON MODAL ============ -->
 <div class="modal-backdrop" id="personModalBackdrop">
-  <div class="modal has-header">
+  <div class="modal has-header pm" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <i class="pm-scan" aria-hidden="true"></i>
     <div class="modal-header">
       <div class="modal-header-text">
+        <div class="hx-eyebrow" id="modalEyebrow">MEMBER RECORD</div>
         <h2 id="modalTitle">Add Person</h2>
         <div class="modal-sub" id="modalSub"></div>
       </div>
       <button type="button" class="modal-close" id="personModalCloseBtn" aria-label="Close">✕</button>
     </div>
+    <div class="pm-meter" aria-label="Profile completeness"><div class="pm-meter-t"><span>PROFILE</span><b id="pmPct">0%</b></div><div class="pm-meter-b"><i id="pmBar"></i></div></div>
     <div class="modal-body">
-      <div class="photo-row">
-        <img id="photoPreviewImg" class="photo-preview" style="display:none;">
-        <div id="photoPreviewPlaceholder" class="photo-preview-placeholder">N/A</div>
+      <div class="photo-row" id="pmDrop">
+        <div class="pm-orb"><i class="pm-orb-r" aria-hidden="true"></i>
+          <img id="photoPreviewImg" class="photo-preview" style="display:none;" alt="">
+          <div id="photoPreviewPlaceholder" class="photo-preview-placeholder">N/A</div></div>
         <div class="photo-actions">
-          <input type="file" id="fPhoto" accept="image/*">
+          <label for="fPhoto" class="pm-up" id="pmUpLabel">Upload photo</label>
+          <input type="file" id="fPhoto" accept="image/*" class="pm-file">
+          <span class="pm-hint">or drop an image here</span>
           <button class="link-danger" id="removePhotoBtn" style="display:none;">Remove photo</button>
         </div>
       </div>
+      <div class="pm-sec"><div class="pm-lab"><i></i>IDENTITY</div>
       <div class="field-row">
-        <div class="field"><label>First name</label><input type="text" id="fFirstName" placeholder="Required"></div>
-        <div class="field"><label>Middle name</label><input type="text" id="fMiddleName" placeholder="Optional"></div>
+        <div class="field"><label for="fFirstName">First name</label><input type="text" id="fFirstName" placeholder="Required"></div>
+        <div class="field"><label for="fMiddleName">Middle name</label><input type="text" id="fMiddleName" placeholder="Optional"></div>
       </div>
       <div class="field-row">
-        <div class="field"><label>Last name</label><input type="text" id="fLastName" placeholder="Optional"></div>
-        <div class="field"><label>Nickname</label><input type="text" id="fNickname" placeholder="Optional"></div>
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label>Gender</label>
-          <select id="fGender">
-            <option value="">N/A</option>
-            <option value="Female">Female</option>
-            <option value="Male">Male</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-        <div class="field"><label>Birth date</label><input type="date" id="fBirth"></div>
+        <div class="field"><label for="fLastName">Last name</label><input type="text" id="fLastName" placeholder="Optional"></div>
+        <div class="field"><label for="fNickname">Nickname</label><input type="text" id="fNickname" placeholder="Optional"></div>
       </div>
       <div class="field">
-        <label>Death date</label>
-        <div class="death-row">
-          <input type="date" id="fDeath">
-          <label class="chk"><input type="checkbox" id="fLiving"> Living / N/A</label>
-        </div>
+        <label for="fGender">Gender</label>
+        <select id="fGender">
+          <option value="">N/A</option>
+          <option value="Female">Female</option>
+          <option value="Male">Male</option>
+          <option value="Other">Other</option>
+        </select>
+      </div></div>
+      <div class="pm-sec"><div class="pm-lab"><i></i>LIFE DATES</div>
+      <div class="field-row">
+        <div class="field"><label for="fBirth">Birth date</label><input type="date" id="fBirth"></div>
+        <div class="field"><label for="fDeath">Death date</label><input type="date" id="fDeath"></div>
       </div>
-      <div class="field"><label>Notes</label><textarea id="fNotes" placeholder="Anything worth remembering"></textarea></div>
-      <div class="field" style="padding-bottom:20px;">
-        <label>Psychology &amp; Personality <span class="field-optional">(optional, private)</span></label>
+      <label class="chk pm-living"><input type="checkbox" id="fLiving"><span class="pm-sw" aria-hidden="true"></span><span>Living / N/A</span></label></div>
+      <div class="pm-sec"><div class="pm-lab"><i></i>NOTES</div>
+      <div class="field"><label for="fNotes" class="pm-sr">Notes</label><textarea id="fNotes" placeholder="Anything worth remembering"></textarea></div></div>
+      <div class="pm-sec" style="padding-bottom:20px;"><div class="pm-lab"><i></i>PSYCHOLOGY &amp; PERSONALITY <span class="field-optional">optional · private</span></div>
         <div class="trait-chip-row" id="personTraitChips"></div>
         <div class="trait-note-editor" id="traitNoteEditor" style="display:none;"></div>
         <button type="button" class="action-btn" id="openTraitPickerBtn">🧠 Add / Edit Traits</button>
@@ -5074,6 +5109,7 @@
       sub = peopleArr().length ? '' : 'This will be the first person in this tree.';
     }
     $('modalTitle').textContent=title; $('modalSub').textContent=sub;
+    $('modalEyebrow').textContent = /^edit/i.test(title) ? 'EDIT MEMBER' : 'NEW MEMBER'; setTimeout(pmUpdate,40);
     $('fFirstName').value = p ? (p.firstName||'') : '';
     $('fMiddleName').value = p ? (p.middleName||'') : '';
     $('fLastName').value = p ? (p.lastName||'') : '';
@@ -5211,6 +5247,22 @@
     reader.readAsDataURL(file);
   }
   $('fPhoto').addEventListener('change', e=>handlePhotoFile(e.target.files[0]));
+
+  // ---- person modal: live completeness meter, initials in the photo orb, drag & drop ----
+  function pmUpdate(){
+    try{
+      const v=id=>String($(id).value||'').trim(); const hasPhoto = $('photoPreviewImg').style.display!=='none' && !!$('photoPreviewImg').getAttribute('src');
+      const parts=[!!v('fFirstName'),!!v('fLastName'),!!v('fBirth'),hasPhoto,!!v('fGender'),!!v('fNotes')];
+      const pct=Math.round(parts.filter(Boolean).length/parts.length*100); $('pmPct').textContent=pct+'%'; $('pmBar').style.width=pct+'%';
+      const ph=$('photoPreviewPlaceholder'); const ini=((v('fFirstName')[0]||'')+(v('fLastName')[0]||'')).toUpperCase(); ph.textContent = ini||'N/A'; ph.classList.toggle('pm-ini', !!ini);
+    }catch(_){}
+  }
+  ['fFirstName','fMiddleName','fLastName','fNickname','fGender','fBirth','fDeath','fNotes'].forEach(id=>{ $(id).addEventListener('input',pmUpdate); $(id).addEventListener('change',pmUpdate); });
+  $('fPhoto').addEventListener('change',()=>setTimeout(pmUpdate,400)); $('removePhotoBtn').addEventListener('click',()=>setTimeout(pmUpdate,0));
+  (function(){ const d=$('pmDrop');
+    ['dragenter','dragover'].forEach(ev=>d.addEventListener(ev,e=>{ e.preventDefault(); d.classList.add('pm-over'); }));
+    ['dragleave','drop'].forEach(ev=>d.addEventListener(ev,e=>{ e.preventDefault(); d.classList.remove('pm-over'); }));
+    d.addEventListener('drop',e=>{ const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0]; if(f&&/^image\//.test(f.type)){ handlePhotoFile(f); setTimeout(pmUpdate,400); } else toast('Please drop an image file.'); }); })();
   $('removePhotoBtn').onclick = ()=>{
     pendingPhoto='REMOVE';
     $('photoPreviewImg').style.display='none'; $('photoPreviewPlaceholder').style.display='flex';
