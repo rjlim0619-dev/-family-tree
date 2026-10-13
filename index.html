@@ -1873,6 +1873,86 @@
   .gl-empty{padding:40px 12px;text-align:center;color:var(--text-dim);border:1px dashed var(--cy-line);border-radius:14px;}
   html[data-motion="off"] .trait-row,html[data-motion="off"] .guide-card,html[data-motion="off"] .ev-kinds button{transition-duration:.01s !important;} html[data-motion="off"] .trait-row::after{display:none;}
   @media (max-width:560px){ .gl-grid{grid-template-columns:1fr;} .gl-search{max-width:none;} .gl-cats{overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;} .gl-chip{flex:none;} }
+  /* ===== IMPORT FROM WORD (imp-*) ===== */
+  :root{ --imp-am:#FFC24D; --imp-am-line:rgba(255,194,77,.45); }
+  .sr-only{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  .hb-danger{background:rgba(229,100,107,.14);border-color:rgba(229,100,107,.6);color:#ffb3b7;} .hb-danger:hover{box-shadow:0 0 16px rgba(229,100,107,.4);}
+  .imp{max-width:1040px;margin:0 auto;padding-bottom:30px;}
+  .imp-head{margin:6px 0 18px;} .imp-head .section-title{margin-bottom:6px;} .imp-sub{color:var(--text-dim);font-size:.88rem;line-height:1.5;margin:0 0 10px;max-width:68ch;} .imp-sub b{color:var(--text);}
+  .imp-h3{font-size:.95rem;margin:0 0 10px;font-family:var(--font-display);font-weight:600;display:flex;align-items:center;gap:8px;} .imp-h3 i{font-style:normal;font-size:.72rem;background:var(--imp-am);color:#1b1200;border-radius:99px;padding:1px 8px;font-weight:700;} .imp-h3-m{margin-top:26px;}
+  .imp-drop-wrap{position:relative;margin-bottom:12px;} .imp-dzf .hf-in{padding:0;}
+  .imp-dz{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:38px 20px 30px;cursor:pointer;border-radius:14px;outline:none;transition:background .3s var(--ease);}
+  .imp-dz:focus-visible{outline:2px solid var(--cy);outline-offset:-6px;} .imp-dz.over{background:var(--cy-faint);} .imp-dz h3{margin:6px 0 0;font-size:1.15rem;font-family:var(--font-display);} .imp-dz p{margin:0;color:var(--text-dim);font-size:.88rem;} .imp-dz small{color:var(--text-faint);font-size:.74rem;}
+  .imp-dz-ico{position:relative;width:76px;height:76px;display:grid;place-items:center;} .imp-dz-ico svg{width:56px;height:56px;fill:none;stroke:var(--cy);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 8px var(--cy-glow));}
+  .imp-dz-arrow{position:absolute;right:-6px;bottom:-4px;width:26px;height:26px;border-radius:8px;background:var(--panel);border:1px solid var(--cy-line);display:grid;place-items:center;animation:impBob 2.4s ease-in-out infinite;} .imp-dz-arrow svg{width:16px;height:16px;filter:none;}
+  @keyframes impBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+  .imp-plat{position:relative;height:44px;margin-top:-14px;pointer-events:none;display:flex;justify-content:center;} .imp-plat .hp{transform:scale(.8);}
+  .imp-priv{display:flex;gap:8px;align-items:center;color:var(--text-dim);font-size:.8rem;margin:10px 2px 18px;} .imp-priv svg{width:16px;height:16px;flex:none;fill:none;stroke:var(--cy);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+  .imp-cols{display:grid;gap:14px;grid-template-columns:1fr;} @media(min-width:820px){.imp-cols{grid-template-columns:1fr 1fr;}}
+  .imp-tips,.imp-flow{margin:0 0 14px;padding-left:18px;color:var(--text-dim);font-size:.84rem;line-height:1.55;} .imp-tips li,.imp-flow li{margin-bottom:6px;} .imp-tips b,.imp-flow b{color:var(--text);} .imp-tips code{background:var(--cy-faint);border:1px solid var(--cy-line);border-radius:5px;padding:0 5px;font-size:.78rem;color:var(--cy-2);}
+  /* scan */
+  .imp-scan-in{display:flex;flex-direction:column;align-items:center;gap:12px;padding:30px 18px 24px;text-align:center;}
+  .imp-scan-doc{position:relative;width:84px;height:104px;overflow:hidden;border-radius:8px;} .imp-scan-doc svg{width:100%;height:100%;fill:none;stroke:var(--cy);stroke-width:1.1;filter:drop-shadow(0 0 8px var(--cy-glow));}
+  .imp-scan-line{position:absolute;left:0;right:0;height:2px;top:0;background:linear-gradient(90deg,transparent,var(--cy),transparent);box-shadow:0 0 12px var(--cy);animation:impScan 1.8s var(--ease-io) infinite;} @keyframes impScan{0%{top:0;opacity:0}15%{opacity:1}85%{opacity:1}100%{top:100%;opacity:0}}
+  .imp-scan-text{font-size:1.02rem;font-weight:600;font-family:var(--font-display);min-height:1.5em;} .imp-bar{width:min(420px,100%);height:6px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;} .imp-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--cy),#7fb6ff);box-shadow:0 0 12px var(--cy-glow);transition:width .45s var(--ease);} .imp-scan-pct{font-size:.78rem;color:var(--cy-2);font-variant-numeric:tabular-nums;}
+  .imp-steps{list-style:none;margin:2px 0 8px;padding:0;display:grid;gap:6px;text-align:left;font-size:.84rem;color:var(--text-faint);} .imp-steps li::before{content:'○ ';color:var(--text-faint);} .imp-steps li.cur{color:var(--text);} .imp-steps li.cur::before{content:'◉ ';color:var(--cy);} .imp-steps li.done{color:var(--text-dim);} .imp-steps li.done::before{content:'✓ ';color:var(--success);}
+  .imp-err{padding:22px 18px;display:flex;flex-direction:column;gap:10px;} .imp-err-ico{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:rgba(255,194,77,.14);border:1px solid var(--imp-am-line);color:var(--imp-am);} .imp-err-t{margin:0;font-size:1rem;line-height:1.5;} .imp-found{margin:0;padding-left:18px;color:var(--text-dim);font-size:.84rem;} .imp-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;}
+  .imp-dates button{flex-direction:column;align-items:flex-start;padding:12px 18px;height:auto;} .imp-dates small{font-weight:400;opacity:.85;font-size:.74rem;} .imp-dates{padding:18px;}
+  /* review */
+  .imp-top{display:grid;gap:12px;grid-template-columns:1fr;margin-bottom:12px;} @media(min-width:820px){.imp-top{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);}}
+  .imp-sum-g{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center;padding:4px 0;} .imp-sum-g b{display:block;font-size:1.5rem;font-family:var(--font-display);color:var(--cy-2);font-variant-numeric:tabular-nums;} .imp-sum-g span{font-size:.7rem;color:var(--text-dim);letter-spacing:.04em;}
+  .imp-plist{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:.84rem;} .imp-jump{background:none;border:0;color:var(--imp-am);font:inherit;text-align:left;padding:8px 0;min-height:44px;cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px;} .imp-jump:hover{color:#ffe0a3;} .imp-jump:focus-visible{outline:2px solid var(--cy);outline-offset:2px;border-radius:4px;}
+  .imp-allgood{font-size:.86rem;color:var(--text-dim);display:flex;gap:8px;align-items:center;}
+  .imp-dot{display:inline-block;width:9px;height:9px;border-radius:50%;flex:none;vertical-align:middle;} .imp-dot-hi{background:var(--cy);box-shadow:0 0 8px var(--cy-glow);} .imp-dot-rv{background:var(--imp-am);box-shadow:0 0 8px rgba(255,194,77,.5);}
+  .imp-banner{padding:12px 14px;border-radius:12px;border:1px solid var(--cy-line);background:var(--cy-faint);margin-bottom:12px;font-size:.92rem;line-height:1.5;} .imp-banner b{color:var(--cy-2);} .imp-banner-warn{border-color:var(--imp-am-line);background:rgba(255,194,77,.08);} .imp-banner-warn b{color:var(--imp-am);} .imp-gen{display:inline-block;margin-left:6px;font-size:.7rem;padding:1px 8px;border-radius:99px;border:1px solid var(--cy-line);color:var(--cy-2);}
+  .imp-map{margin-bottom:12px;border:1px solid var(--border-2);border-radius:12px;padding:8px 14px;} .imp-map summary{cursor:pointer;min-height:36px;display:flex;align-items:center;font-size:.86rem;} .imp-map-g{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));padding:8px 0;}
+  .imp-tabs{display:flex;gap:6px;margin:6px 0 12px;border-bottom:1px solid var(--border-2);} .imp-tabs button{background:none;border:0;border-bottom:2px solid transparent;color:var(--text-dim);font:inherit;font-weight:600;font-size:.88rem;min-height:44px;padding:0 14px;cursor:pointer;display:flex;align-items:center;gap:6px;margin-bottom:-1px;} .imp-tabs button i{font-style:normal;font-size:.7rem;background:var(--cy-faint);border:1px solid var(--cy-line);border-radius:99px;padding:0 7px;color:var(--cy-2);} .imp-tabs button[aria-selected=true]{color:var(--cy);border-bottom-color:var(--cy);text-shadow:0 0 12px var(--cy-glow);} .imp-tabs button:focus-visible{outline:2px solid var(--cy);outline-offset:-3px;border-radius:6px;}
+  .imp-pane[hidden]{display:none;}
+  .imp-pv-bar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:.74rem;color:var(--text-dim);padding-bottom:8px;} .imp-pv-leg{display:flex;align-items:center;gap:6px;flex-wrap:wrap;} .lg{display:inline-block;width:10px;height:10px;border-radius:3px;margin-left:8px;} .lg.old{background:#3b4a66;} .lg.new{background:var(--cy);} .lg.match{background:var(--imp-am);} .lg:first-child{margin-left:0;}
+  .imp-pv-ctl{display:flex;gap:6px;} .imp-ic{min-width:44px;min-height:44px;border-radius:10px;border:1px solid var(--cy-line);background:var(--cy-faint);color:var(--cy-2);font-size:1.1rem;cursor:pointer;} .imp-ic:hover{box-shadow:0 0 12px var(--cy-glow);} .imp-ic:focus-visible{outline:2px solid var(--cy);outline-offset:2px;}
+  .imp-pv-vp{position:relative;height:min(58vh,520px);min-height:300px;overflow:hidden;border-radius:10px;background:radial-gradient(ellipse at 50% 0,rgba(39,230,255,.07),transparent 70%),rgba(4,8,16,.6);cursor:grab;touch-action:none;outline:none;} .imp-pv-vp.grab{cursor:grabbing;} .imp-pv-vp:focus-visible{outline:2px solid var(--cy);outline-offset:2px;}
+  #impPvSvg{position:absolute;left:0;top:0;transform-origin:0 0;max-width:none;} .imp-pv-ln{fill:none;stroke:rgba(140,160,200,.45);stroke-width:1.6;} .imp-pv-ln.lit{stroke:var(--cy);stroke-width:2;filter:drop-shadow(0 0 4px var(--cy-glow));stroke-dasharray:600;animation:impDraw 1.1s var(--ease) both;} .imp-pv-ln.sp{stroke-dasharray:5 4;} .imp-pv-ln.sp.lit{stroke-dasharray:5 4;animation:none;}
+  @keyframes impDraw{from{stroke-dashoffset:600}to{stroke-dashoffset:0}}
+  .imp-pv-n rect:first-child{fill:#101a2c;stroke:#334463;stroke-width:1.2;} .imp-pv-n .nm{fill:#e8eefc;font-size:13px;font-weight:600;font-family:var(--font-display),sans-serif;} .imp-pv-n .yr{fill:#8c9ab5;font-size:11.5px;} .imp-pv-new rect:first-child{stroke:var(--cy);fill:#0b2230;filter:drop-shadow(0 0 6px var(--cy-glow));} .imp-pv-match rect:first-child{stroke:var(--imp-am);fill:#2a2110;} .imp-pv-n .tg{fill:rgba(39,230,255,.18);stroke:none;} .imp-pv-n g text{fill:var(--cy-2);font-size:9.5px;font-weight:700;letter-spacing:.06em;} .imp-pv-match g .tg{fill:rgba(255,194,77,.22);} .imp-pv-match g text{fill:var(--imp-am);}
+  .imp-list{display:grid;gap:12px;} .imp-row.is-skip{opacity:.62;} .imp-flash .hf{animation:impFlash 1.5s ease;} @keyframes impFlash{0%,100%{box-shadow:none}30%{box-shadow:0 0 0 2px var(--imp-am),0 0 26px rgba(255,194,77,.5)}}
+  .imp-row-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;} .imp-name{font-size:1rem;font-family:var(--font-display);flex:1;min-width:120px;} .imp-conf{font-size:.74rem;color:var(--text-dim);display:inline-flex;align-items:center;gap:6px;} .imp-merge-to{font-size:.76rem;color:var(--imp-am);}
+  .imp-tag{font-size:.62rem;letter-spacing:.12em;font-weight:800;padding:2px 8px;border-radius:5px;} .imp-tag-new{background:rgba(39,230,255,.16);color:var(--cy-2);border:1px solid var(--cy-line);} .imp-tag-match{background:rgba(255,194,77,.16);color:var(--imp-am);border:1px solid var(--imp-am-line);} .imp-tag-skip,.imp-tag-men{background:rgba(255,255,255,.07);color:var(--text-dim);border:1px solid var(--border-2);}
+  .imp-chk{position:relative;width:44px;height:44px;margin:-8px 0 -8px -8px;display:grid;place-items:center;cursor:pointer;flex:none;} .imp-chk input{position:absolute;inset:0;opacity:0;cursor:pointer;margin:0;} .imp-chk span{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--cy-line);background:rgba(255,255,255,.04);display:grid;place-items:center;transition:all .2s var(--ease);} .imp-chk input:checked+span{background:var(--cy);border-color:var(--cy);box-shadow:0 0 10px var(--cy-glow);} .imp-chk input:checked+span::after{content:'';width:5px;height:10px;border:solid #04141c;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px);} .imp-chk input:focus-visible+span{outline:2px solid var(--cy);outline-offset:2px;}
+  .imp-flags{margin:0 0 8px;padding:0;list-style:none;display:grid;gap:4px;} .imp-flags li{font-size:.78rem;color:var(--imp-am);padding-left:16px;position:relative;} .imp-flags li::before{content:'!';position:absolute;left:2px;font-weight:800;}
+  .imp-grid{display:grid;gap:8px;grid-template-columns:repeat(2,minmax(0,1fr));} @media(min-width:700px){.imp-grid{grid-template-columns:repeat(4,minmax(0,1fr));}} .imp-f{display:flex;flex-direction:column;gap:3px;min-width:0;} .imp-f.w2{grid-column:span 2;} .imp-f.w4{grid-column:1/-1;} .imp-f.is-hidden{display:none;} .imp-f>span,.imp-f>label>span,.imp-lbl{font-size:.68rem;letter-spacing:.06em;color:var(--text-dim);text-transform:uppercase;} .imp-f label{display:flex;flex-direction:column;gap:3px;}
+  .imp input[type=text],.imp input[type=search],.imp select,.imp textarea{width:100%;min-height:44px;padding:8px 10px;border-radius:9px;border:1px solid var(--border-2);background:rgba(8,14,26,.7);color:var(--text);font:inherit;font-size:.9rem;box-sizing:border-box;} .imp textarea{min-height:64px;resize:vertical;} .imp input:focus,.imp select:focus,.imp textarea:focus{outline:none;border-color:var(--cy);box-shadow:0 0 0 3px var(--cy-faint),0 0 12px var(--cy-glow);} .imp input:disabled,.imp textarea:disabled{opacity:.5;}
+  .imp-ferr{color:var(--imp-am);font-size:.72rem;}
+  .imp-rels{margin-top:12px;} .imp-chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0;} .imp-none{color:var(--text-faint);font-size:.8rem;}
+  .imp-chip{display:inline-flex;align-items:center;gap:6px;padding:2px 2px 2px 10px;min-height:32px;border-radius:99px;border:1px solid var(--cy-line);background:var(--cy-faint);font-size:.78rem;max-width:100%;} .imp-chip-rv{border-color:var(--imp-am-line);background:rgba(255,194,77,.08);} .imp-chip-off{opacity:.5;text-decoration:line-through;} .imp-chip-unlinked{border-style:dashed;} .imp-chip-l{color:var(--text-dim);} .imp-chip em{color:var(--text-faint);font-size:.72rem;}
+  .imp-chip-x{width:44px;height:44px;margin:-6px -6px -6px -2px;border:0;background:none;color:var(--text-dim);cursor:pointer;font-size:.8rem;border-radius:50%;} .imp-chip-x:hover{color:var(--text);} .imp-chip-x:focus-visible{outline:2px solid var(--cy);outline-offset:-6px;}
+  .imp-addrel{display:grid;gap:6px;grid-template-columns:1fr;margin-top:6px;} @media(min-width:640px){.imp-addrel{grid-template-columns:150px 1fr auto;align-items:center;}}
+  .imp-dup{margin-top:12px;} .imp-dup-h{font-size:.86rem;margin-bottom:8px;} .imp-cmp-wrap{overflow-x:auto;} .imp-cmp{width:100%;border-collapse:collapse;font-size:.8rem;min-width:420px;} .imp-cmp th,.imp-cmp td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);vertical-align:top;} .imp-cmp thead th{color:var(--text-dim);font-weight:600;font-size:.7rem;letter-spacing:.06em;} .imp-cmp tbody th{color:var(--text-dim);font-weight:500;width:90px;} .imp-cmp-diff td:nth-child(3){color:var(--imp-am);} .imp-cmp-fill td:nth-child(3){color:var(--cy-2);} .imp-cmp em{color:var(--text-faint);font-size:.72rem;}
+  .imp-rad{display:flex;flex-direction:column;gap:2px;} .imp-rad label{display:flex;gap:6px;align-items:center;min-height:32px;cursor:pointer;font-size:.76rem;}
+  .imp-dup-opts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;} .imp-opt{position:relative;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--border-2);cursor:pointer;font-size:.84rem;background:rgba(255,255,255,.03);transition:all .2s var(--ease);} .imp-opt input{accent-color:#27E6FF;width:18px;height:18px;margin:0;} .imp-opt.on,.imp-opt:has(input:checked){border-color:var(--cy);background:var(--cy-faint);box-shadow:0 0 12px var(--cy-faint);} .imp-opt:focus-within{outline:2px solid var(--cy);outline-offset:2px;}
+  .imp-note{font-size:.76rem;color:var(--text-dim);margin:8px 0 0;} .imp-traits{display:grid;gap:6px;margin-top:10px;} .imp-photo{display:flex;align-items:center;gap:12px;margin-top:10px;} .imp-photo img{width:56px;height:56px;border-radius:50%;object-fit:cover;border:1px solid var(--cy-line);}
+  .imp-tools{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;margin-top:12px;border-top:1px solid var(--border);padding-top:10px;} .imp-src summary{cursor:pointer;font-size:.78rem;color:var(--text-dim);min-height:36px;display:flex;align-items:center;} .imp-src ul{margin:4px 0 0;padding-left:18px;font-size:.76rem;color:var(--text-dim);} .imp-src li{margin-bottom:4px;font-style:italic;} .imp-merge{min-width:200px;}
+  .imp-stub-ctl{display:grid;gap:8px;grid-template-columns:1fr;margin-top:8px;} @media(min-width:700px){.imp-stub-ctl{grid-template-columns:repeat(3,1fr);}}
+  .imp-bar2{position:sticky;bottom:22px;z-index:6;margin-top:18px;}
+  .imp-fin{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;} .imp-fin-t{font-size:.82rem;color:var(--text-dim);flex:1;min-width:200px;} .imp-fin-t b{color:var(--cy-2);} .imp-fin-b{display:flex;gap:8px;flex-wrap:wrap;} .imp-saveerr{margin-top:6px;color:#ffb3b7;font-size:.82rem;line-height:1.4;}
+  .imp-bar2 .hf{background:rgba(5,9,18,.9);backdrop-filter:blur(8px);}
+  /* saving + done */
+  .imp-center{display:flex;flex-direction:column;align-items:center;gap:12px;padding:60px 0;color:var(--text-dim);} .imp-sv-nodes{display:flex;gap:10px;margin-top:-26px;} .imp-sv-nodes i{width:10px;height:10px;border-radius:50%;background:var(--cy);box-shadow:0 0 10px var(--cy);animation:impPulse 1s ease-in-out infinite;} .imp-sv-nodes i:nth-child(2){animation-delay:.12s}.imp-sv-nodes i:nth-child(3){animation-delay:.24s}.imp-sv-nodes i:nth-child(4){animation-delay:.36s}.imp-sv-nodes i:nth-child(5){animation-delay:.48s} @keyframes impPulse{0%,100%{transform:scale(.6);opacity:.5}50%{transform:scale(1.2);opacity:1}}
+  .imp-stage{position:relative;height:210px;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;} .imp-stage .hp{margin-bottom:6px;} .imp-flys{position:absolute;left:50%;bottom:44px;width:0;height:0;} 
+  .imp-fly{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:3px;transform:translate(-50%,-50%);opacity:0;animation:impFly .9s var(--spring) forwards;animation-delay:calc(var(--d) + .25s);} .imp-fly i{width:14px;height:14px;border-radius:50%;background:var(--cy);box-shadow:0 0 14px var(--cy);} .imp-fly em{font-style:normal;font-size:.62rem;color:var(--cy-2);white-space:nowrap;}
+  @keyframes impFly{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}30%{opacity:1}100%{opacity:1;transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) scale(1)}}
+  .imp-done-t{text-align:center;padding:6px 10px 14px;} .imp-done-t h3{font-size:1.5rem;margin:6px 0;font-family:var(--font-display);color:var(--cy-2);} .imp-done-t p{margin:0;color:var(--text-dim);font-size:.9rem;} .imp-check{width:46px;height:46px;border-radius:50%;margin:0 auto;display:grid;place-items:center;background:rgba(39,230,255,.12);border:1px solid var(--cy);box-shadow:0 0 18px var(--cy-glow);animation:impPop .6s var(--spring) both;} .imp-check svg{width:24px;height:24px;fill:none;stroke:var(--cy-2);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;} @keyframes impPop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+  .imp-done-b{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:6px 0;} .imp-privacy{text-align:center;font-size:.74rem;color:var(--text-faint);margin:10px 0 2px;}
+  /* dialog + drop overlay */
+  .imp-dlg{position:fixed;inset:0;z-index:var(--z-dialog);background:rgba(2,5,12,.72);backdrop-filter:blur(6px);display:grid;place-items:center;padding:16px;animation:impFade .2s ease;} .imp-dlg-in{width:min(420px,100%);} .imp-dlg h3{margin:0 0 6px;font-family:var(--font-display);} .imp-dlg p{margin:0 0 14px;color:var(--text-dim);font-size:.88rem;line-height:1.5;} .imp-dlg-b{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;} @keyframes impFade{from{opacity:0}to{opacity:1}}
+  #impDrop{position:fixed;inset:0;z-index:calc(var(--z-dialog) + 10);display:none;place-items:center;background:rgba(2,6,14,.82);backdrop-filter:blur(8px);pointer-events:none;} #impDrop.on{display:grid;animation:impFade .2s ease;} .imp-dropbox{width:min(560px,86vw);padding:44px 20px;text-align:center;border:2px dashed var(--cy);border-radius:22px;background:radial-gradient(circle at 50% 30%,rgba(39,230,255,.16),transparent 70%);box-shadow:0 0 60px var(--cy-glow),inset 0 0 40px var(--cy-faint);} .imp-dropbox svg{width:64px;height:64px;fill:none;stroke:var(--cy);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;animation:impBob 1.6s ease-in-out infinite;} .imp-dropbox h3{margin:12px 0 4px;font-size:1.5rem;font-family:var(--font-display);color:var(--cy-2);} .imp-dropbox p{margin:0;color:var(--text-dim);font-size:.9rem;}
+  .imp-hist{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);} .imp-hist div{display:flex;flex-direction:column;min-width:0;} .imp-hist b{font-size:.88rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;} .imp-hist span{font-size:.74rem;color:var(--text-dim);} .imp-hist.undone{opacity:.55;}
+  .rail-import{flex:none;} #railImportBtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+  @media(max-width:560px){ .imp-sum-g b{font-size:1.2rem;} .imp-fin-b{width:100%;} .imp-fin-b .hb{flex:1;} .imp-dz{padding:28px 14px 22px;} }
+  @media (prefers-reduced-motion:reduce){ .imp *,#impDrop *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;} .imp-fly{opacity:1;transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty)));} }
+  html[data-motion="off"] .imp *,html[data-motion="off"] #impDrop *{animation:none!important;transition:none!important;} html[data-motion="off"] .imp-fly{opacity:1;transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty)));}
+
+  .rail-idrow{display:flex;gap:6px;align-items:stretch;} .rail-idrow .rail-id{flex:1;min-width:0;width:auto;} .rail-imp{flex:none;width:44px;border-radius:12px;border:1px solid var(--cy-line);background:var(--cy-faint);color:var(--cy-2);cursor:pointer;display:grid;place-items:center;transition:box-shadow .2s,border-color .2s;} .rail-imp:hover{box-shadow:0 0 14px var(--cy-glow);border-color:var(--cy);} .rail-imp:focus-visible{outline:2px solid var(--cy);outline-offset:2px;} .rail-imp svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+  .shell.rail-collapsed .rail-imp{display:none;} @media(max-width:899px){.rail-imp{display:none;}}
 </style>
 </head>
 <body>
@@ -1940,6 +2020,7 @@
 </div>
 
 <!-- ============ APP ============ -->
+<div id="impDrop" aria-hidden="true" aria-live="polite"><div class="imp-dropbox"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M12 17.5v-6.5M9.5 13.5 12 11l2.5 2.5"/></svg><h3>Drop to import family members</h3><p>Release your Word document (.docx) anywhere to start. Nothing is saved until you review it.</p></div></div>
 <div id="app">
   <!-- ===== DASHBOARD (My Family Trees) ===== -->
   <div class="view-panel active" id="viewDashboard" style="position:absolute;inset:0;">
@@ -1955,7 +2036,7 @@
       <button type="button" class="rail-collapse" id="railCollapse" aria-label="Collapse sidebar" aria-expanded="true" title="Collapse sidebar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6l-6 6 6 6"/></svg></button>
       <div class="rail-head">
         <button type="button" class="rail-back" id="backToTreesBtn" aria-label="All trees" title="All trees"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span class="rail-back-t">My Trees</span></button>
-        <button type="button" class="rail-id" id="railTreeBtn" aria-haspopup="listbox" aria-expanded="false" aria-controls="railTreeMenu" aria-label="Switch family tree">
+<div class="rail-idrow">        <button type="button" class="rail-id" id="railTreeBtn" aria-haspopup="listbox" aria-expanded="false" aria-controls="railTreeMenu" aria-label="Switch family tree">
           <span class="rail-emb" aria-hidden="true"><i class="rail-emb-r"></i><svg class="rail-emblem" viewBox="0 0 120 120" aria-hidden="true">
         <circle cx="60" cy="60" r="54" class="em-ring"/>
         <path d="M60 104V64"/><path d="M60 64C60 50 38 50 38 34"/><path d="M60 64C60 50 82 50 82 34"/>
@@ -1964,7 +2045,7 @@
       </svg></span>
           <span class="rail-idt"><span class="rail-hud">FAMILY TREE</span><span class="rail-tname" id="sidebarTreeName">Family Tree</span><span class="rail-stat" id="railStat"></span></span>
           <svg class="rail-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
-        </button>
+        </button><button type="button" class="rail-imp" id="railImportBtn" aria-label="Import members from a Word document" title="Import — add members from a Word document"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M12 17.5v-6.5M9.5 13.5 12 11l2.5 2.5"/></svg></button></div>
         <div class="rail-menu" id="railTreeMenu" role="listbox" aria-label="Your family trees" hidden></div>
       </div>
       <button type="button" class="rail-search" id="railSearch" aria-label="Search members, events, traits and sections"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><span class="rail-search-t">Search anything…</span><kbd id="railKbd">Ctrl K</kbd></button>
@@ -2083,6 +2164,12 @@
         </div>
       </div>
 
+      <div class="view-panel" id="viewImport">
+        <div class="view-scroll">
+          <button type="button" class="hx-back" data-goto="settings">← Me</button>
+          <div id="impRoot"></div>
+        </div>
+      </div>
       <div class="view-panel" id="viewGuidelines">
         <div class="view-scroll">
           <button type="button" class="hx-back" data-goto="settings">← Me</button>
@@ -2104,7 +2191,7 @@
           <div class="me" id="meRoot">
           <div id="meHero"></div>
           <nav class="me-jump" id="meJump" aria-label="Jump to a settings section">
-            <button type="button" class="hc" data-jump="meSecApp">Appearance</button><button type="button" class="hc" data-jump="meSecSound">Sound</button><button type="button" class="hc" data-jump="meSecMusic">Music player</button><button type="button" class="hc" data-jump="meSecAccount">Account</button><button type="button" class="hc" data-jump="meSecData">Backup</button><button type="button" class="hc" data-jump="meSecDanger">Danger zone</button>
+            <button type="button" class="hc" data-jump="meSecImport">Import</button><button type="button" class="hc" data-jump="meSecApp">Appearance</button><button type="button" class="hc" data-jump="meSecSound">Sound</button><button type="button" class="hc" data-jump="meSecMusic">Music player</button><button type="button" class="hc" data-jump="meSecAccount">Account</button><button type="button" class="hc" data-jump="meSecData">Backup</button><button type="button" class="hc" data-jump="meSecDanger">Danger zone</button>
           </nav>
           <div class="me-grid">
           <div class="settings-block" id="meSecHelp" data-ico="help" data-eyebrow="SUPPORT">
@@ -2164,6 +2251,14 @@
             <div class="lock-error" id="changePassError" style="margin-top:8px;"></div>
             <div class="lock-success" id="changePassSuccess" style="margin-top:8px;"></div>
             <button class="link-danger me-signout" id="signOutBtn" style="margin-top:16px;">Sign out</button>
+          </div>
+
+          <div class="settings-block" id="meSecImport" data-ico="import" data-eyebrow="IMPORT">
+            <h3>Import from Word</h3>
+            <p class="me-note" style="margin-top:0;">Add many family members at once from a .docx document. You review everything before it is saved, and every import can be undone.</p>
+            <button type="button" class="btn-flat me-imp-row" id="meImportRow" style="margin-top:10px;">Import from Word document</button>
+            <h4 class="me-sub" style="margin:18px 0 4px;font-size:.78rem;letter-spacing:.1em;color:var(--text-dim);">IMPORT HISTORY</h4>
+            <div id="meImpList"></div>
           </div>
 
           <div class="settings-block" id="meSecData" data-ico="data" data-eyebrow="YOUR DATA">
@@ -2542,6 +2637,493 @@
 <div id="quickInfo"></div>
 
 <script>
+/* FTImport — dependency-free .docx reader/writer + rule-based family document parser.
+   Pure browser code: nothing is uploaded, nothing is stored. */
+(function(root){
+'use strict';
+class ImportError extends Error{ constructor(code,msg){ super(msg||code); this.code=code; } }
+const utf8=u=>new TextDecoder('utf-8').decode(u);
+const enc=s=>new TextEncoder().encode(s);
+
+/* ---------- ZIP reading (central directory + DecompressionStream) ---------- */
+async function inflateRaw(u8){
+  if(typeof DecompressionStream==='undefined') throw new ImportError('unsupported','This browser cannot open Word files. Please update your browser.');
+  const stream=new Blob([u8]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+  return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+async function readZip(buf){
+  const u=new Uint8Array(buf);
+  if(u.length<22) throw new ImportError('corrupt');
+  if(u[0]===0xD0&&u[1]===0xCF&&u[2]===0x11&&u[3]===0xE0) throw new ImportError('ole');
+  if(!(u[0]===0x50&&u[1]===0x4B)) throw new ImportError('notzip');
+  const dv=new DataView(buf); let e=-1;
+  for(let i=u.length-22;i>=Math.max(0,u.length-65600);i--){ if(dv.getUint32(i,true)===0x06054b50){ e=i; break; } }
+  if(e<0) throw new ImportError('corrupt');
+  const n=dv.getUint16(e+10,true); let p=dv.getUint32(e+16,true); const entries={};
+  for(let i=0;i<n;i++){
+    if(p+46>u.length||dv.getUint32(p,true)!==0x02014b50) throw new ImportError('corrupt');
+    const method=dv.getUint16(p+10,true), csize=dv.getUint32(p+20,true), nl=dv.getUint16(p+28,true), xl=dv.getUint16(p+30,true), cl=dv.getUint16(p+32,true), lho=dv.getUint32(p+42,true);
+    entries[utf8(u.subarray(p+46,p+46+nl))]={method,csize,lho}; p+=46+nl+xl+cl;
+  }
+  return { has:k=>!!entries[k], names:()=>Object.keys(entries),
+    async read(name){ const en=entries[name]; if(!en) return null; const lh=en.lho;
+      if(lh+30>u.length||dv.getUint32(lh,true)!==0x04034b50) throw new ImportError('corrupt');
+      const start=lh+30+dv.getUint16(lh+26,true)+dv.getUint16(lh+28,true); if(start+en.csize>u.length) throw new ImportError('corrupt');
+      const data=u.subarray(start,start+en.csize);
+      if(en.method===0) return data; if(en.method===8){ try{ return await inflateRaw(data); }catch(err){ if(err instanceof ImportError) throw err; throw new ImportError('corrupt'); } }
+      throw new ImportError('corrupt'); } };
+}
+/* ---------- ZIP writing (stored, no compression) ---------- */
+const CRCT=(()=>{ const t=new Uint32Array(256); for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c=c&1?0xEDB88320^(c>>>1):c>>>1; t[n]=c>>>0; } return t; })();
+function crc32(u){ let c=0xFFFFFFFF; for(let i=0;i<u.length;i++) c=CRCT[(c^u[i])&255]^(c>>>8); return (c^0xFFFFFFFF)>>>0; }
+function writeZip(files){
+  const parts=[], cen=[]; let off=0;
+  files.forEach(f=>{ const nm=enc(f.name), data=typeof f.data==='string'?enc(f.data):f.data, crc=crc32(data);
+    const lh=new DataView(new ArrayBuffer(30)); lh.setUint32(0,0x04034b50,true); lh.setUint16(4,20,true); lh.setUint16(6,0x0800,true); lh.setUint16(8,0,true); lh.setUint16(10,0,true); lh.setUint16(12,33,true); lh.setUint32(14,crc,true); lh.setUint32(18,data.length,true); lh.setUint32(22,data.length,true); lh.setUint16(26,nm.length,true); lh.setUint16(28,0,true);
+    parts.push(new Uint8Array(lh.buffer),nm,data);
+    const ch=new DataView(new ArrayBuffer(46)); ch.setUint32(0,0x02014b50,true); ch.setUint16(4,20,true); ch.setUint16(6,20,true); ch.setUint16(8,0x0800,true); ch.setUint16(10,0,true); ch.setUint16(12,0,true); ch.setUint16(14,33,true); ch.setUint32(16,crc,true); ch.setUint32(20,data.length,true); ch.setUint32(24,data.length,true); ch.setUint16(28,nm.length,true); ch.setUint32(42,off,true);
+    cen.push(new Uint8Array(ch.buffer),nm); off+=30+nm.length+data.length; });
+  const cenSize=cen.reduce((a,b)=>a+b.length,0); const end=new DataView(new ArrayBuffer(22)); end.setUint32(0,0x06054b50,true); end.setUint16(8,files.length,true); end.setUint16(10,files.length,true); end.setUint32(12,cenSize,true); end.setUint32(16,off,true);
+  return new Blob([...parts,...cen,new Uint8Array(end.buffer)],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+}
+
+/* ---------- .docx -> blocks ---------- */
+const WNS='http://schemas.openxmlformats.org/wordprocessingml/2006/main';
+const kids=el=>Array.prototype.filter.call(el.childNodes,n=>n.nodeType===1);
+const ln=el=>el.localName;
+const wattr=(el,name)=>el.getAttributeNS(WNS,name)||el.getAttribute('w:'+name)||'';
+const rattr=el=>el.getAttribute('r:embed')||el.getAttribute('r:id')||'';
+function parseXml(s){ const d=new DOMParser().parseFromString(s,'application/xml'); if(d.getElementsByTagName('parsererror').length) throw new ImportError('corrupt'); return d; }
+async function readDocx(file){
+  const name=String(file.name||'').toLowerCase();
+  if(/\.doc$/.test(name)) throw new ImportError('olddoc');
+  if(!/\.docx$/.test(name)) throw new ImportError('badtype');
+  if(file.size>10*1024*1024) throw new ImportError('toolarge');
+  const buf=file.arrayBuffer?await file.arrayBuffer():file; let zip;
+  try{ zip=await readZip(buf); }catch(err){ if(err instanceof ImportError){ if(err.code==='ole') throw new ImportError(/\.docx$/.test(name)?'encrypted':'olddoc'); if(err.code==='notzip') throw new ImportError(/\.docx$/.test(name)?'corrupt':'badtype'); } throw err; }
+  if(!zip.has('word/document.xml')) throw new ImportError('notword');
+  const docXml=utf8(await zip.read('word/document.xml'));
+  let styles={}; if(zip.has('word/styles.xml')){ try{ const sd=parseXml(utf8(await zip.read('word/styles.xml'))); Array.prototype.forEach.call(sd.getElementsByTagNameNS(WNS,'style'),s=>{ const id=wattr(s,'styleId'); const nm=kids(s).find(k=>ln(k)==='name'); styles[id]=nm?wattr(nm,'val'):id; }); }catch(_){} }
+  let rels={}; if(zip.has('word/_rels/document.xml.rels')){ try{ const rd=parseXml(utf8(await zip.read('word/_rels/document.xml.rels'))); Array.prototype.forEach.call(rd.getElementsByTagName('Relationship'),r=>{ rels[r.getAttribute('Id')]=r.getAttribute('Target'); }); }catch(_){} }
+  const doc=parseXml(docXml); const body=doc.getElementsByTagNameNS(WNS,'body')[0]; if(!body) throw new ImportError('notword');
+  const blocks=[]; const imgOf=rid=>{ const t=rels[rid]; if(!t) return null; const p=t.replace(/^\//,'').replace(/^word\//,''); return /\.(png|jpe?g|gif|webp|bmp)$/i.test(p)?'word/'+p:null; };
+  function para(p){
+    let style='',list=false,outline=-1; const pPr=kids(p).find(k=>ln(k)==='pPr');
+    if(pPr) kids(pPr).forEach(k=>{ const n=ln(k); if(n==='pStyle') style=wattr(k,'val'); else if(n==='numPr') list=true; else if(n==='outlineLvl') outline=+wattr(k,'val'); });
+    const runs=[]; const imgs=new Set(); const sname=(styles[style]||style||'');
+    (function walk(el){ kids(el).forEach(k=>{ const n=ln(k);
+      if(n==='r'){ let t='',bold=false; const rPr=kids(k).find(x=>ln(x)==='rPr'); if(rPr){ const b=kids(rPr).find(x=>ln(x)==='b'); if(b){ const v=wattr(b,'val'); bold=!(v==='0'||v==='false'); } const rs=kids(rPr).find(x=>ln(x)==='rStyle'); if(rs&&/strong/i.test(wattr(rs,'val'))) bold=true; }
+        kids(k).forEach(c=>{ const cn=ln(c); if(cn==='t') t+=c.textContent; else if(cn==='tab') t+=' '; else if(cn==='br'||cn==='cr') t+='\n'; else if(cn==='noBreakHyphen') t+='-'; else if(cn==='drawing'||cn==='pict'||cn==='AlternateContent'){ const bl=c.getElementsByTagNameNS('*','blip'); Array.prototype.forEach.call(bl,b=>{ const pth=imgOf(rattr(b)); if(pth) imgs.add(pth); }); } });
+        if(t) runs.push({t,b:bold}); }
+      else if(/^(hyperlink|smartTag|ins|sdt|sdtContent|fldSimple|customXml)$/.test(n)) walk(k); }); })(p);
+    const text=runs.map(r=>r.t).join('').replace(/[ \t ]+/g,' ').trim();
+    let heading=0; const m=/^heading\s*([1-9])$/i.exec(sname); if(m) heading=+m[1]; else if(/^(title|subtitle)$/i.test(sname)) heading=1; else if(outline>=0&&outline<9) heading=outline+1;
+    return {type:'p',text,runs,heading,list,images:[...imgs],style:sname};
+  }
+  function cellText(tc){ const out=[],imgs=[]; kids(tc).forEach(k=>{ if(ln(k)==='p'){ const q=para(k); out.push(q.text); imgs.push(...q.images); } else if(ln(k)==='tbl'){ Array.prototype.forEach.call(k.getElementsByTagNameNS(WNS,'p'),pp=>{ const q=para(pp); out.push(q.text); }); } }); return {text:out.join('\n').trim(),images:imgs}; }
+  function table(tbl){ const rows=[]; kids(tbl).forEach(tr=>{ if(ln(tr)!=='tr') return; const cells=[]; kids(tr).forEach(tc=>{ if(ln(tc)==='tc') cells.push(cellText(tc)); else if(ln(tc)==='sdt'){ kids(tc).forEach(x=>{ if(ln(x)==='sdtContent') kids(x).forEach(y=>{ if(ln(y)==='tc') cells.push(cellText(y)); }); }); } }); rows.push(cells); }); return {type:'table',rows}; }
+  (function walkBody(el){ kids(el).forEach(k=>{ const n=ln(k); if(n==='p') blocks.push(para(k)); else if(n==='tbl') blocks.push(table(k)); else if(n==='sdt'){ kids(k).forEach(x=>{ if(ln(x)==='sdtContent') walkBody(x); }); } }); })(body);
+  const MIME={png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',gif:'image/gif',webp:'image/webp',bmp:'image/bmp'};
+  return { blocks, fileName:file.name||'document.docx', async getImage(path){ try{ const d=await zip.read(path); if(!d) return null; const ext=(path.split('.').pop()||'').toLowerCase(); return new Blob([d],{type:MIME[ext]||'image/png'}); }catch(_){ return null; } } };
+}
+root.FTImportA={ImportError,readZip,writeZip,readDocx,crc32,enc,utf8};
+})(window);
+(function(root){
+'use strict';
+const A=root.FTImportA;
+/* ================= text helpers ================= */
+const strip=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'');
+const norm=s=>strip(s).toLowerCase().replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();
+const PARTICLES=new Set(['de','del','dela','delos','van','von','der','den','da','di','du','le','bin','binti','ibn','al','el','la','los','las','san','santa','mc']);
+const HONOR=/^(mr|mrs|ms|miss|dr|atty|engr|sr|fr|rev|hon|lolo|lola|tito|tita|tatay|nanay|kuya|ate|don|dona|doña)\.?$/i;
+const SUFFIX=/^(jr|sr|ii|iii|iv|v)\.?$/i;
+function splitName(raw){
+  let s=String(raw||'').replace(/\s+/g,' ').trim(); const alt=[]; let nick='';
+  s=s.replace(/\(\s*(?:n[ée]e|born|maiden(?: name)?|dating)\s*:?\s*([^)]+)\)/gi,(m,x)=>{ alt.push(x.trim()); return ' '; });
+  s=s.replace(/["“”']([^"“”']{2,20})["“”']/g,(m,x)=>{ nick=x.trim(); return ' '; });
+  s=s.replace(/\(([A-Za-zÀ-ÿ.\- ]{2,20})\)/g,(m,x)=>{ if(!nick) nick=x.trim(); return ' '; });
+  s=s.replace(/\([^)]*\)/g,' ').replace(/\s+/g,' ').trim();
+  if(/^[^,]+,\s*[^,]+$/.test(s) && !SUFFIX.test(s.split(',')[1].trim())){ const [l,f]=s.split(','); s=(f.trim()+' '+l.trim()); }
+  let parts=s.split(' ').filter(Boolean); while(parts.length>1&&HONOR.test(parts[0])) parts.shift();
+  if(!parts.length) return {first:'',middle:'',last:'',nick,alt,raw:raw};
+  let last=''; let suf='';
+  if(parts.length>1&&SUFFIX.test(parts[parts.length-1])) suf=parts.pop();
+  if(parts.length===1){ return {first:parts[0],middle:'',last:suf?'':'',nick,alt,raw:raw,suffix:suf}; }
+  last=parts.pop(); while(parts.length>1&&PARTICLES.has(parts[parts.length-1].toLowerCase())) last=parts.pop()+' '+last;
+  if(suf) last+=' '+suf;
+  let middle=''; if(parts.length>=2&&/^[A-Za-z]\.?$/.test(parts[parts.length-1])) middle=parts.pop();
+  return {first:parts.join(' '),middle,last,nick,alt,raw:raw};
+}
+/* ================= dates ================= */
+const MONTHS={january:1,jan:1,enero:1,february:2,feb:2,pebrero:2,febrero:2,march:3,mar:3,marso:3,marzo:3,april:4,apr:4,abril:4,may:5,mayo:5,june:6,jun:6,hunyo:6,junio:6,july:7,jul:7,hulyo:7,julio:7,august:8,aug:8,agosto:8,september:9,sep:9,sept:9,setyembre:9,septiembre:9,october:10,oct:10,oktubre:10,octubre:10,november:11,nov:11,nobyembre:11,noviembre:11,december:12,dec:12,disyembre:12,diciembre:12};
+const MN='(?:'+Object.keys(MONTHS).sort((a,b)=>b.length-a.length).join('|')+')';
+const dim=(y,m)=>new Date(y,m,0).getDate();
+const pad=n=>String(n).padStart(2,'0');
+function mk(y,m,d,extra){ if(y<1000||y>2100) return null; if(m&&(m<1||m>12)) return null; if(d&&(d<1||d>dim(y,m||1))) return null; const prec=d?'day':(m?'month':'year'); return Object.assign({y,m:m||0,d:d||0,prec,iso:`${y}-${pad(m||1)}-${pad(d||1)}`},extra||{}); }
+const APPROX=/\b(?:c|ca|circa|about|abt|approx|approximately|around|mga|estimated|est)\b\.?|~/i;
+function findDate(str,order){
+  const s=String(str||''); const cands=[];
+  const push=(m,fn)=>{ const d=fn(m); if(d) cands.push({date:d,start:m.index,end:m.index+m[0].length,text:m[0]}); };
+  let m;
+  const re=[
+    [/\b(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})\b/g,m=>mk(+m[1],+m[2],+m[3])],
+    [new RegExp('\\b('+MN+')\\.?\\s+(\\d{1,2})(?:st|nd|rd|th)?,?\\s+(\\d{4})\\b','gi'),m=>mk(+m[3],MONTHS[m[1].toLowerCase()],+m[2])],
+    [new RegExp('\\b(\\d{1,2})(?:st|nd|rd|th)?\\s+(?:of\\s+|ng\\s+)?('+MN+')\\.?,?\\s+(\\d{4})\\b','gi'),m=>mk(+m[3],MONTHS[m[2].toLowerCase()],+m[1])],
+    [new RegExp('\\b('+MN+')\\.?,?\\s+(\\d{4})\\b','gi'),m=>mk(+m[2],MONTHS[m[1].toLowerCase()],0)],
+    [/\b(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})\b/g,m=>{ const a=+m[1],b=+m[2],y=+m[3]; let d,mo,amb=false; if(a>12){d=a;mo=b;} else if(b>12){mo=a;d=b;} else if(a===b){d=a;mo=b;} else if(order==='dmy'){d=a;mo=b;} else if(order==='mdy'){mo=a;d=b;} else {mo=a;d=b;amb=true;} const r=mk(y,mo,d); if(r&&amb) r.ambiguous=true; return r; }],
+    [/\b(1[0-9]{3}|20[0-9]{2})\b/g,m=>mk(+m[1],0,0)]
+  ];
+  re.forEach(([rx,fn])=>{ rx.lastIndex=0; while((m=rx.exec(s))){ push(m,fn); } });
+  if(!cands.length) return null;
+  // prefer the leftmost; on overlap prefer the more precise/longer
+  cands.sort((a,b)=>a.start-b.start||b.end-a.end);
+  const first=cands[0]; const approxPre=s.slice(Math.max(0,first.start-14),first.start);
+  const ap=APPROX.test(approxPre)||APPROX.test(s.slice(0,first.start).slice(-14));
+  const out=Object.assign({},first.date,{approx:ap,raw:first.text}); return {date:out,start:first.start,end:first.end};
+}
+function splitDatePlace(str,order){
+  const s=String(str||'').trim(); const f=findDate(s,order); let place='';
+  let rest=s; if(f){ rest=(s.slice(0,f.start).replace(APPROX,'')+' '+s.slice(f.end)); }
+  rest=rest.replace(/\b(?:on|noong|nuong|sa|in|at|ng|born|died|b|d)\b\.?/gi,' ').replace(/^[\s,;:–—\-().]+|[\s,;:–—\-().]+$/g,'').replace(/\s{2,}/g,' ').trim();
+  if(rest&&!/^\d+$/.test(rest)&&rest.length<80) place=rest;
+  return {date:f?f.date:null,place};
+}
+/* ================= labels ================= */
+const LABELS={
+  name:['name','full name','pangalan','ngalan','person'],
+  gender:['gender','sex','kasarian'],
+  born:['born','birth','birth date','birthdate','date of birth','dob','birthday','kapanganakan','ipinanganak','petsa ng kapanganakan','kaarawan','birth year'],
+  birthplace:['birthplace','birth place','place of birth','lugar ng kapanganakan','pinanganakan','born in'],
+  died:['died','death','death date','deathdate','date of death','kamatayan','namatay','petsa ng kamatayan','pumanaw','passed away','death year'],
+  deathplace:['death place','deathplace','place of death','lugar ng kamatayan','buried','burial'],
+  father:['father','dad','daddy','papa','tatay','ama','itay','tay','fathers name'],
+  mother:['mother','mom','mommy','mama','nanay','ina','inay','mothers name'],
+  parents:['parents','parent','mga magulang','magulang'],
+  spouse:['spouse','partner','spouse partner','spouse/partner','wife','husband','asawa','misis','mister','kabiyak','kapareha','married to','mag asawa','spouse or partner'],
+  children:['children','child','kids','kid','anak','mga anak','sons','daughters','son','daughter'],
+  siblings:['siblings','sibling','brothers','sisters','brother','sister','kapatid','mga kapatid'],
+  notes:['notes','note','biography','bio','about','description','remarks','tala','talambuhay','history','story','kwento'],
+  traits:['traits','personality','character','ugali','pagkatao','personality traits'],
+  status:['status','living status','buhay'],
+  occupation:['occupation','job','work','profession','trabaho','hanapbuhay'],
+  residence:['address','residence','lives in','tirahan','location','lugar']
+};
+const LABEL_KEY={}; Object.keys(LABELS).forEach(k=>LABELS[k].forEach(l=>{ LABEL_KEY[norm(l)]=k; }));
+const REL_GENDER={father:'Male',mother:'Female',wife:'Female',husband:'Male',son:'Male',daughter:'Female',brother:'Male',brothers:'Male',sister:'Female',sisters:'Female',sons:'Male',daughters:'Female',tatay:'Male',ama:'Male',itay:'Male',papa:'Male',dad:'Male',daddy:'Male',nanay:'Female',ina:'Female',inay:'Female',mama:'Female',mom:'Female',mommy:'Female',misis:'Female',mister:'Male'};
+function labelOf(raw){ const k=norm(raw); return {key:LABEL_KEY[k]||null,norm:k,gender:REL_GENDER[k]||''}; }
+const LINE_RE=/^\s*(?:[•●▪\-–*·]\s*)?([^:：\n]{2,32}?)\s*[:：]\s*(.*)$/s;
+function parseLabelLine(text){ const m=LINE_RE.exec(text); if(!m) return null; const lb=labelOf(m[1]); if(!lb.key) return null; return {label:m[1].trim(),key:lb.key,gender:lb.gender,value:m[2].trim(),norm:lb.norm}; }
+function splitList(v){
+  let s=String(v||'').replace(/\band\b/gi,',').replace(/\bat\b(?=\s+[A-ZÀ-Ý])/g,',').replace(/&/g,',').replace(/[;\/\n]/g,',').replace(/^\s*\d+\s+(?:children|kids|anak|siblings)\s*[:\-]?\s*/i,'');
+  return s.split(',').map(x=>x.replace(/^[\s•\-–*·\d.)]+/,'').replace(/^(?:si|ni|nina|sina|mga)\s+/i,'').trim()).filter(x=>x&&!/^(none|n\/a|na|unknown|wala|-|—|\?+)$/i.test(x));
+}
+const NONE=/^(none|n\/a|na|unknown|wala|-|—|\?+|not known|di alam)?$/i;
+root.FTImportB={strip,norm,splitName,findDate,splitDatePlace,labelOf,parseLabelLine,splitList,LABELS,LABEL_KEY,REL_GENDER,MONTHS,MN,NONE,mk,PARTICLES,APPROX,pad};
+})(window);
+(function(root){
+'use strict';
+const B=root.FTImportB;
+const {norm,splitName,findDate,splitDatePlace,parseLabelLine,labelOf,splitList,NONE}=B;
+const CAP="\\p{Lu}[\\p{L}'’.\\-]*";
+const PART="(?:de la|de los|dela|delos|del|de|van|von|da|di|bin|al)";
+const NAME=`${CAP}(?:\\s+(?:${PART}\\s+)?${CAP}){0,4}`;
+const SEP="(?:,\\s*(?:and\\s+|at\\s+)?|\\s+and\\s+|\\s+&\\s+|\\s+at\\s+|;\\s*)";
+const NLIST=`${NAME}(?:${SEP}${NAME})*`;
+const STOPCAP=new Set(['the','in','on','at','he','she','they','his','her','their','it','this','that','after','before','when','while','during','later','then','today','born','died','married','family','mr','mrs','ms','dr','also','however','but','and','as','since','by','from','with','for','of','to','a','an','si','ang','ni','nina','sina','siya','sila','kanyang','kaniyang','noong','ipinanganak','namatay']);
+const nameOk=n=>{ const t=n.trim().split(/\s+/); return n.trim().length>1&&!STOPCAP.has(t[0].toLowerCase().replace(/[.']/g,'')); };
+const rx=(s,f)=>new RegExp(s,f||'u');
+const GEN={male:'Male',m:'Male',man:'Male',boy:'Male',lalaki:'Male',female:'Female',f:'Female',woman:'Female',girl:'Female',babae:'Female'};
+
+function parse(doc,opts){
+  opts=opts||{}; const order=opts.dateOrder||null; const colMap=opts.colMap||{};
+  const cands=[]; const edges=[]; const sibs=[]; const problems=[]; const tables=[]; let tn=0,en=0,ambiguous=0;
+  const dateOf=(s)=>{ const f=splitDatePlace(s,order); if(f.date&&f.date.ambiguous) ambiguous++; return f; };
+  function newCand(raw,o){ o=o||{}; const nm=splitName(raw||''); return {tid:'c'+(++tn),raw:String(raw||'').trim(),first:nm.first,middle:nm.middle,last:nm.last,nick:nm.nick,alt:nm.alt,gender:'',birth:null,death:null,living:null,birthPlace:'',deathPlace:'',notes:[],traits:[],imgPath:null,rec:!!o.rec,via:o.via||'',src:[],flags:[],conf:o.conf||'high'}; }
+  const keyOf=c=>norm((c.first||'')+' '+(c.last||''));
+  function find(raw,create,o){
+    o=o||{}; const nm=splitName(raw); const key=norm(nm.first+' '+nm.last); if(!key) return null; const toks=key.split(' ');
+    let ex=cands.filter(c=>keyOf(c)===key); if(ex.length===1) return ex[0];
+    const sub=(a,b)=>a.every(x=>b.includes(x));
+    ex=cands.filter(c=>{ const ct=keyOf(c).split(' '); return ct[0]&&(sub(toks,ct)||sub(ct,toks)); });
+    if(ex.length===1){ const c=ex[0]; if(!c.rec&&toks.length>keyOf(c).split(' ').length){ c.first=nm.first;c.middle=nm.middle||c.middle;c.last=nm.last;c.raw=raw.trim(); } return c; }
+    if(ex.length>1){ const recs=ex.filter(c=>c.rec); const exact=ex.filter(c=>keyOf(c)===key); if(exact.length===1) return exact[0]; if(recs.length===1&&!create) return recs[0]; if(!create) return null; }
+    if(!create) return null; const c=newCand(raw,{rec:false,via:o.via||'mention',conf:o.conf||'high'}); if(ex.length>1) c.flags.push('Several people share this name in the document'); cands.push(c); return c;
+  }
+  function recFor(raw,via){ const nm=splitName(raw||''); let c=nm.first?find(raw,false):null;
+    if(c){ if(!c.rec){ c.rec=true; c.via=via; c.conf='high'; const sn=splitName(raw); if(sn.last&&!c.last||norm(sn.first+' '+sn.last).length>keyOf(c).length){ c.first=sn.first; c.middle=sn.middle||c.middle; c.last=sn.last; c.raw=String(raw).trim(); } if(sn.nick&&!c.nick) c.nick=sn.nick; } return c; }
+    c=newCand(raw,{rec:true,via}); cands.push(c); return c; }
+  function edge(a,b,type,conf,src){
+    if(!a||!b||a===b) return null;
+    const k=type==='spouse'?[type,[a.tid,b.tid].sort().join('|')].join(':'):[type,a.tid,b.tid].join(':'); let e=edges.find(x=>x.k===k);
+    if(e){ if(conf==='high') e.conf='high'; if(src&&!e.srcs.includes(src)) e.srcs.push(src); return e; }
+    e={id:'e'+(++en),k,a:a.tid,b:b.tid,type,conf:conf||'high',srcs:src?[src]:[],on:true}; edges.push(e); return e;
+  }
+  const setGender=(c,g,why)=>{ if(c&&g&&!c.gender){ c.gender=g; c.genderWhy=why||''; } };
+  const addNote=(c,t)=>{ t=String(t||'').trim(); if(t&&!c.notes.includes(t)) c.notes.push(t); };
+  function rel(me,type,raw,conf,src,gh){
+    const other=find(raw,true,{conf}); if(!other||other===me) return;
+    if(gh) setGender(other,gh,'stated by the word “'+type+'”');
+    if(type==='father'||type==='mother'||type==='parent'){ edge(other,me,'parent',conf,src); if(type==='father') setGender(other,'Male','father'); if(type==='mother') setGender(other,'Female','mother'); }
+    else if(type==='child') edge(me,other,'parent',conf,src);
+    else if(type==='spouse') edge(me,other,'spouse',conf,src);
+    else if(type==='sibling') sibs.push({a:me.tid,b:other.tid,conf,src});
+  }
+  const yearHintOf=(raw)=>{ const m=/\((?:b\.?|born)?\s*(\d{4})\)/i.exec(raw); return m?+m[1]:null; };
+  function relList(me,type,value,conf,src,gh){
+    splitList(value).forEach(item=>{ const hint=yearHintOf(item); const nm=item.replace(/\([^)]*\)/g,' ').replace(/\s+/g,' ').trim(); if(!nm||!/\p{L}/u.test(nm)) return; rel(me,type,nm,conf,src,gh); if(hint){ const o=find(nm,false); if(o&&!o.birth&&!o.rec) o.birth={y:hint,m:0,d:0,prec:'year',iso:hint+'-01-01',approx:false}; } });
+  }
+  /* ---- apply one labelled field ---- */
+  function applyField(c,f){
+    const v=String(f.value||'').trim(); const src=f.src; const key=f.key;
+    if(NONE.test(v)&&key!=='status') return;
+    const conf=f.conf||'high';
+    if(key==='name'){ if(!c.raw){ Object.assign(c,{raw:v}); const nm=splitName(v); c.first=nm.first;c.middle=nm.middle;c.last=nm.last;c.nick=nm.nick||c.nick;c.alt=nm.alt; } }
+    else if(key==='gender'){ const g=GEN[norm(v)]; if(g) c.gender=g, c.genderWhy='stated in the document'; else c.flags.push('Gender “'+v+'” not recognised'); }
+    else if(key==='born'){ const r=dateOf(v); if(r.date){ c.birth=r.date; } else c.flags.push('Birth date “'+v+'” not understood'); if(r.place&&!c.birthPlace) c.birthPlace=r.place; if(r.date&&r.date.ambiguous) c.flags.push('Birth date is ambiguous (day/month order)'); }
+    else if(key==='birthplace'){ c.birthPlace=v; }
+    else if(key==='died'){ if(/^(alive|living|buhay|present|still alive)/i.test(v)){ c.living=true; } else { const r=dateOf(v); if(r.date){ c.death=r.date; c.living=false; } else if(/^(deceased|dead|patay|namatay|yes)/i.test(v)) c.living=false; else c.flags.push('Death date “'+v+'” not understood'); if(r.place&&!c.deathPlace) c.deathPlace=r.place; if(r.date&&r.date.ambiguous) c.flags.push('Death date is ambiguous (day/month order)'); } }
+    else if(key==='deathplace'){ c.deathPlace=v; if(/^(buried|burial)/i.test(f.label||'')) { addNote(c,'Buried: '+v); c.deathPlace=''; } }
+    else if(key==='status'){ if(/alive|living|buhay/i.test(v)) c.living=true; else if(/deceased|dead|patay|namatay|passed/i.test(v)) c.living=false; }
+    else if(key==='father'||key==='mother'){ relList(c,key,v,conf,src,f.gender); }
+    else if(key==='parents'){ relList(c,'parent',v,conf,src); }
+    else if(key==='spouse'){ relList(c,'spouse',v,conf,src,f.gender); }
+    else if(key==='children'){ relList(c,'child',v,conf,src,f.gender); }
+    else if(key==='siblings'){ relList(c,'sibling',v,conf,src,f.gender); }
+    else if(key==='notes'){ addNote(c,v); }
+    else if(key==='traits'){ splitList(v).forEach(t=>{ if(!c.traits.includes(t)) c.traits.push(t); }); }
+    else if(key==='occupation'){ addNote(c,'Occupation: '+v); } else if(key==='residence'){ addNote(c,'Lives in: '+v); }
+    if(src&&!c.src.includes(src)) c.src.push(src);
+  }
+  const headerOf=cells=>cells.map((c,i)=>{ const k=B.LABEL_KEY[norm(c.text)]||null; return k; });
+  const EXAMPLE=/\(example\)|^example\b|\bsample person\b|\(sample\)/i;
+  /* ---- tables ---- */
+  const consumed=new Set(); const recs=[];
+  doc.blocks.forEach((blk,bi)=>{
+    if(blk.type!=='table'||!blk.rows.length) return;
+    const first=blk.rows[0]; let hdr=headerOf(first); const mapped=hdr.filter(Boolean).length;
+    const ti=tables.length;
+    if(mapped>=2&&hdr.includes('name')){
+      consumed.add(bi); const cm=colMap[ti]||{}; hdr=hdr.map((k,i)=>cm[i]!==undefined?(cm[i]||null):k);
+      tables.push({index:ti,kind:'columns',cols:first.map((c,i)=>({text:c.text,key:hdr[i]}))});
+      blk.rows.slice(1).forEach((row,ri)=>{
+        const nameIdx=hdr.indexOf('name'); const nm=(row[nameIdx]&&row[nameIdx].text||'').replace(/\n/g,' ').trim();
+        if(!nm) return; if(EXAMPLE.test(nm)){ problems.push({kind:'info',text:'Skipped the template’s example row.'}); return; }
+        const c=recFor(nm,'table'); const srcText=row.map(x=>x.text.replace(/\n/g,', ')).join(' | ');
+        row.forEach((cell,ci)=>{ const k=hdr[ci]; if(!k||k==='name') { if(!k&&cell.text&&first[ci]&&first[ci].text) addNote(c,first[ci].text+': '+cell.text.replace(/\n/g,', ')); return; } applyField(c,{key:k,value:cell.text,src:srcText,label:first[ci].text,gender:B.labelOf(first[ci].text).gender}); });
+        c.src.unshift(srcText); const img=row.map(x=>x.images&&x.images[0]).find(Boolean); if(img) c.imgPath=img; recs.push({cand:c});
+      });
+    } else if(blk.rows.length>=2&&blk.rows.every(r=>r.length>=2)&&blk.rows.filter(r=>B.LABEL_KEY[norm(r[0].text)]).length>=2){
+      consumed.add(bi); tables.push({index:ti,kind:'keyvalue'}); const nmRow=blk.rows.find(r=>B.LABEL_KEY[norm(r[0].text)]==='name');
+      const c=recFor(nmRow?nmRow[1].text:'','table'); recs.push({cand:c,pendingTitle:!nmRow});
+      blk.rows.forEach(r=>{ const lb=labelOf(r[0].text); const srcText=r.map(x=>x.text.replace(/\n/g,', ')).join(' | '); if(lb.key&&lb.key!=='name') applyField(c,{key:lb.key,value:r[1].text,src:srcText,label:r[0].text,gender:lb.gender}); else if(!lb.key&&r[0].text&&r[1].text) addNote(c,r[0].text+': '+r[1].text.replace(/\n/g,', ')); });
+      const img=blk.rows.map(r=>r[1].images&&r[1].images[0]).find(Boolean); if(img) c.imgPath=img;
+    }
+  });
+  /* ---- paragraphs: headings / labelled blocks ---- */
+  const GENERIC=/^(introduction|summary|notes?|contents|table|generation|grandparents|parents|children|siblings|overview|history|index|appendix|references|template|instructions?|how to|example|born|died|biography|profile|about|family tree|family history|family members|members|spouse|name|details)\b/i;
+  const nameLike=(t)=>{ let s=String(t||'').replace(/^(?:biography|profile|life|story|family history|history|about|talambuhay)\s+(?:of|ni|ng)\s+/i,'').replace(/\(([^)]*)\)/g,' ').replace(/[–—-]\s*\d{4}.*$/,'').trim(); if(!s||s.length>60||/\d/.test(s)||/family\b/i.test(s)||GENERIC.test(s)) return null; const toks=s.split(/\s+/); if(toks.length>6) return null; if(!toks.every(w=>/^\p{Lu}/u.test(w)||B.PARTICLES.has(w.toLowerCase())||/^\p{L}\.$/u.test(w))) return null; return s; };
+  let cur=null; const globalLines=[]; let docTitle=null; let subLabel=null; const looseImages=[];
+  const startRec=(name,via)=>{ const c=name?recFor(name,via):(()=>{ const x=newCand('',{rec:true,via}); cands.push(x); return x; })(); cur={cand:c,lines:[],via}; recs.push(cur); subLabel=null; return cur; };
+  const lifeInline=(c,inner)=>{ const m=/(\d{4})\s*[-–—]\s*(\d{4}|present|living)?/.exec(inner); if(m){ c.birth=c.birth||B.mk(+m[1],0,0); if(m[2]&&/\d/.test(m[2])){ c.death=c.death||B.mk(+m[2],0,0); c.living=false; } return true; } const b=/^(?:b\.?|born|\*)\s*(.+)$/i.exec(inner.trim()); if(b){ const r=dateOf(b[1]); if(r.date&&!c.birth) c.birth=r.date; return true; } const d=/^(?:d\.?|died|†)\s*(.+)$/i.exec(inner.trim()); if(d){ const r=dateOf(d[1]); if(r.date&&!c.death){ c.death=r.date; c.living=false; } return true; } return false; };
+  doc.blocks.forEach((blk,bi)=>{
+    if(blk.type!=='p'||consumed.has(bi)) return;
+    const t=blk.text;
+    if(!t){ if(blk.images.length){ if(cur&&cur.cand) { if(!cur.cand.imgPath) cur.cand.imgPath=blk.images[0]; } else looseImages.push(blk.images[0]); } return; }
+    if(blk.images.length){ if(cur&&cur.cand&&!cur.cand.imgPath) cur.cand.imgPath=blk.images[0]; else if(!cur) looseImages.push(blk.images[0]); }
+    if(blk.heading){
+      const nm=nameLike(t);
+      if(nm){ const r=startRec(nm,'heading'); const inl=/\(([^)]*)\)/.exec(t); if(inl) lifeInline(r.cand,inl[1]); const tail=/[–—-]\s*(\d{4}.*)$/.exec(t); if(tail&&!inl) lifeInline(r.cand,tail[1]); r.cand.src.push(t); return; }
+      const lb=labelOf(t.replace(/[:：]\s*$/,'')); if(lb.key&&cur&&['father','mother','parents','spouse','children','siblings','notes','traits'].includes(lb.key)){ subLabel={key:lb.key,gender:lb.gender,label:t}; return; }
+      if(!docTitle&&bi<4){ const ttl=nameLike(t); docTitle=ttl||(/(?:biography|profile|life|about)\s+(?:of\s+)?(.+)/i.exec(t)||[])[1]||null; if(docTitle) docTitle=nameLike(docTitle)||null; }
+      cur=null; subLabel=null; return;
+    }
+    const lab=parseLabelLine(t);
+    if(lab){ subLabel=null;
+      if(lab.key==='name'){ const r=startRec(lab.value,'labeled'); r.cand.src.push(t); return; }
+      if(!cur){ const r=startRec('', 'labeled'); r.anon=true; }
+      applyField(cur.cand,{key:lab.key,value:lab.value,src:t,label:lab.label,gender:lab.gender}); if(!cur.cand.src.includes(t)) cur.cand.src.push(t); return; }
+    if(subLabel&&cur&&(blk.list||t.length<60)){ applyField(cur.cand,{key:subLabel.key,value:t,src:subLabel.label+': '+t,label:subLabel.label,gender:subLabel.gender}); return; }
+    const gen=/^\s*([A-Za-zÀ-ÿ'’ ]{2,24})\s*[:：]\s*(\S.*)$/.exec(t);
+    if(cur&&gen&&gen[1].split(' ').length<=3&&!/\b(he|she|they|was|is|are|were)\b/i.test(gen[1])){ addNote(cur.cand,gen[1].trim()+': '+gen[2].trim()); return; }
+    if(cur){ cur.lines.push(t); } else globalLines.push(t);
+  });
+  /* ---- sentences ---- */
+  const protect=s=>s.replace(/\b(\p{Lu}|Jr|Sr|Mr|Mrs|Ms|Dr|Fr|c|ca|b|d|m|vs|St)\.(?=\s)/gu,'$1\u0001');
+  const sentencesOf=txt=>protect(txt).split(/(?<=[.!?])\s+(?=[\p{Lu}"“])/u).map(x=>x.replace(/\u0001/g,'.').trim()).filter(Boolean);
+  const nameList=(s)=>{ const m=[]; const r=new RegExp(NAME,'gu'); let x; const out=[]; String(s).split(new RegExp(SEP,'u')).forEach(p=>{ p=p.trim().replace(/[.,;]+$/,''); if(p&&nameOk(p)) out.push(p); }); return out; };
+  let last=null;
+  function sentence(s,defSubj){
+    let sub=last||defSubj; const subj=(raw,pron)=>{ if(pron) return sub; const c=find(raw,true,{conf:'review'}); if(c){ last=c; sub=c; } return c; };
+    const PRON='(He|She|Siya)'; let m;
+    // inline "(1950–2020)" / "(b. 1950)" after a name
+    const inl=new RegExp(`(${NAME})\\s*\\(([^)]{3,60})\\)`,'gu'); let im; while((im=inl.exec(s))){ if(nameOk(im[1])&&/^(?:b\.?|born|d\.?|died|\*|†|\d{4}\s*[-–—])/i.test(im[2].trim())){ const c=find(im[1],true,{conf:'review'}); if(c){ lifeInline(c,im[2]); c.src.push(s); } } }
+    // is the son/daughter/child of
+    if((m=rx(`^(${NAME})\\s+(?:is|was)\\s+(?:the\\s+|an?\\s+)?(?:[a-z]+\\s+)?(son|daughter|child)\\s+of\\s+(${NLIST})`).exec(s))&&nameOk(m[1])){
+      const c=subj(m[1]); setGender(c,m[2]==='son'?'Male':m[2]==='daughter'?'Female':'', 'stated: '+m[2]); nameList(m[3]).forEach(p=>rel(c,'parent',p,'high',s)); return; }
+    if((m=rx(`^Si\\s+(${NAME})\\s+ay\\s+(?:isang\\s+)?anak\\s+(?:nina|ni)\\s+(${NLIST})`).exec(s))){ const c=subj(m[1]); nameList(m[2]).forEach(p=>rel(c,'parent',p,'high',s)); return; }
+    // X is the father/mother/husband/... of Y
+    if((m=rx(`^(${NAME})\\s+(?:is|was)\\s+(?:the\\s+|an?\\s+)?(?:[a-z]+\\s+)?(father|mother|dad|mom|husband|wife|spouse|partner|brother|sister|son|daughter)\\s+of\\s+(${NLIST})`).exec(s))&&nameOk(m[1])){
+      const c=subj(m[1]); const w=m[2].toLowerCase(); const list=nameList(m[3]);
+      if(/^(father|dad)$/.test(w)){ setGender(c,'Male',w); list.forEach(x=>rel(c,'child',x,'high',s)); }
+      else if(/^(mother|mom)$/.test(w)){ setGender(c,'Female',w); list.forEach(x=>rel(c,'child',x,'high',s)); }
+      else if(/^(husband|wife|spouse|partner)$/.test(w)){ if(w==='husband') setGender(c,'Male',w); if(w==='wife') setGender(c,'Female',w); list.forEach(x=>rel(c,'spouse',x,'high',s)); }
+      else if(/^(brother|sister)$/.test(w)){ setGender(c,w==='brother'?'Male':'Female',w); list.forEach(x=>rel(c,'sibling',x,'review',s)); }
+      else { setGender(c,w==='son'?'Male':'Female',w); list.forEach(x=>rel(c,'parent',x,'high',s)); } return; }
+    if((m=rx(`^Si\\s+(${NAME})\\s+ay\\s+(?:ang\\s+)?asawa\\s+ni\\s+(${NAME})`).exec(s))||(m=rx(`^Si\\s+(${NAME})\\s+ay\\s+(?:ikinasal|nagpakasal|kasal)\\s+(?:kay|kina)\\s+(${NAME})`).exec(s))){ const c=subj(m[1]); rel(c,'spouse',m[2],'high',s); return; }
+    // married
+    if((m=rx(`^(${NAME})\\s+and\\s+(${NAME})\\s+(?:got\\s+|were\\s+)?(?:married|wed)\\b(.*)$`).exec(s))&&nameOk(m[1])){ const a=subj(m[1]); const b=find(m[2],true,{conf:'review'}); if(a&&b){ edge(a,b,'spouse','high',s); const d=findDate(m[3],order); if(d){ const txt=`Married ${b.raw||m[2]} ${d.date.prec==='year'?'in':'on'} ${d.date.raw}`; addNote(a,txt); addNote(b,`Married ${a.raw} ${d.date.prec==='year'?'in':'on'} ${d.date.raw}`); } } return; }
+    if((m=rx(`^(${NAME})\\s+(?:got\\s+)?(?:married|wed)\\s+(?:to\\s+)?(${NAME})\\b(.*)$`).exec(s))&&nameOk(m[1])){ const a=subj(m[1]); const b=find(m[2],true,{conf:'review'}); if(a&&b){ edge(a,b,'spouse','high',s); const d=findDate(m[3],order); if(d){ addNote(a,`Married ${b.raw} ${d.date.prec==='year'?'in':'on'} ${d.date.raw}`); addNote(b,`Married ${a.raw} ${d.date.prec==='year'?'in':'on'} ${d.date.raw}`); } } return; }
+    if((m=rx(`^(?:He|She)\\s+(?:got\\s+)?(?:married|wed)\\s+(?:to\\s+)?(${NAME})\\b(.*)$`).exec(s))&&sub&&nameOk(m[1])){ const b=find(m[1],true,{conf:'review'}); if(b){ edge(sub,b,'spouse','review',s); const d=findDate(m[2],order); if(d){ addNote(sub,`Married ${b.raw} ${d.date.prec==='year'?'in':'on'} ${d.date.raw}`); addNote(b,`Married ${sub.raw} ${d.date.prec==='year'?'in':'on'} ${d.date.raw}`); } } return; }
+    // had children
+    if((m=rx(`^(${NAME})(?:\\s+and\\s+(${NAME}))?\\s+(?:had|have|has)\\s+(?:\\w+\\s+)?(?:children|kids|child|sons|daughters)(?:\\s*(?::|-|namely|named|called)\\s*|\\s+)(${NLIST})`).exec(s))&&nameOk(m[1])){ const a=subj(m[1]); const b=m[2]?find(m[2],true,{conf:'review'}):null; nameList(m[3]).forEach(ch=>{ rel(a,'child',ch,'high',s); if(b) rel(b,'child',ch,'high',s); }); last=a; return; }
+    if((m=rx(`^Ang\\s+(?:mga\\s+)?anak\\s+(?:nina|ni)\\s+(${NLIST})\\s+ay\\s+(${NLIST})`).exec(s))){ const ps=nameList(m[1]).map(x=>find(x,true,{conf:'review'})); nameList(m[2]).forEach(ch=>ps.forEach(p=>rel(p,'child',ch,'high',s))); return; }
+    // possessive: X's father is Y
+    if((m=rx(`^(${NAME})['’]s\\s+(father|mother|wife|husband|spouse|partner|son|daughter|brother|sister)\\s+(?:is|was)\\s+(${NAME})`).exec(s))&&nameOk(m[1])){ const c=subj(m[1]); const w=m[2]; const gh=REL(w); if(/^(father|mother)$/.test(w)) rel(c,w,m[3],'high',s); else if(/^(wife|husband|spouse|partner)$/.test(w)) rel(c,'spouse',m[3],'high',s,gh); else if(/^(son|daughter)$/.test(w)) rel(c,'child',m[3],'high',s,gh); else rel(c,'sibling',m[3],'review',s,gh); return; }
+    // pronoun relations: His father is X / Their children are X, Y
+    if((m=rx(`^(?:His|Her|Kanyang|Kaniyang)\\s+(father|mother|parents|wife|husband|spouse|partner|brothers?|sisters?|siblings|children|kids|sons?|daughters?)\\s*(?:is|was|are|were|:|named|include[sd]?)?\\s*(${NLIST})`).exec(s))&&sub){ const w=m[1].toLowerCase(); const list=nameList(m[2]); const conf='review'; list.forEach(x=>{ if(/^(father|mother)$/.test(w)) rel(sub,w,x,conf,s); else if(w==='parents') rel(sub,'parent',x,conf,s); else if(/^(wife|husband|spouse|partner)$/.test(w)) rel(sub,'spouse',x,conf,s,REL(w)); else if(/^(children|kids|sons?|daughters?)$/.test(w)) rel(sub,'child',x,conf,s,REL(w)); else rel(sub,'sibling',x,conf,s,REL(w)); }); return; }
+    if((m=rx(`^Their\\s+(?:children|kids|son|daughter|sons|daughters)\\s*(?:are|were|is|was|include[sd]?|:)?\\s*(${NLIST})`).exec(s))&&sub){ const couple=edges.filter(e=>e.type==='spouse'&&(e.a===sub.tid||e.b===sub.tid)).slice(-1)[0]; const other=couple?cands.find(c=>c.tid===(couple.a===sub.tid?couple.b:couple.a)):null; nameList(m[1]).forEach(ch=>{ rel(sub,'child',ch,'review',s); if(other) rel(other,'child',ch,'review',s); }); return; }
+    // born / died
+    if((m=rx(`^(?:(${NAME})|${PRON})\\s+(?:was\\s+)?born\\b(.*)$`,'u').exec(s))&&(m[1]?nameOk(m[1]):sub)){ const c=m[1]?subj(m[1]):sub; let rest=m[3]; const pm=rx(`\\bto\\s+(${NLIST})`).exec(rest); if(pm){ rest=rest.slice(0,pm.index); nameList(pm[1]).forEach(p=>rel(c,'parent',p,m[1]?'high':'review',s)); } const r=dateOf(rest); if(r.date&&!c.birth) c.birth=r.date; if(r.place&&!c.birthPlace) c.birthPlace=r.place; if(r.date&&r.date.ambiguous) c.flags.push('Birth date is ambiguous (day/month order)'); c.src.push(s); return; }
+    if((m=rx(`^(?:(${NAME})|${PRON})\\s+(?:died|passed away|passed on|passed)\\b(.*)$`,'u').exec(s))&&(m[1]?nameOk(m[1]):sub)){ const c=m[1]?subj(m[1]):sub; const r=dateOf(m[3]); if(r.date&&!c.death){ c.death=r.date; } c.living=false; if(r.place&&!c.deathPlace) c.deathPlace=r.place; c.src.push(s); return; }
+    if((m=rx(`^Ipinanganak\\s+si\\s+(${NAME})\\b(.*)$`).exec(s))){ const c=subj(m[1]); const r=dateOf(m[2]); if(r.date&&!c.birth) c.birth=r.date; if(r.place&&!c.birthPlace) c.birthPlace=r.place; c.src.push(s); return; }
+    if((m=rx(`^Namatay\\s+si\\s+(${NAME})\\b(.*)$`).exec(s))){ const c=subj(m[1]); const r=dateOf(m[2]); if(r.date&&!c.death) c.death=r.date; c.living=false; c.src.push(s); return; }
+    // anything else inside a person's block becomes a note on that person
+    if(defSubj&&defSubj.rec&&s.length>3) addNote(defSubj,s);
+  }
+  const REL=w=>B.REL_GENDER[String(w).toLowerCase().replace(/s$/,'')]||'';
+  recs.forEach(r=>{ if(!r.lines||!r.lines.length) return; last=r.cand; r.lines.forEach(line=>sentencesOf(line).forEach(s=>sentence(s,r.cand))); });
+  last=null; globalLines.forEach(line=>sentencesOf(line).forEach(s=>sentence(s,null)));
+  // free-form sentences discover people: mark those who gained facts as record-like
+  cands.forEach(c=>{ if(!c.rec&&(c.birth||c.death||c.birthPlace||c.deathPlace)&&(c.via==='mention')){ c.rec=true; c.via='sentence'; c.conf='review'; } });
+  /* ---- name-only mentions with no relationships and no facts are noise ---- */
+  for(let i=cands.length-1;i>=0;i--){ const c=cands[i]; if(!c.rec&&!c.birth&&!c.death&&!edges.some(e=>e.a===c.tid||e.b===c.tid)&&!sibs.some(x=>x.a===c.tid||x.b===c.tid)) cands.splice(i,1); }
+  /* ---- template example entries are ignored ---- */
+  (function(){ const ex=cands.filter(c=>c.rec&&EXAMPLE.test(c.raw)); if(!ex.length) return; const gone=new Set(ex.map(c=>c.tid));
+    let ch=true; while(ch){ ch=false; cands.forEach(c=>{ if(c.rec||gone.has(c.tid)) return; const es=edges.filter(e=>e.a===c.tid||e.b===c.tid); if(es.length&&es.every(e=>gone.has(e.a)||gone.has(e.b))){ gone.add(c.tid); ch=true; } }); }
+    for(let i=cands.length-1;i>=0;i--) if(gone.has(cands[i].tid)) cands.splice(i,1); for(let i=edges.length-1;i>=0;i--) if(gone.has(edges[i].a)||gone.has(edges[i].b)) edges.splice(i,1);
+    for(let i=sibs.length-1;i>=0;i--) if(gone.has(sibs[i].a)||gone.has(sibs[i].b)) sibs.splice(i,1);
+    for(let i=recs.length-1;i>=0;i--) if(gone.has(recs[i].cand.tid)) recs.splice(i,1); problems.push({kind:'info',text:'Skipped the template’s example entries.'}); })();
+  /* ---- naming anonymous records (single-person documents) ---- */
+  const unnamed=cands.filter(c=>c.rec&&!c.first);
+  if(unnamed.length===1){ const u=unnamed[0]; const nm=docTitle||null; if(nm){ const sn=splitName(nm); Object.assign(u,{raw:nm,first:sn.first,middle:sn.middle,last:sn.last}); u.src.unshift('Title: '+nm); } }
+  cands.filter(c=>c.rec&&!c.first).forEach(c=>{ c.flags.push('No name found — type one in the review step'); c.conf='review'; });
+  /* ---- siblings -> parents (inferred, off by default) ---- */
+  const parentsOf=tid=>edges.filter(e=>e.type==='parent'&&e.b===tid&&e.on).map(e=>e.a);
+  sibs.forEach(sb=>{ const a=cands.find(c=>c.tid===sb.a), b=cands.find(c=>c.tid===sb.b); if(!a||!b) return; const pa=parentsOf(a.tid), pb=parentsOf(b.tid);
+    if(pa.length&&!pb.length){ pa.forEach(p=>{ const e=edge(cands.find(c=>c.tid===p),b,'parent','review','Inferred: '+b.raw+' is listed as a sibling of '+a.raw+' ('+sb.src+')'); if(e){ e.inferred=true; e.on=false; } }); }
+    else if(pb.length&&!pa.length){ pb.forEach(p=>{ const e=edge(cands.find(c=>c.tid===p),a,'parent','review','Inferred: '+a.raw+' is listed as a sibling of '+b.raw+' ('+sb.src+')'); if(e){ e.inferred=true; e.on=false; } }); }
+    else if(!pa.length&&!pb.length) problems.push({kind:'warn',text:`${a.raw||'A person'} and ${b.raw||'another person'} are listed as siblings, but no shared parent is known, so the link cannot be saved.`}); });
+  /* ---- sanity: >2 parents, cycles ---- */
+  cands.forEach(c=>{ const ps=edges.filter(e=>e.type==='parent'&&e.b===c.tid&&e.on); if(ps.length>2){ ps.slice(2).forEach(e=>{ e.on=false; e.flag='A person can have at most two parents'; }); problems.push({kind:'warn',text:`${c.raw||'A person'} has more than two parents listed — only the first two are kept.`}); } });
+  const anc=(id,seen)=>{ seen=seen||new Set(); edges.filter(e=>e.type==='parent'&&e.b===id&&e.on).forEach(e=>{ if(!seen.has(e.a)){ seen.add(e.a); anc(e.a,seen); } }); return seen; };
+  edges.filter(e=>e.type==='parent').forEach(e=>{ if(e.on&&anc(e.a).has(e.b)){ e.on=false; e.flag='This link would make someone their own ancestor'; problems.push({kind:'warn',text:'A parent–child link in the document is circular and was left out.'}); } });
+  const named=cands.filter(c=>c.rec).length; const mode=tables.length?(recs.some(r=>r.via==='heading'||r.via==='labeled')?'mixed':'table'):recs.some(r=>r.via==='heading')?'heading':recs.some(r=>r.via==='labeled')?'labeled':(globalLines.length?'sentences':'none');
+  if(!cands.length) problems.push({kind:'error',text:'No family members were found in this document.'});
+  looseImages.length&&cands.filter(c=>c.rec).length===1&&!cands.find(c=>c.rec).imgPath&&(cands.find(c=>c.rec).imgPath=looseImages[0]);
+  return {cands,edges,sibs,problems,tables,ambiguous,mode,recCount:named,singlePerson:named===1&&!tables.some(t=>t.kind==='columns'),fileName:doc.fileName};
+}
+root.FTImportC={parse};
+})(window);
+(function(root){
+'use strict';
+const A=root.FTImportA, B=root.FTImportB, C=root.FTImportC; const {norm}=B;
+/* ================= name matching against existing members ================= */
+const T=s=>norm(s).split(' ').filter(Boolean);
+function lev(a,b){ if(a===b) return 0; const m=a.length,n=b.length; if(!m) return n; if(!n) return m; let prev=Array.from({length:n+1},(_,i)=>i); for(let i=1;i<=m;i++){ const cur=[i]; for(let j=1;j<=n;j++) cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1)); prev=cur; } return prev[n]; }
+function simName(a,b){
+  const af=T(a.first), bf=T(b.first); if(!af.length||!bf.length) return {score:0,why:[]};
+  const na=norm(a.first), nb=norm(b.first); let fs=0, fw='';
+  if(na===nb){ fs=1; fw='first name matches'; }
+  else if(af[0]===bf[0]){ fs=.85; fw='first name matches'; }
+  else if((a.nick&&norm(a.nick)===nb)||(b.nick&&norm(b.nick)===na)||(a.nick&&b.nick&&norm(a.nick)===norm(b.nick))){ fs=.8; fw='nickname matches'; }
+  else if(na.length>=4&&lev(na,nb)<=1){ fs=.75; fw='first name is very similar'; }
+  if(!fs) return {score:0,why:[]};
+  const LA=[a.last].concat(a.alt||[]).filter(Boolean).map(norm), LB=[b.last].concat(b.alt||[]).filter(Boolean).map(norm);
+  let score,why=[fw];
+  if(!LA.length||!LB.length){ score=fs*.6; why.push('no last name to compare'); }
+  else { let best=0; LA.forEach(x=>LB.forEach(y=>{ let s=0; if(x===y) s=1; else if(x.endsWith(' '+y)||y.endsWith(' '+x)||(x.length>=4&&y.length>=4&&(x.endsWith(y)||y.endsWith(x)))) s=.9; else if(x.length>=4&&lev(x,y)<=1) s=.8; best=Math.max(best,s); }));
+    if(!best) return {score:0,why:[]}; score=fs*best; why.push(best===1?'last name matches':'last name is similar'); }
+  if(a.middle&&b.middle&&norm(a.middle)[0]!==norm(b.middle)[0]){ score*=.8; }
+  return {score,why};
+}
+const yearOfIso=s=>{ const m=/^(\d{4})/.exec(String(s||'')); return m?+m[1]:null; };
+function matchExisting(cand,people,o){
+  o=o||{}; const out=[]; const cy=cand.birth?cand.birth.y:(o.yearHint||null);
+  people.forEach(p=>{ const r=simName(cand,p); if(!r.score) return; let s=r.score; const why=r.why.slice(); const py=yearOfIso(p.birthDate);
+    if(cy&&py){ if(cy===py){ s=Math.min(1,s+.08); why.push('birth year matches'); if(cand.birth&&cand.birth.prec==='day'&&p.birthDate===cand.birth.iso){ s=Math.min(1,s+.04); why.push('birth date matches'); } } else if(Math.abs(cy-py)>1){ s*=.5; why.push('birth years differ ('+cy+' vs '+py+')'); } }
+    if(s>=.5) out.push({id:p.id,score:s,why}); });
+  return out.sort((x,y)=>y.score-x.score);
+}
+/* ================= plan: candidates + existing tree -> editable review model ================= */
+function buildPlan(parsed,existing){
+  const people=[]; const claimed={};
+  parsed.cands.forEach(c=>{
+    const ms=matchExisting(c,existing,{yearHint:c.yearHint}); const top=ms[0]; const tie=ms[1]&&top.score-ms[1].score<.05;
+    const pp={tid:c.tid,cand:c,include:true,rec:c.rec,matches:ms.slice(0,3),mode:'new',mergeId:null,linkConf:'high',ambiguous:!!(top&&tie),fieldChoice:{}};
+    if(top&&!tie&&top.score>=.85){ pp.mode=c.rec?'merge':'existing'; pp.mergeId=top.id; pp.linkConf=top.score>=.92?'high':'review'; }
+    else if(top&&!tie&&top.score>=.65){ pp.mode=c.rec?'new':'existing'; pp.mergeId=c.rec?null:top.id; pp.linkConf='review'; pp.possible=c.rec?top:null; }
+    else if(!c.rec){ pp.mode='none'; }
+    people.push(pp); });
+  // two document records claiming the same existing member
+  people.filter(p=>p.mode==='merge').forEach(p=>{ (claimed[p.mergeId]=claimed[p.mergeId]||[]).push(p); });
+  Object.keys(claimed).forEach(id=>{ if(claimed[id].length>1) claimed[id].slice(1).forEach(p=>{ p.mode='new'; p.mergeId=null; p.linkConf='review'; p.cand.flags.push('Matched the same existing member as another person in the document'); }); });
+  const plan={people,edges:parsed.edges.map(e=>Object.assign({},e)),problems:parsed.problems.slice(),parsed};
+  plan.single=parsed.singlePerson; return plan;
+}
+const pById=(plan,tid)=>plan.people.find(p=>p.tid===tid);
+function endpoint(plan,tid){ const p=pById(plan,tid); if(!p) return null; if(p.rec){ if(!p.include) return null; if(p.mode==='merge'&&p.mergeId) return 'e:'+p.mergeId; if(p.mode==='skip') return null; return 't:'+tid; }
+  if(p.mode==='existing'&&p.mergeId) return 'e:'+p.mergeId; if(p.mode==='new'&&p.include!==false) return 't:'+tid; return null; }
+function mergeDetected(plan,keepTid,dropTid){
+  const keep=pById(plan,keepTid), drop=pById(plan,dropTid); if(!keep||!drop||keep===drop) return false; const k=keep.cand, d=drop.cand;
+  ['first','middle','last','nick','gender','birthPlace','deathPlace','imgPath'].forEach(f=>{ if(!k[f]&&d[f]) k[f]=d[f]; });
+  if(!k.birth&&d.birth) k.birth=d.birth; if(!k.death&&d.death) k.death=d.death; if(k.living==null&&d.living!=null) k.living=d.living;
+  d.notes.forEach(n=>{ if(!k.notes.includes(n)) k.notes.push(n); }); d.traits.forEach(n=>{ if(!k.traits.includes(n)) k.traits.push(n); }); d.src.forEach(s=>{ if(!k.src.includes(s)) k.src.push(s); }); if(d.rec) k.rec=true;
+  plan.edges.forEach(e=>{ if(e.a===dropTid) e.a=keepTid; if(e.b===dropTid) e.b=keepTid; });
+  plan.edges=plan.edges.filter(e=>e.a!==e.b); const seen={}; plan.edges=plan.edges.filter(e=>{ const kk=e.type==='spouse'?'s:'+[e.a,e.b].sort().join('|'):'p:'+e.a+'|'+e.b; if(seen[kk]){ if(e.conf==='high') seen[kk].conf='high'; return false; } seen[kk]=e; return true; });
+  plan.people=plan.people.filter(p=>p!==drop); if(keep.mode==='none'&&keep.rec) keep.mode='new'; return true;
+}
+/* ================= template (.docx) ================= */
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const run=(t,o)=>{ o=o||{}; return `<w:r><w:rPr>${o.b?'<w:b/>':''}${o.i?'<w:i/>':''}${o.color?`<w:color w:val="${o.color}"/>`:''}${o.sz?`<w:sz w:val="${o.sz}"/>`:''}</w:rPr><w:t xml:space="preserve">${esc(t)}</w:t></w:r>`; };
+const para=(t,o)=>`<w:p>${o&&o.after!=null?`<w:pPr><w:spacing w:after="${o.after}"/></w:pPr>`:''}${Array.isArray(t)?t.join(''):run(t,o)}</w:p>`;
+const cell=(t,w,o)=>`<w:tc><w:tcPr><w:tcW w:w="${w}" w:type="dxa"/>${o&&o.shade?`<w:shd w:val="clear" w:color="auto" w:fill="${o.shade}"/>`:''}</w:tcPr>${para(t,o)}</w:tc>`;
+function makeTemplate(){
+  const cols=['Name','Gender','Birth Date','Birthplace','Death Date','Father','Mother','Spouse/Partner','Children','Notes']; const W=[1700,800,1300,1300,1300,1500,1500,1500,1600,1700];
+  const tbl=(rows)=>`<w:tbl><w:tblPr><w:tblW w:w="${W.reduce((a,b)=>a+b)}" w:type="dxa"/><w:tblBorders>${['top','left','bottom','right','insideH','insideV'].map(s=>`<w:${s} w:val="single" w:sz="4" w:space="0" w:color="808080"/>`).join('')}</w:tblBorders></w:tblPr><w:tblGrid>${W.map(w=>`<w:gridCol w:w="${w}"/>`).join('')}</w:tblGrid>${rows.join('')}</w:tbl>`;
+  const hdr=`<w:tr>${cols.map((c,i)=>cell(c,W[i],{b:1,shade:'D9EEF5'})).join('')}</w:tr>`;
+  const ex=['(Example) Juan Sample Cruz','Male','March 5, 1950','Cebu City','','','','Ana Sample Reyes','Jose Sample Cruz, Carmen Sample Cruz','Delete this example row'];
+  const exRow=`<w:tr>${ex.map((c,i)=>cell(c,W[i],{i:1,color:'707070'})).join('')}</w:tr>`;
+  const empty=`<w:tr>${W.map(w=>cell('',w)).join('')}</w:tr>`;
+  const body=[
+    para('Family Tree Import Template',{b:1,sz:36,after:120}),
+    para('How to use this template',{b:1,sz:26,after:60}),
+    para('1. Add one person per row in the table below. Only the Name column is required — leave anything you do not know empty.',{after:40}),
+    para('2. Write dates like March 5, 1950, 1950-03-05 or just 1950. If you only know the year, write only the year.',{after:40}),
+    para('3. In Father, Mother, Spouse/Partner and Children, write the other person’s name as it appears in the Name column. Separate several children with commas.',{after:40}),
+    para('4. Delete the grey example row, save the file as a Word Document (.docx), then upload it in the Import screen. You will review everything before anything is saved.',{after:160}),
+    tbl([hdr,exRow,empty,empty,empty,empty,empty,empty]),
+    para('',{after:160}),
+    para('Alternative: one block of labelled lines per person',{b:1,sz:26,after:60}),
+    para('If you prefer writing paragraphs, use one block like this for each person (delete the example):',{after:60}),
+    para('Name: (Example) Maria Sample Santos',{i:1,color:'707070',after:0}),
+    para('Born: March 5, 1950, Cebu City',{i:1,color:'707070',after:0}),
+    para('Gender: Female',{i:1,color:'707070',after:0}),
+    para('Father: Pedro Sample Santos',{i:1,color:'707070',after:0}),
+    para('Mother: Rosa Sample Cruz',{i:1,color:'707070',after:0}),
+    para('Spouse: Juan Sample Reyes',{i:1,color:'707070',after:0}),
+    para('Children: Jose, Carmen',{i:1,color:'707070',after:0}),
+    para('Notes: Anything you want to remember about her.',{i:1,color:'707070',after:0})
+  ].join('');
+  const docXml=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${body}<w:sectPr><w:pgSz w:w="15840" w:h="12240" w:orient="landscape"/><w:pgMar w:top="1000" w:right="800" w:bottom="1000" w:left="800" w:header="720" w:footer="720" w:gutter="0"/></w:sectPr></w:body></w:document>`;
+  const ct=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>`;
+  const rels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`;
+  return A.writeZip([{name:'[Content_Types].xml',data:ct},{name:'_rels/.rels',data:rels},{name:'word/document.xml',data:docXml}]);
+}
+root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,buildPlan,matchExisting,simName,endpoint,mergeDetected,makeTemplate,writeZip:A.writeZip,splitName:B.splitName,findDate:B.findDate,norm};
+})(window);
+
+</script>
+<script>
 (function(){
   const DATA_KEY = 'family-tree-data-v3'; // legacy localStorage key, read once during the one-time cloud migration
   const CARD_W = 184, CARD_H = 64, H_GAP = 28, ROW_GAP = 90;
@@ -2684,7 +3266,7 @@
   const NA = 'N/A';
   const disp = v => (v && String(v).trim()) ? v : NA;
   const escapeHtml = s => String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const fmtDate = v => { if(!v) return NA; try{ const d=new Date(v+'T00:00:00'); return d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}); }catch(e){ return v; } };
+  const fmtDate = (v,prec,approx) => { if(!v) return NA; try{ const d=new Date(v+'T00:00:00'); if(isNaN(d)) return v; const o=prec==='year'?{year:'numeric'}:prec==='month'?{year:'numeric',month:'long'}:{year:'numeric',month:'short',day:'numeric'}; return (approx?'c. ':'')+d.toLocaleDateString(undefined,o); }catch(e){ return v; } };
   const fmtRelative = (iso) => {
     if(!iso) return '';
     const diff = Date.now() - new Date(iso).getTime();
@@ -3938,6 +4520,7 @@
     insights:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16"/><rect x="5.2" y="11.5" width="3" height="6.5" rx=".6"/><rect x="10.5" y="6.5" width="3" height="11.5" rx=".6"/><rect x="15.8" y="9.2" width="3" height="8.8" rx=".6"/></svg>',
     persona:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.2 4.4A3.1 3.1 0 0 0 6.1 7.5v.3A3.1 3.1 0 0 0 4.6 11a3.2 3.2 0 0 0 1.4 2.6A3.1 3.1 0 0 0 9.2 19.6h.6V4.5a3 3 0 0 0-.6-.1Z"/><path d="M14.8 4.4a3.1 3.1 0 0 1 3.1 3.1v.3A3.1 3.1 0 0 1 19.4 11a3.2 3.2 0 0 1-1.4 2.6 3.1 3.1 0 0 1-3.2 6h-.6V4.5a3 3 0 0 1 .6-.1Z"/><path d="M12 6.5v11M9.8 9.5H8.3M15.7 14.5h-1.5"/></svg>',
     guidelines:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10.3 5.2 8 4.8 4.5 5v12c3.5-.2 5.8.2 7.5 1.5 1.7-1.3 4-1.7 7.5-1.5V5c-3.5-.2-5.8.2-7.5 1.5zM12 6.5v12"/></svg>',
+    import:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M12 17.5v-6.5M9.5 13.5 12 11l2.5 2.5"/></svg>',
     me:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.2" r="3.6"/><path d="M4.6 20c.9-3.7 3.9-5.6 7.4-5.6s6.5 1.9 7.4 5.6"/></svg>'
   };
   const NAV = [
@@ -3947,11 +4530,12 @@
     { id:'insights',   label:'Insights',   view:'insights',   views:['insights'],                group:'INTELLIGENCE', key:4, desc:'Charts and gaps in your data' },
     { id:'persona',    label:'Persona',    view:'persona',    views:['persona'],                 group:'INTELLIGENCE', key:5, desc:'Swipe through personality cards',    badge:'obs' },
     { id:'guidelines', label:'Guidelines', view:'guidelines', views:['guidelines'],              group:'LIBRARY',      desc:'How the app works', dock:false },
-    { id:'me',         label:'Me',         view:'settings',   views:['settings','guidelines'],   group:'ACCOUNT',      key:6, desc:'Profile, sound and backup' }
+    { id:'import',     label:'Import',     view:'import',     views:['import'],                  group:'LIBRARY',      desc:'Add members from a Word document', tip:'Import — add members from a Word document', dock:false },
+    { id:'me',         label:'Me',         view:'settings',   views:['settings','guidelines','import'],   group:'ACCOUNT',      key:6, desc:'Profile, sound and backup' }
   ];
   const DOCK_NAV = NAV.filter(n=>n.dock!==false);
   const VIEW_PANEL = { home:'viewHome', tree:'viewTree', timeline:'viewTimeline', insights:'viewInsights', persona:'viewPersona',
-    members:'viewMembers', pinned:'viewPinned', guidelines:'viewGuidelines', settings:'viewSettings' };
+    members:'viewMembers', pinned:'viewPinned', guidelines:'viewGuidelines', import:'viewImport', settings:'viewSettings' };
   function navIndexForView(view){ return Math.max(0, DOCK_NAV.findIndex(n=>n.views.includes(view))); }
   function railNavId(view){ const n = NAV.find(x=>x.dock===false && x.views.includes(view)) || DOCK_NAV[navIndexForView(view)]; return n.id; }
   function renderNav(){
@@ -4115,6 +4699,7 @@
         push('Traits', Object.values(seen).filter(x=>hit(x.title)).slice(0,5).map(x=>({kind:'trait',label:x.title,sub:`${x.n} member${x.n===1?'':'s'} · open in Persona`,run:()=>{ PZ.mode='trait'; PZ.items=[]; PZ.index=0; PZ.focusKey='t:'+x.k; switchView('persona'); }})));
       }
     }
+    if(inTree&&(!q||hit('import document word docx upload add members file'))) push('Actions',[{kind:'section',label:'Import document',sub:'Add members from a Word document',run:()=>openImport()}]);
     push('Trees', trees); push('Sections', secs.slice(0,q?5:8));
     const flat=[]; out.forEach(g=>g.list.forEach(it=>flat.push(it))); return {groups:out,flat};
   }
@@ -4208,6 +4793,7 @@
     if(view==='timeline') renderTimeline();
     if(view==='insights') renderInsights();
     if(view==='persona') renderPersona(); else pzPause();
+    if(view==='import'){ if(IMP.stage==='done'||IMP.stage==='error'){ if(!IMP.running) impReset(true); } renderImport(); }
     if(view==='settings'){ $('settingsTreeName').value=tree()?tree().name:''; $('settingsTreeDesc').value=tree()?(tree().description||''):''; renderMe(); }
     if(view==='tree'){
       renderTree();
@@ -4232,6 +4818,7 @@
     music:'<svg viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg>',
     user:'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c.6-3.8 3.7-6 7.5-6s6.9 2.2 7.5 6"/></svg>',
     data:'<svg viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"/></svg>',
+    import:'<svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M12 17.5v-6.5M9.5 13.5 12 11l2.5 2.5"/></svg>',
     warn:'<svg viewBox="0 0 24 24"><path d="M12 3.5l9.5 16.5h-19zM12 10v4.5M12 17.2h.01"/></svg>'
   };
   let meReady = false;
@@ -4272,7 +4859,7 @@
         <div class="me-plat" aria-hidden="true">${HK.platform('S',true)}</div>
         <div class="me-stats">${stat(db.trees.length,db.trees.length===1?'Tree':'Trees')}${stat(people.length,people.length===1?'Member':'Members')}${stat(evs,evs===1?'Event':'Events')}<div class="dt-ring">${people.length?HK.ring({value:comp.pct,label:'Completeness',size:76}):''}</div></div>
       </div>`,{variant:'hero',intensity:'active',glare:true,tick:true});
-    HK.fillRings(root); if(meSyncVol) meSyncVol();
+    HK.fillRings(root); if(meSyncVol) meSyncVol(); renderImportHistory();
   }
 
   $('settingsTreeName').addEventListener('change', e=>{
@@ -4757,8 +5344,8 @@
       </button>
       <div class="qi-top">${photoHtml}<div class="qi-name">${escapeHtml(fullName(p))}${p.nickname?` "${escapeHtml(p.nickname)}"`:''}</div></div>
       <div class="qi-row"><b>${escapeHtml(disp(p.gender))}</b></div>
-      <div class="qi-row">Born: <b>${escapeHtml(fmtDate(p.birthDate))}</b></div>
-      <div class="qi-row">${p.living?'Living':'Died: '}${p.living?'':'<b>'+escapeHtml(fmtDate(p.deathDate))+'</b>'}</div>
+      <div class="qi-row">Born: <b>${escapeHtml(fmtDate(p.birthDate,p.birthDatePrecision,p.birthDateApprox))}</b></div>
+      <div class="qi-row">${p.living?'Living':'Died: '}${p.living?'':'<b>'+escapeHtml(fmtDate(p.deathDate,p.deathDatePrecision,p.deathDateApprox))+'</b>'}</div>
     `;
     el.querySelector('.qi-close').addEventListener('click', hideQuickInfo);
     el.style.display='block';
@@ -5165,8 +5752,10 @@
     if(!hasBirth && !hasDeath && !p.living){
       rows += `<div class="detail-row"><b>Dates</b><span>${'<span class="pf-miss">Dates not recorded</span> <button type="button" class="pf-add" data-add-field="fBirth">Add</button>'}</span></div>`;
     } else {
-      rows += `<div class="detail-row"><b>Born</b><span>${hasBirth ? escapeHtml(fmtDate(p.birthDate)) : pfMissing('fBirth')}</span></div>`;
-      rows += `<div class="detail-row"><b>${p.living?'Status':'Died'}</b><span>${p.living ? 'Living' : (hasDeath ? escapeHtml(fmtDate(p.deathDate)) : pfMissing('fDeath'))}</span></div>`;
+      rows += `<div class="detail-row"><b>Born</b><span>${hasBirth ? escapeHtml(fmtDate(p.birthDate,p.birthDatePrecision,p.birthDateApprox)) : pfMissing('fBirth')}</span></div>`;
+      if(p.birthPlace) rows += `<div class="detail-row"><b>Birthplace</b><span>${escapeHtml(p.birthPlace)}</span></div>`;
+      rows += `<div class="detail-row"><b>${p.living?'Status':'Died'}</b><span>${p.living ? 'Living' : (hasDeath ? escapeHtml(fmtDate(p.deathDate,p.deathDatePrecision,p.deathDateApprox)) : pfMissing('fDeath'))}</span></div>`;
+      if(p.deathPlace) rows += `<div class="detail-row"><b>Death place</b><span>${escapeHtml(p.deathPlace)}</span></div>`;
     }
     rows += `<div class="detail-row"><b>Gender</b><span>${(p.gender&&String(p.gender).trim()) ? escapeHtml(p.gender) : pfMissing('fGender')}</span></div>`;
     $('panelDetails').innerHTML = pfHead('info','Details') + rows;
@@ -5869,6 +6458,8 @@
 
     if(editingId){
       const p = personById(editingId);
+      if(p.birthDate!==data.birthDate){ delete p.birthDatePrecision; delete p.birthDateApprox; }
+      if(p.deathDate!==data.deathDate){ delete p.deathDatePrecision; delete p.deathDateApprox; }
       Object.assign(p, data);
       if(pendingPhoto==='REMOVE') p.photo=null; else if(pendingPhoto) p.photo=pendingPhoto;
       touchTree(); await persistDb(); closePersonModal(); renderAll(); openPanel(editingId); toast('Saved.');
@@ -5917,6 +6508,488 @@
     sfx.add(); toast('Added.');
   }
   $('modalSaveBtn').onclick = saveModal;
+
+  /* ---------- entry points ---------- */
+  $('railImportBtn').onclick=()=>{ sfx.click(); openImport(); };
+  $('meImportRow').onclick=()=>{ sfx.click(); openImport(); };
+  $('treeEmptyState').insertAdjacentHTML('beforeend','<button type="button" class="hb hb-secondary" id="treeEmptyImportBtn" style="margin-top:12px;"><span>Import from a Word document</span></button>');
+  $('treeEmptyImportBtn').onclick=()=>openImport();
+
+  // =====================================================================
+  // IMPORT FROM A WORD DOCUMENT (.docx)
+  // Parsed entirely in the browser (window.FTImport). Nothing is saved
+  // until the review step is confirmed; saving mirrors saveModal()'s data
+  // shape and linking rules, and every change is tagged with a batch id so
+  // it can be undone.
+  // =====================================================================
+  const FTI = window.FTImport;
+  const IMP = { stage:'upload', treeId:null, fileName:'', parsed:null, plan:null, order:null, tab:'list', err:null, step:0, pct:0, cancelled:false, result:null, saveErr:'', mapOpen:false, openDup:{}, running:false, hl:null };
+  const IMP_MSG = {
+    olddoc:'Please save the file as .docx in Word (File → Save As → Word Document) and try again.',
+    badtype:'Please save the file as .docx in Word (File → Save As → Word Document) and try again. Only Word documents (.docx) can be imported.',
+    encrypted:'This file looks password-protected. In Word, remove the password (File → Info → Protect Document → Encrypt with Password, then clear it), save it as .docx and try again.',
+    corrupt:'We couldn’t open this file — it may be damaged or not a real Word document. Try opening it in Word and saving it again as .docx.',
+    notword:'This file doesn’t look like a Word document. Please choose a .docx file saved from Word.',
+    toolarge:'This file is larger than 10 MB. Remove large pictures or split it into smaller documents, then try again.',
+    unsupported:'This browser can’t open Word files. Please update your browser and try again.'
+  };
+  const MONTH_N=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const cName = c => [c.first,c.middle,c.last].filter(Boolean).join(' ') || c.raw || 'Unnamed person';
+  const impDateText = d => !d ? '' : ((d.approx?'c. ':'') + (d.prec==='year'?d.y:d.prec==='month'?MONTH_N[d.m-1]+' '+d.y:MONTH_N[d.m-1]+' '+d.d+', '+d.y));
+  const impConfLabel = c => c==='high' ? 'High' : 'Needs review';
+  const impDot = c => `<i class="imp-dot imp-dot-${c==='high'?'hi':'rv'}" aria-hidden="true"></i>`;
+  const impIco = {
+    up:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M12 17v-6M9.5 13.5 12 11l2.5 2.5"/></svg>',
+    doc:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 12h6M9 15.5h6M9 8.5h3"/></svg>',
+    check:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>',
+    undo:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7 4 12l5 5M4 12h10a6 6 0 0 1 0 12"/></svg>'
+  };
+  const impTree = () => tree();
+  function impReset(keepTree){ IMP.stage='upload'; IMP.fileName=''; IMP.parsed=null; IMP.plan=null; IMP.order=null; IMP.err=null; IMP.result=null; IMP.saveErr=''; IMP.cancelled=false; IMP.tab='list'; IMP.openDup={}; IMP.running=false; IMP.mapOpen=false; IMP.hl=null; IMP.rawDoc=null; if(!keepTree) IMP.treeId=currentTreeId; }
+  function openImport(){
+    if(!currentTreeId){ if(db.trees[0]){ openTree(db.trees[0].id,'import'); } else toast('Create a family tree first, then import into it.'); return; }
+    switchView('import');
+  }
+  const yieldUI = () => new Promise(r=>setTimeout(r,30));
+  const impSteps = ['Reading document…','Finding family members…','Linking relationships…','Arranging generations…'];
+
+  /* ---------- entry: handle a chosen / dropped file ---------- */
+  async function impHandleFile(file){
+    if(!file) return; if(IMP.running) return;
+    if(!currentTreeId){ toast('Open a family tree first, then import your document.'); return; }
+    if(currentView!=='import') switchView('import');
+    IMP.treeId=currentTreeId; IMP.fileName=file.name; IMP.running=true; IMP.cancelled=false; IMP.err=null; IMP.parsed=null; IMP.plan=null; IMP.stage='scan'; IMP.step=0; IMP.pct=4; IMP.order=null; renderImport();
+    try{
+      await yieldUI(); const doc=await FTI.readDocx(file); if(IMP.cancelled) return impAbort();
+      IMP.rawDoc=doc; await impParseStep(doc);
+    }catch(e){ impFail(e); }
+  }
+  async function impParseStep(doc){
+    IMP.step=1; IMP.pct=30; impScanTick(); await yieldUI(); if(IMP.cancelled) return impAbort();
+    const parsed=FTI.parse(doc,{dateOrder:IMP.order,colMap:IMP.colMap||{}}); IMP.parsed=parsed;
+    if(!parsed.cands.length){ const e=new FTI.ImportError('nofam'); e.found=impWhatWeRead(doc); throw e; }
+    if(parsed.ambiguous>0 && !IMP.order){ IMP.stage='dates'; IMP.running=false; renderImport(); return; }
+    IMP.step=2; IMP.pct=60; impScanTick(); await yieldUI(); if(IMP.cancelled) return impAbort();
+    const plan=FTI.buildPlan(parsed,peopleArr().map(p=>({id:p.id,first:p.firstName,middle:p.middleName||'',last:p.lastName||'',nick:p.nickname||'',alt:[],birthDate:p.birthDate||''}))); impPlanDefaults(plan);
+    await impLoadPhotos(plan,doc); if(IMP.cancelled) return impAbort();
+    IMP.step=3; IMP.pct=88; impScanTick(); await yieldUI(); if(IMP.cancelled) return impAbort();
+    IMP.plan=plan; impPreviewModel(); IMP.pct=100; impScanTick(); await new Promise(r=>setTimeout(r,isRM()?0:350));
+    IMP.stage='review'; IMP.tab=plan.single?'tree':'list'; IMP.running=false; renderImport();
+  }
+  function impWhatWeRead(doc){ const out=[]; (doc.blocks||[]).slice(0,40).forEach(b=>{ if(b.type==='p'&&b.text) out.push(b.text.slice(0,140)); else if(b.type==='table') out.push('[table with '+b.rows.length+' rows]'); }); return out.slice(0,8); }
+  function impAbort(){ IMP.running=false; IMP.rawDoc=null; impReset(true); renderImport(); }
+  function impFail(e){ IMP.running=false; IMP.rawDoc=null; IMP.stage='error'; IMP.err={ code:(e&&e.code)||'corrupt', found:(e&&e.found)||null, raw:(e&&e.message)||'' }; renderImport(); }
+  function impScanTick(){ const r=$('impScanBar'); if(!r) return; r.style.width=IMP.pct+'%'; $('impScanSteps').querySelectorAll('li').forEach((li,i)=>{ li.className = i<IMP.step?'done':i===IMP.step?'cur':''; }); $('impScanText').textContent=impSteps[IMP.step]||''; const st=$('impScanLive'); if(st) st.textContent=impSteps[IMP.step]||''; $('impScanPct').textContent=Math.round(IMP.pct)+'%'; }
+  async function impLoadPhotos(plan,doc){
+    for(const pp of plan.people){ const path=pp.cand.imgPath; if(!path||!doc.getImage) continue; try{ const blob=await doc.getImage(path); if(!blob) continue; pp.photo=await impResize(blob); pp.usePhoto=false; }catch(_){} }
+  }
+  function impResize(blob){ return new Promise((res,rej)=>{ const url=URL.createObjectURL(blob); const img=new Image(); img.onload=()=>{ const M=256; let w=img.width,h=img.height; if(!w||!h){ URL.revokeObjectURL(url); return rej(); } if(w>h){ if(w>M){ h=Math.round(h*M/w); w=M; } } else if(h>M){ w=Math.round(w*M/h); h=M; } const cv=document.createElement('canvas'); cv.width=w; cv.height=h; cv.getContext('2d').drawImage(img,0,0,w,h); URL.revokeObjectURL(url); res(cv.toDataURL('image/jpeg',0.82)); }; img.onerror=()=>{ URL.revokeObjectURL(url); rej(); }; img.src=url; }); }
+  function impPlanDefaults(plan){
+    const multi=!plan.single;
+    plan.people.forEach(pp=>{
+      if(!pp.rec&&pp.mode==='none'&&multi) pp.mode='new';
+      if(!pp.rec&&pp.mode==='new'&&!(pp.cand.first&&pp.cand.last)) pp.cand.flags.push('Only a first name was given');
+      pp.traitOpts=(pp.cand.traits||[]).map(t=>{ const hit=TRAITS.find(x=>norm1(x.title)===norm1(t)||x.id===t); return {label:hit?hit.title:t,id:hit?hit.id:null,custom:!hit,on:false}; });
+    });
+  }
+  const norm1 = s => String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+
+  /* ---------- stage renderers ---------- */
+  function impHead(eyebrow,title,sub){ return `<div class="imp-head"><div class="hx-eyebrow">${eyebrow}</div><h2 class="section-title">${title}</h2>${sub?`<p class="imp-sub">${sub}</p>`:''}</div>`; }
+  function renderImport(){
+    const root=$('impRoot'); if(!root) return; if(!tree()){ root.innerHTML=''; return; }
+    if(IMP.treeId&&IMP.treeId!==currentTreeId&&IMP.stage!=='upload'&&!IMP.running){ impReset(false); }
+    ({upload:impUpload,scan:impScan,dates:impDates,review:impReview,saving:impSaving,done:impDone,error:impError}[IMP.stage]||impUpload)(root);
+    HK.scanReveal(root,70);
+  }
+  function impUpload(root){
+    const t=tree(); const hist=(t.imports||[]).length;
+    root.innerHTML = `<div class="imp">${impHead('LIBRARY · IMPORT','Import from a Word document','Upload a .docx about your family. We read it, work out who is who and how they are related, and arrange them into <b>'+escapeHtml(t.name)+'</b> — you review everything before anything is saved.')}
+      <div class="imp-drop-wrap sr sr-pre">${HK.frame(`<div class="imp-dz" id="impDz" tabindex="0" role="button" aria-label="Drop your Word document here, or choose a file">
+          <div class="imp-dz-ico" aria-hidden="true">${impIco.doc}<i class="imp-dz-arrow">${impIco.up}</i></div>
+          <h3>Drop your Word document here</h3><p>or tap to choose a file</p>
+          ${HK.btn('Choose file',{kind:'primary',id:'impChoose',icon:impIco.up})}
+          <small>.docx only · up to 10 MB</small>
+          <input type="file" id="impFile" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
+        </div>`,{variant:'hero',intensity:'active',glare:true,tick:true,cls:'imp-dzf'})}<div class="imp-plat" aria-hidden="true">${HK.platform('M',true)}</div></div>
+      <p class="imp-priv"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Your document is read on your device. It is not uploaded or stored unless you choose to save the members.</p>
+      <div class="imp-cols">
+        <section class="sr sr-pre">${HK.frame(`<h3 class="imp-h3">How to format your document</h3>
+          <ul class="imp-tips"><li><b>A table</b> — one person per row, with columns like Name, Birth Date, Father, Mother, Spouse, Children.</li><li><b>Labelled lines</b> — <code>Name:</code> <code>Born:</code> <code>Father:</code> <code>Mother:</code> <code>Spouse:</code> <code>Children:</code> (Tagalog labels work too: Pangalan, Ama, Ina, Asawa, Anak).</li><li><b>A heading per person</b>, or plain sentences like “Juan is the son of Pedro and Maria.”</li><li>A document about <b>one person</b> works too — we’ll find where they belong in your tree.</li></ul>
+          ${HK.btn('Download template',{kind:'secondary',id:'impTpl',icon:impIco.doc})}`,{variant:'standard',intensity:'idle'})}</section>
+        <section class="sr sr-pre">${HK.frame(`<h3 class="imp-h3">What happens next</h3><ol class="imp-flow"><li><b>Scan</b> — the document is read and people are found.</li><li><b>Review</b> — check every person and relationship, fix anything, skip what you don’t want.</li><li><b>Save</b> — everything is added in one batch you can <b>undo</b> later.</li></ol>${hist?`<button type="button" class="hx-btn" id="impHistGo">Import history (${hist})</button>`:''}`,{variant:'standard',intensity:'idle'})}</section>
+      </div></div>`;
+    const dz=$('impDz'), fi=$('impFile'); const pick=()=>fi.click();
+    $('impChoose').onclick=e=>{ e.stopPropagation(); pick(); }; dz.onclick=pick; dz.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); pick(); } };
+    fi.onchange=()=>{ const f=fi.files[0]; fi.value=''; if(f) impHandleFile(f); };
+    ['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{ e.preventDefault(); dz.classList.add('over'); })); ['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{ e.preventDefault(); dz.classList.remove('over'); }));
+    $('impTpl').onclick=impDownloadTemplate; const hg=$('impHistGo'); if(hg) hg.onclick=()=>{ switchView('settings'); setTimeout(()=>{ const b=$('meSecImport'); if(b) b.scrollIntoView({behavior:isRM()?'auto':'smooth',block:'start'}); },250); };
+  }
+  function impDownloadTemplate(){
+    try{ const blob=FTI.makeTemplate(); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='Family-Tree-Import-Template.docx'; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },500); toast('Template downloaded.'); }catch(e){ toast('Could not create the template.'); }
+  }
+  function impScan(root){
+    root.innerHTML = `<div class="imp">${impHead('IMPORT · SCANNING','Reading your document','<b>'+escapeHtml(IMP.fileName)+'</b>')}
+      <div class="imp-scan">${HK.frame(`<div class="imp-scan-in"><div class="imp-scan-doc" aria-hidden="true">${impIco.doc}<i class="imp-scan-line"></i></div><div class="imp-plat" aria-hidden="true">${HK.platform('M',true)}</div>
+        <div class="imp-scan-text" id="impScanText">${impSteps[0]}</div>
+        <div class="imp-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(IMP.pct)}" id="impBarWrap"><i id="impScanBar" style="width:${IMP.pct}%"></i></div><div class="imp-scan-pct" id="impScanPct">${Math.round(IMP.pct)}%</div>
+        <ol class="imp-steps" id="impScanSteps">${impSteps.map((s,i)=>`<li class="${i<IMP.step?'done':i===IMP.step?'cur':''}">${s.replace('…','')}</li>`).join('')}</ol>
+        <div class="sr-only" id="impScanLive" role="status" aria-live="polite"></div>
+        ${HK.btn('Cancel',{kind:'secondary',id:'impCancel'})}</div>`,{variant:'hero',intensity:'active',glare:true,tick:true})}</div></div>`;
+    $('impCancel').onclick=()=>{ IMP.cancelled=true; IMP.running=false; impReset(true); renderImport(); };
+    impScanTick();
+  }
+  function impError(root){
+    const e=IMP.err||{}; const msg=e.code==='nofam' ? 'We couldn’t find any family members in this document.' : (IMP_MSG[e.code]||IMP_MSG.corrupt);
+    root.innerHTML = `<div class="imp">${impHead('IMPORT · PROBLEM','We couldn’t import this file')}
+      <section class="sr sr-pre">${HK.frame(`<div class="imp-err" role="alert"><div class="imp-err-ico" aria-hidden="true">!</div><p class="imp-err-t">${escapeHtml(msg)}</p>
+        ${e.code==='nofam'?`<p class="imp-sub">Try the template, or write one person per row (or one block of labelled lines per person). ${e.found&&e.found.length?'Here is what we did read:':'The document appeared to be empty.'}</p>${e.found&&e.found.length?`<ul class="imp-found">${e.found.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>`:''}`:''}
+        <div class="imp-actions">${HK.btn('Choose another file',{kind:'primary',id:'impAgain'})}${HK.btn('Download template',{kind:'secondary',id:'impTpl2',icon:impIco.doc})}</div></div>`,{variant:'standard',intensity:'active'})}</section></div>`;
+    $('impAgain').onclick=()=>{ impReset(true); renderImport(); }; $('impTpl2').onclick=impDownloadTemplate;
+  }
+  function impDates(root){
+    root.innerHTML = `<div class="imp">${impHead('IMPORT · ONE QUESTION','How are the dates written?','Some dates in <b>'+escapeHtml(IMP.fileName)+'</b> could be read two ways (for example 05/03/1950). Tell us once and we’ll apply it to the whole document.')}
+      <section class="sr sr-pre">${HK.frame(`<div class="imp-actions imp-dates"><button type="button" class="hb hb-primary" data-order="dmy"><span>Day / Month / Year<small>05/03/1950 = 5 March 1950</small></span></button><button type="button" class="hb hb-primary" data-order="mdy"><span>Month / Day / Year<small>05/03/1950 = May 3, 1950</small></span></button></div>
+        <div class="imp-actions">${HK.btn('Cancel',{kind:'secondary',id:'impDatesCancel'})}</div>`,{variant:'standard',intensity:'active'})}</section></div>`;
+    root.querySelectorAll('[data-order]').forEach(b=>b.onclick=async()=>{ IMP.order=b.dataset.order; IMP.stage='scan'; IMP.running=true; IMP.step=1; IMP.pct=30; renderImport(); try{ await impParseStep(IMP.rawDoc); }catch(e){ impFail(e); } });
+    $('impDatesCancel').onclick=()=>{ impReset(true); renderImport(); };
+  }
+
+
+  /* ---------- plan -> concrete links (shared by preview and save) ---------- */
+  const impStr = s => String(s==null?'':s);
+  function impHasOnEdge(plan,tid){ return plan.edges.some(e=>e.on&&(e.a===tid||e.b===tid)); }
+  function impActive(pp){ return pp.rec ? (pp.include!==false && pp.mode!=='skip') : (pp.mode==='new'); }
+  function impEp(plan,tid){
+    const pp=plan.people.find(p=>p.tid===tid); if(!pp) return null;
+    if(!pp.rec){ if(pp.mode==='existing'&&pp.mergeId) return 'e:'+pp.mergeId; if(pp.mode==='new'&&impHasOnEdge(plan,tid)) return 't:'+tid; return null; }
+    if(pp.include===false||pp.mode==='skip') return null; if(pp.mode==='merge'&&pp.mergeId) return 'e:'+pp.mergeId; return 't:'+tid;
+  }
+  function impCompute(plan){
+    const ex={}; peopleArr().forEach(p=>ex[p.id]=p); const P={}, S={};
+    const par=id=>P[id]||(P[id]=(id.startsWith('e:')&&ex[id.slice(2)]?ex[id.slice(2)].parents.slice().map(x=>'e:'+x):[]));
+    const sp=id=>S[id]||(S[id]=(id.startsWith('e:')&&ex[id.slice(2)]?ex[id.slice(2)].spouseIds.slice().map(x=>'e:'+x):[]));
+    const isAnc=(a,of,seen)=>{ seen=seen||new Set(); return par(of).some(p=>p===a||(!seen.has(p)&&(seen.add(p),isAnc(a,p,seen)))); };
+    const links=[], skipped=[];
+    plan.edges.forEach(e=>{ if(!e.on) return; const A=impEp(plan,e.a), C=impEp(plan,e.b); if(!A||!C||A===C) return;
+      if(e.type==='parent'){ const ps=par(C); if(ps.includes(A)) return; if(ps.length>=2){ skipped.push({e,why:'already has two parents'}); return; } if(isAnc(C,A)){ skipped.push({e,why:'would be circular'}); return; } ps.push(A); links.push({t:'p',p:A,c:C,e}); }
+      else { const sa=sp(A); if(sa.includes(C)) return; sa.push(C); sp(C).push(A); links.push({t:'s',a:A,b:C,e}); } });
+    return {links,skipped};
+  }
+  function impPeopleModel(plan){
+    const comp=impCompute(plan); const base=peopleArr().map(p=>({id:'e:'+p.id,firstName:p.firstName,middleName:p.middleName,lastName:p.lastName,birthDate:p.birthDate,deathDate:p.deathDate,living:p.living,parents:[],children:[],spouseIds:[]}));
+    const by={}; base.forEach(p=>by[p.id]=p); const meta={}; base.forEach(p=>meta[p.id]={kind:'old'});
+    peopleArr().forEach(p=>{ by['e:'+p.id].parents=(p.parents||[]).map(x=>'e:'+x); by['e:'+p.id].children=(p.children||[]).map(x=>'e:'+x); by['e:'+p.id].spouseIds=(p.spouseIds||[]).map(x=>'e:'+x); });
+    plan.people.forEach(pp=>{ const ep=impEp(plan,pp.tid); if(!ep) return; if(ep.startsWith('e:')){ if(pp.rec&&by[ep]) meta[ep]={kind:'match',tid:pp.tid}; return; }
+      const c=pp.cand; const id='t:'+pp.tid; const o={id,firstName:c.first||c.raw||'?',middleName:c.middle,lastName:c.last,birthDate:c.birth?c.birth.iso:'',deathDate:c.death?c.death.iso:'',living:!c.death&&c.living!==false,parents:[],children:[],spouseIds:[],bd:c.birth,dd:c.death}; base.push(o); by[id]=o; meta[id]={kind:'new',tid:pp.tid}; });
+    comp.links.forEach(l=>{ if(l.t==='p'){ if(by[l.c]&&!by[l.c].parents.includes(l.p)) by[l.c].parents.push(l.p); if(by[l.p]&&!by[l.p].children.includes(l.c)) by[l.p].children.push(l.c); meta[l.c]=meta[l.c]||{}; (meta[l.c].lit=meta[l.c].lit||[]).push(l.p); (meta[l.p]=meta[l.p]||{}).lit=(meta[l.p].lit||[]).concat([l.c]); }
+      else { if(by[l.a]&&!by[l.a].spouseIds.includes(l.b)) by[l.a].spouseIds.push(l.b); if(by[l.b]&&!by[l.b].spouseIds.includes(l.a)) by[l.b].spouseIds.push(l.a); (meta[l.a]=meta[l.a]||{}).lit=(meta[l.a].lit||[]).concat([l.b]); (meta[l.b]=meta[l.b]||{}).lit=(meta[l.b].lit||[]).concat([l.a]); } });
+    return {people:base,by,meta,links:comp.links,skipped:comp.skipped};
+  }
+  function impLayoutOf(people){
+    const tmp={id:'__imp_tmp__',name:'tmp',people}; const saved=currentTreeId; db.trees.push(tmp); currentTreeId=tmp.id; let L=null;
+    try{ L=computeLayout(); }catch(e){ L=null; } finally{ const i=db.trees.indexOf(tmp); if(i>=0) db.trees.splice(i,1); currentTreeId=saved; } return L;
+  }
+  function impPreviewModel(){ const plan=IMP.plan; if(!plan) return null; const m=impPeopleModel(plan); m.layout=impLayoutOf(m.people); IMP.pv=m; return m; }
+  // plain-words placement for the confirmation banner
+  function impPlacement(plan,m){
+    const mainPP=plan.people.find(p=>p.rec&&impActive(p)); if(!mainPP) return null; const c=mainPP.cand; const myId=impEp(plan,mainPP.tid); const nm=id=>{ const q=m.by[id]; return q?[q.firstName,q.middleName,q.lastName].filter(Boolean).join(' '):'?'; };
+    const parents=m.links.filter(l=>l.t==='p'&&l.c===myId).map(l=>nm(l.p)), kids=m.links.filter(l=>l.t==='p'&&l.p===myId).map(l=>nm(l.c)), sps=m.links.filter(l=>l.t==='s'&&(l.a===myId||l.b===myId)).map(l=>nm(l.a===myId?l.b:l.a));
+    const gen=m.layout&&m.layout.genCache&&m.layout.genCache[myId]!=null?m.layout.genCache[myId]+1:null; const parts=[];
+    if(parents.length) parts.push(`the <b>${c.gender==='Male'?'son':c.gender==='Female'?'daughter':'child'}</b> of ${parents.map(x=>'<b>'+escapeHtml(x)+'</b>').join(' and ')}`);
+    if(sps.length) parts.push(`the <b>${c.gender==='Male'?'husband':c.gender==='Female'?'wife':'spouse'}</b> of ${sps.map(x=>'<b>'+escapeHtml(x)+'</b>').join(' and ')}`);
+    if(kids.length) parts.push(`the <b>${c.gender==='Male'?'father':c.gender==='Female'?'mother':'parent'}</b> of ${kids.map(x=>'<b>'+escapeHtml(x)+'</b>').join(', ')}`);
+    return {name:cName(c),parts,gen,none:!parts.length,mode:mainPP.mode};
+  }
+
+  /* ---------- review ---------- */
+  const IMP_FIELDS=[['First name','first','firstName'],['Middle name','middle','middleName'],['Last name','last','lastName'],['Gender','gender','gender'],['Born','birth','birthDate'],['Died','death','deathDate'],['Birthplace','birthPlace','birthPlace'],['Death place','deathPlace','deathPlace'],['Notes','notes','notes']];
+  const impCandVal=(c,k)=> k==='birth'||k==='death' ? impDateText(c[k]) : k==='notes' ? c.notes.join('\n') : impStr(c[k]);
+  const impExVal=(p,k)=> k==='birthDate'||k==='deathDate' ? (p[k]?fmtDate(p[k],p[k==='birthDate'?'birthDatePrecision':'deathDatePrecision'],p[k==='birthDate'?'birthDateApprox':'deathDateApprox']):'') : impStr(p[k]);
+  function impStats(plan){
+    const m=IMP.pv||impPreviewModel(); const added=plan.people.filter(p=>impActive(p)&&impEp(plan,p.tid)&&impEp(plan,p.tid).startsWith('t:')).length;
+    const merged=plan.people.filter(p=>p.rec&&p.include!==false&&p.mode==='merge').length; const skipped=plan.people.filter(p=>p.rec&&(p.include===false||p.mode==='skip')).length;
+    return {added,merged,skipped,links:m.links.length,skippedLinks:m.skipped.length};
+  }
+  function impProblems(plan){
+    const out=[]; const m=IMP.pv; const eff=plan.edges.filter(e=>e.on&&impEp(plan,e.a)&&impEp(plan,e.b));
+    const rv=eff.filter(e=>e.conf==='review'); if(rv.length) out.push({k:'rel',text:`${rv.length} relationship${rv.length===1?' needs':'s need'} review.`,jump:rv[0].b});
+    const dups=plan.people.filter(p=>p.rec&&p.include!==false&&!p.dupDone&&((p.matches[0]&&p.matches[0].score>=.65&&p.mode!=='merge')||p.ambiguous)); if(dups.length) out.push({k:'dup',text:`${dups.length} possible duplicate${dups.length===1?'':'s'}.`,jump:dups[0].tid});
+    const mer=plan.people.filter(p=>p.rec&&p.include!==false&&p.mode==='merge'&&!p.dupDone); if(mer.length) out.push({k:'mer',text:`${mer.length} ${mer.length===1?'person matches an existing member and will be merged':'people match existing members and will be merged'} — check ${mer.length===1?'it':'them'}.`,jump:mer[0].tid});
+    const fl=plan.people.filter(p=>impActive(p)&&p.cand.flags.length); if(fl.length) out.push({k:'flag',text:`${fl.length} ${fl.length===1?'person has':'people have'} details to check.`,jump:fl[0].tid});
+    const act=plan.people.filter(p=>impActive(p)&&impEp(plan,p.tid)&&impEp(plan,p.tid).startsWith('t:'));
+    const lone=act.filter(p=>!m.links.some(l=>(l.t==='p'&&(l.p==='t:'+p.tid||l.c==='t:'+p.tid))||(l.t==='s'&&(l.a==='t:'+p.tid||l.b==='t:'+p.tid)))); if(lone.length) out.push({k:'lone',text:`${lone.length} ${lone.length===1?'person has':'people have'} no relationships — they will be added unconnected.`,jump:lone[0].tid});
+    const unm=plan.people.filter(p=>!p.rec&&p.mode==='none'&&impHasOnEdge(plan,p.tid)); if(unm.length) out.push({k:'unm',text:`${unm.length} relative${unm.length===1?'':'s'} mentioned ${unm.length===1?'is':'are'} not in your tree yet.`,jump:unm[0].tid});
+    if(m.skipped.length) out.push({k:'skip',text:`${m.skipped.length} link${m.skipped.length===1?'':'s'} can’t be saved (${m.skipped[0].why}).`});
+    plan.problems.filter(p=>p.kind==='warn').forEach(p=>out.push({k:'warn',text:p.text}));
+    return out;
+  }
+  const impOptEx=()=>peopleArr().slice().sort((a,b)=>fullName(a).localeCompare(fullName(b))).map(p=>`<option value="${p.id}">${escapeHtml(fullName(p))}${p.birthDate?' ('+yearOf(p.birthDate)+')':''}</option>`).join('');
+  function impChipFor(plan,e,tid){
+    const A=plan.people.find(p=>p.tid===e.a), B=plan.people.find(p=>p.tid===e.b); if(!A||!B) return '';
+    const nameOf=pp=>{ const ep=impEp(plan,pp.tid); return ep&&ep.startsWith('e:')?fullName(personById(ep.slice(2))):cName(pp.cand); };
+    let label,other; if(e.type==='spouse'){ other=e.a===tid?B:A; label='Spouse'; } else if(e.b===tid){ other=A; label=other.cand.gender==='Male'?'Father':other.cand.gender==='Female'?'Mother':'Parent'; } else { other=B; label=other.cand.gender==='Male'?'Son':other.cand.gender==='Female'?'Daughter':'Child'; }
+    const ok=!!impEp(plan,other.tid); const cls=!e.on?'off':!ok?'unlinked':e.conf==='high'?'hi':'rv';
+    const src=(e.srcs||[]).filter(Boolean)[0];
+    return `<span class="imp-chip imp-chip-${cls}" title="${escapeHtml(src||'')}">${impDot(e.conf)}<span class="imp-chip-l">${label}:</span> ${escapeHtml(nameOf(other))}${ok?'':' <em>(not in your tree)</em>'}${e.inferred?' <em>(inferred)</em>':''}<button type="button" class="imp-chip-x" data-act="edge" data-edge="${e.id}" aria-label="${e.on?'Remove':'Restore'} this link: ${label} ${escapeHtml(nameOf(other))}">${e.on?'✕':'↺'}</button></span>`;
+  }
+  function impMemberRow(plan,pp){
+    const c=pp.cand; const ep=impEp(plan,pp.tid); const exP=pp.mode==='merge'&&pp.mergeId?personById(pp.mergeId):null;
+    const tag= pp.mode==='skip'||pp.include===false?'<span class="imp-tag imp-tag-skip">SKIP</span>': pp.mode==='merge'?'<span class="imp-tag imp-tag-match">MATCH</span>':'<span class="imp-tag imp-tag-new">NEW</span>';
+    const conf=(c.conf==='review'||c.flags.length)?'review':'high'; const chips=plan.edges.filter(e=>e.a===pp.tid||e.b===pp.tid).map(e=>impChipFor(plan,e,pp.tid)).join('');
+    const top=pp.matches[0]; const showDup=(top&&top.score>=.65)||pp.ambiguous; const exMatch=top?personById(top.id):null;
+    let dup='';
+    if(showDup&&exMatch){ const shown=pp.mergeId?personById(pp.mergeId)||exMatch:exMatch; const rows=IMP_FIELDS.map(([lab,ck,pk])=>{ const a=impExVal(shown,pk), b=impCandVal(c,ck); if(!a&&!b) return ''; const st=!b?'same':!a?'fill':(a.replace(/\s+/g,' ')===b.replace(/\s+/g,' ')?'same':'diff'); const radios=(st==='diff'&&pp.mode==='merge')?`<span class="imp-rad" role="radiogroup" aria-label="${lab}"><label><input type="radio" name="fc-${pp.tid}-${pk}" data-act="fchoice" data-tid="${pp.tid}" data-f="${pk}" value="keep" ${(pp.fieldChoice[pk]||'keep')==='keep'?'checked':''}> Keep existing</label><label><input type="radio" name="fc-${pp.tid}-${pk}" data-act="fchoice" data-tid="${pp.tid}" data-f="${pk}" value="replace" ${pp.fieldChoice[pk]==='replace'?'checked':''}> Use imported</label>${pk==='notes'?`<label><input type="radio" name="fc-${pp.tid}-${pk}" data-act="fchoice" data-tid="${pp.tid}" data-f="${pk}" value="append" ${pp.fieldChoice[pk]==='append'?'checked':''}> Append</label>`:''}</span>`:''; return `<tr class="imp-cmp-${st}"><th>${lab}</th><td>${escapeHtml(a)||'—'}</td><td>${escapeHtml(b)||'—'}</td><td>${st==='fill'&&pp.mode==='merge'?'<em>will be filled in</em>':st==='same'?'<em>same</em>':st==='diff'&&pp.mode!=='merge'?'<em>differs</em>':radios}</td></tr>`; }).join('');
+      dup=`<div class="imp-dup">${HK.frame(`<div class="imp-dup-h"><b>${pp.ambiguous?'Several members could match':'Looks like an existing member'}:</b> ${escapeHtml(fullName(shown))} <span class="imp-conf">${impDot(top.score>=.85?'high':'review')} ${Math.round(top.score*100)}% · ${escapeHtml(top.why.join(', '))}</span></div>
+        ${pp.ambiguous?`<label class="imp-lbl">Which member?<select data-act="pickmatch" data-tid="${pp.tid}">${pp.matches.map(m=>`<option value="${m.id}" ${m.id===(pp.mergeId||pp.matches[0].id)?'selected':''}>${escapeHtml(fullName(personById(m.id)))}${personById(m.id).birthDate?' ('+yearOf(personById(m.id).birthDate)+')':''}</option>`).join('')}</select></label>`:''}
+        <div class="imp-cmp-wrap"><table class="imp-cmp"><thead><tr><th></th><th>In your tree</th><th>In the document</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
+        <div class="imp-dup-opts" role="radiogroup" aria-label="What to do with this person">${[['merge','Merge into existing'],['new','Add as new person'],['skip','Skip']].map(([v,l])=>`<label class="imp-opt${(pp.mode===v)?' on':''}"><input type="radio" name="dup-${pp.tid}" data-act="dupmode" data-tid="${pp.tid}" value="${v}" ${pp.mode===v?'checked':''}><span>${l}</span></label>`).join('')}</div>
+        ${pp.mode==='merge'?'<p class="imp-note">Merging only fills in empty fields. Nothing already in your tree is overwritten unless you choose “Use imported”.</p>':''}`,{variant:'compact',intensity:'idle'})}</div>`; }
+    const f=(lab,k,val,ph,extra)=>`<label class="imp-f ${extra||''}"><span>${lab}</span><input type="text" data-act="field" data-tid="${pp.tid}" data-f="${k}" value="${escapeHtml(val)}" placeholder="${ph||''}" ${pp.mode==='skip'?'disabled':''}></label>`;
+    const dateErr=(k)=>pp['err_'+k]?`<small class="imp-ferr">${escapeHtml(pp['err_'+k])}</small>`:'';
+    const gSel=`<label class="imp-f w2"><span>Gender</span><select data-act="field" data-tid="${pp.tid}" data-f="gender"><option value="" ${!c.gender?'selected':''}>N/A</option><option ${c.gender==='Female'?'selected':''}>Female</option><option ${c.gender==='Male'?'selected':''}>Male</option></select></label>`;
+    const dupOthers=plan.people.filter(q=>q.rec&&q.tid!==pp.tid);
+    const traitOpts=(pp.traitOpts&&pp.traitOpts.length)?`<div class="imp-traits"><span class="imp-lbl">Personality notes found in the document (saved as private observations only if checked)</span>${pp.traitOpts.map((t,i)=>`<label class="imp-opt${t.on?' on':''}"><input type="checkbox" data-act="trait" data-tid="${pp.tid}" data-i="${i}" ${t.on?'checked':''}><span>${escapeHtml(t.label)}</span></label>`).join('')}</div>`:'';
+    const photo=pp.photo?`<label class="imp-photo"><img src="${pp.photo}" alt="Picture found in the document"><span class="imp-opt${pp.usePhoto?' on':''}"><input type="checkbox" data-act="photo" data-tid="${pp.tid}" ${pp.usePhoto?'checked':''}><span>Use as profile photo</span></span></label>`:'';
+    const src=(c.src||[]).filter(Boolean);
+    return `<article class="imp-row sr sr-pre${pp.mode==='skip'||pp.include===false?' is-skip':''}" id="imp-r-${pp.tid}" data-tid="${pp.tid}">${HK.frame(`
+      <header class="imp-row-h"><label class="imp-chk"><input type="checkbox" data-act="include" data-tid="${pp.tid}" ${pp.include!==false&&pp.mode!=='skip'?'checked':''} aria-label="Include ${escapeHtml(cName(c))}"><span aria-hidden="true"></span></label>${tag}<b class="imp-name">${escapeHtml(cName(c))}</b><span class="imp-conf" title="${conf==='high'?'Clearly stated in the document':'Guessed from wording or incomplete'}">${impDot(conf)} ${impConfLabel(conf)}</span>${exP?`<span class="imp-merge-to">→ ${escapeHtml(fullName(exP))}</span>`:''}</header>
+      ${c.flags.length?`<ul class="imp-flags">${c.flags.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>`:''}
+      <div class="imp-grid">${f('First name','first',c.first,'','w2')}${f('Middle','middle',c.middle,'','w2')}${f('Last name','last',c.last,'','w2')}${gSel}
+        <div class="imp-f w2"><label><span>Born</span><input type="text" data-act="field" data-tid="${pp.tid}" data-f="birth" value="${escapeHtml(impDateText(c.birth))}" placeholder="e.g. March 5, 1950" ${pp.mode==='skip'?'disabled':''}></label>${dateErr('birth')}</div>${f('Birthplace','birthPlace',c.birthPlace,'','w2')}
+        <div class="imp-f w2"><label><span>Died</span><input type="text" data-act="field" data-tid="${pp.tid}" data-f="death" value="${escapeHtml(impDateText(c.death))}" placeholder="e.g. 1999 (leave empty if living)" ${pp.mode==='skip'?'disabled':''}></label>${dateErr('death')}</div>${f('Death place','deathPlace',c.deathPlace,'','w2')}
+        <label class="imp-f w4"><span>Notes / biography</span><textarea rows="2" data-act="field" data-tid="${pp.tid}" data-f="notes" ${pp.mode==='skip'?'disabled':''}>${escapeHtml(c.notes.join('\n'))}</textarea></label></div>
+      ${photo}${traitOpts}
+      <div class="imp-rels"><span class="imp-lbl">Relationships</span><div class="imp-chips">${chips||'<em class="imp-none">None found</em>'}</div>
+        <div class="imp-addrel"><select data-act="reltype" data-tid="${pp.tid}" aria-label="Relationship type"><option value="father">Father</option><option value="mother">Mother</option><option value="parent">Parent</option><option value="spouse">Spouse / partner</option><option value="child">Child</option></select><select data-act="relwho" data-tid="${pp.tid}" aria-label="Who"><option value="">Choose a person…</option>${plan.people.some(q=>q.rec&&q.tid!==pp.tid)?`<optgroup label="From the document">${plan.people.filter(q=>q.tid!==pp.tid&&(q.rec||impActive(q))).map(q=>`<option value="t:${q.tid}">${escapeHtml(cName(q.cand))}</option>`).join('')}</optgroup>`:''}<optgroup label="In your tree">${impOptEx()}</optgroup></select><button type="button" class="hx-btn" data-act="reladd" data-tid="${pp.tid}">+ Add link</button></div></div>
+      ${dup}
+      <div class="imp-tools">${src.length?`<details class="imp-src"><summary>Source</summary><ul>${src.slice(0,8).map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></details>`:'<span></span>'}${dupOthers.length?`<label class="imp-merge"><span class="imp-lbl">Same person as</span><select data-act="mergedet" data-tid="${pp.tid}"><option value="">Merge with…</option>${dupOthers.map(q=>`<option value="${q.tid}">${escapeHtml(cName(q.cand))}</option>`).join('')}</select></label>`:''}</div>`,{variant:'standard',intensity:pp.mode==='skip'?'idle':'active'})}</article>`;
+  }
+  function impStubRow(plan,pp){
+    const c=pp.cand; const m=pp.matches[0]; const rel=plan.edges.filter(e=>e.a===pp.tid||e.b===pp.tid).map(e=>impChipFor(plan,e,pp.tid)).join('');
+    const status = pp.mode==='existing'&&pp.mergeId ? `${impDot(pp.linkConf)} Matched to <b>${escapeHtml(fullName(personById(pp.mergeId)))}</b>${m&&m.id===pp.mergeId?` — ${escapeHtml(m.why.join(', '))} (${Math.round(m.score*100)}%)`:''}` : pp.mode==='new' ? `${impDot('review')} Will be created as a new member` : `<i class="imp-dot imp-dot-rv" aria-hidden="true"></i> Not in your tree yet`;
+    return `<article class="imp-stub sr sr-pre" id="imp-r-${pp.tid}" data-tid="${pp.tid}">${HK.frame(`<header class="imp-row-h"><span class="imp-tag imp-tag-men">MENTIONED</span><b class="imp-name">${escapeHtml(cName(c))}</b><span class="imp-conf">${status}</span></header>
+      ${c.flags.length?`<ul class="imp-flags">${c.flags.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>`:''}
+      <div class="imp-chips">${rel}</div>
+      <div class="imp-stub-ctl"><label class="imp-f"><span>This relative is…</span><select data-act="stubmode" data-tid="${pp.tid}"><option value="existing" ${pp.mode==='existing'?'selected':''}>An existing member of my tree</option><option value="new" ${pp.mode==='new'?'selected':''}>Not in my tree yet — create as new member</option><option value="none" ${pp.mode==='none'?'selected':''}>Don’t link</option></select></label>
+        <label class="imp-f ${pp.mode==='existing'?'':'is-hidden'}"><span>Search my tree</span><input type="search" data-act="stubfilter" data-tid="${pp.tid}" placeholder="Type a name…" autocomplete="off"></label>
+        <label class="imp-f ${pp.mode==='existing'?'':'is-hidden'}"><span>Member</span><select data-act="stubpick" data-tid="${pp.tid}"><option value="">Choose…</option>${impOptEx().replace(`value="${pp.mergeId}"`,`value="${pp.mergeId}" selected`)}</select></label>
+        ${pp.mode==='new'?`<label class="imp-f"><span>Name</span><input type="text" data-act="field" data-tid="${pp.tid}" data-f="first" value="${escapeHtml(cName(c))}"></label>`:''}</div>`,{variant:'compact',intensity:'idle'})}</article>`;
+  }
+  function impReview(root){
+    const plan=IMP.plan; if(!plan){ impReset(true); return impUpload(root); } const t=tree(); impPreviewModel(); const st=impStats(plan); const probs=impProblems(plan); const m=IMP.pv; const place=plan.single?impPlacement(plan,m):null;
+    const recs=plan.people.filter(p=>p.rec), stubs=plan.people.filter(p=>!p.rec&&(p.mode!=='none'||impHasOnEdge(plan,p.tid)));
+    const colInfo=(plan.parsed.tables||[]).find(x=>x.kind==='columns');
+    const banner = place ? (place.none ? `<div class="imp-banner imp-banner-warn" role="status"><b>We couldn’t find ${escapeHtml(place.name)}’s family in your tree.</b> Pick their relatives below, or add them as an unconnected member.</div>` : `<div class="imp-banner" role="status">Add <b>${escapeHtml(place.name)}</b> as ${place.parts.join(', and ')}${place.gen?` <span class="imp-gen">Generation ${place.gen}</span>`:''}.</div>`) : '';
+    root.innerHTML = `<div class="imp imp-rv">${impHead('IMPORT · REVIEW','Review before saving',`Nothing is saved until you confirm. Source: <b>${escapeHtml(IMP.fileName)}</b>`)}
+      <div class="imp-top"><div class="imp-sum sr sr-pre">${HK.frame(`<div class="imp-sum-g"><div><b id="impNAdd">${st.added}</b><span>to add</span></div><div><b id="impNMerge">${st.merged}</b><span>to merge</span></div><div><b id="impNSkip">${st.skipped}</b><span>skipped</span></div><div><b id="impNLinks">${st.links}</b><span>relationships</span></div></div>`,{variant:'compact',intensity:'active'})}</div>
+        <div class="imp-probs sr sr-pre" id="impProbs" aria-live="polite">${impProbHtml(probs)}</div></div>
+      ${banner}
+      ${colInfo?`<details class="imp-map" ${IMP.mapOpen?'open':''}><summary>Column mapping (${colInfo.cols.filter(c=>c.key).length} of ${colInfo.cols.length} columns recognised)</summary><div class="imp-map-g">${colInfo.cols.map((c,i)=>`<label class="imp-f"><span>${escapeHtml(c.text||'(blank)')}</span><select data-act="colmap" data-col="${i}" data-table="${colInfo.index}"><option value="">Ignore</option>${[['name','Name'],['gender','Gender'],['born','Birth date'],['birthplace','Birthplace'],['died','Death date'],['deathplace','Death place'],['father','Father'],['mother','Mother'],['parents','Parents'],['spouse','Spouse / partner'],['children','Children'],['siblings','Siblings'],['notes','Notes'],['traits','Traits']].map(([k,l])=>`<option value="${k}" ${c.key===k?'selected':''}>${l}</option>`).join('')}</select></label>`).join('')}</div></details>`:''}
+      <div class="imp-tabs" role="tablist" aria-label="Review views"><button type="button" role="tab" id="impTabTree" aria-selected="${IMP.tab==='tree'}" data-tab="tree">Preview Tree</button><button type="button" role="tab" id="impTabList" aria-selected="${IMP.tab==='list'}" data-tab="list">Member List <i>${recs.length}</i></button></div>
+      <div class="imp-pane" id="impPaneTree" role="tabpanel" aria-labelledby="impTabTree" ${IMP.tab==='tree'?'':'hidden'}>${impPreviewHtml()}</div>
+      <div class="imp-pane" id="impPaneList" role="tabpanel" aria-labelledby="impTabList" ${IMP.tab==='list'?'':'hidden'}>
+        <div class="imp-list">${recs.map(pp=>impMemberRow(plan,pp)).join('')}</div>
+        ${stubs.length?`<h3 class="imp-h3 imp-h3-m">Relatives mentioned in the document</h3><p class="imp-sub">These people are named but have no details of their own. Choose whether they match someone in your tree, should be created, or left out.</p><div class="imp-list">${stubs.map(pp=>impStubRow(plan,pp)).join('')}</div>`:''}</div>
+      <div class="imp-bar2" id="impFinal">${impFinalHtml(plan,st)}</div></div>`;
+    impBindReview(root); HK.fillRings(root);
+    requestAnimationFrame(()=>impPvInit(false));
+  }
+  function impProbHtml(probs){ return probs.length ? HK.frame(`<h3 class="imp-h3">Needs your attention <i>${probs.length}</i></h3><ul class="imp-plist">${probs.map(p=>`<li>${p.jump?`<button type="button" class="imp-jump" data-jump="${p.jump}">${escapeHtml(p.text)}</button>`:escapeHtml(p.text)}</li>`).join('')}</ul>`,{variant:'compact',intensity:'idle'}) : HK.frame(`<div class="imp-allgood">${impDot('high')} Nothing needs attention — everything was clearly stated.</div>`,{variant:'compact',intensity:'idle'}); }
+  function impFinalHtml(plan,st){
+    const t=tree(); const n=st.added; const label = n? `Add ${n} member${n===1?'':'s'} to ${t.name}` : st.merged ? `Merge ${st.merged} member${st.merged===1?'':'s'} into ${t.name}` : 'Nothing to add';
+    return `<div class="imp-bar2-in">${HK.frame(`<div class="imp-fin"><div class="imp-fin-t" id="impFinText"><b>${st.added}</b> to add · <b>${st.merged}</b> to merge · <b>${st.skipped}</b> skipped · <b>${st.links}</b> relationship${st.links===1?'':'s'}${IMP.saveErr?`<div class="imp-saveerr" role="alert">${escapeHtml(IMP.saveErr)}</div>`:''}</div><div class="imp-fin-b">${HK.btn('Start over',{kind:'secondary',id:'impRestart'})}${HK.btn(label,{kind:'primary',id:'impSave',attrs:(st.added+st.merged===0?'disabled':'')})}</div></div>`,{variant:'compact',intensity:'active'})}</div>`;
+  }
+  function impRefresh(opts){
+    const plan=IMP.plan; if(!plan) return; impPreviewModel(); const st=impStats(plan); const probs=impProblems(plan);
+    $('impNAdd').textContent=st.added; $('impNMerge').textContent=st.merged; $('impNSkip').textContent=st.skipped; $('impNLinks').textContent=st.links;
+    $('impProbs').innerHTML=impProbHtml(probs); $('impFinal').innerHTML=impFinalHtml(plan,st); bindFinal();
+    if(opts&&opts.rows){ const root=$('impRoot'); const y=window.scrollY; renderImport(); window.scrollTo(0,y); } else { $('impPaneTree').innerHTML=impPreviewHtml(); requestAnimationFrame(()=>impPvInit(true)); }
+  }
+
+
+  /* ---------- preview tree (real layout engine, temp copy) ---------- */
+  function impPreviewHtml(){
+    const m=IMP.pv; if(!m||!m.layout||!m.people.length) return `<div class="imp-pv-empty">${HK.empty('Nothing to preview','Include at least one person to see how the tree will look.')}</div>`;
+    const L=m.layout, P=L.positions, byId=m.by; const W=Math.max(L.totalWidth,CARD_W), H=L.totalHeight; const pad=30;
+    let svg='';
+    const parentsOf=id=>byId[id].parents.filter(x=>P[x]);
+    const done=new Set();
+    m.people.forEach(p=>{ const pp=P[p.id]; if(!pp) return; const ps=parentsOf(p.id); if(!ps.length) return; const cx=ps.reduce((a,x)=>a+P[x].x,0)/ps.length, py=Math.max(...ps.map(x=>P[x].y))+CARD_H/2, midY=py+(pp.y-CARD_H/2-py)/2; const isNew=(m.meta[p.id]||{}).kind==='new'||ps.some(x=>(m.meta[x]||{}).kind==='new');
+      const lit=(m.meta[p.id]&&m.meta[p.id].lit&&m.meta[p.id].lit.some(x=>ps.includes(x)))||ps.some(x=>(m.meta[x]||{}).lit&&m.meta[x].lit.includes(p.id));
+      ps.forEach(x=>{ svg+=`<path class="imp-pv-ln${lit?' lit':''}" d="M${P[x].x} ${P[x].y+CARD_H/2}V${midY}H${pp.x}V${pp.y-CARD_H/2}"/>`; }); });
+    m.people.forEach(p=>{ (p.spouseIds||[]).forEach(s=>{ const k=[p.id,s].sort().join('|'); if(done.has(k)||!P[p.id]||!P[s]) return; done.add(k); const a=P[p.id],b=P[s]; const lit=m.links.some(l=>l.t==='s'&&((l.a===p.id&&l.b===s)||(l.a===s&&l.b===p.id))); const y=a.y; svg+=a.y===b.y?`<path class="imp-pv-ln sp${lit?' lit':''}" d="M${Math.min(a.x,b.x)+CARD_W/2} ${y}H${Math.max(a.x,b.x)-CARD_W/2}"/>`:`<path class="imp-pv-ln sp${lit?' lit':''}" d="M${a.x} ${a.y}L${b.x} ${b.y}"/>`; }); });
+    m.people.forEach(p=>{ const pp=P[p.id]; if(!pp) return; const mt=m.meta[p.id]||{}; const kind=mt.kind||'old'; const nm=[p.firstName,p.middleName,p.lastName].filter(Boolean).join(' '); const yrs=(p.bd?p.bd.y:yearOf(p.birthDate)||'')+(p.dd?'–'+p.dd.y:(!p.living&&p.deathDate?'–'+yearOf(p.deathDate):'')); const x=pp.x-CARD_W/2,y=pp.y-CARD_H/2;
+      svg+=`<g class="imp-pv-n imp-pv-${kind}" transform="translate(${x} ${y})" data-tid="${mt.tid||''}"><rect width="${CARD_W}" height="${CARD_H}" rx="6"/><text class="nm" x="12" y="26">${escapeHtml(nm.length>22?nm.slice(0,21)+'…':nm)}</text><text class="yr" x="12" y="46">${escapeHtml(String(yrs||''))}</text>${kind!=='old'?`<g transform="translate(${CARD_W-52} 8)"><rect class="tg" width="44" height="16" rx="3"/><text x="22" y="12" text-anchor="middle">${kind==='new'?'NEW':'MATCH'}</text></g>`:''}</g>`; });
+    const vb=`${-pad} ${-pad} ${W+pad*2} ${H+pad*2}`;
+    return `<div class="imp-pv" id="impPv" data-w="${W+pad*2}" data-h="${H+pad*2}">${HK.frame(`<div class="imp-pv-bar"><span class="imp-pv-leg"><i class="lg old"></i>Existing <i class="lg new"></i>New <i class="lg match"></i>Matched</span><span class="imp-pv-ctl"><button type="button" class="imp-ic" data-pv="out" aria-label="Zoom out">−</button><button type="button" class="imp-ic" data-pv="fit" aria-label="Fit to screen">⤢</button><button type="button" class="imp-ic" data-pv="in" aria-label="Zoom in">+</button></span></div><div class="imp-pv-vp" id="impPvVp" tabindex="0" role="img" aria-label="Preview of the family tree with the imported people highlighted"><svg id="impPvSvg" viewBox="${vb}" width="${W+pad*2}" height="${H+pad*2}" xmlns="http://www.w3.org/2000/svg"><g id="impPvG">${svg}</g></svg></div>`,{variant:'standard',intensity:'active'})}</div>`;
+  }
+  function impPvInit(keep){
+    const vp=$('impPvVp'), g=$('impPvG'), box=$('impPv'); if(!vp||!g||!box) return; const T=IMP.pvT||(IMP.pvT={x:0,y:0,k:1,fit:true});
+    const sv=$('impPvSvg'); const bw=+box.dataset.w, bh=+box.dataset.h;
+    const apply=()=>{ sv.style.transform=`translate(${T.x}px,${T.y}px) scale(${T.k})`; };
+    const fit=()=>{ const w=vp.clientWidth||600,h=vp.clientHeight||360; const k=Math.min(w/bw,h/bh,1.2); T.k=k; T.x=(w-bw*k)/2; T.y=(h-bh*k)/2; T.fit=true; apply(); };
+    if(!keep||T.fit) fit(); else apply();
+    const zoom=(f,cx,cy)=>{ const k=Math.max(.15,Math.min(3,T.k*f)); const r=k/T.k; cx=cx==null?vp.clientWidth/2:cx; cy=cy==null?vp.clientHeight/2:cy; T.x=cx-(cx-T.x)*r; T.y=cy-(cy-T.y)*r; T.k=k; T.fit=false; apply(); };
+    box.querySelectorAll('[data-pv]').forEach(b=>b.onclick=()=>{ const a=b.dataset.pv; if(a==='fit') fit(); else zoom(a==='in'?1.25:.8); });
+    let drag=null; vp.onpointerdown=e=>{ drag={x:e.clientX,y:e.clientY,ox:T.x,oy:T.y}; vp.setPointerCapture(e.pointerId); vp.classList.add('grab'); };
+    vp.onpointermove=e=>{ if(!drag) return; T.x=drag.ox+e.clientX-drag.x; T.y=drag.oy+e.clientY-drag.y; T.fit=false; apply(); };
+    vp.onpointerup=vp.onpointercancel=()=>{ drag=null; vp.classList.remove('grab'); };
+    vp.onwheel=e=>{ if(!(e.ctrlKey||e.metaKey)) return; e.preventDefault(); const r=vp.getBoundingClientRect(); zoom(e.deltaY<0?1.1:.9,e.clientX-r.left,e.clientY-r.top); };
+    vp.onkeydown=e=>{ const s=40; if(e.key==='ArrowLeft'){T.x+=s;} else if(e.key==='ArrowRight'){T.x-=s;} else if(e.key==='ArrowUp'){T.y+=s;} else if(e.key==='ArrowDown'){T.y-=s;} else if(e.key==='+'||e.key==='='){ zoom(1.2); return; } else if(e.key==='-'){ zoom(.83); return; } else return; e.preventDefault(); T.fit=false; apply(); };
+    if(window.ResizeObserver&&!vp._ro){ vp._ro=new ResizeObserver(()=>{ if(T.fit&&vp.clientWidth) fit(); }); vp._ro.observe(vp); }
+  }
+
+  /* ---------- review: events ---------- */
+  function impPP(tid){ return IMP.plan.people.find(p=>p.tid===tid); }
+  function impSetField(pp,f,val){
+    const c=pp.cand; val=val.trim();
+    if(f==='birth'||f==='death'){ pp['err_'+f]=''; if(!val){ c[f]=null; if(f==='death') c.living=true; return; }
+      const r=FTI.findDate(val,IMP.order||'mdy'); const d=r&&r.date;
+      if(!d||(r.end-r.start)<val.replace(/^c\.?\s*|^circa\s*|^about\s*/i,'').length-2){ pp['err_'+f]='Couldn’t read this date — try “March 5, 1950” or just “1950”.'; return; }
+      if(d.ambiguous&&!IMP.order){ pp['err_'+f]='This could be day/month or month/day — please write the month as a word.'; return; }
+      c[f]=d; if(f==='death') c.living=false; return; }
+    if(f==='notes'){ c.notes=val?val.split(/\n+/):[]; return; }
+    if(f==='gender'){ c.gender=val||''; return; }
+    if(f==='first'&&!pp.rec){ const s=FTI.splitName(val); c.first=s.first||val; c.middle=s.middle||''; c.last=s.last||''; return; }
+    c[f]=val;
+  }
+  function impNewEdge(plan,a,b,type){ plan.edges.push({id:'u'+(IMP.uid=(IMP.uid||0)+1),k:'u',a,b,type,conf:'high',srcs:['Added by you'],on:true,user:true}); }
+  function impStubFor(plan,val){
+    if(val.startsWith('t:')) return val.slice(2);
+    const id=val.slice(2); const ex=plan.people.find(p=>!p.rec&&p.mode==='existing'&&p.mergeId===id); if(ex) return ex.tid; const p=personById(id); if(!p) return null;
+    const tid='ux'+id; plan.people.push({tid,cand:{first:p.firstName,middle:p.middleName||'',last:p.lastName||'',gender:p.gender||'',notes:[],traits:[],flags:[],src:[],conf:'high'},include:true,rec:false,matches:[],mode:'existing',mergeId:id,linkConf:'high',ambiguous:false,possible:[],fieldChoice:{}}); return tid;
+  }
+  function impBindReview(root){
+    const plan=IMP.plan;
+    root.querySelectorAll('.imp-tabs [data-tab]').forEach(b=>b.onclick=()=>{ IMP.tab=b.dataset.tab; root.querySelectorAll('.imp-tabs [data-tab]').forEach(x=>x.setAttribute('aria-selected',x===b)); $('impPaneTree').hidden=IMP.tab!=='tree'; $('impPaneList').hidden=IMP.tab!=='list'; if(IMP.tab==='tree') requestAnimationFrame(()=>impPvInit(true)); });
+    root.onclick=e=>{ const el=e.target.closest('[data-act],[data-jump]'); if(!el) return;
+      if(el.dataset.jump){ const id=el.dataset.jump; IMP.tab='list'; $('impTabList').click(); const r=$('imp-r-'+id); if(r){ r.scrollIntoView({behavior:isRM()?'auto':'smooth',block:'center'}); r.classList.add('imp-flash'); setTimeout(()=>r.classList.remove('imp-flash'),1600); const f=r.querySelector('input,select,textarea'); if(f) f.focus({preventScroll:true}); } return; }
+      const act=el.dataset.act;
+      if(act==='edge'){ const ed=plan.edges.find(x=>x.id===el.dataset.edge); if(ed){ ed.on=!ed.on; impRefresh({rows:true}); } }
+      else if(act==='reladd'){ const row=el.closest('.imp-addrel'); const ty=row.querySelector('[data-act=reltype]').value, who=row.querySelector('[data-act=relwho]').value; if(!who){ toast('Choose who the link is with.'); return; } const o=impStubFor(plan,who); if(!o||o===el.dataset.tid) return; const me=el.dataset.tid;
+        const oPP=impPP(o); if(ty==='father'&&!oPP.cand.gender) oPP.cand.gender='Male'; if(ty==='mother'&&!oPP.cand.gender) oPP.cand.gender='Female';
+        if(ty==='spouse') impNewEdge(plan,me,o,'spouse'); else if(ty==='child') impNewEdge(plan,me,o,'parent'); else impNewEdge(plan,o,me,'parent'); impRefresh({rows:true}); }
+    };
+    root.onchange=e=>{ const el=e.target.closest('[data-act]'); if(!el) return; const act=el.dataset.act; const pp=el.dataset.tid?impPP(el.dataset.tid):null;
+      if(act==='include'){ pp.include=el.checked; if(!el.checked){ pp._prev=pp.mode; pp.mode='skip'; } else { pp.mode=pp._prev&&pp._prev!=='skip'?pp._prev:'new'; } impRefresh({rows:true}); }
+      else if(act==='field'){ impSetField(pp,el.dataset.f,el.value); impRefresh({rows:!!pp['err_'+el.dataset.f]||el.dataset.f==='birth'||el.dataset.f==='death'||el.dataset.f==='first'||el.dataset.f==='last'||el.dataset.f==='gender'}); }
+      else if(act==='dupmode'){ pp.mode=el.value; pp.include=el.value!=='skip'; if(el.value==='merge'&&!pp.mergeId&&pp.matches[0]) pp.mergeId=pp.matches[0].id; if(el.value!=='merge') pp.dupDone=true; impRefresh({rows:true}); }
+      else if(act==='pickmatch'){ pp.mergeId=el.value; if(pp.mode!=='merge') pp.mode='merge'; impRefresh({rows:true}); }
+      else if(act==='fchoice'){ pp.fieldChoice[el.dataset.f]=el.value; }
+      else if(act==='trait'){ pp.traitOpts[+el.dataset.i].on=el.checked; }
+      else if(act==='photo'){ pp.usePhoto=el.checked; }
+      else if(act==='stubmode'){ pp.mode=el.value; if(pp.mode!=='existing') pp.mergeId=null; impRefresh({rows:true}); }
+      else if(act==='stubpick'){ pp.mergeId=el.value||null; pp.linkConf='high'; if(el.value){ const x=personById(el.value); if(x&&!pp.cand.gender&&x.gender) pp.cand.gender=x.gender; } impRefresh({rows:true}); }
+      else if(act==='mergedet'){ if(!el.value) return; const keep=impPP(el.value); FTI.mergeDetected(plan,pp.tid,keep.tid); impRefresh({rows:true}); }
+      else if(act==='colmap'){ const tb=+el.dataset.table, ci=+el.dataset.col; IMP.colMap=IMP.colMap||{}; (IMP.colMap[tb]=IMP.colMap[tb]||{})[ci]=el.value; IMP.mapOpen=true; if(IMP.rawDoc){ toast('Re-reading the document with your column choices…'); IMP.stage='scan'; IMP.running=true; renderImport(); impParseStep(IMP.rawDoc).catch(impFail); } }
+    };
+    root.oninput=e=>{ const el=e.target.closest('[data-act=stubfilter]'); if(!el) return; const q=norm1(el.value); const sel=el.closest('.imp-stub-ctl').querySelector('[data-act=stubpick]'); [...sel.options].forEach(o=>{ if(!o.value) return; o.hidden=!!q&&!norm1(o.textContent).includes(q); }); const first=[...sel.options].find(o=>o.value&&!o.hidden); if(q&&first){ sel.value=first.value; } };
+    bindFinal();
+    root.querySelectorAll('.sr-pre').forEach(x=>{ if(HK.rm()) x.classList.remove('sr-pre'); });
+  }
+  function bindFinal(){
+    const s=$('impSave'); if(s) s.onclick=()=>impApply(); const r=$('impRestart'); if(r) r.onclick=async()=>{ if(await impConfirm('Start over?','The details you reviewed will be discarded. Nothing has been saved.','Start over')){ impReset(true); renderImport(); } };
+  }
+  function impConfirm(title,text,ok,danger){
+    return new Promise(res=>{ const prev=document.activeElement; const d=document.createElement('div'); d.className='imp-dlg'; d.innerHTML=`<div class="imp-dlg-in" role="alertdialog" aria-modal="true" aria-labelledby="impDlgT" aria-describedby="impDlgD">${HK.frame(`<h3 id="impDlgT">${escapeHtml(title)}</h3><p id="impDlgD">${escapeHtml(text)}</p><div class="imp-dlg-b">${HK.btn('Cancel',{kind:'secondary',id:'impDlgNo'})}${HK.btn(ok,{kind:danger?'danger':'primary',id:'impDlgYes'})}</div>`,{variant:'standard',intensity:'active'})}</div>`; document.body.appendChild(d);
+      const close=v=>{ d.remove(); document.removeEventListener('keydown',kd,true); if(prev&&prev.focus) prev.focus(); res(v); };
+      const kd=e=>{ if(e.key==='Escape'){ e.stopPropagation(); close(false); } else if(e.key==='Tab'){ const b=[d.querySelector('#impDlgNo'),d.querySelector('#impDlgYes')]; const i=b.indexOf(document.activeElement); e.preventDefault(); b[(i+(e.shiftKey?-1:1)+2)%2].focus(); } };
+      document.addEventListener('keydown',kd,true); d.querySelector('#impDlgNo').onclick=()=>close(false); d.querySelector('#impDlgYes').onclick=()=>close(true); d.onclick=e=>{ if(e.target===d) close(false); }; d.querySelector('#impDlgNo').focus(); });
+  }
+
+  /* ---------- save (one batch, atomic, undoable) ---------- */
+  const IMP_DATE_FIELDS={birthDate:['birth','birthDatePrecision','birthDateApprox'],deathDate:['death','deathDatePrecision','deathDateApprox']};
+  function impApplyDate(person,key,d){ const [,pk,ak]=IMP_DATE_FIELDS[key]; person[key]=d.iso; person[pk]=d.prec; person[ak]=!!d.approx; }
+  function impSnapshotPerson(p){ return JSON.parse(JSON.stringify(p)); }
+  async function impApply(){
+    const plan=IMP.plan, t=tree(); if(!plan||!t||IMP.saving) return; if(t.id!==IMP.treeId){ toast('This import was started in a different tree.'); return; }
+    IMP.saving=true; IMP.saveErr=''; IMP.stage='saving'; renderImport();
+    const backup=JSON.stringify(t); const idx=db.trees.indexOf(t); const batch={id:'imp'+Date.now().toString(36)+Math.floor(Math.random()*1000).toString(36),at:new Date().toISOString(),file:IMP.fileName,created:[],filled:[],parents:[],spouses:[],traits:[],photos:[],undone:false};
+    try{
+      await new Promise(r=>setTimeout(r,isRM()?0:250));
+      const comp=impCompute(plan); const idMap={}; const now=new Date().toISOString();
+      const real=ep=>ep.startsWith('e:')?ep.slice(2):idMap[ep];
+      // create
+      plan.people.forEach(pp=>{ const ep=impEp(plan,pp.tid); if(!ep||!ep.startsWith('t:')) return; const c=pp.cand; const id=newPersonId()+'i'+batch.created.length; idMap[ep]=id;
+        const per={id,firstName:c.first||cName(c),middleName:c.middle||'',lastName:c.last||'',nickname:c.nick||'',gender:c.gender||'',birthDate:'',living:!c.death&&c.living!==false,deathDate:'',notes:c.notes.join('\n'),traits:[],parents:[],children:[],spouseIds:[],pinned:false,pinnedAt:null,createdAt:now,updatedAt:now,photo:(pp.usePhoto&&pp.photo)?pp.photo:null,birthPlace:c.birthPlace||'',deathPlace:c.deathPlace||'',importBatch:batch.id};
+        if(c.birth) impApplyDate(per,'birthDate',c.birth); if(c.death){ impApplyDate(per,'deathDate',c.death); per.living=false; }
+        per.traits=(pp.traitOpts||[]).filter(o=>o.on).map(o=>o.custom?{id:'custom'+Math.floor(Math.random()*1e6),custom:true,title:o.label,note:''}:{id:o.id,note:''});
+        t.people.push(per); batch.created.push(id); if(pp.usePhoto&&pp.photo) batch.photos.push(id); });
+      // merge into existing: only fill empty fields (or what the user chose to replace)
+      plan.people.forEach(pp=>{ if(!(pp.rec&&pp.include!==false&&pp.mode==='merge'&&pp.mergeId)) return; const ex=personById(pp.mergeId); if(!ex) return; const c=pp.cand; const before={}; const ch=k=>pp.fieldChoice[k];
+        const setIf=(key,val,apply)=>{ if(val==null||val==='') return; const cur=ex[key]; if(!cur||ch(key)==='replace'){ if(cur&&cur===val) return; if(!(key in before)) before[key]=cur===undefined?null:cur; (apply||(()=>{ex[key]=val;}))(); } };
+        setIf('firstName',c.first); setIf('middleName',c.middle); setIf('lastName',c.last); setIf('nickname',c.nick); setIf('gender',c.gender); setIf('birthPlace',c.birthPlace); setIf('deathPlace',c.deathPlace);
+        ['birthDate','deathDate'].forEach(k=>{ const d=c[IMP_DATE_FIELDS[k][0]]; if(!d) return; const cur=ex[k]; if(!cur||ch(k)==='replace'){ if(cur===d.iso&&ex[IMP_DATE_FIELDS[k][1]]===d.prec) return; IMP_DATE_FIELDS[k].forEach((f,i)=>{ const key=i?f:k; if(i===0) return; if(!(f in before)) before[f]=ex[f]===undefined?null:ex[f]; }); if(!(k in before)) before[k]=cur||''; impApplyDate(ex,k,d); if(k==='deathDate'){ if(!('living' in before)) before.living=ex.living; ex.living=false; } } });
+        if(c.notes.length){ const txt=c.notes.join('\n'); if(!ex.notes){ before.notes=ex.notes||''; ex.notes=txt; } else if(ch('notes')==='append'&&!ex.notes.includes(txt)){ before.notes=ex.notes; ex.notes=ex.notes+'\n'+txt; } else if(ch('notes')==='replace'){ before.notes=ex.notes; ex.notes=txt; } }
+        if(pp.usePhoto&&pp.photo&&!ex.photo){ before.photo=null; ex.photo=pp.photo; batch.photos.push(ex.id); }
+        const tr=(pp.traitOpts||[]).filter(o=>o.on&&!ex.traits.some(x=>(x.id===o.id&&!o.custom)||(o.custom&&x.title===o.label))); if(tr.length){ ex.traits=ex.traits||[]; const added=[]; tr.forEach(o=>{ const e=o.custom?{id:'custom'+Math.floor(Math.random()*1e6),custom:true,title:o.label,note:''}:{id:o.id,note:''}; ex.traits.push(e); added.push(e.id); }); batch.traits.push({id:ex.id,ids:added}); }
+        if(Object.keys(before).length){ ex.updatedAt=now; batch.filled.push({id:ex.id,before}); } });
+      // links
+      const byIdNow=id=>t.people.find(p=>p.id===id);
+      comp.links.forEach(l=>{ if(l.t==='p'){ const p=byIdNow(real(l.p)), c=byIdNow(real(l.c)); if(!p||!c) return; c.parents=c.parents||[]; p.children=p.children||[]; if(c.parents.includes(p.id)||c.parents.length>=2) return; c.parents.push(p.id); if(!p.children.includes(c.id)) p.children.push(c.id); batch.parents.push([p.id,c.id]); }
+        else { const a=byIdNow(real(l.a)), b=byIdNow(real(l.b)); if(!a||!b) return; a.spouseIds=a.spouseIds||[]; b.spouseIds=b.spouseIds||[]; if(a.spouseIds.includes(b.id)) return; a.spouseIds.push(b.id); b.spouseIds.push(a.id); batch.spouses.push([a.id,b.id]); } });
+      t.imports=(t.imports||[]); t.imports.push(batch); touchTree();
+      const ok=await persistDb();
+      if(!ok) throw new Error('save');
+      IMP.result={batchId:batch.id,created:batch.created.length,merged:batch.filled.length,links:batch.parents.length+batch.spouses.length,names:batch.created.slice(0,12).map(id=>fullName(byIdNow(id))),firstId:batch.created[0]||(batch.filled[0]&&batch.filled[0].id)||null,skipped:comp.skipped.length};
+      IMP.saving=false; IMP.stage='done'; IMP.rawDoc=null; IMP.parsed=null; IMP.plan=null; renderAll(); renderImport();
+    }catch(e){
+      // revert everything in memory so nothing half-applied survives; keep the review data for a retry
+      try{ const old=JSON.parse(backup); db.trees[idx]=old; }catch(_){}
+      IMP.saving=false; IMP.stage='review'; IMP.saveErr='Nothing was added. '+( e&&e.message==='save' ? 'We couldn’t reach the server to save. Check your connection and press the button again — your review is kept.' : 'Something went wrong while adding members ('+((e&&e.message)||'unknown error')+'). Your review is kept — please try again.');
+      renderAll(); renderImport();
+    }
+  }
+  function impSaving(root){
+    root.innerHTML=`<div class="imp imp-sv">${impHead('IMPORT · SAVING','Adding to your tree…','One batch — either everything is added or nothing is.')}<div class="imp-center" role="status" aria-live="polite">${HK.platform('L',false)}<div class="imp-sv-nodes" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><p>Saving…</p></div></div>`;
+  }
+  function impDone(root){
+    const r=IMP.result; if(!r){ impReset(true); return impUpload(root); } const t=tree();
+    const n=r.created; const word=n===1?'member':'members'; const headline = n? `${n} ${word} imported.` : `${r.merged} existing ${r.merged===1?'member':'members'} updated.`;
+    const nodes=r.names.map((nm,i)=>{ const a=(i/Math.max(r.names.length,1))*Math.PI*2-Math.PI/2; const R=n>1?120:0; return `<span class="imp-fly" style="--tx:${Math.round(Math.cos(a)*R)}px;--ty:${Math.round(Math.sin(a)*R*.6-70)}px;--d:${i*70}ms"><i></i><em>${escapeHtml(nm.length>16?nm.slice(0,15)+'…':nm)}</em></span>`; }).join('');
+    root.innerHTML=`<div class="imp imp-dn">${impHead('IMPORT · COMPLETE','Import complete','')}<div class="imp-done">${HK.frame(`<div class="imp-stage">${HK.platform('L',false)}<div class="imp-flys" aria-hidden="true">${nodes}</div></div><div class="imp-done-t" role="status" aria-live="polite"><div class="imp-check">${impIco.check}</div><h3>${headline}</h3><p>${n?`Added to <b>${escapeHtml(t.name)}</b>${r.merged?`, and ${r.merged} existing ${r.merged===1?'member was':'members were'} filled in`:''}. ${r.links} relationship${r.links===1?'':'s'} linked.`:`Empty fields were filled in. Nothing was overwritten.`}${r.skipped?` ${r.skipped} link${r.skipped===1?'':'s'} couldn’t be saved.`:''}</p></div><div class="imp-done-b">${HK.btn('View in Tree',{kind:'primary',id:'impViewTree'})}${HK.btn('Undo import',{kind:'secondary',id:'impUndo'})}${HK.btn('Import another',{kind:'secondary',id:'impAgain'})}</div><p class="imp-privacy">Your document was read in this browser and has been discarded. You can undo this import any time from Me → Import history.</p>`,{variant:'standard',intensity:'active',tick:true})}</div></div>`;
+    $('impViewTree').onclick=()=>{ const id=r.firstId; switchView('tree'); if(id){ selectedId=id; afterLayout(()=>{ centerOnPerson(id); }); } };
+    $('impUndo').onclick=()=>impUndoBatch(r.batchId,true);
+    $('impAgain').onclick=()=>{ impReset(true); renderImport(); };
+    requestAnimationFrame(()=>$('impViewTree')&&$('impViewTree').focus({preventScroll:true}));
+  }
+  async function impUndoBatch(batchId,fromDone){
+    const t=tree(); const b=(t.imports||[]).find(x=>x.id===batchId); if(!b||b.undone) return;
+    if(!await impConfirm('Undo this import?',`This removes the ${b.created.length} ${b.created.length===1?'person':'people'} this import added and restores anything it filled in. Members that were already in your tree stay as they were.`,'Undo import',true)) return;
+    const backup=JSON.stringify(t), idx=db.trees.indexOf(t);
+    try{
+      const gone=new Set(b.created);
+      t.people=t.people.filter(p=>!gone.has(p.id));
+      t.people.forEach(p=>{ p.parents=(p.parents||[]).filter(x=>!gone.has(x)); p.children=(p.children||[]).filter(x=>!gone.has(x)); p.spouseIds=(p.spouseIds||[]).filter(x=>!gone.has(x)); });
+      (b.parents||[]).forEach(([pa,ch])=>{ const P=personById(pa), C=personById(ch); if(C) C.parents=(C.parents||[]).filter(x=>x!==pa); if(P) P.children=(P.children||[]).filter(x=>x!==ch); });
+      (b.spouses||[]).forEach(([x,y])=>{ const X=personById(x), Y=personById(y); if(X) X.spouseIds=(X.spouseIds||[]).filter(i=>i!==y); if(Y) Y.spouseIds=(Y.spouseIds||[]).filter(i=>i!==x); });
+      (b.filled||[]).forEach(f=>{ const p=personById(f.id); if(!p) return; Object.keys(f.before).forEach(k=>{ const v=f.before[k]; if(v===null&&(k==='photo'||/Precision$/.test(k))) { if(k==='photo') p.photo=null; else delete p[k]; } else if(v===null&&/Approx$/.test(k)) delete p[k]; else p[k]=v; }); });
+      (b.traits||[]).forEach(tr=>{ const p=personById(tr.id); if(p) p.traits=(p.traits||[]).filter(x=>!tr.ids.includes(x.id)); });
+      if(selectedId&&gone.has(selectedId)) selectedId=null;
+      b.undone=true; b.undoneAt=new Date().toISOString(); touchTree();
+      if(!await persistDb()) throw new Error('save');
+      toast(`Import undone — ${b.created.length} removed.`); IMP.result=null; renderAll(); if(fromDone){ impReset(true); renderImport(); } else renderImportHistory();
+    }catch(e){ db.trees[idx]=JSON.parse(backup); renderAll(); toast('Couldn’t undo — nothing was changed. Check your connection and try again.'); }
+  }
+  function renderImportHistory(){
+    const box=$('meImpList'); if(!box) return; const t=tree(); const list=((t&&t.imports)||[]).slice().reverse();
+    if(!list.length){ box.innerHTML='<p class="imp-sub">No imports yet for this tree.</p>'; return; }
+    box.innerHTML=list.map(b=>{ const when=new Date(b.at).toLocaleString(undefined,{dateStyle:'medium',timeStyle:'short'}); return `<div class="imp-hist${b.undone?' undone':''}"><div><b>${escapeHtml(b.file||'Word document')}</b><span>${when} · ${b.created.length} added${b.filled.length?`, ${b.filled.length} filled in`:''}${b.undone?' · undone':''}</span></div>${b.undone?'':`<button type="button" class="hb hb-secondary" data-undo-batch="${b.id}"><span>Undo</span></button>`}</div>`; }).join('');
+    box.querySelectorAll('[data-undo-batch]').forEach(x=>x.onclick=()=>impUndoBatch(x.dataset.undoBatch,false));
+  }
+
+  /* ---------- drag & drop anywhere ---------- */
+  (function(){
+    let depth=0; const ov=()=>$('impDrop');
+    const hasFiles=e=>e.dataTransfer&&[...(e.dataTransfer.types||[])].includes('Files');
+    const ready=()=>currentUser&&currentTreeId&&!document.querySelector('.imp-dlg')&&$('app')&&!$('app').hidden;
+    window.addEventListener('dragenter',e=>{ if(!hasFiles(e)||!ready()) return; depth++; ov().classList.add('on'); ov().setAttribute('aria-hidden','false'); });
+    window.addEventListener('dragover',e=>{ if(hasFiles(e)&&ready()) e.preventDefault(); });
+    window.addEventListener('dragleave',e=>{ if(!hasFiles(e)) return; depth=Math.max(0,depth-1); if(!depth){ ov().classList.remove('on'); ov().setAttribute('aria-hidden','true'); } });
+    window.addEventListener('drop',e=>{ if(!hasFiles(e)) return; depth=0; ov().classList.remove('on'); ov().setAttribute('aria-hidden','true'); if(!ready()) return; e.preventDefault(); const f=e.dataTransfer.files&&e.dataTransfer.files[0]; if(f){ if(IMP.running){ toast('An import is already being read.'); return; } if(currentView==='import'&&IMP.stage==='review'){ if(!confirm('Replace the import you are reviewing with this file?')) return; } impReset(true); impHandleFile(f); } });
+  })();
+
 
   // =====================================================================
   // HOME / TIMELINE / INSIGHTS — the three section views added by the
@@ -5995,6 +7068,7 @@
     brain:PF_ICON.brain,
     plus:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>',
     event:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.4 5 5.6.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.6-.8z"/></svg>',
+    doc:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M12 17.5v-6.5M9.5 13.5 12 11l2.5 2.5"/></svg>',
     tree:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.2"/><circle cx="6" cy="19" r="2.2"/><circle cx="18" cy="19" r="2.2"/><path d="M12 7v5M6 17v-3h12v3"/></svg>'
   };
   function miniTreeSvg(layout){
@@ -6190,7 +7264,7 @@
         ${nextSteps.length?`<section class="hh-next ${sr}" aria-labelledby="hxNextT"><div class="hk-h"><h3 id="hxNextT">Next steps</h3></div>${nextSteps.map(x=>HK.frame(`<div class="hh-next-row"><p>${escapeHtml(x.text)}</p><button type="button" class="hb hb-primary" data-next="${x.k}"><span>${escapeHtml(x.btn)}</span></button></div>`,{variant:'compact',intensity:'idle'})).join('')}</section>`:''}
         <section class="hh-spot ${sr}" aria-labelledby="hxSpotT"><div class="hk-h"><h3 id="hxSpotT">Family spotlight</h3></div><p class="hk-sub">Swipe through your members. Tap a card to flip it.</p><div id="hhDeck"></div></section>
         <section class="hh-qa ${sr}" aria-labelledby="hxActT"><div class="hk-h"><h3 id="hxActT">Quick actions</h3></div>
-          <div class="hh-qa-row"><button type="button" class="hb" id="homeAddBtn">${HX_ICON.plus}<span>Add member</span></button><button type="button" class="hb" id="homeEventBtn">${HX_ICON.event}<span>Add event</span></button><button type="button" class="hb" id="homeObsBtn">${HX_ICON.brain}<span>Add observation</span></button><button type="button" class="hb" data-goto="tree">${HX_ICON.tree}<span>Open tree</span></button></div></section>
+          <div class="hh-qa-row"><button type="button" class="hb" id="homeAddBtn">${HX_ICON.plus}<span>Add member</span></button><button type="button" class="hb" id="homeEventBtn">${HX_ICON.event}<span>Add event</span></button><button type="button" class="hb" id="homeObsBtn">${HX_ICON.brain}<span>Add observation</span></button><button type="button" class="hb" data-goto="tree">${HX_ICON.tree}<span>Open tree</span></button><button type="button" class="hb" id="homeImportBtn">${HX_ICON.doc||''}<span>Import document</span></button></div></section>
         ${recentLog.length?`<section class="hh-log ${sr}" aria-labelledby="hxRecT"><div class="hk-h"><h3 id="hxRecT">Recent activity</h3></div>${HK.frame(`<ul class="hh-log-l">${recentLog.map(r=>`<li><button type="button" class="hx-person" data-open-person="${r.p.id}">${avatarMini(r.p)}<span>${escapeHtml(fullName(r.p))}</span></button><span class="hx-row-meta">${r.created?'Added':'Edited'} ${escapeHtml(fmtRelative(r.at.toISOString()))}</span></li>`).join('')}</ul>`,{variant:'compact',intensity:'idle'})}</section>`:''}
       </div></div>`;
     bindViewActions(root);
@@ -6212,6 +7286,7 @@
     root.querySelectorAll('[data-next]').forEach(b=> b.onclick = ()=>{ const k=b.dataset.next;
       if(k==='dates') openDatesSheet(); else if(k==='obs') obsOpen({mode:'add'}); else if(k==='event') openEventModal();
       else if(k==='photo'){ const m=people.find(p=>!p.photo); if(m){ switchView('tree'); openPanel(m.id); } } });
+    $('homeImportBtn').onclick = ()=>openImport();
     $('homeAddBtn').onclick = ()=>{ const sel = selectedId && personById(selectedId) ? selectedId : people[0].id; selectedId = sel; switchView('tree'); openPanel(sel); openAddRel(); };
     $('homeObsBtn').onclick = ()=> obsOpen({mode:'add'});
     $('homeEventBtn').onclick = ()=> openEventModal();
