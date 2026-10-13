@@ -307,11 +307,56 @@
   .trait-chip-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;min-height:0;}
   .trait-chip-empty{font-size:0.78rem;color:var(--text-faint);margin-top:8px;}
   .trait-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 6px 6px 10px;border-radius:20px;
-    background:rgba(255,255,255,0.04);border:1px solid var(--border-2);font-size:0.78rem;color:var(--text);}
+    background:rgba(255,255,255,0.04);border:1px solid var(--border-2);font-size:0.78rem;color:var(--text);
+    cursor:pointer;transition:.15s;}
+  .trait-chip:hover{border-color:rgba(76,141,255,0.35);background:rgba(76,141,255,0.08);}
+  .trait-chip.active{border-color:var(--accent);background:rgba(76,141,255,0.14);}
+  .trait-chip-label{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .trait-note-flag{font-size:0.72rem;line-height:1;}
   .trait-chip .trait-x{background:none;border:none;color:var(--text-faint);cursor:pointer;padding:2px 4px;
     font-size:0.75rem;line-height:1;border-radius:50%;}
   .trait-chip .trait-x:hover{color:var(--danger);background:rgba(229,100,107,0.14);}
   #openTraitPickerBtn{margin-top:10px;}
+
+  /* Shared note editor beneath the chip row in the add/edit form */
+  .trait-note-editor{margin-top:10px;padding:12px;border-radius:12px;background:rgba(76,141,255,0.06);
+    border:1px solid rgba(76,141,255,0.2);}
+  .trait-note-editor-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px;}
+  .trait-note-editor-title{font-size:0.86rem;font-weight:700;color:var(--text);}
+  .trait-note-editor-desc{font-size:0.76rem;color:var(--text-dim);margin-top:2px;line-height:1.4;}
+  .trait-note-editor-head input{flex:1;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.05);
+    border:1px solid var(--border-2);color:var(--text);font-size:0.85rem;font-weight:600;}
+  .trait-note-editor-head input:focus{outline:none;border-color:var(--accent);}
+  .trait-note-editor .modal-close{width:30px;height:30px;flex-shrink:0;}
+  .trait-note-label{display:block;font-size:0.72rem;color:var(--text-faint);text-transform:uppercase;
+    letter-spacing:.04em;font-weight:700;margin-bottom:6px;}
+  .trait-note-editor textarea{width:100%;min-height:90px;padding:10px 11px;border-radius:9px;
+    background:rgba(255,255,255,0.05);border:1px solid var(--border-2);color:var(--text);font-size:0.85rem;
+    font-family:inherit;resize:vertical;box-sizing:border-box;}
+  .trait-note-editor textarea:focus{outline:none;border-color:var(--accent);}
+  .trait-note-editor-actions{display:flex;justify-content:space-between;align-items:center;margin-top:9px;}
+  .trait-note-editor-actions .link-danger{background:none;border:none;color:var(--danger);font-size:0.78rem;
+    cursor:pointer;padding:0;}
+  .trait-note-editor-actions .btn-primary{padding:7px 16px;font-size:0.82rem;}
+
+  /* "Other" custom-trait section in the picker */
+  .trait-other-section{margin-top:18px;padding-top:4px;border-top:1px solid var(--border);}
+  .trait-other-desc{font-size:0.76rem;color:var(--text-dim);margin:2px 0 10px 0;line-height:1.4;}
+  .trait-other-row{cursor:default;}
+  .trait-other-edit{width:100%;background:none;border:none;color:var(--text);font-size:0.85rem;font-weight:600;
+    padding:2px 0;font-family:inherit;}
+  .trait-other-edit:focus{outline:none;border-bottom:1px solid var(--accent);}
+  .trait-other-add-row{display:flex;gap:8px;margin-top:4px;}
+  .trait-other-add-row input{flex:1;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.04);
+    border:1px solid var(--border-2);color:var(--text);font-size:0.85rem;min-width:0;}
+  .trait-other-add-row input:focus{outline:none;border-color:var(--accent);}
+  .trait-other-add-row .btn-primary{flex-shrink:0;padding:0 16px;font-size:0.85rem;}
+
+  /* Notes shown read-only in the profile panel */
+  .psych-card-note{margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
+  .psych-card-note b{display:block;font-size:0.66rem;color:var(--text-faint);text-transform:uppercase;
+    letter-spacing:.05em;margin-bottom:3px;}
+  .psych-card-note p{margin:0;font-size:0.78rem;color:var(--text-dim);line-height:1.5;white-space:pre-wrap;}
 
   .trait-disclaimer{display:flex;gap:9px;align-items:flex-start;background:rgba(124,176,255,0.07);
     border:1px solid rgba(124,176,255,0.18);border-radius:10px;padding:10px 12px;font-size:0.74rem;
@@ -970,6 +1015,7 @@
       <div class="field" style="padding-bottom:20px;">
         <label>Psychology &amp; Personality <span class="field-optional">(optional, private)</span></label>
         <div class="trait-chip-row" id="personTraitChips"></div>
+        <div class="trait-note-editor" id="traitNoteEditor" style="display:none;"></div>
         <button type="button" class="action-btn" id="openTraitPickerBtn">🧠 Add / Edit Traits</button>
       </div>
     </div>
@@ -997,6 +1043,15 @@
         <div class="trait-cat-filter" id="traitPickerCats"></div>
       </div>
       <div class="trait-list" id="traitPickerList"></div>
+      <div class="trait-other-section">
+        <div class="trait-cat-heading">Other</div>
+        <div class="trait-other-desc">Add something that isn't listed above, in your own words — any trait, behavior, thought pattern, or personal observation.</div>
+        <div id="traitOtherList"></div>
+        <div class="trait-other-add-row">
+          <input type="text" id="traitOtherInput" placeholder="e.g. Afraid of heights, very musical…" maxlength="80">
+          <button type="button" class="btn-primary" id="traitOtherAddBtn">Add</button>
+        </div>
+      </div>
     </div>
     <div class="modal-actions">
       <span style="color:var(--text-dim);font-size:0.78rem;" id="traitPickerCount"></span>
@@ -1109,6 +1164,7 @@
   let pendingPhoto = undefined;
   let pendingTraits = [];
   let activeTraitHighlight = null;
+  let expandedTraitEntryId = null;
   let zoom = 1, panX = 0, panY = 0;
   let dragging = false, dragStart = null, panStart = null;
   let pinching = false, pinchStartDist = 0, pinchStartZoom = 1;
@@ -1193,6 +1249,9 @@
     { id:'easily_overwhelmed', title:'Easily Overwhelmed', category:'emotional', tier:'caution',
       short:'Can feel flooded or shut down when there is too much happening.',
       full:'Tends to feel flooded or shut down when there is a lot happening at once, needing more time or space than others to process and recover.' },
+    { id:'emotional_withdrawal', title:'Emotional Withdrawal', category:'emotional', tier:'caution',
+      short:'May become quiet, distant, or less expressive when overwhelmed.',
+      full:'May become quiet, distant, or less expressive when feeling overwhelmed or emotionally uncomfortable, pulling inward rather than talking it through.' },
 
     // --- Attachment & Relationships ---
     { id:'secure_attachment', title:'Secure Attachment', category:'attachment', tier:'strength',
@@ -1318,6 +1377,36 @@
   ];
   const TRAITS_BY_ID = {}; TRAITS.forEach(t=> TRAITS_BY_ID[t.id]=t);
   const TRAIT_TIER_LABEL = { strength:'Strength', neutral:'Trait', caution:'Pattern to notice', concerning:'Concerning pattern' };
+
+  // A person's assigned trait was originally saved as a plain library id
+  // string ("overthinker"). It is now an entry object that also carries an
+  // optional per-trait note, and can represent a free-text "Other" entry
+  // the user typed themselves rather than a library id. normalizeTraitEntry
+  // accepts either shape so trees saved before this change keep working
+  // without a migration — the next save simply upgrades them in place.
+  function normalizeTraitEntry(t){
+    if(typeof t === 'string') return { id:t, note:'' };
+    if(t && typeof t === 'object') return { id:t.id, custom:!!t.custom, title:t.title||'', note:t.note||'' };
+    return null;
+  }
+  function normalizeTraits(arr){ return (arr||[]).map(normalizeTraitEntry).filter(Boolean); }
+  // Resolves an entry to its display metadata: the library trait it points
+  // to, or a synthesized "Other" entry for a custom one. Returns null only
+  // for a library id that no longer exists (tolerated, never shown).
+  function traitEntryMeta(entry){
+    if(entry.custom){
+      return { id:entry.id, title: entry.title || 'Other', category:'other', tier:'neutral',
+        short:'A personal observation you added.', full:'A personal observation you added.', isCustom:true };
+    }
+    const base = TRAITS_BY_ID[entry.id];
+    if(!base) return null;
+    return Object.assign({ isCustom:false }, base);
+  }
+  // Custom entries don't share a library id across people (each is typed
+  // independently), so grouping/highlighting them across the tree matches
+  // on trimmed, case-insensitive title text instead, under this key shape.
+  function customTraitKey(title){ return 'custom:'+String(title||'').trim().toLowerCase(); }
+  function newCustomTraitId(){ return 'custom_'+Date.now()+Math.floor(Math.random()*1000); }
 
   function toast(msg){
     const t = $('toast');
@@ -2350,8 +2439,9 @@
     // picker clears search and vice versa (see their input handlers), so
     // in practice only one of the two is ever active at a time; this
     // still treats search as authoritative if both were somehow set.
-    const activeTrait = (activeTraitHighlight && !searchQ) ? TRAITS_BY_ID[activeTraitHighlight] : null;
-    const traitMatchIds = activeTrait ? new Set(people.filter(p=>(p.traits||[]).includes(activeTrait.id)).map(p=>p.id)) : null;
+    const resolvedHighlight = (activeTraitHighlight && !searchQ) ? resolveTraitHighlightMeta(activeTraitHighlight, people) : null;
+    const activeTrait = resolvedHighlight ? resolvedHighlight.meta : null;
+    const traitMatchIds = resolvedHighlight ? resolvedHighlight.matchIds : null;
     updateTraitHighlightBar(activeTrait, traitMatchIds);
     // When someone is selected (and search isn't active), highlight their
     // direct family — parents, spouses, children — and dim everyone else,
@@ -2700,6 +2790,29 @@
   });
 
   // ---------- Trait highlighting (Psychology & Personality on the tree) ----------
+  // activeTraitHighlight is either a plain library id ("overthinker") or a
+  // "custom:<normalized title>" key (see customTraitKey) for a free-text
+  // "Other" entry, which has no shared id across people to match on.
+  function resolveTraitHighlightMeta(key, people){
+    if(key.indexOf('custom:')===0){
+      let title = null;
+      const matchIds = new Set();
+      people.forEach(p=>{
+        normalizeTraits(p.traits).forEach(entry=>{
+          if(entry.custom && customTraitKey(entry.title)===key){
+            matchIds.add(p.id);
+            if(title===null) title = entry.title;
+          }
+        });
+      });
+      if(title===null) return null; // nobody has this custom entry any more
+      return { meta:{ id:key, title, tier:'neutral', short:'A personal observation added by you.' }, matchIds };
+    }
+    const base = TRAITS_BY_ID[key];
+    if(!base) return null;
+    const matchIds = new Set(people.filter(p=> normalizeTraits(p.traits).some(e=>!e.custom && e.id===key)).map(p=>p.id));
+    return { meta: base, matchIds };
+  }
   function updateTraitHighlightBar(trait, matchIds){
     const bar = $('traitHighlightBar');
     if(!trait){ bar.classList.remove('show'); return; }
@@ -2721,17 +2834,33 @@
     renderTraitCatFilter('traitHighlightCats', traitHighlightCat, pickTraitHighlightCat);
     renderTraitHighlightList();
   }
+  // Every distinct custom "Other" title currently in use across this tree,
+  // with how many people share it (case-insensitive, trimmed).
+  function collectCustomTraitGroups(){
+    const byKey = {};
+    peopleArr().forEach(p=>{
+      normalizeTraits(p.traits).forEach(entry=>{
+        if(!entry.custom || !entry.title || !entry.title.trim()) return;
+        const key = customTraitKey(entry.title);
+        if(!byKey[key]) byKey[key] = { key, title: entry.title.trim(), count:0 };
+        byKey[key].count++;
+      });
+    });
+    return Object.values(byKey).sort((a,b)=>a.title.localeCompare(b.title));
+  }
   function renderTraitHighlightList(){
-    const q = $('traitHighlightSearch').value;
+    const q = $('traitHighlightSearch').value.trim().toLowerCase();
     const list = filteredTraits(q, traitHighlightCat);
+    const customGroups = (traitHighlightCat==='all')
+      ? collectCustomTraitGroups().filter(g=> !q || g.title.toLowerCase().includes(q))
+      : [];
     const el = $('traitHighlightList');
-    const people = peopleArr();
-    if(!list.length){ el.innerHTML = `<div class="trait-empty-note">No traits match your search.</div>`; return; }
-    el.innerHTML = groupTraitsByCategory(list).map(group=>
+    if(!list.length && !customGroups.length){ el.innerHTML = `<div class="trait-empty-note">No traits match your search.</div>`; return; }
+    let html = groupTraitsByCategory(list).map(group=>
       `<div class="trait-cat-heading">${escapeHtml(group.cat.label)}</div>` +
       group.traits.map(t=>{
-        const n = people.filter(p=>(p.traits||[]).includes(t.id)).length;
-        return `<div class="trait-row${t.id===activeTraitHighlight?' selected':''}" data-trait-id="${t.id}">
+        const n = peopleArr().filter(p=> normalizeTraits(p.traits).some(e=>!e.custom && e.id===t.id)).length;
+        return `<div class="trait-row${t.id===activeTraitHighlight?' selected':''}" data-trait-key="${t.id}">
           <span class="trait-tier-dot trait-tier-${t.tier}"></span>
           <div class="trait-row-main">
             <div class="trait-row-title">${escapeHtml(t.title)}</div>
@@ -2741,10 +2870,22 @@
         </div>`;
       }).join('')
     ).join('');
-    el.querySelectorAll('[data-trait-id]').forEach(row=>{
+    if(customGroups.length){
+      html += `<div class="trait-cat-heading">Other</div>` + customGroups.map(g=>`
+        <div class="trait-row${g.key===activeTraitHighlight?' selected':''}" data-trait-key="${g.key}">
+          <span class="trait-tier-dot trait-tier-neutral"></span>
+          <div class="trait-row-main">
+            <div class="trait-row-title">${escapeHtml(g.title)}</div>
+            <div class="trait-row-short">A personal observation added by you.</div>
+          </div>
+          <span class="trait-match-badge${g.count?' has-matches':''}">${g.count} ${g.count===1?'match':'matches'}</span>
+        </div>`).join('');
+    }
+    el.innerHTML = html;
+    el.querySelectorAll('[data-trait-key]').forEach(row=>{
       row.addEventListener('click', ()=>{
-        const id = row.dataset.traitId;
-        activeTraitHighlight = (activeTraitHighlight===id) ? null : id; // tap again to clear
+        const key = row.dataset.traitKey;
+        activeTraitHighlight = (activeTraitHighlight===key) ? null : key; // tap again to clear
         $('searchInput').value = '';
         closeTraitHighlightModal();
         renderTree();
@@ -2843,21 +2984,23 @@
   // ---------- Psychology & Personality: assigned traits in the profile panel ----------
   function renderPanelPsych(p){
     const el = $('panelPsych');
-    const traitIds = (p.traits||[]).filter(id=>TRAITS_BY_ID[id]);
-    if(!traitIds.length){ el.innerHTML=''; return; } // optional feature — stay invisible when unused
-    const cards = traitIds.map(id=>{
-      const t = TRAITS_BY_ID[id];
-      return `<div class="psych-card" data-trait-card="${t.id}">
+    const entries = normalizeTraits(p.traits).map(entry=>({ entry, meta: traitEntryMeta(entry) })).filter(x=>x.meta);
+    if(!entries.length){ el.innerHTML=''; return; } // optional feature — stay invisible when unused
+    const cards = entries.map(({entry, meta})=>{
+      const hasNote = !!(entry.note && entry.note.trim());
+      const catLabel = meta.isCustom ? 'Other' : TRAIT_CATEGORY_BY_ID[meta.category].label;
+      return `<div class="psych-card" data-trait-card="${entry.id}">
         <div class="psych-card-head">
-          <span class="trait-tier-dot trait-tier-${t.tier}"></span>
+          <span class="trait-tier-dot trait-tier-${meta.tier}"></span>
           <div style="flex:1;min-width:0;">
-            <div class="psych-card-title">${escapeHtml(t.title)}</div>
-            <div class="psych-card-cat">${escapeHtml(TRAIT_CATEGORY_BY_ID[t.category].label)}</div>
+            <div class="psych-card-title">${escapeHtml(meta.title)}${hasNote?' <span class="trait-note-flag" title="Has notes">📝</span>':''}</div>
+            <div class="psych-card-cat">${escapeHtml(catLabel)}</div>
           </div>
         </div>
-        <div class="psych-card-short">${escapeHtml(t.short)}</div>
-        <div class="psych-card-full">${escapeHtml(t.full)}</div>
-        <button type="button" class="psych-card-toggle" data-expand="${t.id}">Read more</button>
+        ${meta.isCustom ? '' : `<div class="psych-card-short">${escapeHtml(meta.short)}</div>
+        <div class="psych-card-full">${escapeHtml(meta.full)}</div>
+        <button type="button" class="psych-card-toggle" data-expand="${entry.id}">Read more</button>`}
+        ${hasNote ? `<div class="psych-card-note"><b>Notes</b><p>${escapeHtml(entry.note)}</p></div>` : ''}
       </div>`;
     }).join('');
     el.innerHTML = `<h4>Psychology &amp; Personality</h4>${cards}`;
@@ -3171,7 +3314,8 @@
     toggleDeathField();
     $('fNotes').value = p ? (p.notes||'') : '';
     resetPhotoUI(p ? p.photo : null);
-    pendingTraits = p ? (p.traits||[]).slice() : [];
+    pendingTraits = normalizeTraits(p ? p.traits : []);
+    expandedTraitEntryId = null;
     renderPersonTraitChips();
     $('personModalBackdrop').style.display='flex';
   }
@@ -3182,19 +3326,93 @@
     const row = $('personTraitChips');
     if(!pendingTraits.length){
       row.innerHTML = `<div class="trait-chip-empty">No traits added yet.</div>`;
+      $('traitNoteEditor').style.display = 'none';
+      expandedTraitEntryId = null;
       return;
     }
-    row.innerHTML = pendingTraits.map(id=>{
-      const t = TRAITS_BY_ID[id];
-      if(!t) return ''; // tolerate an id that no longer exists in the library
-      return `<span class="trait-chip"><span class="trait-tier-dot trait-tier-${t.tier}"></span>${escapeHtml(t.title)}<button type="button" class="trait-x" data-remove-trait="${t.id}" title="Remove">✕</button></span>`;
+    row.innerHTML = pendingTraits.map(entry=>{
+      const meta = traitEntryMeta(entry);
+      if(!meta) return ''; // tolerate a library id that no longer exists
+      const hasNote = !!(entry.note && entry.note.trim());
+      return `<span class="trait-chip${entry.id===expandedTraitEntryId?' active':''}" data-trait-chip="${entry.id}">
+        <span class="trait-tier-dot trait-tier-${meta.tier}"></span>
+        <span class="trait-chip-label">${escapeHtml(meta.title)}</span>
+        ${hasNote?'<span class="trait-note-flag" title="Has notes">📝</span>':''}
+        <button type="button" class="trait-x" data-remove-trait="${entry.id}" title="Remove">✕</button>
+      </span>`;
     }).join('');
     row.querySelectorAll('[data-remove-trait]').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        pendingTraits = pendingTraits.filter(id=>id!==btn.dataset.removeTrait);
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const id = btn.dataset.removeTrait;
+        pendingTraits = pendingTraits.filter(entry=>entry.id!==id);
+        if(expandedTraitEntryId===id) expandedTraitEntryId=null;
         renderPersonTraitChips();
       });
     });
+    row.querySelectorAll('[data-trait-chip]').forEach(chip=>{
+      chip.addEventListener('click', ()=>{
+        const id = chip.dataset.traitChip;
+        expandedTraitEntryId = (expandedTraitEntryId===id) ? null : id;
+        renderPersonTraitChips();
+        renderTraitNoteEditor();
+      });
+    });
+    renderTraitNoteEditor();
+  }
+
+  // Single shared note editor beneath the chip row (rather than one per
+  // chip) — keeps only one open at a time, which stays usable on a narrow
+  // phone screen instead of stacking several textareas.
+  function renderTraitNoteEditor(){
+    const editor = $('traitNoteEditor');
+    const entry = pendingTraits.find(e=>e.id===expandedTraitEntryId);
+    if(!entry){ editor.style.display='none'; return; }
+    const meta = traitEntryMeta(entry);
+    if(!meta){ editor.style.display='none'; return; }
+    editor.style.display = 'block';
+    editor.innerHTML = `
+      <div class="trait-note-editor-head">
+        ${entry.custom
+          ? `<input type="text" id="traitNoteEditorTitle" value="${escapeHtml(meta.title)}" maxlength="80" placeholder="Name this trait or pattern">`
+          : `<div><div class="trait-note-editor-title">${escapeHtml(meta.title)}</div><div class="trait-note-editor-desc">${escapeHtml(meta.short)}</div></div>`}
+        <button type="button" class="modal-close" id="traitNoteEditorCloseBtn" aria-label="Close">✕</button>
+      </div>
+      <label class="trait-note-label">${entry.custom ? 'Details (optional)' : 'Tell more about this pattern for this person (optional)'}</label>
+      <textarea id="traitNoteEditorText" rows="4" placeholder="Add more details about this person's thinking patterns, behaviors, examples, or personal observations…">${escapeHtml(entry.note||'')}</textarea>
+      <div class="trait-note-editor-actions">
+        <button type="button" class="link-danger" id="traitNoteClearBtn">Clear note</button>
+        <button type="button" class="btn-primary" id="traitNoteDoneBtn">Done</button>
+      </div>`;
+    if(entry.custom){
+      const titleInput = $('traitNoteEditorTitle');
+      titleInput.addEventListener('input', ()=>{ entry.title = titleInput.value; });
+      titleInput.addEventListener('blur', ()=> renderPersonTraitChips());
+    }
+    const textarea = $('traitNoteEditorText');
+    // Updates the 📝 indicator on the matching chip as the person types,
+    // without a full renderPersonTraitChips() re-render — that would
+    // recreate this very textarea (it's rebuilt from pendingTraits each
+    // render) and throw away focus and cursor position mid-keystroke.
+    function syncChipNoteFlag(){
+      const chip = document.querySelector(`#personTraitChips [data-trait-chip="${entry.id}"]`);
+      if(!chip) return;
+      const hasNote = !!(entry.note && entry.note.trim());
+      let flag = chip.querySelector('.trait-note-flag');
+      if(hasNote && !flag){
+        flag = document.createElement('span');
+        flag.className = 'trait-note-flag';
+        flag.title = 'Has notes';
+        flag.textContent = '📝';
+        chip.querySelector('.trait-chip-label').insertAdjacentElement('afterend', flag);
+      } else if(!hasNote && flag){
+        flag.remove();
+      }
+    }
+    textarea.addEventListener('input', ()=>{ entry.note = textarea.value; syncChipNoteFlag(); });
+    $('traitNoteClearBtn').onclick = ()=>{ entry.note=''; textarea.value=''; renderPersonTraitChips(); };
+    $('traitNoteDoneBtn').onclick = ()=>{ expandedTraitEntryId=null; renderPersonTraitChips(); };
+    $('traitNoteEditorCloseBtn').onclick = ()=>{ expandedTraitEntryId=null; renderPersonTraitChips(); };
   }
   $('modalCancelBtn').onclick = closePersonModal;
   $('personModalCloseBtn').onclick = closePersonModal;
@@ -3260,7 +3478,7 @@
       el.innerHTML = groupTraitsByCategory(list).map(group=>
         `<div class="trait-cat-heading">${escapeHtml(group.cat.label)}</div>` +
         group.traits.map(t=>{
-          const sel = pendingTraits.includes(t.id);
+          const sel = pendingTraits.some(e=>e.id===t.id);
           return `<div class="trait-row${sel?' selected':''}" data-trait-id="${t.id}">
             <span class="trait-tier-dot trait-tier-${t.tier}"></span>
             <div class="trait-row-main">
@@ -3275,8 +3493,8 @@
     el.querySelectorAll('[data-trait-id]').forEach(row=>{
       row.addEventListener('click', ()=>{
         const id = row.dataset.traitId;
-        if(pendingTraits.includes(id)) pendingTraits = pendingTraits.filter(x=>x!==id);
-        else pendingTraits.push(id);
+        if(pendingTraits.some(e=>e.id===id)) pendingTraits = pendingTraits.filter(e=>e.id!==id);
+        else pendingTraits.push({ id, note:'' });
         renderTraitPickerList();
         renderPersonTraitChips();
         updateTraitPickerCount();
@@ -3286,6 +3504,56 @@
   function updateTraitPickerCount(){
     $('traitPickerCount').textContent = pendingTraits.length ? `${pendingTraits.length} trait${pendingTraits.length===1?'':'s'} selected` : 'No traits selected';
   }
+
+  // ---------- "Other": free-text custom entries, always visible regardless
+  // of search/category filtering, since they aren't part of the library ----------
+  function renderTraitOtherList(){
+    const el = $('traitOtherList');
+    const customEntries = pendingTraits.filter(e=>e.custom);
+    if(!customEntries.length){ el.innerHTML=''; return; }
+    el.innerHTML = customEntries.map(entry=>`
+      <div class="trait-row trait-other-row selected" data-other-id="${entry.id}">
+        <span class="trait-tier-dot trait-tier-neutral"></span>
+        <div class="trait-row-main">
+          <input type="text" class="trait-other-edit" data-other-edit="${entry.id}" value="${escapeHtml(entry.title||'')}" maxlength="80">
+          ${entry.note ? `<div class="trait-row-short">${escapeHtml(entry.note)}</div>` : ''}
+        </div>
+        <button type="button" class="trait-x" data-other-remove="${entry.id}" title="Remove">✕</button>
+      </div>`).join('');
+    el.querySelectorAll('[data-other-edit]').forEach(input=>{
+      input.addEventListener('click', e=> e.stopPropagation());
+      input.addEventListener('input', ()=>{
+        const entry = pendingTraits.find(e=>e.id===input.dataset.otherEdit);
+        if(entry) entry.title = input.value;
+      });
+      input.addEventListener('blur', renderPersonTraitChips);
+    });
+    el.querySelectorAll('[data-other-remove]').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const id = btn.dataset.otherRemove;
+        pendingTraits = pendingTraits.filter(entry=>entry.id!==id);
+        if(expandedTraitEntryId===id) expandedTraitEntryId=null;
+        renderTraitOtherList();
+        renderPersonTraitChips();
+        updateTraitPickerCount();
+      });
+    });
+  }
+  $('traitOtherAddBtn').onclick = ()=>{
+    const input = $('traitOtherInput');
+    const value = input.value.trim();
+    if(!value){ input.focus(); return; }
+    pendingTraits.push({ id:newCustomTraitId(), custom:true, title:value, note:'' });
+    input.value = '';
+    renderTraitOtherList();
+    renderPersonTraitChips();
+    updateTraitPickerCount();
+    input.focus();
+  };
+  $('traitOtherInput').addEventListener('keydown', (e)=>{
+    if(e.key==='Enter'){ e.preventDefault(); $('traitOtherAddBtn').click(); }
+  });
   function pickTraitPickerCat(cat){
     traitPickerCat = cat;
     renderTraitCatFilter('traitPickerCats', traitPickerCat, pickTraitPickerCat);
@@ -3296,6 +3564,7 @@
     $('traitPickerSearch').value = '';
     renderTraitCatFilter('traitPickerCats', traitPickerCat, pickTraitPickerCat);
     renderTraitPickerList();
+    renderTraitOtherList();
     updateTraitPickerCount();
     $('traitPickerBackdrop').style.display='flex';
     const body = $('traitPickerBackdrop').querySelector('.modal-body');
@@ -3312,13 +3581,17 @@
   async function saveModal(){
     const firstName = $('fFirstName').value.trim();
     if(!firstName){ toast('Please enter a first name.'); sfx.error(); return; }
+    // Drop a custom "Other" entry whose text was fully cleared out (it would
+    // otherwise save as a nameless trait and fall back to the generic "Other"
+    // label everywhere it's displayed).
+    const cleanTraits = pendingTraits.filter(e=> !e.custom || (e.title && e.title.trim()));
     const data = {
       firstName, middleName: $('fMiddleName').value.trim(), lastName: $('fLastName').value.trim(),
       nickname: $('fNickname').value.trim(), gender: $('fGender').value,
       birthDate: $('fBirth').value, living: $('fLiving').checked,
       deathDate: $('fLiving').checked ? '' : $('fDeath').value,
       notes: $('fNotes').value.trim(),
-      traits: pendingTraits.slice()
+      traits: cleanTraits.map(e=> e.custom ? { id:e.id, custom:true, title:e.title.trim(), note:(e.note||'').trim() } : { id:e.id, note:(e.note||'').trim() })
     };
     const t = tree();
 
