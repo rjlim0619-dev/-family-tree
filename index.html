@@ -402,6 +402,48 @@
     padding:10px 18px;border-radius:10px;font-size:0.83rem;border:1px solid var(--accent);
     box-shadow:0 10px 30px rgba(0,0,0,0.6);display:none;z-index:250;}
 
+  /* ============ MUSIC PLAYER (floating) ============
+     z-index 79 is deliberate: just below #sidePanel (80) and far below any
+     .modal-backdrop (350), so when either of those is open it visually
+     covers the fab/panel instead of the music UI sitting on top of
+     family-tree content, buttons, or a modal. */
+  .music-fab{position:fixed;right:24px;bottom:24px;width:52px;height:52px;border-radius:50%;
+    background:linear-gradient(135deg,var(--warm),var(--warm-2));border:none;color:#1a1308;
+    font-size:1.3rem;cursor:pointer;z-index:79;box-shadow:0 10px 28px var(--warm-glow);
+    display:flex;align-items:center;justify-content:center;transition:transform .15s ease;}
+  .music-fab:hover{transform:scale(1.06);}
+  .music-fab.playing{animation:musicPulse 1.8s ease-in-out infinite;}
+  @keyframes musicPulse{0%,100%{box-shadow:0 10px 28px var(--warm-glow);}50%{box-shadow:0 10px 40px var(--warm-glow),0 0 0 6px rgba(227,165,85,0.12);}}
+
+  .music-panel{position:fixed;right:24px;bottom:88px;width:320px;max-width:calc(100vw - 32px);
+    max-height:min(70vh,520px);overflow-y:auto;background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:1px solid var(--border-2);border-radius:16px;padding:16px;box-shadow:0 30px 70px rgba(0,0,0,0.65);
+    z-index:79;animation:modalIn .18s ease;}
+  .music-panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;}
+  .music-tabs{display:flex;gap:6px;background:rgba(0,0,0,0.25);border-radius:10px;padding:3px;}
+  .music-tab{padding:7px 12px;border-radius:8px;background:none;border:none;color:var(--text-dim);
+    font-size:0.78rem;font-weight:600;cursor:pointer;}
+  .music-tab.active{background:linear-gradient(135deg,var(--accent),#3568D4);color:#fff;}
+  .music-tab-body{display:none;}
+  .music-tab-body.active{display:block;}
+  #spotifyLinkInput{width:100%;padding:11px 12px;font-size:0.85rem;border:1px solid var(--border-2);
+    background:rgba(0,0,0,0.3);border-radius:10px;color:var(--text);}
+  #spotifyLinkInput:focus{outline:none;border-color:var(--accent);}
+  #spotifyEmbedHost iframe{width:100%;border:none;border-radius:12px;display:block;}
+  .music-footnote{font-size:0.7rem;color:var(--text-faint);line-height:1.5;margin:10px 0 0 0;}
+  .track-item{display:flex;align-items:center;gap:8px;width:100%;text-align:left;padding:9px 10px;
+    border-radius:9px;background:rgba(255,255,255,0.03);border:1px solid var(--border);color:var(--text-dim);
+    font-size:0.82rem;cursor:pointer;margin-bottom:6px;}
+  .track-item:hover{background:rgba(255,255,255,0.07);}
+  .track-item.active{border-color:var(--accent);color:var(--text);background:rgba(76,141,255,0.1);}
+  .track-item.unavailable{opacity:0.45;cursor:not-allowed;}
+  .music-now-playing{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px;
+    background:rgba(0,0,0,0.25);border-radius:10px;}
+  .music-now-playing-info{flex:1;min-width:0;}
+  .track-name{font-size:0.82rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .track-status{font-size:0.7rem;color:var(--text-faint);margin-top:1px;}
+  #builtinVolume{width:100%;margin-top:10px;}
+
   /* Mobile */
   #bottomNav{display:none;position:fixed;bottom:0;left:0;right:0;height:62px;
     background:rgba(10,14,22,0.92);backdrop-filter:blur(14px);border-top:1px solid var(--border-2);
@@ -444,6 +486,8 @@
     .view-scroll{padding:18px 16px calc(90px + env(safe-area-inset-bottom)) 16px;}
     #viewDashboard .view-scroll{padding-top:calc(18px + env(safe-area-inset-top));}
     .modal{max-height:calc(88vh - env(safe-area-inset-bottom));}
+    .music-fab{bottom:calc(62px + env(safe-area-inset-bottom) + 14px);right:16px;}
+    .music-panel{bottom:calc(62px + env(safe-area-inset-bottom) + 76px);right:16px;left:16px;width:auto;}
   }
 </style>
 </head>
@@ -642,6 +686,13 @@
           </div>
 
           <div class="settings-block">
+            <h3>🎧 Music Player</h3>
+            <div class="toggle-row"><span class="label">Floating music button</span>
+              <label class="switch"><input type="checkbox" id="toggleMusicFab"><span class="slider"></span></label></div>
+            <p style="font-size:0.72rem;color:var(--text-faint);margin:6px 0 0 0;">Lets you play Spotify or background music while exploring. Turn off to hide it completely.</p>
+          </div>
+
+          <div class="settings-block">
             <h3>Account</h3>
             <p style="font-size:0.8rem;color:var(--text-dim);margin:0 0 12px 0;">Signed in as <span id="accountEmail" style="color:var(--text);font-weight:600;"></span></p>
             <div class="field"><label>New password</label><input type="password" id="newPassInput" autocomplete="new-password"></div>
@@ -674,6 +725,46 @@
     <button data-view="settings"><span class="bn-icon">⚙️</span>More</button>
   </div>
 </div>
+
+<!-- ============ MUSIC PLAYER (floating) ============ -->
+<button id="musicFab" class="music-fab" title="Music" style="display:none;">🎵</button>
+<div class="music-panel" id="musicPanel" style="display:none;">
+  <div class="music-panel-header">
+    <div class="music-tabs">
+      <button class="music-tab active" type="button" data-tab="spotify">Spotify</button>
+      <button class="music-tab" type="button" data-tab="builtin">Background Music</button>
+    </div>
+    <button class="panel-close" id="musicPanelCloseBtn" title="Close">✕</button>
+  </div>
+
+  <div class="music-tab-body active" id="musicTabBodySpotify">
+    <form id="spotifyForm">
+      <input type="text" id="spotifyLinkInput" placeholder="Paste a Spotify track, album, or playlist link" autocomplete="off">
+      <button class="btn-primary" type="submit" style="width:100%;margin-top:8px;">Load</button>
+    </form>
+    <div class="lock-error" id="spotifyError"></div>
+    <div id="spotifyEmbedWrap" style="display:none;">
+      <div id="spotifyEmbedHost"></div>
+      <button class="link-danger" id="spotifyRemoveBtn" style="margin-top:8px;">Remove</button>
+    </div>
+    <p class="music-footnote">Plays through Spotify's own embedded player — its controls and attribution can't be changed. Some tracks may need a Spotify Premium account to play in full; that sign-in, if needed, happens inside the player itself.</p>
+  </div>
+
+  <div class="music-tab-body" id="musicTabBodyBuiltin">
+    <div id="builtinTrackList"></div>
+    <div class="music-now-playing">
+      <button class="icon-btn" id="builtinPlayBtn" title="Play">▶️</button>
+      <div class="music-now-playing-info">
+        <div class="track-name" id="builtinTrackName">No track selected</div>
+        <div class="track-status" id="builtinTrackStatus"></div>
+      </div>
+      <button class="icon-btn" id="builtinMuteBtn" title="Mute">🔊</button>
+    </div>
+    <input type="range" id="builtinVolume" min="0" max="1" step="0.05" value="0.6">
+    <p class="music-footnote">Only music we own or are properly licensed to use plays here.</p>
+  </div>
+</div>
+<audio id="bgAudioEl" loop preload="none"></audio>
 
 <!-- ============ SIDE PANEL ============ -->
 <div id="sidePanel">
@@ -817,7 +908,8 @@
   }catch(e){ sdkLoadFailed = true; }
   let currentUser = null;
 
-  let db = { trees: [], settings: { sound:true, particles:true, animations:true, music:false, musicVolume:0.15 } };
+  let db = { trees: [], settings: { sound:true, particles:true, animations:true, music:false, musicVolume:0.15,
+    musicMuted:false, musicPlayerEnabled:true, spotifyLink:'', builtinTrack:'ambient-generated' } };
   let currentTreeId = null;
   let currentView = 'tree';
   let selectedId = null;
@@ -924,6 +1016,189 @@
     musicNodes = null;
   }
 
+  // ---------- music player (floating: Spotify + built-in background music) ----------
+  // "ambient-generated" reuses the oscillator drone above (startMusic/stopMusic) —
+  // it's synthesized in-browser, so there's no licensing concern and it always
+  // works. The other entries are placeholders for licensed audio files that
+  // haven't been added yet; each is probed (not assumed) before it's offered,
+  // so a missing file is shown as unavailable instead of silently failing.
+  const BUILTIN_TRACKS = [
+    { id:'ambient-generated', name:'Soft Ambient (generated)', src:null },
+    { id:'piano-reflection', name:'Gentle Piano — Reflection', src:'audio/piano-reflection.mp3' },
+    { id:'warm-ambient', name:'Warm Ambient', src:'audio/warm-ambient.mp3' },
+    { id:'remembrance-strings', name:'Remembrance Strings', src:'audio/remembrance-strings.mp3' }
+  ];
+  const trackAvailability = {};
+  function probeTrack(track){
+    if(track.src===null){ trackAvailability[track.id]=true; return Promise.resolve(true); }
+    if(trackAvailability[track.id]!==undefined) return Promise.resolve(trackAvailability[track.id]);
+    return new Promise(resolve=>{
+      const a = new Audio();
+      let done=false;
+      const finish = ok=>{ if(done) return; done=true; trackAvailability[track.id]=ok; resolve(ok); };
+      a.addEventListener('loadedmetadata', ()=>finish(true), {once:true});
+      a.addEventListener('error', ()=>finish(false), {once:true});
+      setTimeout(()=>finish(false), 4000);
+      try{ a.src = track.src; a.load(); }catch(e){ finish(false); }
+    });
+  }
+  let bgAudioPlaying = false;
+  let currentBuiltinTrack = null;
+
+  function renderBuiltinTrackList(){
+    const host = $('builtinTrackList');
+    host.innerHTML = BUILTIN_TRACKS.map(t=>
+      `<button type="button" class="track-item" data-id="${t.id}">🎵 ${escapeHtml(t.name)}</button>`
+    ).join('');
+    host.querySelectorAll('.track-item').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        const track = BUILTIN_TRACKS.find(t=>t.id===btn.dataset.id);
+        const ok = await probeTrack(track);
+        if(!ok){
+          btn.classList.add('unavailable');
+          $('builtinTrackStatus').textContent = "Not available yet — this audio file hasn't been added.";
+          return;
+        }
+        selectBuiltinTrack(track.id, true);
+      });
+    });
+    refreshBuiltinTrackHighlight();
+  }
+  function refreshBuiltinTrackHighlight(){
+    $('builtinTrackList').querySelectorAll('.track-item').forEach(b=>{
+      b.classList.toggle('active', b.dataset.id === db.settings.builtinTrack);
+    });
+  }
+  function selectBuiltinTrack(id, userInitiated){
+    const wasPlaying = bgAudioPlaying;
+    pauseBuiltin();
+    db.settings.builtinTrack = id;
+    currentBuiltinTrack = BUILTIN_TRACKS.find(t=>t.id===id);
+    $('builtinTrackName').textContent = currentBuiltinTrack ? currentBuiltinTrack.name : 'No track selected';
+    $('builtinTrackStatus').textContent = '';
+    refreshBuiltinTrackHighlight();
+    scheduleSave();
+    if(userInitiated && wasPlaying) playBuiltin();
+  }
+  function applyMusicVolume(){
+    const vol = db.settings.musicMuted ? 0 : db.settings.musicVolume;
+    if(musicNodes) musicNodes.g.gain.value = vol;
+    $('bgAudioEl').volume = vol;
+    $('builtinMuteBtn').textContent = db.settings.musicMuted ? '🔇' : '🔊';
+  }
+  function stopBgAudioEl(){
+    const el = $('bgAudioEl');
+    try{ el.pause(); el.removeAttribute('src'); el.load(); }catch(e){}
+  }
+  function playBuiltin(){
+    if(!currentBuiltinTrack) currentBuiltinTrack = BUILTIN_TRACKS.find(t=>t.id===db.settings.builtinTrack) || BUILTIN_TRACKS[0];
+    if(currentBuiltinTrack.src===null){
+      stopBgAudioEl();
+      db.settings.music = true; $('toggleMusic').checked = true;
+      startMusic();
+      applyMusicVolume();
+      bgAudioPlaying = true;
+      $('builtinPlayBtn').textContent = '⏸️';
+      $('musicFab').classList.add('playing');
+      $('builtinTrackStatus').textContent = 'Playing';
+      scheduleSave();
+      return;
+    }
+    stopMusic(); db.settings.music = false; $('toggleMusic').checked = false;
+    const el = $('bgAudioEl');
+    $('builtinTrackStatus').textContent = 'Loading…';
+    el.src = currentBuiltinTrack.src;
+    applyMusicVolume();
+    el.play().then(()=>{
+      bgAudioPlaying = true;
+      $('builtinPlayBtn').textContent = '⏸️';
+      $('musicFab').classList.add('playing');
+      $('builtinTrackStatus').textContent = 'Playing';
+    }).catch(()=>{
+      bgAudioPlaying = false;
+      $('builtinTrackStatus').textContent = "Couldn't play this track — the audio file may be missing.";
+      $('musicFab').classList.remove('playing');
+    });
+  }
+  function pauseBuiltin(){
+    stopMusic();
+    stopBgAudioEl();
+    bgAudioPlaying = false;
+    $('builtinPlayBtn').textContent = '▶️';
+    $('musicFab').classList.remove('playing');
+    if($('builtinTrackStatus').textContent==='Playing') $('builtinTrackStatus').textContent='';
+    if(db.settings.music){ db.settings.music=false; $('toggleMusic').checked=false; scheduleSave(); }
+  }
+
+  // Spotify — official embed iframe only; no audio extraction, no required login.
+  function parseSpotifyUrl(url){
+    const m = String(url||'').trim().match(/open\.spotify\.com\/(?:intl-[a-z]{2}\/)?(track|album|playlist|artist|episode|show)\/([A-Za-z0-9]+)/i);
+    if(!m) return null;
+    return { type: m[1], id: m[2] };
+  }
+  function loadSpotifyEmbed(url){
+    $('spotifyError').textContent='';
+    const parsed = parseSpotifyUrl(url);
+    if(!parsed){
+      $('spotifyError').textContent = "That doesn't look like a Spotify link. In Spotify, choose Share → Copy Link, then paste it here.";
+      return false;
+    }
+    const height = (parsed.type==='track') ? 152 : (parsed.type==='episode'||parsed.type==='show') ? 232 : 352;
+    $('spotifyEmbedHost').innerHTML = `<iframe src="https://open.spotify.com/embed/${parsed.type}/${parsed.id}" width="100%" height="${height}" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" allowfullscreen></iframe>`;
+    $('spotifyEmbedWrap').style.display='block';
+    db.settings.spotifyLink = url.trim();
+    scheduleSave();
+    return true;
+  }
+  function clearSpotifyEmbed(){
+    $('spotifyEmbedHost').innerHTML='';
+    $('spotifyEmbedWrap').style.display='none';
+    $('spotifyLinkInput').value='';
+    db.settings.spotifyLink='';
+    scheduleSave();
+  }
+  function stopSpotifyPlayback(){
+    // Removing the iframe's src (not just hiding it) is what actually stops
+    // Spotify's own playback — hiding with CSS alone would leave it playing.
+    $('spotifyEmbedHost').innerHTML='';
+  }
+
+  function switchMusicTab(tab){
+    document.querySelectorAll('.music-tab').forEach(b=> b.classList.toggle('active', b.dataset.tab===tab));
+    $('musicTabBodySpotify').classList.toggle('active', tab==='spotify');
+    $('musicTabBodyBuiltin').classList.toggle('active', tab==='builtin');
+  }
+  function openMusicPanel(){
+    $('musicPanel').style.display='block';
+    closePanel();
+  }
+  function closeMusicPanel(){ $('musicPanel').style.display='none'; }
+  function initMusicPlayerUI(){
+    $('musicFab').style.display = db.settings.musicPlayerEnabled ? 'flex' : 'none';
+    $('toggleMusicFab').checked = db.settings.musicPlayerEnabled;
+    renderBuiltinTrackList();
+    currentBuiltinTrack = BUILTIN_TRACKS.find(t=>t.id===db.settings.builtinTrack) || BUILTIN_TRACKS[0];
+    $('builtinTrackName').textContent = currentBuiltinTrack.name;
+    $('builtinVolume').value = db.settings.musicVolume;
+    applyMusicVolume();
+    // Restore a saved Spotify link so it's ready — but Spotify's own embed
+    // still requires a tap on ITS play button, so this never auto-plays audio.
+    if(db.settings.spotifyLink){
+      $('spotifyLinkInput').value = db.settings.spotifyLink;
+      loadSpotifyEmbed(db.settings.spotifyLink);
+    }
+  }
+  // Used on sign-out: stops any playing audio without touching saved
+  // preferences (currentUser is about to be cleared, so no save is attempted).
+  function silenceMusicPlayer(){
+    stopMusic();
+    stopBgAudioEl();
+    bgAudioPlaying = false;
+    try{ $('builtinPlayBtn').textContent='▶️'; $('musicFab').classList.remove('playing'); }catch(e){}
+    stopSpotifyPlayback();
+    closeMusicPanel();
+  }
+
   // ---------- particles ----------
   let particles = [];
   let particleAnim = null;
@@ -988,7 +1263,8 @@
     });
     return data;
   }
-  const DEFAULT_SETTINGS = { sound:true, particles:true, animations:true, music:false, musicVolume:0.15 };
+  const DEFAULT_SETTINGS = { sound:true, particles:true, animations:true, music:false, musicVolume:0.15,
+    musicMuted:false, musicPlayerEnabled:true, spotifyLink:'', builtinTrack:'ambient-generated' };
   async function loadDb(){
     try{
       const [{ data: treeRows, error: treesErr }, { data: settingsRow, error: settingsErr }] = await Promise.all([
@@ -1060,7 +1336,7 @@
     }
   }
   function showAuthScreen(){
-    stopMusic();
+    silenceMusicPlayer();
     $('app').style.display='none';
     $('lockScreen').style.display='flex';
     $('authForm').style.display='block';
@@ -1231,12 +1507,17 @@
     $('app').style.display='block';
     db = await loadDb();
     if(!db.settings) db.settings = {...DEFAULT_SETTINGS};
+    // Fill in any settings keys added by a newer version of the app (e.g. the
+    // music player) for accounts whose saved settings predate them.
+    Object.keys(DEFAULT_SETTINGS).forEach(k=>{ if(db.settings[k]===undefined) db.settings[k]=DEFAULT_SETTINGS[k]; });
     $('toggleSound').checked = db.settings.sound;
     $('toggleParticles').checked = db.settings.particles;
     $('toggleAnimations').checked = db.settings.animations;
     $('toggleMusic').checked = db.settings.music;
     $('musicVolume').value = db.settings.musicVolume;
-    if(db.settings.music) startMusic();
+    // Intentionally does NOT auto-start audio: the user must press Play
+    // themselves, even if music was on when they last signed out.
+    initMusicPlayerUI();
     initParticles();
     renderGuidelines();
     showDashboard();
@@ -1940,6 +2221,7 @@
 
   // ---------- side panel ----------
   function openPanel(id){
+    closeMusicPanel();
     selectedId = id;
     const p = personById(id);
     if(!p) return;
@@ -2424,14 +2706,68 @@
   $('toggleAnimations').addEventListener('change', e=>{ db.settings.animations=e.target.checked; scheduleSave(); });
   $('toggleMusic').addEventListener('change', e=>{
     db.settings.music=e.target.checked;
-    if(e.target.checked) startMusic(); else stopMusic();
+    if(e.target.checked){
+      stopBgAudioEl();
+      db.settings.builtinTrack = 'ambient-generated';
+      currentBuiltinTrack = BUILTIN_TRACKS[0];
+      startMusic();
+      bgAudioPlaying = true;
+      $('builtinTrackName').textContent = currentBuiltinTrack.name;
+      $('builtinPlayBtn').textContent = '⏸️';
+      $('musicFab').classList.add('playing');
+      refreshBuiltinTrackHighlight();
+    } else {
+      stopMusic();
+      bgAudioPlaying = false;
+      $('builtinPlayBtn').textContent = '▶️';
+      $('musicFab').classList.remove('playing');
+    }
     scheduleSave();
   });
   $('musicVolume').addEventListener('input', e=>{
     db.settings.musicVolume=parseFloat(e.target.value);
-    if(musicNodes) musicNodes.g.gain.value = db.settings.musicVolume;
+    db.settings.musicMuted=false;
+    $('builtinVolume').value = db.settings.musicVolume;
+    applyMusicVolume();
     scheduleSave();
   });
+
+  // ---------- music player controls (floating fab + panel) ----------
+  $('musicFab').onclick = ()=>{
+    if($('musicPanel').style.display==='block') closeMusicPanel(); else openMusicPanel();
+  };
+  $('musicPanelCloseBtn').onclick = closeMusicPanel;
+  document.querySelectorAll('.music-tab').forEach(btn=>{ btn.onclick = ()=> switchMusicTab(btn.dataset.tab); });
+  document.addEventListener('click', (e)=>{
+    if($('musicPanel').style.display==='block' && !e.target.closest('#musicPanel') && !e.target.closest('#musicFab')){
+      closeMusicPanel();
+    }
+  });
+  $('spotifyForm').addEventListener('submit', e=>{
+    e.preventDefault();
+    loadSpotifyEmbed($('spotifyLinkInput').value);
+  });
+  $('spotifyRemoveBtn').onclick = clearSpotifyEmbed;
+  $('builtinPlayBtn').onclick = ()=>{ bgAudioPlaying ? pauseBuiltin() : playBuiltin(); };
+  $('builtinMuteBtn').onclick = ()=>{
+    db.settings.musicMuted = !db.settings.musicMuted;
+    applyMusicVolume();
+    scheduleSave();
+  };
+  $('builtinVolume').addEventListener('input', e=>{
+    db.settings.musicVolume = parseFloat(e.target.value);
+    db.settings.musicMuted = false;
+    $('musicVolume').value = db.settings.musicVolume;
+    applyMusicVolume();
+    scheduleSave();
+  });
+  $('toggleMusicFab').addEventListener('change', e=>{
+    db.settings.musicPlayerEnabled = e.target.checked;
+    $('musicFab').style.display = e.target.checked ? 'flex' : 'none';
+    if(!e.target.checked){ pauseBuiltin(); stopSpotifyPlayback(); closeMusicPanel(); }
+    scheduleSave();
+  });
+
   $('changePassBtn').onclick = async ()=>{
     const a=$('newPassInput').value, b=$('confirmPassInput').value;
     $('changePassError').textContent=''; $('changePassSuccess').textContent='';
