@@ -1604,6 +1604,57 @@
   @media(min-width:900px){ .dt-hero .hf-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);grid-template-areas:"head vis" "metrics vis";column-gap:28px;align-content:center;} .dt-head{grid-area:head;align-self:end;} .dt-vis{grid-area:vis;} .dt-metrics{grid-area:metrics;align-self:start;margin-top:14px;} .dt-hero:not(:has(.dt-vis)) .hf-in{display:block;} .dt-stage{height:320px;} }
   .dt-ghost .t-meta{margin-top:0;display:block;text-align:center;} .dt-ghost .t-name{padding-right:0;text-align:center;} .dt-ghost .hf-in{gap:4px;}
   .dt-stat{background:rgba(4,10,20,0.55);border:1px solid var(--border-2);border-radius:12px;padding:12px 14px;} .dt-stat .hx-stat-n{display:block;}
+
+  /* ===== ME & SETTINGS (holographic) ===== */
+  #viewSettings .view-scroll{padding:calc(16px + env(safe-area-inset-top)) 16px 96px;}
+  .me{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:16px;}
+  .me-hero{display:grid;grid-template-columns:1fr;gap:6px;} .me-id{display:flex;align-items:center;gap:16px;}
+  .me-orb{position:relative;flex:0 0 auto;width:84px;height:84px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 35% 30%,#12335a,#06101e 70%);border:2px solid var(--cy);box-shadow:0 0 26px var(--cy-glow),inset 0 0 18px rgba(39,230,255,.25);}
+  .me-orb span{font-family:var(--font-display);font-size:1.9rem;font-weight:600;color:#e8fdff;text-shadow:0 0 14px var(--cy-glow);}
+  .me-orb-r{position:absolute;inset:-9px;border-radius:50%;border:1.5px dashed rgba(39,230,255,.55);animation:meSpin 14s linear infinite;} @keyframes meSpin{to{transform:rotate(360deg);}}
+  .me-idt{min-width:0;} .me-idt .hx-title{margin:2px 0 2px;} .me-mail{font-size:.8rem;color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:8px;}
+  .me-plat{height:56px;overflow:hidden;margin:-6px 0 0;pointer-events:none;} .me-plat .hp{height:56px;}
+  .me-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:center;} .me-stats .dt-ring{grid-column:1/-1;display:flex;justify-content:center;} .me-stats .dt-ring:empty{display:none;}
+  .me-jump{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;-webkit-overflow-scrolling:touch;scrollbar-width:none;} .me-jump::-webkit-scrollbar{display:none;} .me-jump .hc{flex:0 0 auto;min-height:40px;}
+  .me-grid{display:grid;grid-template-columns:1fr;gap:16px;align-items:start;}
+  #meRoot .settings-block.me-sec{max-width:none;margin:0;padding:0;background:none;border:0;border-radius:0;scroll-margin-top:12px;}
+  .me-sec .hf-in{padding:16px 16px 16px;} .me-h{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+  .me-h h3{margin:2px 0 0;font-family:var(--font-display);font-size:1.15rem;font-weight:600;}
+  .me-ico{width:40px;height:40px;flex:0 0 auto;border-radius:12px;display:flex;align-items:center;justify-content:center;border:1px solid var(--cy-line);background:var(--cy-faint);box-shadow:0 0 14px rgba(39,230,255,.18);}
+  .me-ico svg{width:22px;height:22px;fill:none;stroke:var(--cy);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+  .me-note{font-size:.74rem;color:var(--text-faint);margin:8px 0 0;line-height:1.5;}
+  .me-sec .toggle-row{padding:11px 0;border-top:1px solid rgba(39,230,255,.12);min-height:48px;} .me-sec .toggle-row:first-of-type{border-top:0;}
+  .me-sec .switch{width:50px;height:28px;} .me-sec .switch .slider{background:rgba(4,10,20,.8);border:1px solid var(--cy-line);border-radius:28px;transition:background .2s,box-shadow .2s,border-color .2s;}
+  .me-sec .switch .slider:before{width:20px;height:20px;left:3px;top:3px;background:#7fa9bd;box-shadow:0 0 6px rgba(0,0,0,.5);transition:transform .2s,background .2s;}
+  .me-sec .switch input:checked + .slider{background:linear-gradient(135deg,rgba(39,230,255,.55),rgba(127,182,255,.5));border-color:var(--cy);box-shadow:0 0 16px var(--cy-glow);}
+  .me-sec .switch input:checked + .slider:before{transform:translateX(22px);background:#fff;box-shadow:0 0 10px #fff;}
+  .me-sec .switch input:focus-visible + .slider{outline:2px solid var(--cy);outline-offset:3px;}
+  .me-sec .field input:not([type=range]){min-height:44px;border-radius:10px;border:1px solid var(--cy-line);background:rgba(4,10,20,.7);color:var(--text);transition:border-color .15s,box-shadow .15s;}
+  .me-sec .field input:not([type=range]):focus{outline:none;border-color:var(--cy);box-shadow:0 0 0 3px rgba(39,230,255,.18),0 0 14px var(--cy-glow);}
+  .me-volval{float:right;color:var(--cy-2);font-weight:600;font-variant-numeric:tabular-nums;}
+  .me-vol input[type=range]{-webkit-appearance:none;appearance:none;height:28px;background:transparent;--p:15%;} 
+  .me-vol input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:6px;background:linear-gradient(90deg,var(--cy) var(--p),rgba(39,230,255,.15) var(--p));box-shadow:0 0 10px rgba(39,230,255,.25);}
+  .me-vol input[type=range]::-moz-range-track{height:6px;border-radius:6px;background:rgba(39,230,255,.15);} .me-vol input[type=range]::-moz-range-progress{height:6px;border-radius:6px;background:var(--cy);}
+  .me-vol input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;margin-top:-9px;border-radius:50%;background:#e8fdff;border:2px solid var(--cy);box-shadow:0 0 14px var(--cy-glow);}
+  .me-vol input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#e8fdff;border:2px solid var(--cy);box-shadow:0 0 14px var(--cy-glow);}
+  .me-sec .btn-primary{min-height:44px;border-radius:12px;background:linear-gradient(135deg,var(--cy),#7fb6ff);color:#04141c;font-weight:700;box-shadow:0 0 18px var(--cy-glow);}
+  .me-sec .btn-flat{min-height:44px;border-radius:12px;border:1px solid var(--cy-line);background:var(--cy-faint);color:var(--text);} .me-sec .btn-flat:hover{border-color:var(--cy);box-shadow:0 0 14px var(--cy-glow);}
+  .me-sec .hx-btn{min-height:44px;border-radius:12px;}
+  .me-sec .link-danger{min-height:44px;padding:0 16px;border-radius:12px;border:1px solid rgba(255,122,133,.45);background:rgba(229,100,107,.08);color:#ffb4b8;text-decoration:none;font-weight:600;font-size:.84rem;}
+  .me-sec .link-danger:hover{background:rgba(229,100,107,.16);box-shadow:0 0 14px rgba(255,122,133,.3);}
+  .me-sec .inline-confirm{border-color:rgba(255,122,133,.4);background:rgba(229,100,107,.07);}
+  .me-sec .dev-badge{margin-top:12px;padding:10px 12px;border:1px solid var(--cy-line);border-radius:10px;background:var(--cy-faint);}
+  @media(min-width:900px){ #viewSettings .view-scroll{padding:calc(26px + env(safe-area-inset-top)) 30px 90px;} .me-grid{grid-template-columns:repeat(2,minmax(0,1fr));} .me-hero{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);align-items:center;gap:20px;} .me-plat{display:none;} .me-stats{grid-template-columns:repeat(3,minmax(0,1fr)) auto;} .me-stats .dt-ring{grid-column:auto;} .me .hf-hero .hf-in{padding:22px 26px;} .me-jump{flex-wrap:wrap;overflow:visible;} }
+  @media(prefers-reduced-motion:reduce){ .me-orb-r{animation:none;} .me-sec .switch .slider,.me-sec .switch .slider:before{transition:none;} }
+
+  .hx-verse{margin:10px 0 14px;padding:10px 14px;border-left:2px solid var(--cy);background:linear-gradient(90deg,rgba(39,230,255,.10),transparent);border-radius:0 10px 10px 0;max-width:62ch;}
+  .hx-verse blockquote{margin:0;font-family:var(--font-display);font-style:italic;font-size:.92rem;line-height:1.5;color:#e4f6ff;}
+  .hx-verse figcaption{margin-top:4px;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cy);}
+  .me-hint{color:var(--text-faint);font-size:.7rem;}
+  .pz-expl-l{font-size:.78rem;line-height:1.45;max-width:32ch;flex-shrink:0;margin-top:8px;display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden;}
+  .pz-who{display:flex;justify-content:center;margin-top:10px;flex-shrink:0;} .pz-who-av{width:50px;height:50px;border-radius:50%;margin:0 -7px;border:2px solid var(--cy);background:#07162a;color:var(--cy-2);display:inline-flex;align-items:center;justify-content:center;overflow:hidden;font-family:var(--font-display);font-size:1rem;font-weight:600;box-shadow:0 0 16px var(--cy-glow);} .pz-who-av img{width:100%;height:100%;object-fit:cover;} .pz-who-more{background:rgba(39,230,255,.14);font-size:.82rem;}
+  .pz-who-names{margin-top:8px;font-size:.78rem;color:var(--text);text-align:center;max-width:90%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .pz-bigcount{margin-top:auto;} .pz-bigcount b{font-size:1.8rem;} .pz-who-names{flex-shrink:0;}
 </style>
 </head>
 <body>
@@ -1805,25 +1856,30 @@
 
       <div class="view-panel" id="viewSettings">
         <div class="view-scroll">
-          <h2 class="section-title">Me &amp; Settings</h2>
-          <div class="settings-block">
+          <div class="me" id="meRoot">
+          <div id="meHero"></div>
+          <nav class="me-jump" id="meJump" aria-label="Jump to a settings section">
+            <button type="button" class="hc" data-jump="meSecApp">Appearance</button><button type="button" class="hc" data-jump="meSecSound">Sound</button><button type="button" class="hc" data-jump="meSecMusic">Music player</button><button type="button" class="hc" data-jump="meSecAccount">Account</button><button type="button" class="hc" data-jump="meSecData">Backup</button><button type="button" class="hc" data-jump="meSecDanger">Danger zone</button>
+          </nav>
+          <div class="me-grid">
+          <div class="settings-block" id="meSecHelp" data-ico="help" data-eyebrow="SUPPORT">
             <h3>Help</h3>
             <button type="button" class="hx-btn" data-goto="guidelines">📖 How the app works (Guidelines)</button>
           </div>
 
-          <div class="settings-block" id="aboutBlock">
+          <div class="settings-block" id="aboutBlock" data-ico="info" data-eyebrow="ABOUT">
             <h3>About</h3>
             <p style="margin:0;font-size:.82rem;color:var(--text-dim);">Family Tree — a private place to map your family's story.</p>
             <div class="dev-badge" role="group" aria-label="Developer: Ryan James Lim"><span class="db-l" aria-hidden="true">DEVELOPER</span><span aria-hidden="true">·</span><b aria-hidden="true">Ryan James Lim</b></div>
           </div>
 
-          <div class="settings-block">
+          <div class="settings-block" id="meSecTree" data-ico="tree" data-eyebrow="THIS TREE">
             <h3>This family tree</h3>
-            <div class="field"><label>Name</label><input id="settingsTreeName"></div>
-            <div class="field"><label>Description</label><input id="settingsTreeDesc" placeholder="Optional"></div>
+            <div class="field"><label for="settingsTreeName">Name</label><input id="settingsTreeName"></div>
+            <div class="field"><label for="settingsTreeDesc">Description</label><input id="settingsTreeDesc" placeholder="Optional"></div>
           </div>
 
-          <div class="settings-block">
+          <div class="settings-block" id="meSecApp" data-ico="spark" data-eyebrow="DISPLAY">
             <h3>Appearance</h3>
             <div class="toggle-row"><span class="label">✨ Background particles</span>
               <label class="switch"><input type="checkbox" id="toggleParticles"><span class="slider"></span></label></div>
@@ -1831,40 +1887,47 @@
               <label class="switch"><input type="checkbox" id="toggleAnimations"><span class="slider"></span></label></div>
           </div>
 
-          <div class="settings-block">
+          <div class="settings-block" id="meSecSound" data-ico="sound" data-eyebrow="AUDIO">
             <h3>Sound</h3>
             <div class="toggle-row"><span class="label">🔊 Sound effects</span>
               <label class="switch"><input type="checkbox" id="toggleSound"><span class="slider"></span></label></div>
             <div class="toggle-row"><span class="label">🎵 Ambient background tone</span>
               <label class="switch"><input type="checkbox" id="toggleMusic"><span class="slider"></span></label></div>
-            <div class="field" style="margin-top:6px;">
-              <label>Volume</label>
+            <div class="field me-vol" style="margin-top:6px;">
+              <label for="musicVolume">Volume <output id="musicVolumeVal" class="me-volval">15%</output></label>
               <input type="range" id="musicVolume" min="0" max="1" step="0.05" value="0.15">
             </div>
             <div class="toggle-row"><span class="label">🧠 Persona deck swipe &amp; flip sounds</span>
               <label class="switch"><input type="checkbox" id="togglePersonaSound"><span class="slider"></span></label></div>
-            <p style="font-size:0.72rem;color:var(--text-faint);margin:6px 0 0 0;">Gently generated in-browser, not licensed music. Persona sounds are off by default and never touch the music player.</p>
+            <p class="me-note">Gently generated in-browser, not licensed music. Persona sounds are off by default and never touch the music player.</p>
           </div>
 
-          <div class="settings-block">
-            <h3>🎧 Music Player</h3>
+          <div class="settings-block" id="meSecMusic" data-ico="music" data-eyebrow="PLAYER">
+            <h3>Music Player</h3>
             <div class="toggle-row"><span class="label">Floating music button</span>
               <label class="switch"><input type="checkbox" id="toggleMusicFab"><span class="slider"></span></label></div>
-            <p style="font-size:0.72rem;color:var(--text-faint);margin:6px 0 0 0;">Lets you play Spotify or background music while exploring. Turn off to hide it completely.</p>
+            <p class="me-note">Lets you play Spotify or background music while exploring. Turn off to hide it completely.</p>
           </div>
 
-          <div class="settings-block">
+          <div class="settings-block" id="meSecAccount" data-ico="user" data-eyebrow="SECURITY">
             <h3>Account</h3>
+            <div class="field"><label for="settingsDisplayName">Display name <span class="me-hint">(used in your greeting)</span></label><input id="settingsDisplayName" maxlength="30" autocomplete="nickname" placeholder="e.g. Ryan"></div>
             <p style="font-size:0.8rem;color:var(--text-dim);margin:0 0 12px 0;">Signed in as <span id="accountEmail" style="color:var(--text);font-weight:600;"></span></p>
-            <div class="field"><label>New password</label><input type="password" id="newPassInput" autocomplete="new-password"></div>
-            <div class="field"><label>Confirm new password</label><input type="password" id="confirmPassInput" autocomplete="new-password"></div>
+            <div class="field"><label for="newPassInput">New password</label><input type="password" id="newPassInput" autocomplete="new-password"></div>
+            <div class="field"><label for="confirmPassInput">Confirm new password</label><input type="password" id="confirmPassInput" autocomplete="new-password"></div>
             <button class="btn-primary" id="changePassBtn">Update password</button>
             <div class="lock-error" id="changePassError" style="margin-top:8px;"></div>
             <div class="lock-success" id="changePassSuccess" style="margin-top:8px;"></div>
-            <button class="link-danger" id="signOutBtn" style="margin-top:16px;">Sign out</button>
+            <button class="link-danger me-signout" id="signOutBtn" style="margin-top:16px;">Sign out</button>
           </div>
 
-          <div class="settings-block">
+          <div class="settings-block" id="meSecData" data-ico="data" data-eyebrow="YOUR DATA">
+            <h3>Backup</h3>
+            <p class="me-note" style="margin-top:0;">Download everything in this family tree — members, relationships, events and observations — as a file you keep. It never leaves your device.</p>
+            <button type="button" class="btn-flat" id="exportTreeBtn" style="margin-top:10px;">Download this tree (.json)</button>
+          </div>
+
+          <div class="settings-block me-danger" id="meSecDanger" data-ico="warn" data-eyebrow="CAUTION">
             <h3>Danger zone</h3>
             <p style="font-size:0.8rem;color:var(--text-dim);margin:0 0 10px 0;">Delete every member in this family tree. Your account and other trees are not affected.</p>
             <button class="link-danger" id="clearDataBtn">Clear this family tree</button>
@@ -1873,6 +1936,8 @@
               <button class="link-danger" id="clearYesBtn">Yes, delete everything</button>
               <button class="btn-flat" id="clearNoBtn" style="margin-left:8px;">Cancel</button>
             </div>
+          </div>
+          </div>
           </div>
         </div>
       </div>
@@ -3355,9 +3420,36 @@
   }
   function newId(){ return 'x'+Date.now()+Math.floor(Math.random()*1000); }
 
+  const BIBLE_VERSES = [
+    ['Psalm 119:105','Thy word is a lamp unto my feet, and a light unto my path.'],
+    ['Proverbs 3:5','Trust in the LORD with all thine heart; and lean not unto thine own understanding.'],
+    ['Philippians 4:13','I can do all things through Christ which strengtheneth me.'],
+    ['Joshua 1:9','Have not I commanded thee? Be strong and of a good courage; be not afraid, neither be thou dismayed: for the LORD thy God is with thee whithersoever thou goest.'],
+    ['Psalm 23:1','The LORD is my shepherd; I shall not want.'],
+    ['Isaiah 41:10','Fear thou not; for I am with thee: be not dismayed; for I am thy God: I will strengthen thee; yea, I will help thee; yea, I will uphold thee with the right hand of my righteousness.'],
+    ['Romans 8:28','And we know that all things work together for good to them that love God, to them who are the called according to his purpose.'],
+    ['Psalm 46:1','God is our refuge and strength, a very present help in trouble.'],
+    ['Matthew 11:28','Come unto me, all ye that labour and are heavy laden, and I will give you rest.'],
+    ['Joshua 24:15','But as for me and my house, we will serve the LORD.'],
+    ['Psalm 133:1','Behold, how good and how pleasant it is for brethren to dwell together in unity!'],
+    ['Psalm 103:17','But the mercy of the LORD is from everlasting to everlasting upon them that fear him, and his righteousness unto children’s children.'],
+    ['Proverbs 17:6','Children’s children are the crown of old men; and the glory of children are their fathers.'],
+    ['Psalm 127:3','Lo, children are an heritage of the LORD: and the fruit of the womb is his reward.'],
+    ['1 Corinthians 13:13','And now abideth faith, hope, charity, these three; but the greatest of these is charity.'],
+    ['Colossians 3:14','And above all these things put on charity, which is the bond of perfectness.'],
+    ['Psalm 91:1','He that dwelleth in the secret place of the most High shall abide under the shadow of the Almighty.'],
+    ['Isaiah 40:31','But they that wait upon the LORD shall renew their strength; they shall mount up with wings as eagles; they shall run, and not be weary; and they shall walk, and not faint.'],
+    ['Psalm 27:1','The LORD is my light and my salvation; whom shall I fear? the LORD is the strength of my life; of whom shall I be afraid?'],
+    ['John 3:16','For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.'],
+    ['Psalm 37:4','Delight thyself also in the LORD; and he shall give thee the desires of thine heart.'],
+    ['Psalm 34:8','O taste and see that the LORD is good: blessed is the man that trusteth in him.'],
+    ['1 John 4:19','We love him, because he first loved us.']
+  ];
+  function verseOfDay(){ const d=new Date(); const n=Math.floor((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(d.getFullYear(),0,0))/864e5); return BIBLE_VERSES[n % BIBLE_VERSES.length]; }
+  function verseHtml(){ const v=verseOfDay(); return `<figure class="hx-verse"><blockquote>“${escapeHtml(v[1])}”</blockquote><figcaption>— ${escapeHtml(v[0])} (KJV)</figcaption></figure>`; }
   function greetingText(){
     const h = new Date().getHours();
-    if(h<5) return 'Still up? 🌙';
+    if(h<5) return 'Good night 🌙';
     if(h<12) return 'Good morning ☀️';
     if(h<18) return 'Good afternoon 👋';
     return 'Good evening 🌙';
@@ -3432,7 +3524,7 @@
       <section class="dt-hero ${sr}" id="dashHero">${HK.frame(`${signOut}
         <div class="dt-head"><div class="hx-eyebrow">MY FAMILY TREES · ${escapeHtml(dateLine)}</div>
         <h2 class="hx-title" id="dashGreeting">${escapeHtml(greetingText())}${name?', '+escapeHtml(name):''}</h2>
-        <p class="hx-sub" id="dashHeroSub">${escapeHtml(sub)}</p></div>
+        <p class="hx-sub" id="dashHeroSub">${escapeHtml(sub)}</p>${verseHtml()}</div>
         ${nodes.length?'<div class="dt-vis">'+`<div class="hh-stage dt-stage" id="dtStage" data-node-count="${nodes.length}" role="group" aria-label="Rotating hologram of your family members across all trees. The tree cards below are a keyboard-friendly list."><div class="hh-label" id="dtLabel" hidden></div>${hidden?`<span class="hc hh-more">+${hidden} more</span>`:''}</div><div class="hh-plat">${HK.platform('M')}</div>`+'</div>':''}
         <div class="dt-metrics" id="dashStats">${stat(trees.length,trees.length===1?'Family Tree':'Family Trees')}${stat(totalPeople,'People Added')}${stat(pinned.length,'Pinned',true)}${totalPeople?`<div class="dt-ring">${HK.ring({value:comp.pct,label:'Overall completeness',size:84})}</div>`:''}</div>`,{variant:'hero',intensity:'active',glare:true,tick:true})}</section>
       <section class="dt-sec ${sr}"><div class="dt-sec-h"><div><div class="hx-eyebrow">YOUR TREES</div><h3 class="dt-h3">Family trees <span class="hc">${trees.length}</span></h3></div>${newBtn}</div></section>
@@ -3663,7 +3755,7 @@
     if(view==='timeline') renderTimeline();
     if(view==='insights') renderInsights();
     if(view==='persona') renderPersona(); else pzPause();
-    if(view==='settings'){ $('settingsTreeName').value=tree()?tree().name:''; $('settingsTreeDesc').value=tree()?(tree().description||''):''; }
+    if(view==='settings'){ $('settingsTreeName').value=tree()?tree().name:''; $('settingsTreeDesc').value=tree()?(tree().description||''):''; renderMe(); }
     if(view==='tree'){
       renderTree();
       if(treeNeedsFit){ treeNeedsFit=false; if(peopleArr().length) afterLayout(fitToScreen); }
@@ -3676,6 +3768,60 @@
     $('sidebarTreeName').textContent=t.name; $('settingsTreeName').value=t.name;
     scheduleSave();
   });
+
+  // ================= ME & SETTINGS (holographic) =================
+  const ME_ICON = {
+    help:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17h.01"/></svg>',
+    info:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5h.01"/></svg>',
+    tree:'<svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.2"/><circle cx="6" cy="18" r="2.2"/><circle cx="18" cy="18" r="2.2"/><path d="M12 7.2v4M12 11.2H6v4.6M12 11.2h6v4.6"/></svg>',
+    spark:'<svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg>',
+    sound:'<svg viewBox="0 0 24 24"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5zM15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>',
+    music:'<svg viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg>',
+    user:'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c.6-3.8 3.7-6 7.5-6s6.9 2.2 7.5 6"/></svg>',
+    data:'<svg viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"/></svg>',
+    warn:'<svg viewBox="0 0 24 24"><path d="M12 3.5l9.5 16.5h-19zM12 10v4.5M12 17.2h.01"/></svg>'
+  };
+  let meReady = false;
+  function initMe(){
+    if(meReady) return; meReady = true;
+    document.querySelectorAll('#meRoot .settings-block').forEach(b=>{
+      const h3 = b.querySelector(':scope > h3'); const title = h3 ? h3.textContent : '';
+      const f = document.createElement('div'); f.innerHTML = HK.frame('<div class="me-h"><span class="me-ico" aria-hidden="true">'+(ME_ICON[b.dataset.ico]||'')+'</span><div><div class="hx-eyebrow">'+escapeHtml(b.dataset.eyebrow||'')+'</div><h3>'+escapeHtml(title)+'</h3></div></div><div class="me-body"></div>',{variant:b.classList.contains('me-danger')?'compact':'standard',intensity:'idle',tick:true,cls:b.classList.contains('me-danger')?'hf-error':''});
+      const frame = f.firstElementChild; const body = frame.querySelector('.me-body');
+      if(h3) h3.remove(); while(b.firstChild) body.appendChild(b.firstChild);
+      b.appendChild(frame); b.classList.add('me-sec');
+    });
+    $('meJump').addEventListener('click', e=>{ const c=e.target.closest('[data-jump]'); if(!c) return; const el=$(c.dataset.jump); if(el) el.scrollIntoView({behavior:HK.rm()?'auto':'smooth',block:'start'}); });
+    const vol=$('musicVolume'); const sync=()=>{ const p=Math.round((+vol.value||0)*100); vol.style.setProperty('--p',p+'%'); $('musicVolumeVal').textContent=p+'%'; };
+    $('settingsDisplayName').addEventListener('change',e=>{ db.settings.displayName=e.target.value.trim().slice(0,30); scheduleSave(); renderMe(); toast('Display name saved.'); });
+    vol.addEventListener('input',sync); vol.addEventListener('change',sync); meSyncVol = sync; sync();
+    $('exportTreeBtn').onclick = ()=>{
+      const t = tree(); if(!t){ toast('Open a tree first.'); return; }
+      try{
+        const blob = new Blob([JSON.stringify({ app:'family-tree', exportedAt:new Date().toISOString(), tree:t }, null, 2)], {type:'application/json'});
+        const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url;
+        a.download = (String(t.name||'family-tree').replace(/[^\w\-]+/g,'-').replace(/^-+|-+$/g,'')||'family-tree')+'-backup.json';
+        document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1500); toast('Backup downloaded.');
+      }catch(err){ toast('Could not create the backup.'); }
+    };
+  }
+  let meSyncVol = null;
+  function renderMe(){
+    initMe(); const t = tree(); if(!t) return; const root=$('meHero'); $('settingsDisplayName').value = (db.settings&&db.settings.displayName)||'';
+    const people=peopleArr(); const email=(currentUser&&currentUser.email)||''; const nm=userDisplayName()||email.split('@')[0]||'You';
+    const ini=(nm.replace(/[^A-Za-z]/g,'').slice(0,2)||'Y').toUpperCase();
+    const comp=treeCompleteness(people); const evs=collectTimelineEvents().length;
+    const stat=(n,l)=>`<div class="dt-stat"><span class="hx-stat-n">${n}</span><span class="hx-stat-l">${l}</span></div>`;
+    root.innerHTML = HK.frame(`<div class="me-hero">
+        <div class="me-id"><div class="me-orb" aria-hidden="true"><i class="me-orb-r"></i><span>${escapeHtml(ini)}</span></div>
+          <div class="me-idt"><div class="hx-eyebrow">ME &amp; SETTINGS</div><h2 class="hx-title" id="meName">${escapeHtml(nm)}</h2><div class="me-mail">${escapeHtml(email)}</div>
+            <div class="hc-row"><span class="hc">Private account</span><span class="hc">Tree: ${escapeHtml(t.name)}</span></div></div></div>
+        <div class="me-plat" aria-hidden="true">${HK.platform('S',true)}</div>
+        <div class="me-stats">${stat(db.trees.length,db.trees.length===1?'Tree':'Trees')}${stat(people.length,people.length===1?'Member':'Members')}${stat(evs,evs===1?'Event':'Events')}<div class="dt-ring">${people.length?HK.ring({value:comp.pct,label:'Completeness',size:76}):''}</div></div>
+      </div>`,{variant:'hero',intensity:'active',glare:true,tick:true});
+    HK.fillRings(root); if(meSyncVol) meSyncVol();
+  }
+
   $('settingsTreeName').addEventListener('change', e=>{
     const t=tree(); t.name=e.target.value.trim()||'Untitled Family'; touchTree();
     $('treeNameInput').value=t.name; $('sidebarTreeName').textContent=t.name;
@@ -5319,6 +5465,8 @@
   // ---------- HOME (dashboard) ----------
   let homeBooted = false;            // the holographic boot effect plays once per session
   function userDisplayName(){
+    const custom = db && db.settings && typeof db.settings.displayName==='string' ? db.settings.displayName.trim() : '';
+    if(custom) return custom.slice(0,30);
     const u = currentUser || {}; const md = u.user_metadata || {};
     const n = md.full_name || md.name || md.display_name;
     if(n && String(n).trim()) return String(n).trim().split(/\s+/)[0];
@@ -5523,7 +5671,7 @@
         <section class="hh-greet ${sr}" aria-labelledby="hxGreet">
           <div class="hx-eyebrow">FAMILY TREE · ${escapeHtml(t.name)} · ${escapeHtml(dateLine)}</div>
           <h2 class="hx-title" id="hxGreet">${escapeHtml(greetingText())}${name?', '+escapeHtml(name):''}</h2>
-          <p class="hx-sub">Your family has <b>${n}</b> member${n===1?'':'s'} across <b>${gens}</b> generation${gens===1?'':'s'}.</p>
+          <p class="hx-sub">Your family has <b>${n}</b> member${n===1?'':'s'} across <b>${gens}</b> generation${gens===1?'':'s'}.</p>${verseHtml()}
         </section>
         <section class="hh-core ${sr}" aria-labelledby="hhCoreT">
           ${HK.frame(`<div class="hk-h"><h3 id="hhCoreT">Your family, live</h3></div><p class="hk-sub">Every glowing node is a real family member. Drag to rotate, tap a node to see who it is.</p>
@@ -5947,7 +6095,9 @@
         <div class="pz-hud"><span>${tag}</span><span>TRAIT</span></div>
         <div class="pz-cat">${escapeHtml(catLabel)}</div>
         <h3 class="pz-name pz-trait-name"><span class="trait-tier-dot trait-tier-${m.tier}"></span>${escapeHtml(m.title)}</h3>
-        <p class="pz-expl">${escapeHtml(m.short)}</p>
+        <p class="pz-expl pz-expl-l">${escapeHtml(m.isCustom?m.short:(m.full||m.short))}</p>
+        <div class="pz-who" aria-label="Family members with this trait">${item.rows.slice(0,4).map(r=>`<span class="pz-who-av" title="${escapeHtml(fullName(r.person))}">${r.person.photo?`<img src="${escapeHtml(r.person.photo)}" alt="">`:`<span>${escapeHtml(initialsOf(r.person))}</span>`}</span>`).join('')}${c>4?`<span class="pz-who-av pz-who-more">+${c-4}</span>`:''}</div>
+        <div class="pz-who-names">${escapeHtml(item.rows.slice(0,2).map(r=>fullName(r.person)).join(', '))}${c>2?` +${c-2} more`:''}</div>
         <div class="pz-bigcount"><b>${c}</b><span>${c===1?'family member':'family members'}</span></div>
         <div class="pz-status"><span class="pz-status-line"></span><span>PERSONAL OBSERVATION · TAP TO FLIP</span></div></div>`);
       const rowsHtml = item.rows.map(r=>`<div class="pz-trait"><div class="pz-trait-row"><button type="button" class="hx-person" data-pz-person="${r.person.id}">${avatarMini(r.person)}<span>${escapeHtml(fullName(r.person))}</span></button>
