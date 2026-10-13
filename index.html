@@ -107,8 +107,16 @@
   .nav-icon{font-size:1.0rem;width:20px;text-align:center;}
 
   /* Topbar */
+  /* z-index:31 (not 5): #topbar's own backdrop-filter makes it a stacking
+     context, so its fixed-position mobile "more" menu (.topbar-extras,
+     internal z-index:30) is painted as part of #topbar's box, not above
+     page-level siblings. #topbarExtrasBackdrop sits at z-index:29 to dim
+     the canvas behind that menu, so #topbar itself must out-rank 29 or
+     its own dropdown renders underneath its own backdrop — every button
+     in the mobile "⋯" menu (search, zoom, Fit, Traits, Save, etc.) would
+     be visible but untappable while the menu is open. */
   #topbar{grid-row:1;grid-column:2;background:rgba(13,18,28,0.8);backdrop-filter:blur(12px);
-    border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;padding:0 16px;z-index:5;}
+    border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;padding:0 16px;z-index:31;}
   #treeNameInput{background:none;border:none;color:var(--text);font-size:1.0rem;font-weight:600;
     padding:6px 8px;border-radius:8px;width:150px;}
   #treeNameInput:hover, #treeNameInput:focus{background:rgba(255,255,255,0.05);outline:none;}
@@ -285,6 +293,95 @@
   .action-btn:disabled{opacity:0.35;cursor:not-allowed;}
   .action-btn.danger{color:var(--danger);}
   .action-btn.danger:hover{background:rgba(229,100,107,0.12);border-color:rgba(229,100,107,0.4);}
+
+  /* ============ PSYCHOLOGY & PERSONALITY TRAITS ============ */
+  /* Tier colors stay restrained (used only as a small dot + thin left
+     border) so the feature reads as an organizing aid, not a verdict. */
+  .trait-tier-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block;}
+  .trait-tier-strength{background:var(--success);}
+  .trait-tier-neutral{background:var(--accent-2);}
+  .trait-tier-caution{background:var(--warm);}
+  .trait-tier-concerning{background:var(--danger);}
+
+  .field-optional{font-weight:400;color:var(--text-faint);text-transform:none;letter-spacing:0;font-size:0.78em;}
+  .trait-chip-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;min-height:0;}
+  .trait-chip-empty{font-size:0.78rem;color:var(--text-faint);margin-top:8px;}
+  .trait-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 6px 6px 10px;border-radius:20px;
+    background:rgba(255,255,255,0.04);border:1px solid var(--border-2);font-size:0.78rem;color:var(--text);}
+  .trait-chip .trait-x{background:none;border:none;color:var(--text-faint);cursor:pointer;padding:2px 4px;
+    font-size:0.75rem;line-height:1;border-radius:50%;}
+  .trait-chip .trait-x:hover{color:var(--danger);background:rgba(229,100,107,0.14);}
+  #openTraitPickerBtn{margin-top:10px;}
+
+  .trait-disclaimer{display:flex;gap:9px;align-items:flex-start;background:rgba(124,176,255,0.07);
+    border:1px solid rgba(124,176,255,0.18);border-radius:10px;padding:10px 12px;font-size:0.74rem;
+    color:var(--text-dim);line-height:1.45;margin:0 0 14px 0;}
+  .trait-disclaimer .ico{flex-shrink:0;font-size:0.95rem;}
+
+  .trait-search-row{display:flex;flex-direction:column;gap:10px;position:sticky;top:0;background:var(--panel);
+    padding-bottom:10px;z-index:2;}
+  .trait-search-row input{width:100%;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.04);
+    border:1px solid var(--border-2);color:var(--text);font-size:0.86rem;}
+  .trait-search-row input:focus{outline:none;border-color:var(--accent);}
+  .trait-cat-filter{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;}
+  .trait-cat-filter::-webkit-scrollbar{display:none;}
+  .trait-cat-chip{flex-shrink:0;padding:6px 12px;border-radius:20px;background:rgba(255,255,255,0.04);
+    border:1px solid var(--border-2);color:var(--text-dim);font-size:0.74rem;cursor:pointer;white-space:nowrap;transition:.15s;}
+  .trait-cat-chip:hover{border-color:rgba(76,141,255,0.4);}
+  .trait-cat-chip.active{background:linear-gradient(135deg,var(--accent),#3568D4);border-color:transparent;color:#fff;font-weight:600;}
+
+  .trait-list{display:flex;flex-direction:column;gap:6px;padding-top:4px;}
+  .trait-cat-heading{font-size:0.68rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.06em;
+    font-weight:700;margin:14px 0 2px 0;}
+  .trait-cat-heading:first-child{margin-top:4px;}
+  .trait-row{display:flex;align-items:flex-start;gap:10px;padding:10px 11px;border-radius:11px;
+    background:rgba(255,255,255,0.025);border:1px solid var(--border);cursor:pointer;transition:.15s;}
+  .trait-row:hover{background:rgba(76,141,255,0.08);border-color:rgba(76,141,255,0.3);}
+  .trait-row.selected{background:rgba(76,141,255,0.12);border-color:var(--accent);}
+  .trait-row .trait-tier-dot{margin-top:6px;}
+  .trait-row-main{flex:1;min-width:0;}
+  .trait-row-title{font-size:0.85rem;font-weight:600;color:var(--text);display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+  .trait-row-short{font-size:0.76rem;color:var(--text-dim);margin-top:2px;line-height:1.4;}
+  .trait-row-check{flex-shrink:0;width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border-2);
+    display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:transparent;margin-top:1px;}
+  .trait-row.selected .trait-row-check{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .trait-match-badge{flex-shrink:0;font-size:0.68rem;font-weight:700;color:var(--text-dim);background:rgba(255,255,255,0.05);
+    border:1px solid var(--border-2);border-radius:20px;padding:2px 9px;margin-top:1px;}
+  .trait-match-badge.has-matches{color:var(--accent-2);border-color:rgba(76,141,255,0.35);background:rgba(76,141,255,0.1);}
+  .trait-empty-note{text-align:center;color:var(--text-faint);font-size:0.82rem;padding:30px 10px;}
+
+  /* Member profile panel: assigned traits */
+  #panelPsych{margin-top:14px;}
+  #panelPsych h4{font-size:0.7rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.05em;margin:0 0 7px 0;font-weight:700;}
+  .psych-card{padding:10px 11px;border-radius:11px;background:rgba(255,255,255,0.03);border:1px solid var(--border);margin-bottom:7px;}
+  .psych-card-head{display:flex;align-items:center;gap:8px;cursor:pointer;}
+  .psych-card-title{font-size:0.83rem;font-weight:700;color:var(--text);flex:1;}
+  .psych-card-cat{font-size:0.66rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.04em;}
+  .psych-card-short{font-size:0.78rem;color:var(--text-dim);margin-top:4px;line-height:1.45;}
+  .psych-card-full{font-size:0.78rem;color:var(--text-dim);margin-top:6px;line-height:1.5;
+    padding-top:6px;border-top:1px solid var(--border);display:none;}
+  .psych-card.expanded .psych-card-full{display:block;}
+  .psych-card-toggle{background:none;border:none;color:var(--accent-2);font-size:0.72rem;cursor:pointer;
+    padding:0;margin-top:5px;font-weight:600;}
+
+  /* Tree view: trait highlight bar */
+  #traitHighlightBar{display:none;position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:40;
+    max-width:min(90vw,520px);background:linear-gradient(180deg, var(--panel-2), var(--panel));
+    border:1px solid var(--border-2);border-radius:14px;padding:12px 14px;box-shadow:0 14px 34px rgba(0,0,0,0.5);
+    align-items:center;gap:12px;}
+  #traitHighlightBar.show{display:flex;}
+  .thb-dot{flex-shrink:0;width:9px;height:9px;border-radius:50%;margin-top:4px;align-self:flex-start;}
+  .thb-text{flex:1;min-width:0;}
+  .thb-title{font-size:0.86rem;font-weight:700;color:var(--text);display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+  .thb-count{font-size:0.72rem;font-weight:600;color:var(--accent-2);}
+  .thb-meaning{font-size:0.76rem;color:var(--text-dim);margin-top:3px;line-height:1.4;}
+  .thb-clear{flex-shrink:0;background:rgba(255,255,255,0.06);border:1px solid var(--border-2);color:var(--text);
+    border-radius:8px;padding:7px 11px;font-size:0.76rem;cursor:pointer;white-space:nowrap;}
+  .thb-clear:hover{background:rgba(229,100,107,0.14);border-color:rgba(229,100,107,0.4);color:var(--danger);}
+  @media (max-width:640px){
+    #traitHighlightBar{left:12px;right:12px;transform:none;max-width:none;flex-wrap:wrap;top:calc(10px + env(safe-area-inset-top));}
+    .thb-clear{margin-left:auto;}
+  }
 
   /* Scroll views */
   .view-scroll{position:absolute;inset:0;overflow-y:auto;padding:26px 30px 90px 30px;}
@@ -607,6 +704,7 @@
       <div class="topbar-spacer"></div>
       <div class="topbar-extras" id="topbarExtras">
         <input id="searchInput" placeholder="Search members…">
+        <button class="tb-btn" id="traitHighlightBtn">🧠 Traits</button>
         <div class="zoom-controls">
           <button class="icon-btn" id="zoomOutBtn">−</button>
           <span id="zoomLabel">100%</span>
@@ -636,6 +734,14 @@
             <svg id="linesSvg"></svg>
             <div id="cardsLayer"></div>
           </div>
+        </div>
+        <div id="traitHighlightBar">
+          <div class="thb-dot" id="thbDot"></div>
+          <div class="thb-text">
+            <div class="thb-title"><span id="thbTitle"></span><span class="thb-count" id="thbCount"></span></div>
+            <div class="thb-meaning" id="thbMeaning"></div>
+          </div>
+          <button type="button" class="thb-clear" id="thbClearBtn">Clear Highlight</button>
         </div>
         <div id="treeLegend">
           <span class="leg-item"><span class="leg-line leg-line-parent"></span>Parent → Child</span>
@@ -794,6 +900,7 @@
     <div class="detail-row"><b>Born</b><span id="panelBirth"></span></div>
     <div class="detail-row"><b>Died</b><span id="panelDeath"></span></div>
     <div class="panel-notes" id="panelNotes"></div>
+    <div id="panelPsych"></div>
     <div id="panelRelations"></div>
   </div>
   <div class="panel-actions">
@@ -859,11 +966,62 @@
           <label class="chk"><input type="checkbox" id="fLiving"> Living / N/A</label>
         </div>
       </div>
-      <div class="field" style="padding-bottom:20px;"><label>Notes</label><textarea id="fNotes" placeholder="Anything worth remembering"></textarea></div>
+      <div class="field"><label>Notes</label><textarea id="fNotes" placeholder="Anything worth remembering"></textarea></div>
+      <div class="field" style="padding-bottom:20px;">
+        <label>Psychology &amp; Personality <span class="field-optional">(optional, private)</span></label>
+        <div class="trait-chip-row" id="personTraitChips"></div>
+        <button type="button" class="action-btn" id="openTraitPickerBtn">🧠 Add / Edit Traits</button>
+      </div>
     </div>
     <div class="modal-actions">
       <button class="btn-flat" id="modalCancelBtn">Cancel</button>
       <div class="right"><button class="btn-primary" id="modalSaveBtn">Save</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TRAIT PICKER MODAL (assign traits to the person being added/edited) ============ -->
+<div class="modal-backdrop" id="traitPickerBackdrop" style="z-index:360;">
+  <div class="modal has-header" style="max-width:480px;">
+    <div class="modal-header">
+      <div class="modal-header-text">
+        <h2>Psychology &amp; Personality</h2>
+        <div class="modal-sub">Tap a trait to add or remove it.</div>
+      </div>
+      <button type="button" class="modal-close" id="traitPickerCloseBtn" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="trait-disclaimer"><span class="ico">ℹ️</span><span>These are your own personal observations, not a clinical diagnosis. Please use thoughtful, careful judgment, especially for sensitive traits.</span></div>
+      <div class="trait-search-row">
+        <input type="text" id="traitPickerSearch" placeholder="Search traits…">
+        <div class="trait-cat-filter" id="traitPickerCats"></div>
+      </div>
+      <div class="trait-list" id="traitPickerList"></div>
+    </div>
+    <div class="modal-actions">
+      <span style="color:var(--text-dim);font-size:0.78rem;" id="traitPickerCount"></span>
+      <div class="right"><button class="btn-primary" id="traitPickerDoneBtn">Done</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TRAIT HIGHLIGHT MODAL (select a trait to highlight on the tree) ============ -->
+<div class="modal-backdrop" id="traitHighlightBackdrop">
+  <div class="modal has-header" style="max-width:480px;">
+    <div class="modal-header">
+      <div class="modal-header-text">
+        <h2>Highlight by Trait</h2>
+        <div class="modal-sub">Select a trait to highlight matching family members.</div>
+      </div>
+      <button type="button" class="modal-close" id="traitHighlightCloseBtn" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="trait-disclaimer"><span class="ico">ℹ️</span><span>These are personal observations recorded by you, not a clinical diagnosis of anyone in this tree.</span></div>
+      <div class="trait-search-row">
+        <input type="text" id="traitHighlightSearch" placeholder="Search traits…">
+        <div class="trait-cat-filter" id="traitHighlightCats"></div>
+      </div>
+      <div class="trait-list" id="traitHighlightList"></div>
     </div>
   </div>
 </div>
@@ -949,6 +1107,8 @@
   let editingId = null;
   let pendingRelation = null;
   let pendingPhoto = undefined;
+  let pendingTraits = [];
+  let activeTraitHighlight = null;
   let zoom = 1, panX = 0, panY = 0;
   let dragging = false, dragStart = null, panStart = null;
   let pinching = false, pinchStartDist = 0, pinchStartZoom = 1;
@@ -972,6 +1132,192 @@
     return new Date(iso).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});
   };
   const fullName = p => [p.firstName, p.middleName, p.lastName].filter(Boolean).join(' ') || 'Unnamed';
+
+  // ---------- Psychology & Personality trait library ----------
+  // This is an entirely client-side reference library (ids only are ever
+  // saved on a person). Keeping titles/descriptions out of the database
+  // means the library can be corrected or expanded later without a
+  // migration, and keeps each saved tree's JSON small.
+  //
+  // "tier" is a restrained visual/semantic grouping, never a severity
+  // score: strength (affirming), neutral (descriptive, value-free),
+  // caution (a pattern worth noticing), concerning (a behavior pattern
+  // that can be harmful to others). It drives chip color only.
+  const TRAIT_CATEGORIES = [
+    { id:'thinking', label:'Thinking Patterns' },
+    { id:'emotional', label:'Emotional Patterns' },
+    { id:'attachment', label:'Attachment & Relationships' },
+    { id:'communication', label:'Communication Styles' },
+    { id:'relationship', label:'Relationship Behaviors' },
+    { id:'social', label:'Social Personality' },
+    { id:'growth', label:'Personal Growth' },
+    { id:'strengths', label:'Positive Strengths' },
+    { id:'concerning', label:'Concerning Behaviors' },
+  ];
+  const TRAIT_CATEGORY_BY_ID = {}; TRAIT_CATEGORIES.forEach(c=> TRAIT_CATEGORY_BY_ID[c.id]=c);
+
+  const TRAITS = [
+    // --- Thinking Patterns ---
+    { id:'overthinker', title:'Overthinker', category:'thinking', tier:'caution',
+      short:'Tends to repeatedly analyze situations, conversations, or possible outcomes.',
+      full:'Tends to repeatedly analyze situations, conversations, or possible outcomes, sometimes making it difficult to relax or make decisions.' },
+    { id:'ruminator', title:'Ruminator', category:'thinking', tier:'caution',
+      short:'Tends to dwell on the same thoughts or past events on a loop.',
+      full:'Tends to dwell on the same thoughts, mistakes, or past events on a loop, which can make it harder to move on or feel settled.' },
+    { id:'perfectionist', title:'Perfectionist', category:'thinking', tier:'caution',
+      short:'Holds very high personal standards and can be hard on themselves.',
+      full:'Tends to hold very high standards for themselves or their work, and may feel like anything short of flawless falls short, even when others see it as a success.' },
+    { id:'catastrophizer', title:'Catastrophizer', category:'thinking', tier:'caution',
+      short:'Tends to jump to the worst-case outcome when something goes wrong.',
+      full:'Tends to expect or imagine the worst possible outcome in uncertain or stressful situations, which can make ordinary setbacks feel much larger than they are.' },
+    { id:'black_white_thinker', title:'All-or-Nothing Thinker', category:'thinking', tier:'caution',
+      short:'Tends to see situations or people in extremes, with little middle ground.',
+      full:'Tends to view situations, people, or outcomes in extremes (all good or all bad, a total success or a total failure) with little room for a middle ground.' },
+    { id:'analytical_thinker', title:'Analytical Thinker', category:'thinking', tier:'strength',
+      short:'Approaches problems methodically and enjoys working through details.',
+      full:'Tends to approach problems methodically, breaking them into parts and working through details carefully before reaching a conclusion.' },
+
+    // --- Emotional Patterns ---
+    { id:'emotionally_sensitive', title:'Emotionally Sensitive', category:'emotional', tier:'neutral',
+      short:'Feels emotions, their own and others\', intensely and quickly.',
+      full:'Tends to feel emotions intensely, whether their own or the emotions around them, and may be more affected by criticism, tension, or atmosphere than others realize.' },
+    { id:'emotional_regulator', title:'Emotionally Regulated', category:'emotional', tier:'strength',
+      short:'Generally able to manage and express emotions in a steady way.',
+      full:'Tends to notice and manage their own emotional reactions well, staying relatively steady under stress without being overwhelmed or shutting down.' },
+    { id:'emotional_suppressor', title:'Emotionally Suppressed', category:'emotional', tier:'caution',
+      short:'Tends to hold feelings in rather than express or process them.',
+      full:'Tends to hold difficult feelings in rather than express or work through them, which can look calm on the surface while something heavier sits underneath.' },
+    { id:'resilient', title:'Resilient', category:'emotional', tier:'strength',
+      short:'Tends to recover and adapt well after setbacks or hardship.',
+      full:'Tends to recover relatively well after setbacks, loss, or hardship, and can keep functioning and adapting even when things are difficult.' },
+    { id:'easily_overwhelmed', title:'Easily Overwhelmed', category:'emotional', tier:'caution',
+      short:'Can feel flooded or shut down when there is too much happening.',
+      full:'Tends to feel flooded or shut down when there is a lot happening at once, needing more time or space than others to process and recover.' },
+
+    // --- Attachment & Relationships ---
+    { id:'secure_attachment', title:'Secure Attachment', category:'attachment', tier:'strength',
+      short:'Generally comfortable with closeness and trusting in relationships.',
+      full:'Tends to feel comfortable with both closeness and independence in relationships, generally trusting others and communicating needs without excessive worry.' },
+    { id:'anxious_attachment', title:'Anxious Attachment', category:'attachment', tier:'caution',
+      short:'May worry about a relationship or seek frequent reassurance.',
+      full:'A relationship pattern in which someone may worry about a partner or loved one pulling away, and may seek frequent reassurance or feel anxious between contact.' },
+    { id:'avoidant_attachment', title:'Avoidant Attachment', category:'attachment', tier:'caution',
+      short:'May feel uncomfortable with emotional closeness and prefer distance.',
+      full:'A relationship pattern in which someone may feel uncomfortable with emotional dependence or closeness and prefer greater independence, sometimes pulling back when a relationship deepens.' },
+    { id:'fear_of_abandonment', title:'Fear of Abandonment', category:'attachment', tier:'caution',
+      short:'Carries a persistent worry that people they care about will leave.',
+      full:'Tends to carry a persistent worry that people they care about will leave or stop caring, which can shape how they behave in close relationships.' },
+    { id:'disorganized_attachment', title:'Disorganized Attachment', category:'attachment', tier:'caution',
+      short:'May want closeness and fear it at the same time, leading to mixed signals.',
+      full:'A relationship pattern in which someone may want closeness and feel afraid of it at the same time, which can look like mixed or unpredictable signals in relationships.' },
+
+    // --- Communication Styles ---
+    { id:'assertive_communicator', title:'Assertive Communicator', category:'communication', tier:'strength',
+      short:'States needs and opinions clearly while respecting others.',
+      full:'Tends to state their needs, opinions, and boundaries clearly and respectfully, without being passive or aggressive about it.' },
+    { id:'passive_aggressive', title:'Passive-Aggressive Communicator', category:'communication', tier:'caution',
+      short:'May express frustration indirectly rather than stating it outright.',
+      full:'Tends to express frustration or disagreement indirectly, such as through sarcasm, silence, or subtle digs, rather than stating the issue outright.' },
+    { id:'conflict_avoidant', title:'Conflict Avoidant', category:'communication', tier:'caution',
+      short:'Tends to sidestep disagreement rather than address it directly.',
+      full:'Tends to avoid confrontation or disagreement where possible, even when something is bothering them, which can leave issues unresolved.' },
+    { id:'direct_communicator', title:'Direct Communicator', category:'communication', tier:'neutral',
+      short:'Says what they mean plainly, without much softening.',
+      full:'Tends to say what they mean plainly and without much softening, which can read as refreshingly clear to some and blunt to others.' },
+    { id:'great_listener', title:'Attentive Listener', category:'communication', tier:'strength',
+      short:'Listens closely and makes others feel heard.',
+      full:'Tends to listen closely to others, often reflecting back what was said and making the people around them feel genuinely heard.' },
+
+    // --- Relationship Behaviors ---
+    { id:'love_bomber', title:'Love Bomber', category:'relationship', tier:'caution',
+      short:'May overwhelm someone with intense affection, attention, or gifts early on.',
+      full:'A term for overwhelming someone with intense affection, attention, gifts, or promises early in a relationship. In some cases, this behavior may be used to gain influence or control, but intense affection alone does not establish manipulation.' },
+    { id:'people_pleaser', title:'People Pleaser', category:'relationship', tier:'caution',
+      short:'Tends to prioritize others\' approval or needs over their own.',
+      full:'Tends to prioritize other people\'s approval or needs over their own, sometimes struggling to say no or maintain personal boundaries.' },
+    { id:'controlling', title:'Controlling', category:'relationship', tier:'concerning',
+      short:'May try to direct or limit another person\'s choices or relationships.',
+      full:'May try to direct, limit, or monitor another person\'s choices, relationships, or independence. This is an observed pattern of behavior, not a confirmed diagnosis.' },
+    { id:'boundary_violator', title:'Boundary Violations', category:'relationship', tier:'concerning',
+      short:'May disregard others\' stated limits around space, privacy, or consent.',
+      full:'May disregard limits that another person has clearly stated, around space, privacy, time, or consent. This is an observed pattern of behavior, not a confirmed diagnosis.' },
+    { id:'jealous_tendencies', title:'Jealous / Possessive Tendencies', category:'relationship', tier:'caution',
+      short:'May feel threatened by a partner\'s other relationships or independence.',
+      full:'Tends to feel threatened or insecure around a partner\'s other relationships or independence, which can show up as possessiveness or frequent reassurance-seeking.' },
+
+    // --- Social Personality ---
+    { id:'introvert', title:'Introverted', category:'social', tier:'neutral',
+      short:'Tends to recharge through quiet or solitary time.',
+      full:'Tends to recharge through quiet, solitary time and may find large or prolonged social gatherings draining rather than energizing.' },
+    { id:'extrovert', title:'Extroverted', category:'social', tier:'neutral',
+      short:'Tends to recharge through social interaction and activity.',
+      full:'Tends to recharge through social interaction and activity, often feeling energized rather than drained by being around other people.' },
+    { id:'empathetic', title:'Highly Empathetic', category:'social', tier:'strength',
+      short:'Tends to recognize and respond to others\' emotions with care.',
+      full:'Tends to recognize and understand other people\'s emotions and respond with care and compassion.' },
+    { id:'independent', title:'Independent', category:'social', tier:'strength',
+      short:'Comfortable relying on themselves and making their own decisions.',
+      full:'Tends to be comfortable relying on themselves, making their own decisions, and spending time on their own without needing much outside validation.' },
+    { id:'social_butterfly', title:'Highly Social', category:'social', tier:'neutral',
+      short:'Enjoys meeting people and tends to build a wide circle of connections.',
+      full:'Tends to enjoy meeting new people and easily builds a wide circle of friends and acquaintances.' },
+
+    // --- Personal Growth ---
+    { id:'self_aware', title:'Self-Aware', category:'growth', tier:'strength',
+      short:'Has a clear, honest sense of their own patterns and reactions.',
+      full:'Tends to have a clear and honest sense of their own emotions, patterns, and reactions, and can reflect on their own behavior with some objectivity.' },
+    { id:'accountable', title:'Accountable', category:'growth', tier:'strength',
+      short:'Tends to own their mistakes rather than deflect or minimize them.',
+      full:'Tends to acknowledge their own mistakes and their impact on others, rather than deflecting, minimizing, or blaming someone else.' },
+    { id:'confident', title:'Confident', category:'growth', tier:'strength',
+      short:'Generally secure in their own abilities and decisions.',
+      full:'Tends to feel generally secure in their own abilities, opinions, and decisions, without needing constant outside validation.' },
+    { id:'adaptable', title:'Adaptable', category:'growth', tier:'strength',
+      short:'Adjusts well when plans or circumstances change.',
+      full:'Tends to adjust well when plans or circumstances change, staying functional and flexible rather than thrown off by the unexpected.' },
+    { id:'growth_minded', title:'Growth-Minded', category:'growth', tier:'strength',
+      short:'Sees abilities and habits as things that can be developed over time.',
+      full:'Tends to see abilities, habits, and relationships as things that can be developed over time, and is generally open to feedback and self-improvement.' },
+
+    // --- Positive Strengths ---
+    { id:'compassionate', title:'Compassionate', category:'strengths', tier:'strength',
+      short:'Shows genuine concern for others\' wellbeing and suffering.',
+      full:'Tends to show genuine concern for other people\'s wellbeing, and is often moved to help when someone is struggling.' },
+    { id:'patient', title:'Patient', category:'strengths', tier:'strength',
+      short:'Stays calm and even-tempered through delay or difficulty.',
+      full:'Tends to stay calm and even-tempered through delay, frustration, or difficulty, without rushing themselves or others.' },
+    { id:'loyal', title:'Loyal', category:'strengths', tier:'strength',
+      short:'Reliably stands by the people and commitments they care about.',
+      full:'Tends to reliably stand by the people, relationships, and commitments they care about, even through difficult periods.' },
+    { id:'emotionally_intelligent', title:'Emotionally Intelligent', category:'strengths', tier:'strength',
+      short:'Reads emotional situations well and responds thoughtfully.',
+      full:'Tends to read emotional situations well, both their own feelings and other people\'s, and responds thoughtfully rather than reactively.' },
+    { id:'generous', title:'Generous', category:'strengths', tier:'strength',
+      short:'Freely gives time, resources, or support to others.',
+      full:'Tends to freely give time, resources, attention, or support to others, often without expecting anything in return.' },
+
+    // --- Concerning Behaviors ---
+    // Deliberately the most carefully worded category: these describe
+    // observed patterns of behavior, never a diagnosis, and the "may"
+    // phrasing is intentional, not a stylistic accident.
+    { id:'repeated_dishonesty', title:'Repeated Dishonesty', category:'concerning', tier:'concerning',
+      short:'A pattern of being untruthful, rather than an isolated incident.',
+      full:'Describes a repeated pattern of being untruthful or misleading, as distinct from a single isolated incident. This is an observed pattern of behavior, not a confirmed diagnosis.' },
+    { id:'guilt_tripper', title:'Guilt-Tripper', category:'concerning', tier:'concerning',
+      short:'May use guilt to influence another person\'s choices.',
+      full:'May use guilt, obligation, or comparisons to influence another person\'s choices or get a desired reaction. This is an observed pattern of behavior, not a confirmed diagnosis.' },
+    { id:'intimidating', title:'Intimidating', category:'concerning', tier:'concerning',
+      short:'May use tone, size, or presence to make others feel unsafe or small.',
+      full:'May use tone, volume, presence, or implied threat in a way that makes others feel unsafe, small, or afraid to disagree. This is an observed pattern of behavior, not a confirmed diagnosis.' },
+    { id:'manipulative', title:'Manipulative', category:'concerning', tier:'concerning',
+      short:'May influence others through indirect or deceptive means rather than honesty.',
+      full:'May influence or control others through indirect, deceptive, or coercive means rather than open and honest communication. This is an observed pattern of behavior, not a confirmed diagnosis.' },
+    { id:'gaslighting', title:'Gaslighting Tendencies', category:'concerning', tier:'concerning',
+      short:'May cause someone to doubt their own memory, perception, or judgment.',
+      full:'A term for a pattern in which someone may cause another person to doubt their own memory, perception, or judgment, often by denying things that happened or reframing events. This is an observed pattern of behavior, not a confirmed diagnosis.' },
+  ];
+  const TRAITS_BY_ID = {}; TRAITS.forEach(t=> TRAITS_BY_ID[t.id]=t);
+  const TRAIT_TIER_LABEL = { strength:'Strength', neutral:'Trait', caution:'Pattern to notice', concerning:'Concerning pattern' };
 
   function toast(msg){
     const t = $('toast');
@@ -1740,6 +2086,7 @@
 
   function openTree(id){
     currentTreeId = id;
+    activeTraitHighlight = null;
     const t = tree();
     $('treeNameInput').value = t.name;
     $('sidebarTreeName').textContent = t.name;
@@ -1996,6 +2343,16 @@
     //   spouse / partner: dashed warm gold, static, with a small union ring at
     //     the midpoint (a lateral bond, not a line of descent)
     const searchQ = $('searchInput').value.trim().toLowerCase();
+    // Trait highlighting (Psychology & Personality) takes the same priority
+    // slot as search — both are "show me a specific subset" modes, and
+    // combining them with kin-highlighting would make the dimming logic
+    // ambiguous about which reason a card is dim for. Opening the trait
+    // picker clears search and vice versa (see their input handlers), so
+    // in practice only one of the two is ever active at a time; this
+    // still treats search as authoritative if both were somehow set.
+    const activeTrait = (activeTraitHighlight && !searchQ) ? TRAITS_BY_ID[activeTraitHighlight] : null;
+    const traitMatchIds = activeTrait ? new Set(people.filter(p=>(p.traits||[]).includes(activeTrait.id)).map(p=>p.id)) : null;
+    updateTraitHighlightBar(activeTrait, traitMatchIds);
     // When someone is selected (and search isn't active), highlight their
     // direct family — parents, spouses, children — and dim everyone else,
     // so "who is this person connected to" is visible without clicking
@@ -2176,6 +2533,8 @@
       if(searchQ){
         const match = fullName(p).toLowerCase().includes(searchQ) || (p.nickname||'').toLowerCase().includes(searchQ);
         node.classList.add(match?'highlight':'dimmed');
+      } else if(activeTrait){
+        node.classList.add(traitMatchIds.has(p.id) ? 'highlight' : 'dimmed');
       } else if(selectedId){
         if(kinIds.has(p.id)) node.classList.add('kin');
         else if(p.id!==selectedId) node.classList.add('kin-dim');
@@ -2340,6 +2699,73 @@
     } else if(currentView==='members') renderMembers();
   });
 
+  // ---------- Trait highlighting (Psychology & Personality on the tree) ----------
+  function updateTraitHighlightBar(trait, matchIds){
+    const bar = $('traitHighlightBar');
+    if(!trait){ bar.classList.remove('show'); return; }
+    bar.classList.add('show');
+    $('thbDot').className = 'thb-dot trait-tier-'+trait.tier;
+    $('thbTitle').textContent = trait.title;
+    const n = matchIds ? matchIds.size : 0;
+    $('thbCount').textContent = n ? `${n} match${n===1?'':'es'}` : 'No matches';
+    $('thbMeaning').textContent = trait.short;
+  }
+  $('thbClearBtn').onclick = ()=>{
+    activeTraitHighlight = null;
+    renderTree();
+  };
+
+  let traitHighlightCat = 'all';
+  function pickTraitHighlightCat(cat){
+    traitHighlightCat = cat;
+    renderTraitCatFilter('traitHighlightCats', traitHighlightCat, pickTraitHighlightCat);
+    renderTraitHighlightList();
+  }
+  function renderTraitHighlightList(){
+    const q = $('traitHighlightSearch').value;
+    const list = filteredTraits(q, traitHighlightCat);
+    const el = $('traitHighlightList');
+    const people = peopleArr();
+    if(!list.length){ el.innerHTML = `<div class="trait-empty-note">No traits match your search.</div>`; return; }
+    el.innerHTML = groupTraitsByCategory(list).map(group=>
+      `<div class="trait-cat-heading">${escapeHtml(group.cat.label)}</div>` +
+      group.traits.map(t=>{
+        const n = people.filter(p=>(p.traits||[]).includes(t.id)).length;
+        return `<div class="trait-row${t.id===activeTraitHighlight?' selected':''}" data-trait-id="${t.id}">
+          <span class="trait-tier-dot trait-tier-${t.tier}"></span>
+          <div class="trait-row-main">
+            <div class="trait-row-title">${escapeHtml(t.title)}</div>
+            <div class="trait-row-short">${escapeHtml(t.short)}</div>
+          </div>
+          <span class="trait-match-badge${n?' has-matches':''}">${n} ${n===1?'match':'matches'}</span>
+        </div>`;
+      }).join('')
+    ).join('');
+    el.querySelectorAll('[data-trait-id]').forEach(row=>{
+      row.addEventListener('click', ()=>{
+        const id = row.dataset.traitId;
+        activeTraitHighlight = (activeTraitHighlight===id) ? null : id; // tap again to clear
+        $('searchInput').value = '';
+        closeTraitHighlightModal();
+        renderTree();
+      });
+    });
+  }
+  function closeTraitHighlightModal(){ $('traitHighlightBackdrop').style.display='none'; }
+  $('traitHighlightBtn').onclick = ()=>{
+    traitHighlightCat = 'all';
+    $('traitHighlightSearch').value = '';
+    renderTraitCatFilter('traitHighlightCats', traitHighlightCat, pickTraitHighlightCat);
+    renderTraitHighlightList();
+    $('traitHighlightBackdrop').style.display='flex';
+    const body = $('traitHighlightBackdrop').querySelector('.modal-body');
+    if(body) body.scrollTop = 0;
+    closeTopbarExtras();
+  };
+  $('traitHighlightSearch').addEventListener('input', renderTraitHighlightList);
+  $('traitHighlightCloseBtn').onclick = closeTraitHighlightModal;
+  $('traitHighlightBackdrop').addEventListener('click', e=>{ if(e.target.id==='traitHighlightBackdrop') closeTraitHighlightModal(); });
+
   const viewport = $('treeViewport');
   viewport.addEventListener('mousedown', (e)=>{
     if(e.target.closest('.person-node')) return;
@@ -2409,8 +2835,39 @@
     $('pinToggleBtn').textContent = p.pinned ? '📌 Unpin Member' : '📌 Pin Member';
     $('deleteConfirmBox').style.display='none';
     renderPanelRelationships(p);
+    renderPanelPsych(p);
     $('sidePanel').classList.add('open');
     if(currentView==='tree') renderTree();
+  }
+
+  // ---------- Psychology & Personality: assigned traits in the profile panel ----------
+  function renderPanelPsych(p){
+    const el = $('panelPsych');
+    const traitIds = (p.traits||[]).filter(id=>TRAITS_BY_ID[id]);
+    if(!traitIds.length){ el.innerHTML=''; return; } // optional feature — stay invisible when unused
+    const cards = traitIds.map(id=>{
+      const t = TRAITS_BY_ID[id];
+      return `<div class="psych-card" data-trait-card="${t.id}">
+        <div class="psych-card-head">
+          <span class="trait-tier-dot trait-tier-${t.tier}"></span>
+          <div style="flex:1;min-width:0;">
+            <div class="psych-card-title">${escapeHtml(t.title)}</div>
+            <div class="psych-card-cat">${escapeHtml(TRAIT_CATEGORY_BY_ID[t.category].label)}</div>
+          </div>
+        </div>
+        <div class="psych-card-short">${escapeHtml(t.short)}</div>
+        <div class="psych-card-full">${escapeHtml(t.full)}</div>
+        <button type="button" class="psych-card-toggle" data-expand="${t.id}">Read more</button>
+      </div>`;
+    }).join('');
+    el.innerHTML = `<h4>Psychology &amp; Personality</h4>${cards}`;
+    el.querySelectorAll('[data-expand]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const card = btn.closest('.psych-card');
+        const expanded = card.classList.toggle('expanded');
+        btn.textContent = expanded ? 'Show less' : 'Read more';
+      });
+    });
   }
   function closePanel(){
     selectedId=null; $('sidePanel').classList.remove('open'); $('deleteConfirmBox').style.display='none';
@@ -2714,9 +3171,31 @@
     toggleDeathField();
     $('fNotes').value = p ? (p.notes||'') : '';
     resetPhotoUI(p ? p.photo : null);
+    pendingTraits = p ? (p.traits||[]).slice() : [];
+    renderPersonTraitChips();
     $('personModalBackdrop').style.display='flex';
   }
   function closePersonModal(){ $('personModalBackdrop').style.display='none'; pendingRelation=null; }
+
+  // ---------- Psychology & Personality: trait chips on the add/edit form ----------
+  function renderPersonTraitChips(){
+    const row = $('personTraitChips');
+    if(!pendingTraits.length){
+      row.innerHTML = `<div class="trait-chip-empty">No traits added yet.</div>`;
+      return;
+    }
+    row.innerHTML = pendingTraits.map(id=>{
+      const t = TRAITS_BY_ID[id];
+      if(!t) return ''; // tolerate an id that no longer exists in the library
+      return `<span class="trait-chip"><span class="trait-tier-dot trait-tier-${t.tier}"></span>${escapeHtml(t.title)}<button type="button" class="trait-x" data-remove-trait="${t.id}" title="Remove">✕</button></span>`;
+    }).join('');
+    row.querySelectorAll('[data-remove-trait]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        pendingTraits = pendingTraits.filter(id=>id!==btn.dataset.removeTrait);
+        renderPersonTraitChips();
+      });
+    });
+  }
   $('modalCancelBtn').onclick = closePersonModal;
   $('personModalCloseBtn').onclick = closePersonModal;
   $('personModalBackdrop').addEventListener('click', e=>{ if(e.target.id==='personModalBackdrop') closePersonModal(); });
@@ -2749,6 +3228,85 @@
     $('removePhotoBtn').style.display='none'; $('fPhoto').value='';
   };
 
+  // ---------- Trait picker modal (assign traits to the person being edited) ----------
+  let traitPickerCat = 'all';
+  function renderTraitCatFilter(containerId, activeCat, onPick){
+    const el = $(containerId);
+    const cats = [{id:'all', label:'All'}].concat(TRAIT_CATEGORIES);
+    el.innerHTML = cats.map(c=>`<button type="button" class="trait-cat-chip${c.id===activeCat?' active':''}" data-cat="${c.id}">${escapeHtml(c.label)}</button>`).join('');
+    el.querySelectorAll('[data-cat]').forEach(btn=>{
+      btn.addEventListener('click', ()=> onPick(btn.dataset.cat));
+    });
+  }
+  function filteredTraits(query, cat){
+    const q = (query||'').trim().toLowerCase();
+    return TRAITS.filter(t=>{
+      if(cat!=='all' && t.category!==cat) return false;
+      if(!q) return true;
+      return t.title.toLowerCase().includes(q) || t.short.toLowerCase().includes(q) || TRAIT_CATEGORY_BY_ID[t.category].label.toLowerCase().includes(q);
+    });
+  }
+  function groupTraitsByCategory(list){
+    const byCat = {};
+    list.forEach(t=>{ (byCat[t.category]=byCat[t.category]||[]).push(t); });
+    return TRAIT_CATEGORIES.filter(c=>byCat[c.id]).map(c=>({ cat:c, traits:byCat[c.id] }));
+  }
+  function renderTraitPickerList(){
+    const q = $('traitPickerSearch').value;
+    const list = filteredTraits(q, traitPickerCat);
+    const el = $('traitPickerList');
+    if(!list.length){ el.innerHTML = `<div class="trait-empty-note">No traits match your search.</div>`; }
+    else{
+      el.innerHTML = groupTraitsByCategory(list).map(group=>
+        `<div class="trait-cat-heading">${escapeHtml(group.cat.label)}</div>` +
+        group.traits.map(t=>{
+          const sel = pendingTraits.includes(t.id);
+          return `<div class="trait-row${sel?' selected':''}" data-trait-id="${t.id}">
+            <span class="trait-tier-dot trait-tier-${t.tier}"></span>
+            <div class="trait-row-main">
+              <div class="trait-row-title">${escapeHtml(t.title)}</div>
+              <div class="trait-row-short">${escapeHtml(t.short)}</div>
+            </div>
+            <span class="trait-row-check">${sel?'✓':''}</span>
+          </div>`;
+        }).join('')
+      ).join('');
+    }
+    el.querySelectorAll('[data-trait-id]').forEach(row=>{
+      row.addEventListener('click', ()=>{
+        const id = row.dataset.traitId;
+        if(pendingTraits.includes(id)) pendingTraits = pendingTraits.filter(x=>x!==id);
+        else pendingTraits.push(id);
+        renderTraitPickerList();
+        renderPersonTraitChips();
+        updateTraitPickerCount();
+      });
+    });
+  }
+  function updateTraitPickerCount(){
+    $('traitPickerCount').textContent = pendingTraits.length ? `${pendingTraits.length} trait${pendingTraits.length===1?'':'s'} selected` : 'No traits selected';
+  }
+  function pickTraitPickerCat(cat){
+    traitPickerCat = cat;
+    renderTraitCatFilter('traitPickerCats', traitPickerCat, pickTraitPickerCat);
+    renderTraitPickerList();
+  }
+  $('openTraitPickerBtn').onclick = ()=>{
+    traitPickerCat = 'all';
+    $('traitPickerSearch').value = '';
+    renderTraitCatFilter('traitPickerCats', traitPickerCat, pickTraitPickerCat);
+    renderTraitPickerList();
+    updateTraitPickerCount();
+    $('traitPickerBackdrop').style.display='flex';
+    const body = $('traitPickerBackdrop').querySelector('.modal-body');
+    if(body) body.scrollTop = 0;
+  };
+  $('traitPickerSearch').addEventListener('input', renderTraitPickerList);
+  function closeTraitPicker(){ $('traitPickerBackdrop').style.display='none'; }
+  $('traitPickerCloseBtn').onclick = closeTraitPicker;
+  $('traitPickerDoneBtn').onclick = closeTraitPicker;
+  $('traitPickerBackdrop').addEventListener('click', e=>{ if(e.target.id==='traitPickerBackdrop') closeTraitPicker(); });
+
   function newPersonId(){ return 'p'+Date.now()+Math.floor(Math.random()*1000); }
 
   async function saveModal(){
@@ -2759,7 +3317,8 @@
       nickname: $('fNickname').value.trim(), gender: $('fGender').value,
       birthDate: $('fBirth').value, living: $('fLiving').checked,
       deathDate: $('fLiving').checked ? '' : $('fDeath').value,
-      notes: $('fNotes').value.trim()
+      notes: $('fNotes').value.trim(),
+      traits: pendingTraits.slice()
     };
     const t = tree();
 
