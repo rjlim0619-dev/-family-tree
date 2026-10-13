@@ -1780,6 +1780,51 @@
   @media(max-height:960px){ .rail-core{display:none;} } .tb-eyebrow{white-space:nowrap;}
   .shell.rail-collapsed .rail-user{flex-direction:column;} .shell.rail-collapsed .rail-chips{flex-direction:column;align-items:center;} .shell.rail-collapsed .rail-motion{width:28px;padding:0;justify-content:center;} .shell.rail-collapsed .rail-out{width:44px;}
   #sidebar.rail{z-index:40;}
+  /* ===== SMOOTH & ALIVE — shared easing, springy press, staggered entrances, pointer glow ===== */
+  :root{--ease:cubic-bezier(.16,1,.3,1);--spring:cubic-bezier(.34,1.56,.64,1);--ease-io:cubic-bezier(.65,0,.35,1);--dur-1:.2s;--dur-2:.38s;--dur-3:.62s;}
+  html[data-motion="calm"]{--dur-1:.3s;--dur-2:.55s;--dur-3:.9s;}
+  button,a,input,select,textarea,summary,label,[role=button],.hf-tap,.nav-btn,.dock-btn{transition-timing-function:var(--ease);}
+  /* cards & tiles: glide up on hover with a soft glow, settle back smoothly */
+  .tree-tile,.member-tile,.hx-qa-b,.hx-stat-btn,.hb,.hx-btn,.hx-action,.pz-arrow,.hc,.dock-btn{transition:transform .4s var(--ease),translate .4s var(--ease),scale .4s var(--spring),background-color .3s var(--ease),border-color .3s var(--ease),box-shadow .45s var(--ease),color .25s var(--ease),opacity .3s var(--ease),filter .3s var(--ease);}
+  @media (hover:hover),(pointer:fine){
+    .tree-tile:hover,.member-tile:hover,.hx-qa-b:hover,.hx-stat-btn:hover{translate:0 -3px;box-shadow:0 14px 34px rgba(0,0,0,.45),0 0 22px rgba(39,230,255,.14);}
+    .hb:hover,.hx-btn:hover,.hx-action:hover{translate:0 -1px;}
+    .pz-arrow:hover{scale:1.08;}
+  }
+  /* press: shrinks instantly, rebounds with a spring (class toggled by the press helper) */
+  .is-press{scale:.965 !important;transition:scale .08s linear !important;}
+  .is-pop{animation:uiPop .5s var(--spring) both;} @keyframes uiPop{0%{scale:.965;}55%{scale:1.025;}100%{scale:1;}}
+  /* pointer-follow glow on holographic surfaces */
+  .hf,.tree-tile,.member-tile,.hx-stat-btn,.hx-qa-b,.pz-card,.dt-stat{--mx:50%;--my:50%;}
+  .hk-glow{position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;opacity:0;transition:opacity .4s var(--ease);background:radial-gradient(240px circle at var(--mx) var(--my),rgba(39,230,255,.11),transparent 62%);}
+  .hk-glow-on > .hk-glow{opacity:1;}
+  /* view entrance: quick fade, children rise in a soft stagger */
+  .shell .view-panel.active{animation:hkViewIn .35s var(--ease) both;}
+  @keyframes vRise{from{opacity:0;transform:translateY(16px) scale(.992);}to{opacity:1;transform:none;}}
+  #viewTimeline.active .view-scroll > *,#viewInsights.active .view-scroll > *,#viewSettings.active .view-scroll > *,#viewMembers.active .view-scroll > *,#viewPinned.active .view-scroll > *,#viewGuidelines.active .view-scroll > *{animation:vRise .7s var(--ease) both;animation-delay:calc(min(var(--k,0),9) * 55ms);}
+  .view-scroll > :nth-child(1){--k:0}.view-scroll > :nth-child(2){--k:1}.view-scroll > :nth-child(3){--k:2}.view-scroll > :nth-child(4){--k:3}.view-scroll > :nth-child(5){--k:4}.view-scroll > :nth-child(6){--k:5}.view-scroll > :nth-child(7){--k:6}.view-scroll > :nth-child(8){--k:7}.view-scroll > :nth-child(9){--k:8}.view-scroll > :nth-child(n+10){--k:9}
+  /* list items inside those views */
+  #viewTimeline.active .tl-item,#viewMembers.active .member-tile,#viewTimeline.active .tl-row{animation:vRise .6s var(--ease) both;animation-delay:calc(min(var(--k2,0),14) * 38ms + 120ms);}
+  /* family-tree nodes: spring in with a cascade */
+  .person-node{animation:nodeIn .55s var(--spring) both;transition:border-color .3s var(--ease),box-shadow .4s var(--ease),transform .35s var(--spring),opacity .3s var(--ease);}
+  @keyframes nodeIn{from{opacity:0;transform:scale(.8) translateY(8px);}to{opacity:1;transform:none;}}
+  .person-node:hover{transform:translateY(-3px) scale(1.025);}
+  .person-node:active{transform:scale(.97);}
+  /* panels & dialogs */
+  #sidePanel{transition:transform .5s var(--ease),box-shadow .5s var(--ease);}
+  .modal{animation:modalIn .5s var(--spring) both;} .modal-backdrop{animation:bdIn .35s var(--ease) both;}
+  @keyframes modalIn{from{opacity:0;transform:translateY(22px) scale(.94);}to{opacity:1;transform:none;}}
+  @keyframes bdIn{from{opacity:0;backdrop-filter:blur(0);}to{opacity:1;}}
+  .sheet{animation:sheetUp .55s var(--ease) both;} @keyframes sheetUp{from{transform:translateY(60px);opacity:0;}to{transform:none;opacity:1;}}
+  .toast{transition:opacity .35s var(--ease),transform .45s var(--spring);}
+  /* tree canvas: GPU-promoted while panning, lines draw with eased flow */
+  #treeInner{will-change:transform;backface-visibility:hidden;}
+  /* scrolling feels softer on lists */
+  .view-scroll,.modal-body,#cmdList{overscroll-behavior:contain;}
+  /* Off / reduced motion: everything above becomes instant */
+  html[data-motion="off"] .is-pop,html[data-motion="off"] .view-scroll > *,html[data-motion="off"] .person-node,html[data-motion="off"] .modal,html[data-motion="off"] .modal-backdrop,html[data-motion="off"] .sheet,html[data-motion="off"] .tl-item,html[data-motion="off"] .member-tile{animation:none !important;}
+  html[data-motion="off"] .tree-tile,html[data-motion="off"] .hb,html[data-motion="off"] .hx-qa-b,html[data-motion="off"] .hx-stat-btn,html[data-motion="off"] #sidePanel{transition-duration:.01s !important;}
+  @media (prefers-reduced-motion:reduce){ .is-pop,.view-scroll > *,.person-node,.modal,.modal-backdrop,.sheet,.tl-item,.member-tile{animation:none !important;} .tree-tile:hover,.member-tile:hover,.hx-qa-b:hover,.hx-stat-btn:hover{translate:none;} .hk-glow{display:none;} }
 </style>
 </head>
 <body>
@@ -4695,8 +4740,9 @@
   function flyTo(tx,ty,tz){
     cancelAnimationFrame(flyRaf);
     if(isRM()){ panX=tx; panY=ty; zoom=tz; applyTransform(); return; }
-    const x0=panX,y0=panY,z0=zoom,t0=performance.now(),D=520;
-    const step=now=>{ const k=Math.min(1,(now-t0)/D), e=1-Math.pow(1-k,3); panX=x0+(tx-x0)*e; panY=y0+(ty-y0)*e; zoom=z0+(tz-z0)*e; applyTransform(); if(k<1) flyRaf=requestAnimationFrame(step); };
+    const x0=panX,y0=panY,z0=zoom,t0=performance.now();
+    const dist=Math.hypot(tx-x0,ty-y0)+Math.abs(tz-z0)*400, D=Math.min(820,Math.max(420,300+dist*0.35))*(document.documentElement.dataset.motion==='calm'?1.35:1);
+    const step=now=>{ const k=Math.min(1,(now-t0)/D), e=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2; panX=x0+(tx-x0)*e; panY=y0+(ty-y0)*e; zoom=z0+(tz-z0)*e; applyTransform(); if(k<1) flyRaf=requestAnimationFrame(step); };
     flyRaf=requestAnimationFrame(step);
   }
   function flyToPerson(id){
@@ -4719,7 +4765,7 @@
   $('tsBackdrop').addEventListener('click',e=>{ if(e.target.id==='tsBackdrop') closeTreeSearch(); });
   $('tsInput').addEventListener('input', renderTreeSearch);
   document.addEventListener('keydown',e=>{ if(e.key==='Escape' && $('tsBackdrop').classList.contains('open')) closeTreeSearch(); });
-  $('fabReset').onclick = ()=>{ selectedId=null; activeTraitHighlight=null; $('searchInput').value=''; closePanel(); renderTree(); fitToScreen(); };
+  $('fabReset').onclick = ()=>{ selectedId=null; activeTraitHighlight=null; $('searchInput').value=''; closePanel(); renderTree(); animateView(fitToScreen); };
   // minimap (large trees only): every member as a dot, the visible area as a glowing rectangle; tap/drag to jump
   let miniRaf=0;
   function drawMini(){
@@ -4747,6 +4793,16 @@
   function resetView(){ zoom=1; centerTree(); }
   // Scales the whole tree down (or up, capped at 100%) so it fits entirely
   // on screen in one glance — the thing "Reset" doesn't do for a large tree.
+  // animate any view change (fit / center / reset) by computing its target then flying there
+  function animateView(fn){
+    if(isRM()){ fn(); return; }
+    const x=panX,y=panY,z=zoom; fn(); const tx=panX,ty=panY,tz=zoom; panX=x; panY=y; zoom=z; applyTransform(); flyTo(tx,ty,tz);
+  }
+  function zoomBy(factor,cx,cy){
+    const vp=$('treeViewport'); const r=vp.getBoundingClientRect(); if(cx==null){ cx=r.width/2; cy=r.height/2; }
+    const tz=Math.min(2,Math.max(0.4,zoom*factor)); const k=tz/zoom;
+    flyTo(cx-(cx-panX)*k, cy-(cy-panY)*k, tz);
+  }
   function fitToScreen(){
     const vp = $('treeViewport'); const inner = $('treeInner');
     const vw = vp.clientWidth || window.innerWidth;
@@ -4777,11 +4833,11 @@
     const vp = $('treeViewport');
     const vw = vp.clientWidth || window.innerWidth, vh = vp.clientHeight || (window.innerHeight-56);
     const xs = row.map(r=>r.x); const cx = (Math.min(...xs)+Math.max(...xs))/2 + 80, cy = row[0].y + 80;
-    panX = vw/2 - cx*zoom; panY = vh/2 - cy*zoom; applyTransform(); updateGenLabel();
+    flyTo(vw/2 - cx*zoom, vh/2 - cy*zoom, zoom); updateGenLabel();
   }
-  $('fabZoomIn').onclick = ()=>{ zoom=Math.min(2, zoom+0.1); applyTransform(); };
-  $('fabZoomOut').onclick = ()=>{ zoom=Math.max(0.4, zoom-0.1); applyTransform(); };
-  $('fabFit').onclick = ()=> fitToScreen();
+  $('fabZoomIn').onclick = ()=>{ zoomBy(1.2); };
+  $('fabZoomOut').onclick = ()=>{ zoomBy(1/1.2); };
+  $('fabFit').onclick = ()=> animateView(fitToScreen);
   $('fabCenter').onclick = ()=>{
     if(selectedId && personById(selectedId)) centerOnPerson(selectedId);
     else toast('Select a family member first, then center on them.');
@@ -4789,15 +4845,15 @@
   $('fabGenUp').onclick = ()=> goToGeneration(-1);
   $('fabGenDown').onclick = ()=> goToGeneration(1);
 
-  $('zoomInBtn').onclick = ()=>{ zoom=Math.min(2, zoom+0.1); applyTransform(); };
-  $('zoomOutBtn').onclick = ()=>{ zoom=Math.max(0.4, zoom-0.1); applyTransform(); };
+  $('zoomInBtn').onclick = ()=>{ zoomBy(1.2); };
+  $('zoomOutBtn').onclick = ()=>{ zoomBy(1/1.2); };
   function closeTopbarExtras(){
     $('topbarExtras').classList.remove('open');
     $('topbarExtrasBackdrop').classList.remove('open');
   }
-  $('fitBtn').onclick = ()=>{ fitToScreen(); closeTopbarExtras(); };
-  $('centerBtn').onclick = ()=>{ centerTree(); closeTopbarExtras(); };
-  $('resetViewBtn').onclick = ()=>{ resetView(); closeTopbarExtras(); };
+  $('fitBtn').onclick = ()=>{ animateView(fitToScreen); closeTopbarExtras(); };
+  $('centerBtn').onclick = ()=>{ animateView(centerTree); closeTopbarExtras(); };
+  $('resetViewBtn').onclick = ()=>{ animateView(resetView); closeTopbarExtras(); };
   $('fullscreenBtn').onclick = ()=>{
     try{ if(document.fullscreenElement) document.exitFullscreen(); else $('mainArea').requestFullscreen(); }
     catch(e){ toast('Fullscreen is not available here.'); }
@@ -4937,27 +4993,46 @@
   viewport.addEventListener('mousedown', (e)=>{
     if(e.target.closest('.person-node')) return;
     dismissFirstRunTip();
+    cancelAnimationFrame(flyRaf); cancelAnimationFrame(inertiaRaf); vel={x:0,y:0,t:0};
     dragging=true; viewport.classList.add('dragging');
     dragStart={x:e.clientX,y:e.clientY}; panStart={x:panX,y:panY};
   });
+  // momentum: remember the last pointer velocity and let the canvas glide to a stop
+  let inertiaRaf=0, vel={x:0,y:0,t:0};
+  function trackVel(x,y){ const n=performance.now(), dt=n-vel.t; if(vel.t && dt>0 && dt<80){ const nx=(x-vel.lx)/dt, ny=(y-vel.ly)/dt; vel.x=vel.x*.6+nx*.4; vel.y=vel.y*.6+ny*.4; } else { vel.x=0; vel.y=0; } vel.t=n; vel.lx=x; vel.ly=y; }
+  function glide(){
+    cancelAnimationFrame(inertiaRaf); if(isRM()) return;
+    if(performance.now()-vel.t>70) return; // paused before release: no fling
+    let vx=vel.x, vy=vel.y; if(Math.hypot(vx,vy)<.15) return; let last=performance.now();
+    const step=now=>{ const dt=Math.min(32,now-last); last=now; panX+=vx*dt; panY+=vy*dt; const d=Math.pow(.992,dt); vx*=d; vy*=d; applyTransform(); if(Math.hypot(vx,vy)>.02 && !dragging) inertiaRaf=requestAnimationFrame(step); };
+    inertiaRaf=requestAnimationFrame(step);
+  }
   window.addEventListener('mousemove', (e)=>{
     if(!dragging) return;
     panX = panStart.x + (e.clientX-dragStart.x); panY = panStart.y + (e.clientY-dragStart.y);
-    applyTransform();
+    trackVel(e.clientX,e.clientY); applyTransform();
   });
-  window.addEventListener('mouseup', ()=>{ dragging=false; viewport.classList.remove('dragging'); });
+  window.addEventListener('mouseup', ()=>{ const was=dragging; dragging=false; viewport.classList.remove('dragging'); if(was) glide(); });
+  // wheel / trackpad zoom: proportional, anchored under the cursor, eased toward a target
+  let wzTarget=0, wzRaf=0, wzAx=0, wzAy=0;
   viewport.addEventListener('wheel', (e)=>{
-    e.preventDefault();
-    zoom = Math.min(2, Math.max(0.4, zoom + (e.deltaY<0?0.08:-0.08)));
-    applyTransform();
+    e.preventDefault(); cancelAnimationFrame(flyRaf); cancelAnimationFrame(inertiaRaf);
+    const r=viewport.getBoundingClientRect(); wzAx=e.clientX-r.left; wzAy=e.clientY-r.top;
+    const dy=e.deltaMode===1?e.deltaY*16:e.deltaY; const f=Math.exp(-Math.max(-120,Math.min(120,dy))*(e.ctrlKey?0.012:0.0022));
+    wzTarget=Math.min(2,Math.max(0.4,(wzRaf?wzTarget:zoom)*f));
+    if(isRM()){ const k=wzTarget/zoom; panX=wzAx-(wzAx-panX)*k; panY=wzAy-(wzAy-panY)*k; zoom=wzTarget; applyTransform(); wzRaf=0; return; }
+    if(wzRaf) return;
+    const step=()=>{ const dz=wzTarget-zoom; const nz=Math.abs(dz)<.0008?wzTarget:zoom+dz*.2; const k=nz/zoom; panX=wzAx-(wzAx-panX)*k; panY=wzAy-(wzAy-panY)*k; zoom=nz; applyTransform(); wzRaf = nz===wzTarget ? 0 : requestAnimationFrame(step); };
+    wzRaf=requestAnimationFrame(step);
   }, {passive:false});
 
   function touchDist(t1,t2){ return Math.hypot(t1.clientX-t2.clientX, t1.clientY-t2.clientY); }
   viewport.addEventListener('touchstart', (e)=>{
     if(e.target.closest('.person-node')) return;
     dismissFirstRunTip();
+    cancelAnimationFrame(flyRaf); cancelAnimationFrame(inertiaRaf);
     if(e.touches.length===1){
-      dragging=true; dragStart={x:e.touches[0].clientX,y:e.touches[0].clientY}; panStart={x:panX,y:panY};
+      vel={x:0,y:0,t:0}; dragging=true; dragStart={x:e.touches[0].clientX,y:e.touches[0].clientY}; panStart={x:panX,y:panY};
     } else if(e.touches.length===2){
       pinching=true; dragging=false;
       pinchStartDist = touchDist(e.touches[0], e.touches[1]); pinchStartZoom = zoom;
@@ -4973,10 +5048,11 @@
       e.preventDefault();
       panX = panStart.x + (e.touches[0].clientX-dragStart.x);
       panY = panStart.y + (e.touches[0].clientY-dragStart.y);
+      trackVel(e.touches[0].clientX,e.touches[0].clientY);
       applyTransform();
     }
   }, {passive:false});
-  viewport.addEventListener('touchend', ()=>{ dragging=false; pinching=false; });
+  viewport.addEventListener('touchend', ()=>{ const was=dragging&&!pinching; dragging=false; pinching=false; if(was) glide(); });
 
   // ---------- side panel ----------
   function openPanel(id){
@@ -7195,6 +7271,30 @@
   } else {
     boot();
   }
+})();
+</script>
+<script>
+/* SMOOTH & ALIVE helpers: springy press, pointer glow, number easing for hover */
+(function(){
+  var rm=function(){ return document.documentElement.dataset.motion==='off' || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); };
+  var SEL='button:not(:disabled),.hf-tap,[role=button],.tree-tile,.member-tile,.nav-btn,.dock-btn,.pz-dot,.hx-qa-b,.hx-stat-btn';
+  var pressed=null;
+  function release(){ if(!pressed) return; var el=pressed; pressed=null; el.classList.remove('is-press'); if(rm()) return; el.classList.remove('is-pop'); void el.offsetWidth; el.classList.add('is-pop'); setTimeout(function(){ el.classList.remove('is-pop'); },520); }
+  document.addEventListener('pointerdown',function(e){ if(e.button>0||rm()) return; var el=e.target.closest&&e.target.closest(SEL); if(!el||el.matches('input,select,textarea,.person-node')) return; if(el.id==='toggleAnimations') return; pressed=el; el.classList.add('is-press'); },{passive:true});
+  ['pointerup','pointercancel','dragend'].forEach(function(t){ document.addEventListener(t,release,{passive:true}); });
+  window.addEventListener('blur',release);
+  /* soft pointer glow that follows the cursor over cards (one rAF-throttled listener) */
+  var raf=0,lx=0,ly=0,tgt=null,GSEL='.hf,.tree-tile,.member-tile,.dt-stat';
+  document.addEventListener('pointermove',function(e){
+    if(e.pointerType==='touch'||rm()) return; lx=e.clientX; ly=e.clientY;
+    var el=e.target.closest&&e.target.closest(GSEL);
+    if(el!==tgt){ if(tgt) tgt.classList.remove('hk-glow-on'); tgt=el; if(el){ if(getComputedStyle(el).position==='static') el.style.position='relative'; if(!el.querySelector(':scope > .hk-glow')){ var g=document.createElement('i'); g.className='hk-glow'; g.setAttribute('aria-hidden','true'); el.insertBefore(g,el.firstChild); } el.classList.add('hk-glow-on'); } }
+    if(!tgt||raf) return;
+    raf=requestAnimationFrame(function(){ raf=0; if(!tgt) return; var r=tgt.getBoundingClientRect(); tgt.style.setProperty('--mx',(lx-r.left)+'px'); tgt.style.setProperty('--my',(ly-r.top)+'px'); });
+  },{passive:true});
+  document.addEventListener('pointerleave',function(){ if(tgt){ tgt.classList.remove('hk-glow-on'); tgt=null; } },true);
+  /* timeline/member rows: index for the stagger */
+  new MutationObserver(function(ms){ ms.forEach(function(m){ m.addedNodes.forEach(function(n){ if(n.nodeType!==1) return; var list=(n.matches&&n.matches('.tl-item,.member-tile,.tl-row'))?[n]:[]; n.querySelectorAll&&n.querySelectorAll('.tl-item,.member-tile,.tl-row').forEach(function(x){ list.push(x); }); list.forEach(function(x,i){ x.style.setProperty('--k2',i); }); }); }); }).observe(document.body,{childList:true,subtree:true});
 })();
 </script>
 </body>
