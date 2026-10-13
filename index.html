@@ -891,7 +891,7 @@
 <script>
 (function(){
   const DATA_KEY = 'family-tree-data-v3'; // legacy localStorage key, read once during the one-time cloud migration
-  const CARD_W = 96, CARD_H = 116, H_GAP = 22, ROW_GAP = 60, NODE_R = 36;
+  const CARD_W = 96, CARD_H = 116, H_GAP = 22, ROW_GAP = 76, NODE_R = 36;
   const MAX_DIM = 220;
 
   // ---------- Supabase ----------
@@ -1852,26 +1852,81 @@
       order[g]=clusterSpouses(list);
     }
 
-    const rowWidths={}; let maxRowWidth=0;
+    // ---------- Pass A: a baseline, non-overlapping position for every row,
+    // packed left-to-right and centered on x=0. This is the fallback target
+    // for anyone with no parents to align under (row 0, or an unlinked
+    // spouse). ----------
+    const baseX={};
     Object.keys(order).forEach(g=>{
-      const n=order[g].length;
-      const w = n*CARD_W + Math.max(0,n-1)*H_GAP;
-      rowWidths[g]=w; if(w>maxRowWidth) maxRowWidth=w;
+      const list=order[g]; const n=list.length;
+      const rowW = n*CARD_W + Math.max(0,n-1)*H_GAP;
+      const startX = -rowW/2;
+      list.forEach((id,i)=>{ baseX[id] = startX + i*(CARD_W+H_GAP) + CARD_W/2; });
     });
+
+    // ---------- Pass B: top-down centering. Each sibling group (everyone
+    // who shares the exact same recorded parent set — married or not, it
+    // doesn't matter) is shifted, as a block, toward the average x of its
+    // own parent(s). Blocks are then swept left-to-right so none overlap
+    // (order from Pass A/the traversal above is preserved), and the whole
+    // row is re-centered as a unit on the weighted average of what its
+    // families actually wanted, so the tree doesn't quietly drift rightward
+    // generation after generation. Row 0 has no parents, so it just keeps
+    // its Pass-A position. ----------
+    const finalX={};
+    (order[0]||[]).forEach(id=>{ finalX[id]=baseX[id]; });
+    for(let g=1; g<=maxGen; g++){
+      const list=order[g]||[];
+      if(!list.length) continue;
+      const blocks=[];
+      list.forEach(id=>{
+        const p=personById(id);
+        const parentIds=((p&&p.parents)||[]).filter(pid=>finalX[pid]!==undefined);
+        const key = parentIds.length ? parentIds.slice().sort().join('|') : null;
+        const last = blocks[blocks.length-1];
+        if(last && (key===last.key || (key===null))) last.ids.push(id);
+        else blocks.push({ key, ids:[id], parentIds });
+      });
+      blocks.forEach(b=>{
+        b.width = b.ids.length*CARD_W + Math.max(0,b.ids.length-1)*H_GAP;
+        const baseXs = b.ids.map(id=>baseX[id]);
+        const baseAvg = baseXs.reduce((a,c)=>a+c,0)/baseXs.length;
+        if(b.parentIds.length){
+          const xs = b.parentIds.map(pid=>finalX[pid]);
+          b.desiredCenter = xs.reduce((a,c)=>a+c,0)/xs.length;
+        } else {
+          b.desiredCenter = baseAvg;
+        }
+      });
+      let curRight=-Infinity;
+      blocks.forEach(b=>{
+        const desiredLeft = b.desiredCenter - b.width/2;
+        b.left = curRight===-Infinity ? desiredLeft : Math.max(desiredLeft, curRight+H_GAP);
+        curRight = b.left + b.width;
+      });
+      const minLeft = blocks[0].left;
+      const maxRight = blocks[blocks.length-1].left + blocks[blocks.length-1].width;
+      const totalW = blocks.reduce((a,b)=>a+b.width,0) || 1;
+      const weightedCenter = blocks.reduce((a,b)=>a+b.desiredCenter*b.width,0)/totalW;
+      const shift = weightedCenter - (minLeft+maxRight)/2;
+      blocks.forEach(b=>{
+        const left = b.left + shift;
+        b.ids.forEach((id,i)=>{ finalX[id] = left + i*(CARD_W+H_GAP) + CARD_W/2; });
+      });
+    }
 
     const positions={};
     Object.keys(order).forEach(g=>{
-      const list=order[g]; const rowW=rowWidths[g];
-      const startX=(maxRowWidth-rowW)/2;
-      list.forEach((id,i)=>{
-        const x = startX + i*(CARD_W+H_GAP) + CARD_W/2;
-        const y = g*(CARD_H+ROW_GAP) + CARD_H/2;
-        positions[id]={x,y};
-      });
+      const y = g*(CARD_H+ROW_GAP) + CARD_H/2;
+      (order[g]||[]).forEach(id=>{ positions[id] = { x: finalX[id], y }; });
     });
+    const allX = Object.values(positions).map(p=>p.x);
+    const minX = allX.length ? Math.min(...allX)-CARD_W/2 : 0;
+    const maxX = allX.length ? Math.max(...allX)+CARD_W/2 : CARD_W;
+    Object.values(positions).forEach(p=>{ p.x -= minX; });
 
     return { positions, genCache, maxGen,
-      totalWidth: maxRowWidth || CARD_W,
+      totalWidth: people.length ? (maxX-minX) : CARD_W,
       totalHeight: people.length ? (maxGen+1)*(CARD_H+ROW_GAP) - ROW_GAP : CARD_H };
   }
 
@@ -1974,10 +2029,83 @@
     // circle-center Y sits near the top of each node box (photo is top-aligned, label below)
     const circleCenterY = id => pos[id].y - CARD_H/2 + NODE_R;
 
+    // Parent → child connections are drawn once per family unit (the exact
+    // set of recorded parents behind a shared set of children), as a single
+    // clean orthogonal path, rather than one diagonal line per parent per
+    // child. Any number of parents (married or not — co-parents never get a
+    // spouse line unless they're actually linked as spouses) merge into one
+    // trunk below their cards; the trunk drops to a horizontal bus that
+    // fans out to each child. Geometry only ever comes from each child's
+    // real p.parents list, so this can't invent or assume a relationship.
+    function drawFamilyPath(d, emph, dim){
+      const baseOp = emph?0.75:(dim?0.08:0.35);
+      const glow=document.createElementNS(svgNS,'path');
+      glow.setAttribute('d',d); glow.setAttribute('fill','none');
+      glow.setAttribute('stroke',`rgba(90,150,255,${baseOp*0.55})`); glow.setAttribute('stroke-width',emph?'7':'5');
+      glow.setAttribute('stroke-linecap','round'); glow.setAttribute('filter','url(#lineGlow)');
+      svg.appendChild(glow);
+      const l=document.createElementNS(svgNS,'path');
+      l.setAttribute('d',d); l.setAttribute('fill','none');
+      l.setAttribute('stroke',`rgba(180,210,255,${dim?0.18:Math.min(1,baseOp+0.25)})`); l.setAttribute('stroke-width',emph?'2':'1.1');
+      l.setAttribute('stroke-linecap','round');
+      svg.appendChild(l);
+      if(db.settings.animations && !dim){
+        const flow=document.createElementNS(svgNS,'path');
+        flow.setAttribute('d',d); flow.setAttribute('fill','none');
+        flow.setAttribute('stroke','rgba(220,235,255,0.85)'); flow.setAttribute('stroke-width',emph?'2.1':'1.6');
+        flow.setAttribute('stroke-dasharray','5 26'); flow.setAttribute('stroke-linecap','round');
+        flow.setAttribute('class','flow-line');
+        flow.style.animationDuration = (2.4 + Math.random()*1.4).toFixed(2)+'s';
+        flow.style.animationDelay = (-Math.random()*3).toFixed(2)+'s';
+        svg.appendChild(flow);
+      }
+    }
+    const familyUnits = {};
     people.forEach(p=>{
-      (p.parents||[]).forEach(pid=>{
-        if(!personById(pid) || !pos[pid]) return;
-        edgeLine(pos[pid].x, circleCenterY(pid), pos[p.id].x, circleCenterY(p.id), NODE_R, NODE_R, undefined, touchesSelection(p.id, pid));
+      const parentIds = (p.parents||[]).filter(pid=>pos[pid]);
+      if(!parentIds.length || !pos[p.id]) return;
+      const key = parentIds.slice().sort().join('|');
+      if(!familyUnits[key]) familyUnits[key] = { parentIds, childIds: [] };
+      familyUnits[key].childIds.push(p.id);
+    });
+    Object.values(familyUnits).forEach(fu=>{
+      const parentIds = fu.parentIds, childIds = fu.childIds.filter(id=>pos[id]);
+      if(!childIds.length) return;
+      const parentXs = parentIds.map(id=>pos[id].x);
+      const parentStubY = Math.min(...parentIds.map(id=>pos[id].y)) + CARD_H/2;
+      const childArriveY = Math.max(...childIds.map(id=>pos[id].y)) - CARD_H/2;
+      const span = Math.max(childArriveY - parentStubY, 10);
+      const collectY = parentStubY + span*0.4;
+      const distributeY = parentStubY + span*0.7;
+      const collectX = parentXs.reduce((a,c)=>a+c,0)/parentXs.length;
+      const childXs = childIds.map(id=>pos[id].x);
+      const busMinX = Math.min(collectX, ...childXs);
+      const busMaxX = Math.max(collectX, ...childXs);
+
+      const trunkEmph = touchesSelection(...parentIds, ...childIds);
+      const trunkDim = selectedId && !searchQ && !trunkEmph;
+      let trunkD = '';
+      parentIds.forEach(id=>{ trunkD += `M${pos[id].x},${pos[id].y+CARD_H/2} L${pos[id].x},${collectY} `; });
+      if(parentIds.length>1){ trunkD += `M${Math.min(...parentXs)},${collectY} L${Math.max(...parentXs)},${collectY} `; }
+      trunkD += `M${collectX},${collectY} L${collectX},${distributeY} `;
+      if(busMaxX>busMinX) trunkD += `M${busMinX},${distributeY} L${busMaxX},${distributeY} `;
+      drawFamilyPath(trunkD, trunkEmph, trunkDim);
+
+      // Small junction dot where two (or more) parents' lines merge into one
+      // trunk — an intentional, visible "this is where the family joins".
+      if(parentIds.length>1){
+        const ring=document.createElementNS(svgNS,'circle');
+        ring.setAttribute('cx',collectX); ring.setAttribute('cy',collectY); ring.setAttribute('r', trunkEmph?'4':'3');
+        ring.setAttribute('fill',`rgba(10,12,20,${trunkDim?0.5:0.9})`);
+        ring.setAttribute('stroke',`rgba(180,210,255,${trunkDim?0.2:0.85})`);
+        ring.setAttribute('stroke-width','1.4');
+        svg.appendChild(ring);
+      }
+
+      childIds.forEach(cid=>{
+        const emph = touchesSelection(cid, ...parentIds);
+        const dim = selectedId && !searchQ && !emph;
+        drawFamilyPath(`M${pos[cid].x},${distributeY} L${pos[cid].x},${pos[cid].y-CARD_H/2}`, emph, dim);
       });
     });
     // Draw one line per unique spouse pair — a person can have more than one
@@ -2002,13 +2130,11 @@
       const node = document.createElement('div');
       node.className='person-node';
       if(p.pinned) node.classList.add('pinned');
-      if(db.settings.animations){
-        node.classList.add('node-float');
-        node.style.animationDuration = (3.2 + (Math.random()*1.6)).toFixed(2)+'s';
-        node.style.animationDelay = (-Math.random()*3).toFixed(2)+'s';
-      } else {
-        node.style.animation='none';
-      }
+      // Cards used to idly drift (node-float) — nice on its own, but it
+      // directly fights the point of a structured, aligned tree, so a card
+      // now stays exactly where the layout puts it. Only the one-time
+      // entrance animation (nodeIn, from the base .person-node rule) plays.
+      if(!db.settings.animations) node.style.animation='none';
       if(p.id===selectedId) node.classList.add('selected');
       if(searchQ){
         const match = fullName(p).toLowerCase().includes(searchQ) || (p.nickname||'').toLowerCase().includes(searchQ);
