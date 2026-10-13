@@ -52,6 +52,8 @@
     --glass-2:rgba(14,26,44,0.60);
     --nav-muted:#7C8DA8;
     --dock-h:64px;
+    /* z-index scale: content < floating page controls < music < bottom nav < drawers/sheets < dialogs < toasts */
+    --z-content:1; --z-float:20; --z-music:70; --z-nav:90; --z-drawer:200; --z-sheet:220; --z-dialog:350; --z-toast:400;
     --ease:cubic-bezier(.22,.8,.24,1);
     --dur-1:.15s; --dur-2:.28s; --dur-3:.45s;
     --font-display:'Fraunces', Georgia, serif;
@@ -276,9 +278,9 @@
   #quickInfo .qi-close:hover{color:var(--text);}
 
   /* Side panel */
-  #sidePanel{position:fixed;top:0;right:0;height:100vh;width:340px;max-width:92vw;
+  #sidePanel{position:fixed;top:0;right:0;height:100vh;height:100dvh;width:340px;max-width:92vw;
     background:linear-gradient(180deg, var(--panel-2), var(--panel));border-left:1px solid var(--border-2);
-    box-shadow:-20px 0 60px rgba(0,0,0,0.6);transform:translateX(100%);transition:transform .25s ease;z-index:80;
+    box-shadow:-20px 0 60px rgba(0,0,0,0.6);transform:translateX(100%);transition:transform .25s ease;z-index:var(--z-drawer);
     display:flex;flex-direction:column;}
   #sidePanel.open{transform:translateX(0);}
   .panel-header{padding:calc(20px + env(safe-area-inset-top)) 20px 14px 20px;border-bottom:1px solid var(--border);position:relative;}
@@ -540,7 +542,7 @@
      Save/Cancel stay reachable no matter how long the form is or how much
      the mobile keyboard eats into the visible viewport. */
   .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(2px);
-    align-items:center;justify-content:center;z-index:350;
+    align-items:center;justify-content:center;z-index:var(--z-dialog);
     padding:16px calc(16px + env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));
     padding-top:calc(16px + env(safe-area-inset-top));
     box-sizing:border-box;} /* above #lockScreen (300) so a modal opened during/after auth is never buried invisibly behind it */
@@ -580,7 +582,7 @@
 
   .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--panel-2);color:var(--text);
     padding:10px 18px;border-radius:10px;font-size:0.83rem;border:1px solid var(--accent);
-    box-shadow:0 10px 30px rgba(0,0,0,0.6);display:none;z-index:250;}
+    box-shadow:0 10px 30px rgba(0,0,0,0.6);display:none;z-index:var(--z-toast);}
 
   /* ============ MUSIC PLAYER (floating) ============
      z-index 79 is deliberate: just below #sidePanel (80) and far below any
@@ -589,7 +591,7 @@
      family-tree content, buttons, or a modal. */
   .music-fab{position:fixed;right:24px;bottom:24px;width:52px;height:52px;border-radius:50%;
     background:linear-gradient(135deg,var(--warm),var(--warm-2));border:none;color:#1a1308;
-    font-size:1.3rem;cursor:pointer;z-index:79;box-shadow:0 10px 28px var(--warm-glow);
+    font-size:1.3rem;cursor:pointer;z-index:var(--z-music);box-shadow:0 10px 28px var(--warm-glow);
     display:flex;align-items:center;justify-content:center;transition:transform .15s ease;}
   .music-fab:hover{transform:scale(1.06);}
   .music-fab.playing{animation:musicPulse 1.8s ease-in-out infinite;}
@@ -598,7 +600,7 @@
   .music-panel{position:fixed;right:24px;bottom:88px;width:320px;max-width:calc(100vw - 32px);
     max-height:min(70vh,520px);overflow-y:auto;background:linear-gradient(180deg,var(--panel-2),var(--panel));
     border:1px solid var(--border-2);border-radius:16px;padding:16px;box-shadow:0 30px 70px rgba(0,0,0,0.65);
-    z-index:79;animation:modalIn .18s ease;}
+    z-index:var(--z-music);animation:modalIn .18s ease;}
   .music-panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;}
   .music-tabs{display:flex;gap:6px;background:rgba(0,0,0,0.25);border-radius:10px;padding:3px;}
   .music-tab{padding:7px 12px;border-radius:8px;background:none;border:none;color:var(--text-dim);
@@ -632,7 +634,7 @@
     grid-template-columns:repeat(6,1fr);align-items:stretch;
     background:linear-gradient(180deg,rgba(8,18,32,0.80),rgba(4,9,18,0.95));
     backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-    border-top:1px solid var(--cy-line);box-shadow:0 -6px 26px rgba(39,230,255,0.07);z-index:90;}
+    border-top:1px solid var(--cy-line);box-shadow:0 -6px 26px rgba(39,230,255,0.07);z-index:var(--z-nav);}
   .dock-indicator{position:absolute;top:-1px;left:0;width:calc(100% / 6);height:2px;pointer-events:none;
     transform:translateX(calc(var(--i,0) * 100%));transition:transform var(--dur-2) var(--ease);}
   .dock-indicator::before{content:"";position:absolute;left:22%;right:22%;top:0;height:2px;border-radius:2px;
@@ -811,7 +813,7 @@
     /* Horizontal strip along the bottom-left (above the dock, left of the music
        button) so it doesn't cover the canvas the way a tall column would. */
     #treeFab{flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between;left:12px;right:auto;
-      width:min(236px, calc(100vw - 106px));bottom:calc(var(--dock-h) + env(safe-area-inset-bottom) + 14px);}
+      width:min(236px, calc(100vw - 126px));bottom:calc(var(--dock-h) + env(safe-area-inset-bottom) + 14px);}
     #treeFab > button{flex:1 1 0;min-width:44px;}
     .fab-gen{flex:1 0 100%;flex-direction:row;justify-content:space-between;border-top:1px solid var(--border);border-left:none;padding:4px 0 0 0;margin:2px 0 0 0;}
     #fabGenLabel{padding:0 4px;font-size:0.7rem;}
@@ -853,7 +855,7 @@
   .pz-modes button:focus-visible,.pz-tog:focus-visible,.pz-arrow:focus-visible,.pz-dot:focus-visible,.pz-act:focus-visible,.pz-card:focus-visible,.pz-back-scroll:focus-visible{outline:2px solid var(--cy);outline-offset:2px;}
 
   .pz-stage{position:relative;flex:1 1 auto;min-height:330px;margin-top:6px;overflow:hidden;--cw:300px;--ch:380px;}
-  .pz-const{position:absolute;inset:0;width:100%;height:100%;opacity:.22;pointer-events:none;}
+  .pz-const{position:absolute;inset:0;width:100%;height:100%;opacity:.22;pointer-events:none;-webkit-mask-image:radial-gradient(ellipse 62% 70% at 50% 50%,#000 35%,transparent 100%);mask-image:radial-gradient(ellipse 62% 70% at 50% 50%,#000 35%,transparent 100%);}
   .pz-const g{animation:pzDrift 46s ease-in-out infinite alternate;transform-origin:50% 50%;}
   .pz-const line{stroke:var(--cy);stroke-width:.18;opacity:.7;} .pz-const circle{fill:var(--cy-2);}
   @keyframes pzDrift{from{transform:translate(-1.2px,.6px) scale(1);}to{transform:translate(1.2px,-.6px) scale(1.03);}}
@@ -976,21 +978,316 @@
     .pz-flip{transition:none;}
   }
   @media (max-width:820px){
-    .pz-wrap{padding:8px 12px calc(var(--dock-h) + env(safe-area-inset-bottom) + 6px) 12px;}
+    /* bottom strip is reserved for the music pill so it never sits on the arrows/dots */
+    .pz-wrap{padding:8px 12px calc(var(--dock-h) + env(safe-area-inset-bottom) + 56px) 12px;}
     .pz-note-line{font-size:0.62rem;line-height:1.35;}
     .pz-stage{min-height:300px;}
-    .pz-nav{gap:10px;padding-top:4px;flex-wrap:wrap;justify-content:flex-start;}   /* arrows sit left, clear of the music button */
-    .pz-chips{flex-wrap:nowrap;max-height:34px;} .pz-chip{min-width:0;max-width:62%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:0 1 auto;} .pz-chip-more{flex:none;}
-    .pz-progress{order:-1;flex:1 0 100%;} .pz-dot{flex:0 0 auto;width:18px;} .pz-arrow{flex:0 0 44px;width:44px;height:44px;}
+    .pz-nav{gap:8px;padding-top:4px;justify-content:space-between;}   /* arrows symmetric, one each side of the dots */
+    .pz-progress{flex:1 1 0;min-width:0;} .pz-dots{max-width:100%;} .pz-dot{flex:0 0 auto;width:18px;} .pz-arrow{flex:0 0 44px;width:44px;height:44px;}
+    .pz-add{flex:1 0 100%;order:5;}
     .pz-name{font-size:1.1rem;} .pz-avatar{width:68px;height:68px;margin:2px 0 8px 0;}
   }
   @media (max-height:640px){ .pz-avatar{display:none;} }
+  /* chips: full names, wrapping onto lines (max 3 + "+N") */
+  .pz-chips{flex-wrap:wrap;max-height:none;overflow:visible;} .pz-chip{white-space:normal;overflow-wrap:anywhere;text-align:center;line-height:1.25;}
+  .pz-add{margin-left:auto;min-height:44px;padding:0 16px;border-radius:12px;border:1px solid var(--cy);color:#04141c;font-weight:700;font-size:0.84rem;cursor:pointer;
+    background:linear-gradient(135deg,var(--cy),#7fb6ff);box-shadow:0 0 16px var(--cy-glow);}
+  .pz-add:active{transform:scale(.97);} .pz-add:focus-visible{outline:2px solid var(--cy-2);outline-offset:2px;}
+  /* ghost card + back actions + materialize */
+  .pz-ghost .pz-edge2{opacity:.55;} .pz-ghost .pz-edge1{background:rgba(39,230,255,.18);}
+  .pz-ghost-c{align-items:center;justify-content:center;text-align:center;gap:6px;}
+  .pz-plus{width:92px;height:92px;border-radius:50%;border:2px dashed var(--cy);background:rgba(39,230,255,.06);color:var(--cy);font-size:3rem;line-height:1;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 0 26px var(--cy-glow),inset 0 0 18px rgba(39,230,255,.12);margin:4px 0 10px 0;text-shadow:0 0 14px var(--cy);}
+  .pz-plus:focus-visible{outline:2px solid var(--cy-2);outline-offset:3px;}
+  .pz-ghost .pz-name{opacity:.9;}
+  .pz-actions{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;} .pz-act{padding:6px 4px;min-width:0;font-size:0.72rem;}
+  .pz-act-p,.pz-act-d{grid-column:span 2;} .pz-act-w{grid-column:span 3;} .pz-actions > .pz-act:first-child:nth-last-child(2){grid-column:span 3;}
+  .pz-act-p{color:#04141c;background:linear-gradient(135deg,var(--cy),#7fb6ff);border-color:var(--cy);font-weight:700;}
+  .pz-act-d{color:#ffb4b8;border-color:rgba(229,100,107,.5);background:rgba(229,100,107,.08);}
+  .pz-trait-row{display:flex;align-items:center;justify-content:space-between;gap:6px;} .pz-row-btns{display:inline-flex;gap:4px;flex:none;}
+  .pz-mini{min-width:44px;min-height:36px;padding:0 8px;border-radius:9px;border:1px solid var(--cy-line);background:var(--cy-faint);color:var(--cy-2);font-size:0.72rem;cursor:pointer;}
+  .pz-mini-d{color:#ffb4b8;border-color:rgba(229,100,107,.45);}
+  .pz-card.pz-materialize{animation:pzMat 1s var(--ease);}
+  @keyframes pzMat{0%{opacity:0;transform:translateY(70px) scale(.55);}60%{opacity:1;}100%{opacity:1;transform:none;}}
+  .pz-rm .pz-card.pz-materialize{animation:pzMatRM .4s linear;} @keyframes pzMatRM{from{opacity:0;}to{opacity:1;}}
+  /* observation sheet */
+  .obs-sheet{width:min(100%,560px);height:min(92dvh,760px);max-height:92dvh;display:flex;flex-direction:column;overflow:hidden;padding-bottom:0;}
+  .obs-privacy{margin:0 0 8px 0;font-size:0.74rem;color:var(--text-faint);}
+  .obs-body{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:0 2px 12px 2px;}
+  .obs-step{margin:0 0 14px 0;padding:12px;border:1px solid var(--cy-line);background:rgba(10,22,40,.55);clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);}
+  .obs-step h4{display:flex;align-items:center;gap:8px;margin:0 0 9px 0;font-size:0.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--cy-2);} .obs-step h4 small{color:var(--text-faint);text-transform:none;letter-spacing:0;}
+  .obs-n{width:20px;height:20px;border-radius:50%;border:1px solid var(--cy);display:inline-flex;align-items:center;justify-content:center;font-size:0.68rem;color:var(--cy);}
+  .obs-sheet input[type=search],.obs-sheet input[type=text],.obs-sheet textarea{width:100%;font-size:16px;padding:11px 12px;border-radius:10px;border:1px solid var(--border-2);background:rgba(0,0,0,.3);color:var(--text);margin-bottom:8px;min-height:44px;}
+  .obs-sheet input:focus,.obs-sheet textarea:focus{outline:none;border-color:var(--cy);box-shadow:0 0 0 3px var(--cy-faint),0 0 14px var(--cy-glow);}
+  .obs-list{max-height:220px;overflow-y:auto;overscroll-behavior:contain;border:1px solid var(--border);border-radius:10px;background:rgba(0,0,0,.18);}
+  .obs-row{display:flex;align-items:center;gap:10px;padding:9px 10px;min-height:48px;cursor:pointer;border-bottom:1px solid rgba(39,230,255,.08);}
+  .obs-row:last-child{border-bottom:none;} .obs-row:hover{background:var(--cy-faint);} .obs-row:focus-visible{outline:2px solid var(--cy);outline-offset:-2px;}
+  .obs-row.selected{background:rgba(39,230,255,.12);box-shadow:inset 3px 0 0 var(--cy);}
+  .obs-row-main{display:flex;flex-direction:column;min-width:0;flex:1;} .obs-row-t{font-size:0.88rem;color:var(--text);font-weight:600;} .obs-row-t em{font-style:normal;color:var(--text-faint);font-weight:400;font-size:0.7rem;margin-left:4px;}
+  .obs-row-s{font-size:0.74rem;color:var(--text-dim);line-height:1.35;} .obs-check{color:var(--cy);font-weight:700;width:18px;text-align:center;}
+  .obs-has{opacity:.7;}
+  .obs-chosen{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;} .obs-hint{font-size:0.78rem;color:var(--text-faint);margin:2px 0 6px 0;}
+  .obs-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 4px 4px 10px;border-radius:999px;border:1px solid var(--cy);background:var(--cy-faint);color:var(--cy-2);font-size:0.8rem;}
+  .obs-chip button{width:28px;height:28px;border:none;background:none;color:var(--cy-2);cursor:pointer;border-radius:50%;}
+  .obs-other{display:flex;gap:8px;margin-top:10px;align-items:flex-start;} .obs-other input{margin-bottom:0;flex:1;} .obs-other .hx-btn{min-height:44px;}
+  .obs-locked{display:flex;align-items:center;gap:10px;font-size:0.95rem;}
+  .obs-note{display:block;margin-bottom:8px;} .obs-note>span{display:block;font-size:0.8rem;color:var(--cy-2);margin-bottom:4px;font-weight:600;} .obs-note textarea{margin-bottom:0;resize:vertical;}
+  .obs-foot{flex:none;padding:10px 0 calc(14px + env(safe-area-inset-bottom)) 0;border-top:1px solid var(--cy-line);background:rgba(6,12,24,.98);}
+  .obs-error{min-height:0;color:#ffb4b8;font-size:0.82rem;margin:0 0 8px 0;} .obs-error:empty{display:none;}
+  .obs-foot-row{display:flex;gap:10px;justify-content:flex-end;align-items:center;} .obs-foot-row .btn-flat{min-height:44px;padding:0 18px;}
+  .obs-foot-row .pf-primary{flex:0 1 auto;min-width:160px;} .pf-primary:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;}
+  .pf-danger{background:linear-gradient(135deg,#e5646b,#c2434b);border-color:#e5646b;color:#fff;box-shadow:0 0 14px rgba(229,100,107,.4);}
+  #confirmBackdrop{z-index:var(--z-dialog);align-items:center;} .confirm-sheet{border-radius:16px;border-bottom:1px solid var(--cy);width:min(92vw,380px);} .confirm-sheet h3{margin:0 0 6px 0;font-family:var(--font-display);}
+  .obs-sheet #obsCats{margin-bottom:8px;}
+  @media (min-width:821px){ .obs-sheet{border-radius:18px;border-bottom:1px solid var(--cy);padding-bottom:0;} .sheet-backdrop.open{align-items:center;} }
+  @media (max-width:820px){ .obs-sheet{height:min(94dvh,100%);} }
+
 
   .ins-stats{margin-bottom:6px;}
   .ins-bar{display:grid;grid-template-columns:minmax(64px,34%) 1fr 28px;gap:10px;align-items:center;padding:5px 0;font-size:0.8rem;}
   .ins-bar-l{color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .ins-bar-t{height:8px;border-radius:6px;background:rgba(39,230,255,0.10);overflow:hidden;} .ins-bar-t span{display:block;height:100%;background:linear-gradient(90deg,rgba(39,230,255,.5),var(--cy));border-radius:6px;}
   .ins-bar-n{text-align:right;color:var(--cy-2);font-weight:600;}
+
+  /* ================= UPDATE PASS: global layout, drawer, sheets ================= */
+  /* Music: compact pill that sits just above the dock on the right; expands to the player on tap. */
+  .music-fab{width:auto;height:40px;min-width:44px;padding:0 14px;border-radius:999px;gap:7px;font-size:1rem;
+    right:14px;bottom:14px;box-shadow:0 6px 20px var(--warm-glow);}
+  .music-fab::after{content:"Music";font-size:0.74rem;font-weight:700;letter-spacing:.02em;}
+  .music-fab.playing::after{content:"Playing";}
+  body.overlay-open .music-fab,body.overlay-open .music-panel{opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .15s,transform .15s;}
+  @media (max-width:820px){
+    .music-fab{right:12px;bottom:calc(var(--dock-h) + env(safe-area-inset-bottom) + 8px);}
+    .music-panel{bottom:calc(var(--dock-h) + env(safe-area-inset-bottom) + 56px);}
+  }
+  /* Drawer: bottom sheet above the dock on mobile; side panel on desktop. One scroll container. */
+  .panel-backdrop,.sheet-backdrop{display:none;position:fixed;inset:0;background:rgba(2,6,14,0.62);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);}
+  .panel-backdrop{z-index:calc(var(--z-drawer) - 1);}
+  .panel-backdrop.open{display:block;}
+  @media (min-width:821px){ .panel-backdrop.open{display:none;} }
+  #sidePanel{overflow:hidden;background:linear-gradient(180deg,rgba(12,24,42,0.98),rgba(6,12,24,0.99));border-left:1px solid var(--cy-line);}
+  #sidePanel .panel-header{flex:none;padding:calc(14px + env(safe-area-inset-top)) 16px 12px 16px;border-bottom:1px solid var(--cy-line);position:relative;z-index:2;
+    background:linear-gradient(180deg,rgba(14,28,48,0.98),rgba(8,16,30,0.98));touch-action:none;}
+  .panel-grab,.sheet-grab{display:none;width:40px;height:4px;border-radius:4px;background:rgba(39,230,255,0.35);margin:-6px auto 10px auto;}
+  .panel-id{display:flex;align-items:center;gap:14px;padding-right:46px;min-width:0;transition:gap var(--dur-2);}
+  .panel-id-text{min-width:0;flex:1;}
+  #sidePanel .panel-name{text-align:left;font-size:1.2rem;margin:0 0 2px 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  #sidePanel .panel-sub{text-align:left;}
+  #sidePanel .panel-photo,#sidePanel .panel-photo-placeholder{margin:0;flex:none;width:64px;height:64px;transition:width var(--dur-2),height var(--dur-2);border:2px solid var(--cy);box-shadow:0 0 14px var(--cy-glow);}
+  #sidePanel .panel-photo-placeholder{font-family:var(--font-display);font-size:1.35rem;color:var(--cy-2);background:radial-gradient(circle at 50% 35%,rgba(39,230,255,0.16),rgba(8,16,30,0.9));letter-spacing:.02em;}
+  #sidePanel.compact .panel-photo,#sidePanel.compact .panel-photo-placeholder{width:38px;height:38px;font-size:0.85rem;}
+  #sidePanel.compact .panel-sub{display:none;} #sidePanel.compact .panel-name{font-size:1rem;}
+  #sidePanel .panel-header{transition:padding var(--dur-2);} #sidePanel.compact .panel-header{padding-top:calc(8px + env(safe-area-inset-top));padding-bottom:8px;}
+  #sidePanel .panel-close{top:calc(10px + env(safe-area-inset-top));right:8px;color:var(--cy-2);}
+  #sidePanel .panel-body{padding:14px 16px calc(28px + env(safe-area-inset-bottom)) 16px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;flex:1 1 auto;min-height:0;}
+  #sidePanel .panel-actions{padding:0;border:0;display:flex;flex-direction:row;flex-wrap:wrap;gap:8px;margin-bottom:12px;align-items:stretch;}
+  .pf-primary{flex:1 1 150px;min-height:44px;padding:0 16px;border-radius:12px;border:1px solid var(--cy);color:#04141c;font-weight:700;font-size:0.9rem;cursor:pointer;
+    background:linear-gradient(135deg,var(--cy),#7fb6ff);box-shadow:0 0 18px var(--cy-glow);}
+  .pf-primary:active{transform:scale(.97);}
+  .action-btn.compact{min-height:44px;padding:0 12px;font-size:0.82rem;justify-content:center;border-color:var(--cy-line);}
+  .action-btn.compact.icon{min-width:44px;padding:0;font-size:1.1rem;}
+  .panel-more{display:flex;flex-direction:column;gap:7px;margin:-2px 0 12px 0;padding:10px;border:1px solid var(--border-2);border-radius:12px;background:rgba(255,255,255,0.03);}
+  .panel-more[hidden]{display:none;}
+  .pf-sec{position:relative;margin:0 0 12px 0;padding:12px 14px 12px 14px;background:rgba(10,22,40,0.62);border:1px solid var(--cy-line);
+    clip-path:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px);}
+  .pf-sec::before,.pf-sec::after{content:"";position:absolute;width:16px;height:16px;pointer-events:none;
+    background:linear-gradient(135deg,transparent 11px,var(--cy) 11px,var(--cy) 12.5px,transparent 12.5px);}
+  .pf-sec::before{left:0;top:0;} .pf-sec::after{right:0;bottom:0;transform:rotate(180deg);}
+  .pf-h{display:flex;align-items:center;gap:8px;margin:0 0 9px 0;font-size:0.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--cy-2);font-weight:700;}
+  #sidePanel .rel-section h4.pf-h,#sidePanel .pf-h{color:var(--cy-2);font-size:0.7rem;letter-spacing:.14em;margin:0 0 9px 0;}
+  .pf-ico{width:16px;height:16px;display:inline-flex;} .pf-ico svg{width:16px;height:16px;fill:none;stroke:var(--cy);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+  #panelPsych{margin-top:0;} #panelRelations{margin-top:0;}
+  #panelPsych h4{display:none;}
+  #panelPsych .pf-sec .pf-h{display:flex;}
+  .rel-chips{display:flex;flex-wrap:wrap;gap:8px;}
+  #sidePanel .rel-chip{display:inline-flex;margin:0;min-height:44px;padding:5px 10px 5px 6px;border-radius:999px;border:1px solid var(--cy-line);background:var(--cy-faint);gap:8px;max-width:100%;}
+  #sidePanel .rel-chip:hover{background:rgba(39,230,255,0.16);border-color:var(--cy);}
+  .rel-av{width:30px;height:30px;border-radius:50%;flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:0.68rem;color:var(--cy-2);border:1px solid var(--cy);background:rgba(8,16,30,0.9);}
+  #sidePanel .rel-x{min-width:32px;min-height:32px;}
+  #sidePanel .rel-chip:focus-visible,.pf-add:focus-visible,.pf-primary:focus-visible,.rel-choice-btn:focus-visible{outline:2px solid var(--cy);outline-offset:2px;}
+  .pf-miss{color:var(--text-faint);font-style:italic;}
+  .pf-add{background:none;border:none;color:var(--cy);font-size:0.78rem;cursor:pointer;padding:6px 4px;min-height:32px;text-decoration:underline;text-underline-offset:3px;}
+  .pf-notes{font-size:0.84rem;color:var(--text-dim);line-height:1.55;white-space:pre-wrap;} .pf-clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+  .pf-events{display:flex;flex-direction:column;gap:6px;} .pf-ev{display:flex;gap:10px;font-size:0.82rem;} .pf-ev-d{color:var(--cy-2);min-width:88px;font-size:0.76rem;}
+  #sidePanel .detail-row span{max-width:70%;}
+  #sidePanel .psych-card-short,#sidePanel .psych-card-full{transition:none;}
+  @media (max-width:820px){
+    #sidePanel{top:auto;left:0;right:0;bottom:0;width:100%;max-width:100%;height:min(90vh,calc(100dvh - 12px));height:min(90dvh,calc(100dvh - 12px - env(safe-area-inset-top)));
+      border-left:0;border-top:1px solid var(--cy);border-radius:20px 20px 0 0;transform:translateY(105%);box-shadow:0 -20px 60px rgba(0,0,0,0.7),0 -1px 24px var(--cy-glow);}
+    #sidePanel.open{transform:translateY(0);}
+    #sidePanel .panel-header{padding-top:calc(14px);border-radius:20px 20px 0 0;} #sidePanel .panel-close{top:10px;}
+    .panel-grab{display:block;}
+    #sidePanel{padding-bottom:0;}
+  }
+  /* Add-relative sheet */
+  .sheet-backdrop{z-index:var(--z-sheet);align-items:flex-end;justify-content:center;}
+  .sheet-backdrop.open{display:flex;}
+  .sheet{width:min(100%,460px);background:linear-gradient(180deg,rgba(14,28,48,0.99),rgba(6,12,24,0.99));border:1px solid var(--cy);border-bottom:0;border-radius:20px 20px 0 0;
+    padding:16px 16px calc(18px + env(safe-area-inset-bottom)) 16px;box-shadow:0 -20px 60px rgba(0,0,0,0.7),0 -1px 24px var(--cy-glow);animation:sheetUp .22s var(--ease);max-height:92dvh;overflow-y:auto;overscroll-behavior:contain;}
+  .sheet-grab{display:block;margin-top:-4px;}
+  @keyframes sheetUp{from{transform:translateY(40px);opacity:0;}to{transform:none;opacity:1;}}
+  .sheet-head{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .sheet-head h3{margin:0;font-family:var(--font-display);font-size:1.15rem;}
+  .sheet-x{width:44px;height:44px;border:none;background:none;color:var(--cy-2);font-size:1.1rem;cursor:pointer;border-radius:10px;}
+  .sheet-sub{margin:0 0 12px 0;font-size:0.82rem;color:var(--text-dim);}
+  .rel-choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .rel-choice{display:flex;flex-direction:column;gap:4px;}
+  .rel-choice-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:84px;padding:12px 8px;border-radius:14px;cursor:pointer;color:var(--text);
+    background:var(--cy-faint);border:1px solid var(--cy-line);font-size:0.86rem;font-weight:600;transition:var(--dur-1);}
+  .rel-choice-btn svg{width:26px;height:26px;fill:none;stroke:var(--cy);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .rel-choice-btn:hover:not(:disabled){border-color:var(--cy);background:rgba(39,230,255,0.16);box-shadow:0 0 14px var(--cy-glow);}
+  .rel-choice-btn:disabled{opacity:.45;cursor:not-allowed;}
+  .rel-reason{font-size:0.72rem;color:#ffcf8a;text-align:center;min-height:0;} .rel-reason:empty{display:none;}
+  @media (min-width:821px){ .sheet-backdrop{align-items:center;} .sheet{border-radius:18px;border-bottom:1px solid var(--cy);} .sheet-grab{display:none;} }
+  @media (prefers-reduced-motion:reduce){ .sheet{animation:none;} #sidePanel{transition:none;} .panel-id,#sidePanel .panel-photo{transition:none;} }
+
+  /* ================= UPDATE PASS: topbar chips, dashboard (Home), dates sheet ================= */
+  .tb-title{display:flex;flex-direction:column;min-width:0;line-height:1.1;}
+  .tb-eyebrow{font-size:0.56rem;letter-spacing:.2em;color:var(--cy);padding:0 8px;font-weight:700;text-shadow:0 0 10px var(--cy-glow);}
+  .tb-title #treeNameInput{padding-top:2px;padding-bottom:2px;}
+  .tb-chip{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:0 11px;border-radius:999px;border:1px solid var(--cy-line);background:var(--cy-faint);color:var(--cy-2);
+    font-size:0.72rem;cursor:pointer;white-space:nowrap;}
+  .tb-chip:focus-visible{outline:2px solid var(--cy);outline-offset:2px;}
+  .tb-private svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  #syncChip #saveStatus{color:inherit;font-size:0.72rem;}
+  .sync-dot{width:8px;height:8px;border-radius:50%;background:var(--cy);box-shadow:0 0 8px var(--cy);flex:none;}
+  #syncChip[data-state="saving"] .sync-dot{animation:syncPulse 1s ease-in-out infinite;}
+  #syncChip[data-state="error"]{border-color:rgba(255,179,71,.6);color:#ffcf8a;background:rgba(255,179,71,.08);}
+  #syncChip[data-state="error"] .sync-dot{background:#ffb347;box-shadow:0 0 8px #ffb347;}
+  @keyframes syncPulse{0%,100%{opacity:.35;transform:scale(.8);}50%{opacity:1;transform:scale(1.15);}}
+  #accountPop{position:absolute;right:12px;top:calc(100% + 6px);z-index:60;width:min(280px,calc(100vw - 24px));padding:14px;border-radius:14px;background:linear-gradient(180deg,rgba(14,28,48,.99),rgba(6,12,24,.99));
+    border:1px solid var(--cy);box-shadow:0 18px 50px rgba(0,0,0,.65),0 0 20px var(--cy-glow);}
+  #accountPop[hidden]{display:none;} #topbar{position:relative;}
+  .ap-title{font-family:var(--font-display);font-size:1rem;margin-bottom:4px;} .ap-text{margin:0 0 6px 0;font-size:0.84rem;color:var(--text-dim);} .ap-email{margin:0 0 10px 0;font-size:0.76rem;color:var(--text-faint);word-break:break-all;} .ap-email:empty{display:none;}
+  .ap-out{width:100%;min-height:44px;}
+  @media (max-width:820px){
+    .tb-chip{min-height:32px;padding:0 9px;} #treeNameInput{width:84px;}
+    #syncChip #saveStatus{max-width:92px;overflow:hidden;text-overflow:ellipsis;}
+    .toast{bottom:auto;top:calc(56px + env(safe-area-inset-top) + 8px);max-width:calc(100vw - 24px);text-align:center;}
+  }
+  @media (max-width:380px){ .tb-private span{display:none;} .tb-private{padding:0 9px;} }
+  /* hero + completeness ring */
+  .hx-hero-d .hx-hero-row{display:flex;align-items:center;justify-content:space-between;gap:14px;}
+  .hx-hero-d .hx-hero-text{min-width:0;flex:1;} .hx-hero-d .hx-title{font-size:1.45rem;margin:6px 0 6px 0;}
+  .hx-ring{position:relative;width:96px;height:96px;flex:none;}
+  .hx-ring svg{width:100%;height:100%;display:block;filter:drop-shadow(0 0 8px var(--cy-glow));}
+  .hx-ring-bg{fill:none;stroke:rgba(39,230,255,.14);stroke-width:7;} .hx-ring-fg{fill:none;stroke:var(--cy);stroke-width:7;stroke-linecap:round;}
+  .hx-ring-n{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);color:var(--cy-2);}
+  .hx-ring-n b{font-size:1.7rem;font-weight:600;} .hx-ring-n span{font-size:0.8rem;margin-left:1px;align-self:center;margin-top:4px;}
+  .hx-ring-note{margin:12px 0 0 0;font-size:0.74rem;color:var(--text-dim);line-height:1.5;}
+  .hx-next{margin-bottom:14px;border-color:var(--cy);box-shadow:0 0 22px rgba(39,230,255,.12);}
+  .hx-next-list{display:flex;flex-direction:column;gap:10px;}
+  .hx-next-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--border);} .hx-next-row:first-child{border-top:none;padding-top:0;}
+  .hx-next-row p{margin:0;font-size:0.86rem;line-height:1.45;color:var(--text);flex:1;} .hx-next-row .hx-btn{flex:none;min-height:44px;}
+  .hx-stats-4{grid-template-columns:repeat(4,minmax(0,1fr));margin:0 0 14px 0;}
+  .hx-stat-btn{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;cursor:pointer;color:inherit;font:inherit;min-height:44px;transition:var(--dur-1);}
+  .hx-stat-btn:hover{border-color:var(--cy);box-shadow:0 0 14px var(--cy-glow);} .hx-stat-btn:active{transform:scale(.97);} .hx-stat-btn:focus-visible{outline:2px solid var(--cy);outline-offset:2px;}
+  .hx-stat-ico svg{width:20px;height:20px;fill:none;stroke:var(--cy);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;display:block;margin-bottom:4px;}
+  @media (max-width:560px){ .hx-stats-4{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  /* network preview */
+  .hx-preview{position:relative;height:auto;min-height:200px;max-height:340px;display:flex;align-items:center;justify-content:center;padding:6px;
+    background-image:linear-gradient(rgba(39,230,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(39,230,255,.05) 1px,transparent 1px),radial-gradient(ellipse at 50% 0%,rgba(39,230,255,0.07),transparent 70%);background-size:24px 24px,24px 24px,100% 100%;}
+  .mini-tree{width:100%;height:100%;max-height:320px;}
+  .mt-g{cursor:pointer;} .mt-g:focus-visible{outline:none;} .mt-g:focus-visible .mt-node{stroke-width:4;stroke:var(--cy-2);}
+  .mt-node{fill:rgba(8,18,34,.95);stroke:var(--cy);stroke-width:2.5;transition:fill var(--dur-1);} .mt-g:hover .mt-node{fill:rgba(39,230,255,.22);}
+  .mt-ini{fill:var(--cy-2);text-anchor:middle;font-family:var(--font-display);pointer-events:none;} .mt-name{fill:var(--text);text-anchor:middle;pointer-events:none;font-family:var(--font-body);}
+  .mt-line{stroke-width:2.5;} .mt-flow{fill:none;stroke:#bffcff;stroke-width:3.5;stroke-linecap:round;stroke-dasharray:5 95;opacity:.9;animation:mtFlow 3.6s linear infinite;filter:drop-shadow(0 0 3px var(--cy));}
+  @keyframes mtFlow{from{stroke-dashoffset:0;}to{stroke-dashoffset:-100;}}
+  @media (prefers-reduced-motion:reduce){ .mt-flow{animation:none;opacity:0;} }
+  /* quick actions */
+  .hx-qa{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
+  .hx-qa-b{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:76px;padding:8px 4px;border-radius:14px;border:1px solid var(--cy-line);background:var(--cy-faint);color:var(--text);font-size:0.76rem;font-weight:600;cursor:pointer;text-align:center;line-height:1.2;transition:var(--dur-1);}
+  .hx-qa-b span svg{width:24px;height:24px;fill:none;stroke:var(--cy);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;display:block;}
+  .hx-qa-b:hover{border-color:var(--cy);box-shadow:0 0 14px var(--cy-glow);} .hx-qa-b:active{transform:scale(.96);} .hx-qa-b:focus-visible{outline:2px solid var(--cy);outline-offset:2px;}
+  /* boot effect: <1.2s, once per session, never blocks input */
+  .hx-boot > *{animation:hxMat .5s var(--ease) both;} .hx-boot > *:nth-child(2){animation-delay:.12s;} .hx-boot > *:nth-child(3){animation-delay:.24s;} .hx-boot > *:nth-child(4){animation-delay:.36s;} .hx-boot > *:nth-child(n+5){animation-delay:.48s;}
+  .hx-boot .hx-ring-fg{animation:hxRing .9s var(--ease) both;}
+  @keyframes hxMat{from{opacity:0;transform:translateY(14px) scale(.985);}to{opacity:1;transform:none;}}
+  @keyframes hxRing{from{stroke-dashoffset:276;}}
+  .hx-boot{position:relative;} .hx-boot::before{content:"";position:absolute;inset:-6px;pointer-events:none;z-index:3;opacity:0;animation:hxGrid 1s ease-out;
+    background-image:linear-gradient(rgba(39,230,255,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(39,230,255,.18) 1px,transparent 1px);background-size:28px 28px;-webkit-mask-image:linear-gradient(180deg,#000,transparent 70%);mask-image:linear-gradient(180deg,#000,transparent 70%);}
+  @keyframes hxGrid{0%{opacity:0;}30%{opacity:1;}100%{opacity:0;}}
+  @media (prefers-reduced-motion:reduce){ .hx-boot > *,.hx-boot .hx-ring-fg,.hx-boot::before{animation:none !important;} }
+  /* dates sheet */
+  .dt-list{display:flex;flex-direction:column;gap:6px;max-height:min(50dvh,380px);overflow-y:auto;overscroll-behavior:contain;}
+  .dt-row{display:flex;align-items:center;gap:10px;padding:6px 8px;border:1px solid var(--cy-line);border-radius:12px;background:var(--cy-faint);min-height:52px;}
+  .dt-name{flex:1;min-width:0;font-size:0.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .dt-row input[type=date]{font-size:16px;min-height:44px;padding:6px 8px;border-radius:9px;border:1px solid var(--border-2);background:rgba(0,0,0,.3);color:var(--text);}
+  @media (max-width:420px){ .hx-hero-d .hx-title{font-size:1.25rem;} .hx-ring{width:80px;height:80px;} .hx-next-row .hx-btn{padding:0 10px;font-size:0.76rem;max-width:120px;} .hx-qa-b{font-size:0.7rem;} }
+
+  /* ================= UPDATE PASS: holographic access terminal (login / sign up / reset) ================= */
+  #lockScreen{position:fixed;left:0;top:0;right:0;height:100vh;height:var(--vvh,100dvh);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+    align-items:flex-start;justify-content:center;padding:0;
+    background:radial-gradient(ellipse at 50% 18%,#0b1f38 0%,#050d1b 52%,#02060d 100%);}
+  #lockScreen.static-bg{background:radial-gradient(ellipse at 50% 30%,#0d2742 0%,#050d1b 55%,#02060d 100%);}
+  #authCanvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+  .auth-rings{position:fixed;left:50%;top:max(150px,22vh);width:0;height:0;pointer-events:none;z-index:0;transition:opacity .4s;}
+  .ar{position:absolute;left:0;top:0;border-radius:50%;border:1px solid rgba(39,230,255,.28);transform:translate(-50%,-50%) rotateX(68deg);box-shadow:0 0 22px rgba(39,230,255,.12),inset 0 0 20px rgba(39,230,255,.06);}
+  .ar.r1{width:320px;height:320px;animation:arSpin 22s linear infinite;} .ar.r2{width:440px;height:440px;border-style:dashed;border-color:rgba(39,230,255,.18);animation:arSpinB 34s linear infinite;} .ar.r3{width:570px;height:570px;border-color:rgba(127,182,255,.14);animation:arSpin 52s linear infinite;}
+  @keyframes arSpin{to{transform:translate(-50%,-50%) rotateX(68deg) rotateZ(360deg);}} @keyframes arSpinB{to{transform:translate(-50%,-50%) rotateX(68deg) rotateZ(-360deg);}}
+  .auth-wrap{position:relative;z-index:1;width:100%;max-width:440px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center;gap:14px;
+    padding:calc(22px + env(safe-area-inset-top)) calc(18px + env(safe-area-inset-right)) calc(26px + env(safe-area-inset-bottom)) calc(18px + env(safe-area-inset-left));transition:opacity .35s;}
+  #lockScreen.checking .auth-wrap,#lockScreen.checking .auth-rings{opacity:0;}
+  .auth-brand{text-align:center;}
+  .auth-emblem{width:92px;height:92px;display:block;margin:0 auto 6px auto;overflow:visible;filter:drop-shadow(0 0 10px rgba(39,230,255,.55));}
+  .em-p{fill:none;stroke:var(--cy);stroke-width:2.2;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100;animation:emDraw 1.5s var(--ease) .1s forwards;} .em-ring{stroke:rgba(39,230,255,.5);stroke-width:1.2;animation-duration:2s;}
+  .em-n circle{fill:#bffcff;opacity:0;animation:emNode .5s ease-out 1.1s forwards;} @keyframes emDraw{to{stroke-dashoffset:0;}} @keyframes emNode{to{opacity:1;}}
+  .auth-name{font-family:var(--font-display);font-size:1.7rem;font-weight:600;letter-spacing:.02em;text-shadow:0 0 22px rgba(39,230,255,.35);}
+  .auth-tag{font-size:0.82rem;color:var(--text-dim);margin-top:2px;}
+  .auth-panel{position:relative;padding:5px;}
+  .auth-panel::before{content:"";position:absolute;inset:0;background:rgba(39,230,255,.34);clip-path:polygon(18px 0,calc(100% - 18px) 0,100% 18px,100% calc(100% - 18px),calc(100% - 18px) 100%,18px 100%,0 calc(100% - 18px),0 18px);transition:background .25s;}
+  .auth-panel::after{content:"";position:absolute;inset:3px;background:linear-gradient(115deg,#27e6ff,#7fb6ff 40%,#27e6ff 70%,#9ffcff);opacity:.9;clip-path:polygon(16px 0,calc(100% - 16px) 0,100% 16px,100% calc(100% - 16px),calc(100% - 16px) 100%,16px 100%,0 calc(100% - 16px),0 16px);transition:background .25s;}
+  .auth-panel .lock-card{position:relative;z-index:2;max-width:none;width:auto;border:0;border-radius:0;box-shadow:none;padding:26px 24px 20px 24px;
+    background:linear-gradient(160deg,rgba(12,26,46,.97),rgba(4,10,20,.985));
+    clip-path:polygon(14px 0,calc(100% - 14px) 0,100% 14px,100% calc(100% - 14px),calc(100% - 14px) 100%,14px 100%,0 calc(100% - 14px),0 14px);
+    background-image:linear-gradient(rgba(39,230,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(39,230,255,.05) 1px,transparent 1px),linear-gradient(160deg,rgba(12,26,46,.97),rgba(4,10,20,.985));background-size:22px 22px,22px 22px,100% 100%;}
+  .an{position:absolute;width:9px;height:9px;border-radius:50%;background:var(--cy);box-shadow:0 0 10px var(--cy);z-index:4;} .an1{left:0;top:0;} .an2{right:0;top:0;} .an3{left:0;bottom:0;} .an4{right:0;bottom:0;} 
+  .an1,.an2,.an3,.an4{transform:translate(-1px,-1px);} .an2{transform:translate(1px,-1px);} .an3{transform:translate(-1px,1px);} .an4{transform:translate(1px,1px);}
+  .auth-scan{position:absolute;left:8px;right:8px;top:0;height:2px;z-index:5;opacity:0;pointer-events:none;background:linear-gradient(90deg,transparent,var(--cy-2),transparent);box-shadow:0 0 14px var(--cy);animation:authScan 1.2s ease-out .35s 1;}
+  @keyframes authScan{0%{opacity:0;transform:translateY(0);}12%{opacity:1;}88%{opacity:1;}100%{opacity:0;transform:translateY(var(--ph,420px));}}
+  .auth-eyebrow{font-size:0.66rem;letter-spacing:.26em;color:var(--cy);font-weight:700;text-shadow:0 0 12px var(--cy-glow);margin-bottom:6px;}
+  .auth-panel .lock-card h1{font-size:1.55rem;margin:0 0 4px 0;} .auth-panel .lock-card p.sub{margin:0 0 18px 0;font-size:0.86rem;}
+  .af{position:relative;margin-bottom:12px;}
+  .auth-panel .lock-card .af input{width:100%;min-height:54px;padding:22px 46px 8px 44px;font-size:16px;color:var(--text);background:rgba(0,0,0,.34);border:1px solid rgba(39,230,255,.28);border-radius:12px;margin:0;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;}
+  .auth-panel .lock-card .af input:focus{outline:none;border-color:var(--cy);box-shadow:0 0 0 3px rgba(39,230,255,.12),0 0 18px var(--cy-glow);}
+  .af label{position:absolute;left:44px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--text-faint);pointer-events:none;transition:transform .18s var(--ease),font-size .18s,color .18s,top .18s;transform-origin:left center;}
+  .af input:focus + label,.af input:not(:placeholder-shown) + label{top:13px;transform:none;font-size:11px;color:var(--cy-2);letter-spacing:.06em;}
+  .af-ico{position:absolute;left:14px;top:50%;width:20px;height:20px;margin-top:-10px;fill:none;stroke:var(--cy);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;pointer-events:none;opacity:.85;}
+  .af-eye{position:absolute;right:4px;top:50%;width:44px;height:44px;margin-top:-22px;background:none;border:none;cursor:pointer;color:var(--cy-2);display:flex;align-items:center;justify-content:center;border-radius:10px;}
+  .af-eye svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;} .af-eye .eye-off{display:none;} .af-eye.on .eye-off{display:block;} .af-eye.on .eye-open{display:none;}
+  .af-eye:focus-visible,.lock-btn:focus-visible,.auth-sec-btn:focus-visible{outline:2px solid var(--cy);outline-offset:2px;}
+  /* autofill keeps the dark glass look */
+  .af input:-webkit-autofill{-webkit-text-fill-color:#fff;box-shadow:0 0 0 40px #0a1626 inset;caret-color:#fff;}
+  .pw-meter{display:flex;align-items:center;gap:10px;margin:-2px 0 10px 0;} .pw-meter[hidden]{display:none;} .pw-bar{flex:1;height:5px;border-radius:5px;background:rgba(39,230,255,.12);overflow:hidden;} .pw-bar span{display:block;height:100%;width:0;background:var(--cy);border-radius:5px;transition:width .25s,background .25s;box-shadow:0 0 8px var(--cy);}
+  .pw-meter[data-score="1"] .pw-bar span{background:#ff7a85;box-shadow:0 0 8px #ff7a85;} .pw-meter[data-score="2"] .pw-bar span{background:#ffb347;box-shadow:0 0 8px #ffb347;} .pw-meter em{font-style:normal;font-size:0.72rem;color:var(--text-dim);min-width:0;}
+  .auth-note{margin:0 0 10px 0;font-size:0.76rem;color:var(--text-dim);line-height:1.45;} .auth-note[hidden]{display:none;}
+  .lock-error:empty,.lock-success:empty{display:none;}   /* no permanent empty gap above the button */
+  .lock-error{min-height:0;margin:0 0 10px 0;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,122,133,.5);background:rgba(229,100,107,.1);color:#ffb4b8;font-size:0.84rem;}
+  .lock-success{min-height:0;margin:0 0 10px 0;padding:9px 12px;border-radius:10px;border:1px solid rgba(95,203,143,.45);background:rgba(95,203,143,.08);color:#9be6bd;font-size:0.84rem;}
+  .auth-panel .lock-btn{position:relative;overflow:hidden;min-height:52px;margin-top:2px;border-radius:12px;border:1px solid var(--cy);color:#04141c;font-size:1rem;font-weight:700;letter-spacing:.02em;background:linear-gradient(135deg,var(--cy),#7fb6ff);box-shadow:0 0 22px var(--cy-glow);}
+  .lb-scan{position:absolute;top:0;bottom:0;left:-40%;width:40%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);opacity:0;pointer-events:none;}
+  .lock-btn.busy .lb-scan{opacity:1;animation:lbScan 1s linear infinite;} @keyframes lbScan{from{left:-40%;}to{left:110%;}}
+  .lock-btn:disabled{opacity:.85;cursor:default;}
+  .auth-secondary{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  .auth-sec-btn{flex:1 1 auto;min-height:44px;display:flex;align-items:center;justify-content:center;padding:0 12px;border-radius:12px;border:1px solid rgba(39,230,255,.3);background:rgba(39,230,255,.06);color:var(--cy-2);font-size:0.84rem;text-decoration:none;text-align:center;}
+  .auth-sec-btn:hover{border-color:var(--cy);box-shadow:0 0 14px var(--cy-glow);}
+  /* states */
+  .auth-panel.error::before,.auth-panel.error::after{background:#ff7a85;} .auth-panel.error{filter:drop-shadow(0 0 14px rgba(255,122,133,.35));}
+  .auth-panel.shake{animation:authShake .42s ease;} @keyframes authShake{0%,100%{transform:none;}20%{transform:translateX(-7px);}40%{transform:translateX(7px);}60%{transform:translateX(-5px);}80%{transform:translateX(4px);}}
+  #lockScreen.granted .auth-panel .lock-card form,#lockScreen.granted .auth-secondary{opacity:.15;transition:opacity .25s;}
+  #lockScreen.granted .auth-panel .lock-card::after{content:"ACCESS GRANTED";position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;font-family:var(--font-display);font-size:1.3rem;letter-spacing:.18em;color:var(--cy-2);text-shadow:0 0 22px var(--cy);animation:granted .5s var(--ease);}
+  @keyframes granted{from{opacity:0;transform:translateY(-30%) scale(.9);}to{opacity:1;transform:translateY(-50%);}}
+  #lockScreen.granted .ar{animation:arOut .9s ease-out forwards;} @keyframes arOut{to{width:1400px;height:1400px;opacity:0;}}
+  #lockScreen.dissolve{opacity:0;transition:opacity .35s ease;pointer-events:none;} #lockScreen.dissolve .auth-panel{transform:scale(1.05);filter:blur(6px);transition:transform .35s,filter .35s;}
+  /* keyboard open: compact so the button stays on screen */
+  #lockScreen.kb-open .auth-wrap{justify-content:flex-start;gap:6px;padding-top:calc(8px + env(safe-area-inset-top));}
+  #lockScreen.kb-open .auth-tag,#lockScreen.kb-open .auth-rings{display:none;} #lockScreen.kb-open .auth-emblem{width:46px;height:46px;margin-bottom:0;} #lockScreen.kb-open .auth-name{font-size:1.1rem;}
+  #lockScreen.kb-open .auth-panel .lock-card{padding:16px 18px 14px 18px;} #lockScreen.kb-open .auth-panel .lock-card p.sub{display:none;} #lockScreen.kb-open .af input{min-height:48px;padding-top:19px;}
+  @media (max-height:640px){ .auth-tag{display:none;} .auth-emblem{width:60px;height:60px;} .auth-panel .lock-card{padding:18px 20px 14px 20px;} }
+  @media (prefers-reduced-motion:reduce){
+    .ar,.em-p,.em-n circle,.auth-scan,.lb-scan{animation:none !important;} .em-p{stroke-dashoffset:0;} .em-n circle{opacity:1;} .auth-panel.shake{animation:none;}
+    #lockScreen.granted .ar{animation:none !important;opacity:0;} #lockScreen.dissolve,#lockScreen.dissolve .auth-panel{transition:none;}
+  }
 </style>
 </head>
 <body>
@@ -998,44 +1295,63 @@
 <canvas id="particleCanvas"></canvas>
 
 <!-- ============ AUTH SCREEN (sign in / sign up / forgot password / reset password) ============ -->
-<div id="lockScreen">
-  <div class="lock-card">
-    <h1 id="authTitle">Welcome back</h1>
-    <p class="sub" id="authSub">Sign in to access your family trees, synced across your devices.</p>
+<div id="lockScreen" class="checking">
+  <canvas id="authCanvas" aria-hidden="true"></canvas>
+  <div class="auth-rings" aria-hidden="true"><i class="ar r1"></i><i class="ar r2"></i><i class="ar r3"></i></div>
+  <div class="auth-wrap">
+    <header class="auth-brand">
+      <svg class="auth-emblem" viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="54" class="em-p em-ring" pathLength="100"/>
+        <path d="M60 104V64" class="em-p" pathLength="100"/><path d="M60 64C60 50 38 50 38 34" class="em-p" pathLength="100"/><path d="M60 64C60 50 82 50 82 34" class="em-p" pathLength="100"/>
+        <path d="M38 34C38 26 28 24 26 16" class="em-p" pathLength="100"/><path d="M38 34C38 26 48 24 50 16" class="em-p" pathLength="100"/><path d="M82 34C82 26 72 24 70 16" class="em-p" pathLength="100"/><path d="M82 34C82 26 92 24 94 16" class="em-p" pathLength="100"/>
+        <g class="em-n"><circle cx="60" cy="104" r="3.4"/><circle cx="60" cy="64" r="4.2"/><circle cx="38" cy="34" r="3.6"/><circle cx="82" cy="34" r="3.6"/><circle cx="26" cy="16" r="3"/><circle cx="50" cy="16" r="3"/><circle cx="70" cy="16" r="3"/><circle cx="94" cy="16" r="3"/></g>
+      </svg>
+      <div class="auth-name">Family Tree</div>
+      <div class="auth-tag">Your family's story, mapped in light.</div>
+    </header>
+    <div class="auth-panel" id="authPanel">
+      <i class="an an1"></i><i class="an an2"></i><i class="an an3"></i><i class="an an4"></i><div class="auth-scan" aria-hidden="true"></div>
+      <div class="lock-card">
+        <div class="auth-eyebrow" id="authEyebrow">SECURE ACCESS</div>
+        <h1 id="authTitle">Welcome back</h1>
+        <p class="sub" id="authSub">Sign in to access your family trees, synced across your devices.</p>
 
-    <form id="authForm" autocomplete="on">
-      <input type="email" id="authEmail" autocomplete="email" placeholder="Email" required>
-      <input type="password" id="authPassword" autocomplete="current-password" placeholder="Password" minlength="6" required>
-      <div class="lock-error" id="authError"></div>
-      <div class="lock-success" id="authSuccess"></div>
-      <button class="lock-btn" type="submit" id="authSubmitBtn">Sign In</button>
-    </form>
+        <form id="authForm" autocomplete="on" novalidate>
+          <div class="af"><svg viewBox="0 0 24 24" aria-hidden="true" class="af-ico"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><input type="email" id="authEmail" name="email" autocomplete="email" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder=" " required><label for="authEmail">Email</label></div>
+          <div class="af"><svg viewBox="0 0 24 24" aria-hidden="true" class="af-ico"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input type="password" id="authPassword" name="password" autocomplete="current-password" placeholder=" " minlength="6" required><label for="authPassword">Password</label><button type="button" class="af-eye" id="authEye" aria-label="Show password" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" class="eye-open"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" class="eye-off"><path d="M3 3l18 18M10.6 5.2A9.8 9.8 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.5 6.6C3.9 8.4 2 12 2 12s3.6 7 10 7c1.6 0 3-.4 4.3-1M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button></div>
+          <div class="pw-meter" id="pwMeter" hidden><div class="pw-bar"><span id="pwBar"></span></div><em id="pwLabel"></em></div>
+          <p class="auth-note" id="authSignupNote" hidden>If email confirmation is turned on for this app, we'll ask you to confirm your address by email before you can sign in.</p>
+          <div class="lock-error" id="authError" role="alert" aria-live="assertive"></div>
+          <div class="lock-success" id="authSuccess" role="status" aria-live="polite"></div>
+          <button class="lock-btn" type="submit" id="authSubmitBtn"><span class="lb-t">Sign In</span><i class="lb-scan" aria-hidden="true"></i></button>
+        </form>
 
-    <div class="lock-footnote">
-      <a href="#" id="authToggleModeLink">Need an account? Sign up</a>
-      <span class="sep">·</span>
-      <a href="#" id="authForgotLink">Forgot password?</a>
+        <div class="auth-secondary" id="authSecondary">
+          <a href="#" id="authToggleModeLink" role="button" class="auth-sec-btn">Need an account? Sign up</a>
+          <a href="#" id="authForgotLink" role="button" class="auth-sec-btn">Forgot password?</a>
+        </div>
+
+        <!-- Forgot-password: email only -->
+        <form id="authResetRequestForm" style="display:none;" autocomplete="on" novalidate>
+          <p class="sub" style="margin-bottom:14px;">Enter your email and we'll send you a link to reset your password.</p>
+          <div class="af"><svg viewBox="0 0 24 24" aria-hidden="true" class="af-ico"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><input type="email" id="authResetEmail" name="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" placeholder=" " required><label for="authResetEmail">Email</label></div>
+          <div class="lock-error" id="authResetError" role="alert" aria-live="assertive"></div>
+          <div class="lock-success" id="authResetSuccess" role="status" aria-live="polite"></div>
+          <button class="lock-btn" type="submit" id="authResetSubmitBtn"><span class="lb-t">Send reset link</span><i class="lb-scan" aria-hidden="true"></i></button>
+          <div class="auth-secondary"><a href="#" id="authResetBackLink" role="button" class="auth-sec-btn">← Back to sign in</a></div>
+        </form>
+
+        <!-- Reached via the password-reset email link: set a new password -->
+        <form id="authNewPasswordForm" style="display:none;" autocomplete="on" novalidate>
+          <p class="sub" style="margin-bottom:14px;">Choose a new password for your account.</p>
+          <div class="af"><svg viewBox="0 0 24 24" aria-hidden="true" class="af-ico"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input type="password" id="authNewPassword" name="new-password" autocomplete="new-password" placeholder=" " minlength="6" required><label for="authNewPassword">New password</label></div>
+          <div class="af"><svg viewBox="0 0 24 24" aria-hidden="true" class="af-ico"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input type="password" id="authNewPasswordConfirm" name="confirm-password" autocomplete="new-password" placeholder=" " minlength="6" required><label for="authNewPasswordConfirm">Confirm new password</label></div>
+          <div class="lock-error" id="authNewPasswordError" role="alert" aria-live="assertive"></div>
+          <div class="lock-success" id="authNewPasswordSuccess" role="status" aria-live="polite"></div>
+          <button class="lock-btn" type="submit" id="authNewPasswordSubmitBtn"><span class="lb-t">Set new password</span><i class="lb-scan" aria-hidden="true"></i></button>
+        </form>
+      </div>
     </div>
-
-    <!-- Forgot-password: email only -->
-    <form id="authResetRequestForm" style="display:none;" autocomplete="on">
-      <p class="sub" style="margin-bottom:14px;">Enter your email and we'll send you a link to reset your password.</p>
-      <input type="email" id="authResetEmail" autocomplete="email" placeholder="Email" required>
-      <div class="lock-error" id="authResetError"></div>
-      <div class="lock-success" id="authResetSuccess"></div>
-      <button class="lock-btn" type="submit" id="authResetSubmitBtn">Send reset link</button>
-      <div class="lock-footnote"><a href="#" id="authResetBackLink">← Back to sign in</a></div>
-    </form>
-
-    <!-- Reached via the password-reset email link: set a new password -->
-    <form id="authNewPasswordForm" style="display:none;" autocomplete="on">
-      <p class="sub" style="margin-bottom:14px;">Choose a new password for your account.</p>
-      <input type="password" id="authNewPassword" autocomplete="new-password" placeholder="New password" minlength="6" required>
-      <input type="password" id="authNewPasswordConfirm" autocomplete="new-password" placeholder="Confirm new password" minlength="6" required>
-      <div class="lock-error" id="authNewPasswordError"></div>
-      <div class="lock-success" id="authNewPasswordSuccess"></div>
-      <button class="lock-btn" type="submit" id="authNewPasswordSubmitBtn">Set new password</button>
-    </form>
   </div>
 </div>
 
@@ -1066,7 +1382,7 @@
   <div class="view-panel active" id="viewDashboard" style="position:absolute;inset:0;">
     <div class="view-scroll">
       <div class="dash-hero" id="dashHero">
-        <button class="icon-btn" id="dashSignOutBtn" title="Sign out" style="position:absolute;top:18px;right:18px;z-index:2;">🔒</button>
+        <button class="tb-chip" id="dashSignOutBtn" title="Sign out" style="position:absolute;top:16px;right:16px;z-index:2;">Sign out</button>
         <h2 class="section-title" id="dashGreeting" style="margin-bottom:4px;">My Family Trees</h2>
         <p class="dash-hero-sub" id="dashHeroSub"></p>
         <div class="stats-grid" id="dashStats" style="display:none;"></div>
@@ -1092,8 +1408,8 @@
 
     <div id="topbar">
       <button class="icon-btn" id="backBtn" title="Back to My Trees">←</button>
-      <input id="treeNameInput" value="" spellcheck="false">
-      <span id="saveStatus">Saved ✓</span>
+      <div class="tb-title"><span class="tb-eyebrow">FAMILY TREE</span><input id="treeNameInput" value="" spellcheck="false" aria-label="Tree name"></div>
+      <button type="button" id="syncChip" class="tb-chip" data-sync-chip data-state="saved" title="Save status — tap to retry if it failed"><i class="sync-dot" aria-hidden="true"></i><span id="saveStatus" aria-live="polite">Saved ✓</span></button>
       <div class="topbar-spacer"></div>
       <div class="topbar-extras" id="topbarExtras">
         <input id="searchInput" placeholder="Search members…">
@@ -1110,7 +1426,13 @@
         <button class="tb-btn save" id="saveBtn">Save</button>
       </div>
       <button class="icon-btn" id="moreMenuBtn" title="More">⋯</button>
-      <button class="icon-btn" id="lockAppBtn" title="Sign out">🔒</button>
+      <button type="button" id="privacyChip" class="tb-chip tb-private" aria-haspopup="dialog" aria-expanded="false" aria-controls="accountPop"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span>Private</span></button>
+      <div id="accountPop" role="dialog" aria-label="Privacy and account" hidden>
+        <div class="ap-title">Private tree</div>
+        <p class="ap-text" id="apText">Only you can see this tree.</p>
+        <p class="ap-email" id="apEmail"></p>
+        <button type="button" class="btn-flat ap-out" id="lockAppBtn">Sign out</button>
+      </div>
     </div>
     <div id="topbarExtrasBackdrop"></div>
 
@@ -1311,36 +1633,90 @@
 <audio id="bgAudioEl" loop preload="none"></audio>
 
 <!-- ============ SIDE PANEL ============ -->
-<div id="sidePanel">
-  <div class="panel-header">
-    <button class="panel-close" id="panelCloseBtn">✕</button>
-    <img id="panelPhoto" class="panel-photo" style="display:none;">
-    <div id="panelPhotoPlaceholder" class="panel-photo-placeholder">N/A</div>
-    <div class="panel-name" id="panelName"></div>
-    <div class="panel-sub" id="panelSub"></div>
+<div class="panel-backdrop" id="panelBackdrop"></div>
+<div id="sidePanel" role="dialog" aria-modal="false" aria-label="Member profile">
+  <div class="panel-header" id="panelHeader">
+    <div class="panel-grab" aria-hidden="true"></div>
+    <button class="panel-close" id="panelCloseBtn" aria-label="Close profile" type="button">✕</button>
+    <div class="panel-id">
+      <img id="panelPhoto" class="panel-photo" alt="" style="display:none;">
+      <div id="panelPhotoPlaceholder" class="panel-photo-placeholder" aria-hidden="true"></div>
+      <div class="panel-id-text">
+        <div class="panel-name" id="panelName"></div>
+        <div class="panel-sub" id="panelSub"></div>
+      </div>
+    </div>
   </div>
-  <div class="panel-body">
-    <div class="detail-row"><b>Gender</b><span id="panelGender"></span></div>
-    <div class="detail-row"><b>Born</b><span id="panelBirth"></span></div>
-    <div class="detail-row"><b>Died</b><span id="panelDeath"></span></div>
-    <div class="panel-notes" id="panelNotes"></div>
+  <div class="panel-body" id="panelBody">
+    <div class="panel-actions">
+      <button class="pf-primary" id="addRelativeBtn" type="button" aria-haspopup="dialog">＋ Add relative</button>
+      <button class="action-btn compact" id="editPersonBtn" type="button">✏️ Edit</button>
+      <button class="action-btn compact" id="pinToggleBtn" type="button">📌 Pin</button>
+      <button class="action-btn compact icon" id="panelMoreBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="More actions" aria-controls="panelMore">⋯</button>
+    </div>
+    <div class="panel-more" id="panelMore" hidden>
+      <button class="action-btn" id="changePhotoBtn" type="button">🖼️ Change photo</button>
+      <button class="action-btn danger" id="deletePersonBtn" type="button">🗑️ Delete member</button>
+      <div class="inline-confirm" id="deleteConfirmBox" style="display:none;">
+        <p>Remove this person? This can't be undone.</p>
+        <button class="link-danger" id="deleteYesBtn" type="button">Yes, remove them</button>
+        <button class="btn-flat" id="deleteNoBtn" type="button" style="margin-left:8px;">Cancel</button>
+      </div>
+    </div>
+    <section class="pf-sec" id="panelDetails" aria-label="Details"></section>
     <div id="panelPsych"></div>
     <div id="panelRelations"></div>
+    <section class="pf-sec" id="panelEvents" aria-label="Life events"></section>
+    <section class="pf-sec" id="panelNotes" aria-label="Notes"></section>
   </div>
-  <div class="panel-actions">
-    <button class="action-btn" id="addChildBtn">➕ Add Child</button>
-    <button class="action-btn" id="addParentBtn">⬆️ Add Parent</button>
-    <button class="action-btn" id="addSiblingBtn">↔️ Add Sibling</button>
-    <button class="action-btn" id="addSpouseBtn">💍 Add Spouse/Partner</button>
-    <button class="action-btn" id="pinToggleBtn">📌 Pin Member</button>
-    <button class="action-btn" id="editPersonBtn">✏️ Edit Member</button>
-    <button class="action-btn" id="changePhotoBtn">🖼️ Change Photo</button>
-    <button class="action-btn danger" id="deletePersonBtn">🗑️ Delete Member</button>
-    <div class="inline-confirm" id="deleteConfirmBox" style="display:none;">
-      <p>Remove this person? This can't be undone.</p>
-      <button class="link-danger" id="deleteYesBtn">Yes, remove them</button>
-      <button class="btn-flat" id="deleteNoBtn" style="margin-left:8px;">Cancel</button>
+</div>
+
+<!-- Add relative: small sheet with the four relation choices (buttons keep their original ids/handlers) -->
+<div class="sheet-backdrop" id="addRelBackdrop">
+  <div class="sheet" id="addRelSheet" role="dialog" aria-modal="true" aria-labelledby="addRelTitle">
+    <div class="sheet-grab" aria-hidden="true"></div>
+    <div class="sheet-head"><h3 id="addRelTitle">Add relative</h3><button type="button" class="sheet-x" id="addRelCloseBtn" aria-label="Close">✕</button></div>
+    <p class="sheet-sub" id="addRelSub"></p>
+    <div class="rel-choices">
+      <div class="rel-choice"><button class="rel-choice-btn" id="addChildBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10M8 10l4 4 4-4M7 20h10"/></svg><span>Child</span></button><div class="rel-reason" id="reasonChild"></div></div>
+      <div class="rel-choice"><button class="rel-choice-btn" id="addParentBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V10M8 14l4-4 4 4M7 4h10"/></svg><span>Parent</span></button><div class="rel-reason" id="reasonParent"></div></div>
+      <div class="rel-choice"><button class="rel-choice-btn" id="addSiblingBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16M8 8l-4 4 4 4M16 8l4 4-4 4"/></svg><span>Sibling</span></button><div class="rel-reason" id="reasonSibling"></div></div>
+      <div class="rel-choice"><button class="rel-choice-btn" id="addSpouseBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="12" r="5"/><circle cx="15" cy="12" r="5"/></svg><span>Spouse / Partner</span></button><div class="rel-reason" id="reasonSpouse"></div></div>
     </div>
+  </div>
+</div>
+
+<!-- Quick list: add missing birth dates -->
+<div class="sheet-backdrop" id="datesBackdrop">
+  <div class="sheet" id="datesSheet" role="dialog" aria-modal="true" aria-labelledby="datesTitle">
+    <div class="sheet-grab" aria-hidden="true"></div>
+    <div class="sheet-head"><h3 id="datesTitle">Add birth dates</h3><button type="button" class="sheet-x" id="datesCloseBtn" aria-label="Close">✕</button></div>
+    <p class="sheet-sub">Members with no birth date. Fill in any you know — leave the rest blank.</p>
+    <div id="datesList" class="dt-list"></div>
+    <div class="obs-error" id="datesError" role="alert" aria-live="assertive"></div>
+    <div class="obs-foot-row" style="margin-top:10px;"><button type="button" class="btn-flat" id="datesCancelBtn">Cancel</button><button type="button" class="pf-primary" id="datesSaveBtn">Save dates</button></div>
+  </div>
+</div>
+
+<!-- Add / edit observation (Persona): member -> traits -> notes -->
+<div class="sheet-backdrop" id="obsBackdrop">
+  <div class="sheet obs-sheet" id="obsSheet" role="dialog" aria-modal="true" aria-labelledby="obsTitle">
+    <div class="sheet-grab" aria-hidden="true"></div>
+    <div class="sheet-head"><h3 id="obsTitle">Add observation</h3><button type="button" class="sheet-x" id="obsCloseBtn" aria-label="Close">✕</button></div>
+    <p class="obs-privacy">Personal reflections only — not diagnoses. Private to you.</p>
+    <div class="obs-body" id="obsBody">
+      <section class="obs-step" aria-labelledby="obsH1"><h4 id="obsH1"><span class="obs-n">1</span>Family member</h4><div id="obsMember"></div></section>
+      <section class="obs-step" aria-labelledby="obsH2"><h4 id="obsH2"><span class="obs-n">2</span>Traits</h4>
+        <div id="obsChosen" class="obs-chosen" aria-live="polite"></div>
+        <input type="search" id="obsTraitSearch" placeholder="Search traits…" aria-label="Search the trait catalog" autocomplete="off">
+        <div class="trait-cat-filter" id="obsCats" role="group" aria-label="Trait categories"></div>
+        <div class="obs-list" id="obsTraitList" role="listbox" aria-multiselectable="true" aria-label="Traits"></div>
+        <div class="obs-other"><input type="text" id="obsOtherInput" maxlength="80" placeholder="Other — type your own, e.g. “Afraid of heights”" aria-label="Add a custom trait" autocomplete="off"><button type="button" class="hx-btn" id="obsOtherAdd">Add</button></div>
+      </section>
+      <section class="obs-step" aria-labelledby="obsH3"><h4 id="obsH3"><span class="obs-n">3</span>Notes <small>(optional)</small></h4><div id="obsNotes"></div></section>
+    </div>
+    <div class="obs-foot"><div class="obs-error" id="obsError" role="alert" aria-live="assertive"></div>
+      <div class="obs-foot-row"><button type="button" class="btn-flat" id="obsCancelBtn">Cancel</button><button type="button" class="pf-primary" id="obsSaveBtn">Save observation</button></div></div>
   </div>
 </div>
 
@@ -2157,8 +2533,10 @@
   // Saves every tree + settings for the signed-in user. Deletions of whole
   // trees are handled immediately in deleteTree() (not here), so this never
   // needs to guess which rows to remove — it only ever upserts what's current.
+  let syncState = 'saved';   // 'saved' | 'saving' | 'error' — drives the sync chip
+  function setSync(state){ syncState = state; document.querySelectorAll('[data-sync-chip]').forEach(el=>{ el.dataset.state = state; }); }
   async function persistDb(){
-    $('saveStatus').textContent = 'Saving…';
+    $('saveStatus').textContent = 'Saving…'; setSync('saving');
     try{
       if(db.trees.length){
         const rows = db.trees.map(t=>({ user_id: currentUser.id, local_id: t.id, tree_data: t, updated_at: new Date().toISOString() }));
@@ -2169,14 +2547,16 @@
         .upsert({ user_id: currentUser.id, settings: db.settings, updated_at: new Date().toISOString() }, { onConflict: 'user_id' });
       if(settingsErr) throw settingsErr;
       lastSavedAt = new Date().toISOString();
-      $('saveStatus').textContent = 'Saved ✓';
+      $('saveStatus').textContent = 'Saved ✓'; setSync('saved');
       sfx.save();
+      return true;
     }catch(e){
       // db stays exactly as it was in memory — nothing is lost, the next
       // edit (or a manual retry) will simply try saving again.
-      $('saveStatus').textContent = 'Could not save';
+      $('saveStatus').textContent = 'Could not save'; setSync('error');
       sfx.error();
       toast('Could not save. Check your connection. Your changes are kept and will save once you\'re back online.');
+      return false;
     }
   }
   function scheduleSave(){
@@ -2192,55 +2572,83 @@
 
   // ---------- auth screen ----------
   let authMode = 'signin'; // 'signin' | 'signup'
+  let authSubmitting = false;   // true while a sign-in form submission is in flight (drives the "Access granted" sequence)
+  const authRM = ()=> window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function setAuthBtn(btn, label, busy){
+    btn.disabled = !!busy; btn.classList.toggle('busy', !!busy);
+    btn.querySelector('.lb-t').textContent = label;
+  }
+  function authFail(msgEl, text){
+    msgEl.textContent = text;
+    const panel = $('authPanel'); panel.classList.remove('shake'); panel.classList.add('error');
+    if(!authRM()){ void panel.offsetWidth; panel.classList.add('shake'); }
+    clearTimeout(authFail._t); authFail._t = setTimeout(()=>panel.classList.remove('error','shake'), 2600);
+  }
   function renderAuthMode(){
     $('authError').textContent=''; $('authSuccess').textContent='';
-    if(authMode==='signup'){
-      $('authTitle').textContent='Create your account';
-      $('authSub').textContent='Your family trees will be saved to this account and kept in sync across your devices.';
-      $('authSubmitBtn').textContent='Sign Up';
-      $('authPassword').setAttribute('autocomplete','new-password');
-      $('authToggleModeLink').textContent='Already have an account? Sign in';
-    } else {
-      $('authTitle').textContent='Welcome back';
-      $('authSub').textContent='Sign in to access your family trees, synced across your devices.';
-      $('authSubmitBtn').textContent='Sign In';
-      $('authPassword').setAttribute('autocomplete','current-password');
-      $('authToggleModeLink').textContent='Need an account? Sign up';
-    }
+    const su = authMode==='signup';
+    $('authEyebrow').textContent = 'SECURE ACCESS';
+    $('authTitle').textContent = su ? 'Create your account' : 'Welcome back';
+    $('authSub').textContent = su ? 'Your family trees will be saved to this account and kept in sync across your devices.' : 'Sign in to access your family trees, synced across your devices.';
+    $('authSubmitBtn').querySelector('.lb-t').textContent = su ? 'Create account' : 'Sign In';
+    $('authPassword').setAttribute('autocomplete', su ? 'new-password' : 'current-password');
+    $('authToggleModeLink').textContent = su ? 'Already have an account? Sign in' : 'Need an account? Sign up';
+    $('authForgotLink').style.display = su ? 'none' : '';
+    $('pwMeter').hidden = !su; $('authSignupNote').hidden = !su;
+    updatePwMeter();
+  }
+  function updatePwMeter(){
+    const v = $('authPassword').value; let sc = 0;
+    if(v.length>=8) sc++; if(/[a-z]/.test(v)&&/[A-Z]/.test(v)) sc++; if(/\d/.test(v)) sc++; if(/[^A-Za-z0-9]/.test(v)||v.length>=14) sc++;
+    if(!v) sc = 0;
+    $('pwBar').style.width = (sc*25)+'%'; $('pwMeter').dataset.score = String(sc);
+    $('pwLabel').textContent = !v ? 'Use 8+ characters, mixed case and a number' : ['Too weak','Weak','Fair','Good','Strong'][sc];
   }
   function showAuthScreen(){
     silenceMusicPlayer();
     $('app').style.display='none';
+    $('lockScreen').classList.remove('checking','granted','dissolve');
     $('lockScreen').style.display='flex';
-    $('authForm').style.display='block';
+    $('authForm').style.display='block'; $('authSecondary').style.display='';
     $('authResetRequestForm').style.display='none';
     $('authNewPasswordForm').style.display='none';
-    authMode='signin';
+    authMode='signin'; authSubmitting=false; homeBooted=false;
     renderAuthMode();
-    $('authEmail').value=''; $('authPassword').value='';
+    $('authEmail').value=''; $('authPassword').value=''; setPwVisible(false);
+    setAuthBtn($('authSubmitBtn'), 'Sign In', false);
+    authSceneStart();
   }
+  function setPwVisible(on){
+    $('authPassword').type = on ? 'text' : 'password';
+    $('authEye').setAttribute('aria-pressed', String(on)); $('authEye').setAttribute('aria-label', on?'Hide password':'Show password');
+    $('authEye').classList.toggle('on', on);
+  }
+  $('authEye').onclick = ()=>{ setPwVisible($('authPassword').type==='password'); $('authPassword').focus(); };
+  $('authPassword').addEventListener('input', updatePwMeter);
   $('authToggleModeLink').onclick = (e)=>{ e.preventDefault(); authMode = authMode==='signin' ? 'signup' : 'signin'; renderAuthMode(); };
   $('authForgotLink').onclick = (e)=>{
     e.preventDefault();
-    $('authForm').style.display='none';
+    $('authForm').style.display='none'; $('authSecondary').style.display='none';
     $('authResetRequestForm').style.display='block';
+    $('authEyebrow').textContent='ACCOUNT RECOVERY'; $('authTitle').textContent='Reset your password'; $('authSub').textContent='';
     $('authResetEmail').value = $('authEmail').value;
     $('authResetError').textContent=''; $('authResetSuccess').textContent='';
   };
   $('authResetBackLink').onclick = (e)=>{
     e.preventDefault();
     $('authResetRequestForm').style.display='none';
-    $('authForm').style.display='block';
+    $('authForm').style.display='block'; $('authSecondary').style.display='';
+    renderAuthMode();
   };
   $('authForm').addEventListener('submit', async (e)=>{
     e.preventDefault();
     const email = $('authEmail').value.trim();
     const password = $('authPassword').value;
     $('authError').textContent=''; $('authSuccess').textContent='';
-    if(!email || !password){ $('authError').textContent='Please enter both email and password.'; return; }
-    if(password.length<6){ $('authError').textContent='Password must be at least 6 characters.'; return; }
-    const btn = $('authSubmitBtn'); btn.disabled=true; const origLabel=btn.textContent;
-    btn.innerHTML = '<span class="auth-spinner"></span>'+(authMode==='signup' ? 'Creating account…' : 'Signing in…');
+    if(!email || !password){ authFail($('authError'), !email && !password ? 'Enter your email and password.' : (!email ? 'Enter your email.' : 'Enter your password.')); (!email?$('authEmail'):$('authPassword')).focus(); return; }
+    if(password.length<6){ authFail($('authError'), 'Password must be at least 6 characters.'); return; }
+    const btn = $('authSubmitBtn'); setAuthBtn(btn, authMode==='signup' ? 'Creating account…' : 'Authenticating…', true);
+    let ok = false;
     try{
       if(authMode==='signup'){
         const { data, error } = await sb.auth.signUp({ email, password });
@@ -2249,50 +2657,57 @@
           // Email confirmation is required for this project before a session is issued.
           $('authSuccess').textContent = 'Account created! Check your email to confirm it, then sign in.';
           authMode='signin'; renderAuthMode();
+          $('authSuccess').textContent = 'Account created! Check your email to confirm it, then sign in.';
         }
       } else {
+        authSubmitting = true;
         const { error } = await sb.auth.signInWithPassword({ email, password });
         if(error) throw error;
+        ok = true;
       }
       // onAuthStateChange picks up the resulting session and moves the app forward.
     }catch(err){
-      $('authError').textContent = humanizeAuthError(err);
+      authSubmitting = false;
+      const raw = humanizeAuthError(err);
+      authFail($('authError'), authMode==='signin' && /incorrect email or password/i.test(raw) ? 'Email or password is incorrect.' : raw);
+      if(authMode==='signin') { $('authPassword').value=''; updatePwMeter(); }
     }finally{
-      btn.disabled=false; btn.textContent=origLabel;
+      if(!ok) setAuthBtn(btn, authMode==='signup' ? 'Create account' : 'Sign In', false);
     }
   });
   $('authResetRequestForm').addEventListener('submit', async (e)=>{
     e.preventDefault();
     const email = $('authResetEmail').value.trim();
     $('authResetError').textContent=''; $('authResetSuccess').textContent='';
-    if(!email){ $('authResetError').textContent='Please enter your email.'; return; }
-    const btn = $('authResetSubmitBtn'); btn.disabled=true; const origLabel=btn.textContent; btn.innerHTML='<span class="auth-spinner"></span>Sending…';
+    if(!email){ authFail($('authResetError'), 'Please enter your email.'); return; }
+    const btn = $('authResetSubmitBtn'); setAuthBtn(btn, 'Sending…', true);
     try{
-      const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.href });
+      // Redirect to the app's own URL (no #route), so the recovery link lands back on the site root.
+      const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + window.location.pathname });
       if(error) throw error;
       $('authResetSuccess').textContent = 'If that email has an account, a reset link is on its way. Check your inbox.';
     }catch(err){
-      $('authResetError').textContent = humanizeAuthError(err);
+      authFail($('authResetError'), humanizeAuthError(err));
     }finally{
-      btn.disabled=false; btn.textContent=origLabel;
+      setAuthBtn(btn, 'Send reset link', false);
     }
   });
   $('authNewPasswordForm').addEventListener('submit', async (e)=>{
     e.preventDefault();
     const p1 = $('authNewPassword').value, p2 = $('authNewPasswordConfirm').value;
     $('authNewPasswordError').textContent=''; $('authNewPasswordSuccess').textContent='';
-    if(p1.length<6){ $('authNewPasswordError').textContent='Use at least 6 characters.'; return; }
-    if(p1!==p2){ $('authNewPasswordError').textContent='Passwords do not match.'; return; }
-    const btn = $('authNewPasswordSubmitBtn'); btn.disabled=true; const origLabel=btn.textContent; btn.innerHTML='<span class="auth-spinner"></span>Saving…';
+    if(p1.length<6){ authFail($('authNewPasswordError'), 'Use at least 6 characters.'); return; }
+    if(p1!==p2){ authFail($('authNewPasswordError'), 'Passwords do not match.'); return; }
+    const btn = $('authNewPasswordSubmitBtn'); setAuthBtn(btn, 'Saving…', true);
     try{
       const { error } = await sb.auth.updateUser({ password: p1 });
       if(error) throw error;
       $('authNewPasswordSuccess').textContent = 'Password updated! Signing you in…';
-      setTimeout(()=>{ $('authNewPasswordForm').style.display='none'; $('authForm').style.display='block'; }, 900);
+      setTimeout(()=>{ $('authNewPasswordForm').style.display='none'; $('authForm').style.display='block'; $('authSecondary').style.display=''; renderAuthMode(); }, 900);
     }catch(err){
-      $('authNewPasswordError').textContent = humanizeAuthError(err);
+      authFail($('authNewPasswordError'), humanizeAuthError(err));
     }finally{
-      btn.disabled=false; btn.textContent=origLabel;
+      setAuthBtn(btn, 'Set new password', false);
     }
   });
   function humanizeAuthError(err){
@@ -2302,6 +2717,73 @@
     if(/network/i.test(msg)) return 'Could not reach the server. Check your connection.';
     return msg;
   }
+  // "Access granted": the panel confirms, rings expand, then it dissolves into the app (<1.5s total).
+  async function playAccessGranted(){
+    const ls = $('lockScreen');
+    ls.classList.add('granted');
+    await new Promise(r=>setTimeout(r, authRM() ? 200 : 750));
+    ls.classList.add('dissolve');
+    await new Promise(r=>setTimeout(r, authRM() ? 0 : 350));
+  }
+
+  // ---------- login scene: decorative only (no family data), pauses when hidden, static fallback ----------
+  const AuthScene = { raf:0, t0:0, running:false, nodes:[], edges:[], w:0, h:0, dpr:1 };
+  function authBuildNetwork(){
+    // a deterministic abstract binary-tree-like network (purely decorative)
+    const nodes=[], edges=[]; const levels=5;
+    const add=(x,y,l,parent)=>{ const i=nodes.length; nodes.push({x,y,l,ph:(i*0.7)%6.28}); if(parent>=0) edges.push([parent,i]); return i; };
+    const root=add(0.5,0.95,0,-1);
+    const grow=(p,x,y,l,spread)=>{ if(l>=levels) return; for(const d of [-1,1]){ const nx=x+d*spread*(l===1?1:1), ny=y-0.15; const i=add(nx,ny,l,p); grow(i,nx,ny,l+1,spread*0.52); } };
+    grow(root,0.5,0.95,1,0.26);
+    AuthScene.nodes=nodes; AuthScene.edges=edges;
+  }
+  function authSceneSize(){
+    const c=$('authCanvas'); if(!c) return; const dpr=Math.min(2,window.devicePixelRatio||1);
+    AuthScene.dpr=dpr; AuthScene.w=c.clientWidth; AuthScene.h=c.clientHeight;
+    c.width=Math.round(AuthScene.w*dpr); c.height=Math.round(AuthScene.h*dpr);
+  }
+  function authDraw(now){
+    const c=$('authCanvas'); const ctx=c.getContext('2d'); if(!ctx) throw new Error('no 2d');
+    const {w,h,dpr}=AuthScene; ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,w,h);
+    const rm = authRM(); const t = rm ? 99 : (now-AuthScene.t0)/1000;
+    // perspective grid floor fading into the distance
+    const hz = h*0.58, vx = w/2;
+    ctx.lineWidth=1;
+    for(let i=-14;i<=14;i++){ const g=ctx.createLinearGradient(0,hz,0,h); g.addColorStop(0,'rgba(39,230,255,0)'); g.addColorStop(1,'rgba(39,230,255,0.22)'); ctx.strokeStyle=g; ctx.beginPath(); ctx.moveTo(vx+i*w*0.012,hz); ctx.lineTo(vx+i*w*0.16,h); ctx.stroke(); }
+    const scroll = rm ? 0 : (t*0.18)%1;
+    for(let k=0;k<12;k++){ const f=((k+scroll)/12); const y=hz+(h-hz)*Math.pow(f,2.2); ctx.strokeStyle=`rgba(39,230,255,${0.04+0.2*f})`; ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
+    // constellation that gradually forms a tree-like network
+    const N=AuthScene.nodes, E=AuthScene.edges; const grow = Math.min(1, t/7);
+    const px=n=> n.x*w, py=n=> hz*0.12 + n.y*(hz*0.98);
+    E.forEach(([a,b])=>{ const A=N[a],B=N[b]; const k=Math.max(0,Math.min(1,grow*(levelsOf(N)+1)-B.l+1)); if(k<=0) return;
+      const x1=px(A),y1=py(A),x2=x1+(px(B)-x1)*k,y2=y1+(py(B)-y1)*k; ctx.strokeStyle=`rgba(39,230,255,${0.16+0.1*Math.sin(t+B.ph)})`; ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); });
+    N.forEach(n=>{ const k=Math.max(0,Math.min(1,grow*(levelsOf(N)+1)-n.l)); if(k<=0) return; const r=(1.6+ (n.l<2?1.4:0))*(0.6+0.4*k)*(1+0.18*Math.sin(t*1.4+n.ph)); ctx.fillStyle=`rgba(143,245,255,${0.35+0.5*k})`; ctx.shadowColor='#27E6FF'; ctx.shadowBlur=8; ctx.beginPath(); ctx.arc(px(n),py(n),r,0,6.283); ctx.fill(); ctx.shadowBlur=0; });
+  }
+  const levelsOf = N=> 5;
+  function authSceneStart(){
+    const ls=$('lockScreen'); if(AuthScene.running) return;
+    try{
+      authBuildNetwork(); authSceneSize(); AuthScene.t0=performance.now();
+      if(authRM()){ authDraw(performance.now()); return; }
+      AuthScene.running=true;
+      const loop=now=>{
+        if(!AuthScene.running) return;
+        if(ls.style.display==='none'){ AuthScene.running=false; return; }
+        try{ authDraw(now); }catch(e){ AuthScene.running=false; ls.classList.add('static-bg'); return; }
+        AuthScene.raf=requestAnimationFrame(loop);
+      };
+      AuthScene.raf=requestAnimationFrame(loop);
+    }catch(e){ ls.classList.add('static-bg'); }
+  }
+  window.addEventListener('resize', ()=>{ if($('lockScreen').style.display!=='none'){ try{ authSceneSize(); if(authRM()) authDraw(performance.now()); }catch(_){} } });
+  document.addEventListener('visibilitychange', ()=>{ if(!document.hidden && $('lockScreen').style.display!=='none' && !AuthScene.running && !authRM()){ AuthScene.running=false; authSceneStart(); } });
+  // On-screen keyboard (iOS Safari): size the screen to the visual viewport so Sign In stays reachable.
+  (function(){
+    const vv = window.visualViewport; if(!vv) return;
+    const sync = ()=>{ const ls=$('lockScreen'); const kb = vv.height < window.innerHeight*0.78; ls.classList.toggle('kb-open', kb); ls.style.setProperty('--vvh', vv.height+'px');
+      if(kb){ const f=document.activeElement; if(f && ls.contains(f) && f.scrollIntoView) setTimeout(()=>f.scrollIntoView({block:'center'}),50); } };
+    vv.addEventListener('resize', sync); vv.addEventListener('scroll', sync);
+  })();
 
   // ---------- one-time local → cloud migration ----------
   function readLocalTreesOnce(){
@@ -2370,7 +2852,8 @@
     // while that modal opens would bury the modal invisibly behind it,
     // leaving the person stuck looking at an unchanged sign-in screen with
     // no sign anything happened.
-    $('lockScreen').style.display='none';
+    if(authSubmitting){ authSubmitting=false; try{ await playAccessGranted(); }catch(_){} }
+    $('lockScreen').style.display='none'; AuthScene.running=false; cancelAnimationFrame(AuthScene.raf);
     const migration = await checkMigration();
     if(migration.show) openMigrationModal(migration);
     else await finishEnteringApp();
@@ -2407,8 +2890,9 @@
       if(event==='PASSWORD_RECOVERY'){
         $('authForm').style.display='none';
         $('authResetRequestForm').style.display='none';
-        $('authNewPasswordForm').style.display='block';
-        $('lockScreen').style.display='flex';
+        $('authNewPasswordForm').style.display='block'; $('authSecondary').style.display='none';
+        $('authEyebrow').textContent='ACCOUNT RECOVERY'; $('authTitle').textContent='Set a new password'; $('authSub').textContent='';
+        $('lockScreen').classList.remove('checking'); $('lockScreen').style.display='flex'; authSceneStart();
         $('app').style.display='none';
         return;
       }
@@ -2613,6 +3097,14 @@
   // only exists inside an open tree, so anyone with zero trees (or who hasn't
   // opened one yet) would otherwise have no way to sign out at all.
   $('dashSignOutBtn').onclick = async ()=>{ await sb.auth.signOut(); };
+  $('syncChip').onclick = ()=>{ if(syncState==='error') persistDb(); };
+  window.addEventListener('offline', ()=>setSync('error'));
+  window.addEventListener('online', ()=>{ if(syncState==='error') persistDb(); });
+  function closeAccountPop(){ $('accountPop').hidden = true; $('privacyChip').setAttribute('aria-expanded','false'); }
+  $('privacyChip').onclick = (e)=>{ e.stopPropagation(); const pop=$('accountPop'); const open = pop.hidden; pop.hidden = !open; $('privacyChip').setAttribute('aria-expanded', String(open));
+    $('apEmail').textContent = currentUser && currentUser.email ? 'Signed in as '+currentUser.email : ''; };
+  document.addEventListener('click', e=>{ if(!$('accountPop').hidden && !e.target.closest('#accountPop,#privacyChip')) closeAccountPop(); });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !$('accountPop').hidden) closeAccountPop(); });
   $('moreMenuBtn').onclick = ()=>{
     $('topbarExtras').classList.toggle('open');
     $('topbarExtrasBackdrop').classList.toggle('open');
@@ -3494,20 +3986,63 @@
     sfx.open();
     $('panelPhoto').style.display = p.photo ? 'block':'none';
     $('panelPhotoPlaceholder').style.display = p.photo ? 'none':'flex';
+    $('panelPhotoPlaceholder').textContent = initialsOf(p);
     if(p.photo) $('panelPhoto').src = p.photo;
     $('panelName').textContent = fullName(p) + (p.nickname?` "${p.nickname}"`:'');
-    $('panelSub').textContent = disp(p.gender);
-    $('panelGender').textContent = disp(p.gender);
-    $('panelBirth').textContent = fmtDate(p.birthDate);
-    $('panelDeath').textContent = p.living ? 'Living' : fmtDate(p.deathDate);
-    $('panelNotes').textContent = p.notes ? p.notes : '';
-    $('addParentBtn').disabled = (p.parents||[]).length>=2;
-    $('pinToggleBtn').textContent = p.pinned ? '📌 Unpin Member' : '📌 Pin Member';
+    $('panelSub').textContent = (p.gender && String(p.gender).trim()) ? p.gender : '';
+    $('panelSub').style.display = $('panelSub').textContent ? '' : 'none';
+    renderPanelDetails(p);
+    $('pinToggleBtn').textContent = p.pinned ? '📌 Unpin' : '📌 Pin';
     $('deleteConfirmBox').style.display='none';
+    $('panelMore').hidden = true; $('panelMoreBtn').setAttribute('aria-expanded','false');
+    closeAddRel();
     renderPanelRelationships(p);
     renderPanelPsych(p);
-    $('sidePanel').classList.add('open');
+    renderPanelEventsNotes(p);
+    const wasOpen = $('sidePanel').classList.contains('open');
+    $('sidePanel').classList.add('open'); $('panelBackdrop').classList.add('open');
+    if(!wasOpen){ $('panelBody').scrollTop = 0; $('sidePanel').classList.remove('compact'); }
     if(currentView==='tree') renderTree();
+  }
+  // ---- profile drawer: details / events / notes sections (real data only; "Not recorded" + inline Add) ----
+  const PF_ICON = {
+    info:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg>',
+    brain:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 6 1V5a2 2 0 0 0-3-1zM15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-6 1"/></svg>',
+    users:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 5a3 3 0 0 1 0 6M18 14c1.8.7 3 2.5 3 5"/></svg>',
+    clock:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    note:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5"/></svg>'
+  };
+  const pfHead = (icon, title)=>`<h4 class="pf-h"><span class="pf-ico">${PF_ICON[icon]}</span>${escapeHtml(title)}</h4>`;
+  const pfMissing = (field)=>`<span class="pf-miss">Not recorded</span> <button type="button" class="pf-add" data-add-field="${field}">Add</button>`;
+  function renderPanelDetails(p){
+    const hasBirth = !!(p.birthDate && String(p.birthDate).trim());
+    const hasDeath = !!(!p.living && p.deathDate && String(p.deathDate).trim());
+    let rows = '';
+    if(!hasBirth && !hasDeath && !p.living){
+      rows += `<div class="detail-row"><b>Dates</b><span>${'<span class="pf-miss">Dates not recorded</span> <button type="button" class="pf-add" data-add-field="fBirth">Add</button>'}</span></div>`;
+    } else {
+      rows += `<div class="detail-row"><b>Born</b><span>${hasBirth ? escapeHtml(fmtDate(p.birthDate)) : pfMissing('fBirth')}</span></div>`;
+      rows += `<div class="detail-row"><b>${p.living?'Status':'Died'}</b><span>${p.living ? 'Living' : (hasDeath ? escapeHtml(fmtDate(p.deathDate)) : pfMissing('fDeath'))}</span></div>`;
+    }
+    rows += `<div class="detail-row"><b>Gender</b><span>${(p.gender&&String(p.gender).trim()) ? escapeHtml(p.gender) : pfMissing('fGender')}</span></div>`;
+    $('panelDetails').innerHTML = pfHead('info','Details') + rows;
+    bindPanelAddLinks($('panelDetails'));
+  }
+  function bindPanelAddLinks(root){
+    root.querySelectorAll('[data-add-field]').forEach(btn=>{
+      btn.onclick = ()=>{ const id=selectedId, field=btn.dataset.addField; pendingRelation=null; openPersonModal(id); setTimeout(()=>{ const f=$(field); if(f){ try{ f.scrollIntoView({block:'center'}); f.focus(); }catch(_){} } },60); };
+    });
+  }
+  function renderPanelEventsNotes(p){
+    const evs = collectTimelineEvents().filter(e=>(e.personIds||[]).includes(p.id));
+    $('panelEvents').innerHTML = pfHead('clock','Life events') + (evs.length
+      ? `<div class="pf-events">${evs.map(e=>`<div class="pf-ev"><span class="pf-ev-d">${escapeHtml(fmtDate(e.date))}</span><span>${escapeHtml(e.title)}</span></div>`).join('')}</div>`
+      : `<div class="rel-empty">No dated events yet. <button type="button" class="pf-add" id="panelAddEventBtn">Add event</button></div>`);
+    const eb = $('panelAddEventBtn'); if(eb) eb.onclick = ()=> openEventModal();
+    const note = p.notes && String(p.notes).trim();
+    $('panelNotes').innerHTML = pfHead('note','Notes') + (note ? `<div class="pf-notes pf-clamp" id="pfNotesText">${escapeHtml(note)}</div>${note.length>180?'<button type="button" class="pf-add" id="pfNotesMore">Read more</button>':''}` : `<div class="rel-empty">${pfMissing('fNotes')}</div>`);
+    const mb = $('pfNotesMore'); if(mb) mb.onclick = ()=>{ const t=$('pfNotesText'); const open=t.classList.toggle('pf-clamp'); mb.textContent = open ? 'Read more' : 'Show less'; };
+    bindPanelAddLinks($('panelNotes'));
   }
 
   // ---------- Psychology & Personality: assigned traits in the profile panel ----------
@@ -3532,7 +4067,7 @@
         ${hasNote ? `<div class="psych-card-note"><b>Notes</b><p>${escapeHtml(entry.note)}</p></div>` : ''}
       </div>`;
     }).join('');
-    el.innerHTML = `<h4>Psychology &amp; Personality</h4>${cards}`;
+    el.innerHTML = `<section class="pf-sec">${pfHead('brain','Psychology & Personality')}${cards}</section>`;
     el.querySelectorAll('[data-expand]').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         const card = btn.closest('.psych-card');
@@ -3542,36 +4077,43 @@
     });
   }
   function closePanel(){
-    selectedId=null; $('sidePanel').classList.remove('open'); $('deleteConfirmBox').style.display='none';
+    selectedId=null; $('sidePanel').classList.remove('open'); $('panelBackdrop').classList.remove('open'); $('sidePanel').style.transform=''; closeAddRel(); $('deleteConfirmBox').style.display='none';
     if(currentView==='tree') renderTree();
   }
   $('panelCloseBtn').onclick = closePanel;
 
   // ---------- relationships list in the panel (view, navigate, unlink) ----------
-  function relSection(title, list){
-    if(list.length===0) return `<div class="rel-section"><h4>${escapeHtml(title)}</h4><div class="rel-empty">None yet</div></div>`;
-    const rows = list.map(x=>`
-      <div class="rel-chip" data-id="${x.id}">
+  function relChipHtml(x, withUnlink){
+    return `<div class="rel-chip" data-id="${x.id}" role="button" tabindex="0">
+        <span class="rel-av" aria-hidden="true">${escapeHtml(initialsOf(x))}</span>
         <span class="rel-name">${x.pinned?'📌 ':''}${escapeHtml(fullName(x))}</span>
-        <button class="rel-x" type="button" data-unlink="${x.id}" title="Remove this link">✕</button>
-      </div>`).join('');
-    return `<div class="rel-section"><h4>${escapeHtml(title)}</h4>${rows}</div>`;
+        ${withUnlink?`<button class="rel-x" type="button" data-unlink="${x.id}" title="Remove this link" aria-label="Remove link to ${escapeHtml(fullName(x))}">✕</button>`:''}
+      </div>`;
+  }
+  function relSection(title, list, withUnlink, icon){
+    const body = list.length===0 ? `<div class="rel-empty">None recorded</div>` : `<div class="rel-chips">${list.map(x=>relChipHtml(x, withUnlink!==false)).join('')}</div>`;
+    return `<section class="pf-sec rel-section">${pfHead(icon||'users', title)}${body}</section>`;
+  }
+  function siblingsOf(p){
+    const ids = new Set();
+    (p.parents||[]).forEach(pid=>{ const par=personById(pid); if(par) (par.children||[]).forEach(c=>{ if(c!==p.id) ids.add(c); }); });
+    return [...ids].map(personById).filter(Boolean);
   }
   function renderPanelRelationships(p){
     const parents = (p.parents||[]).map(personById).filter(Boolean);
     const spouses = (p.spouseIds||[]).map(personById).filter(Boolean);
     const children = (p.children||[]).map(personById).filter(Boolean);
+    const sibs = siblingsOf(p);
     const el = $('panelRelations');
     el.innerHTML =
       relSection('Parents', parents) +
       relSection(spouses.length>1 ? 'Spouses / Partners' : 'Spouse / Partner', spouses) +
+      relSection('Siblings', sibs, false) +
       relSection('Children', children);
+    const go = id=>{ switchView('tree'); renderTree(); openPanel(id); afterLayout(()=>centerOnPerson(id)); };
     el.querySelectorAll('.rel-chip').forEach(chip=>{
-      chip.addEventListener('click', (e)=>{
-        if(e.target.closest('.rel-x')) return;
-        const id = chip.dataset.id;
-        switchView('tree'); renderTree(); openPanel(id); afterLayout(()=>centerOnPerson(id));
-      });
+      chip.addEventListener('click', (e)=>{ if(e.target.closest('.rel-x')) return; go(chip.dataset.id); });
+      chip.addEventListener('keydown', (e)=>{ if((e.key==='Enter'||e.key===' ') && e.target===chip){ e.preventDefault(); go(chip.dataset.id); } });
     });
     el.querySelectorAll('.rel-x').forEach(btn=>{
       btn.addEventListener('click', (e)=>{ e.stopPropagation(); unlinkRelation(p.id, btn.dataset.unlink); });
@@ -3615,10 +4157,50 @@
     toastWithUndo(label, undoFn);
   }
 
-  $('addChildBtn').onclick = ()=> openRelationPicker('child', selectedId);
-  $('addParentBtn').onclick = ()=> openRelationPicker('parent', selectedId);
-  $('addSiblingBtn').onclick = ()=> openRelationPicker('sibling', selectedId);
-  $('addSpouseBtn').onclick = ()=> openRelationPicker('spouse', selectedId);
+  // ---- Add relative sheet: the four original buttons live inside it, handlers unchanged apart from closing the sheet ----
+  function closeAddRel(){ const b=$('addRelBackdrop'); if(b) b.classList.remove('open'); }
+  function openAddRel(){
+    const p = personById(selectedId); if(!p) return;
+    $('addRelSub').textContent = 'For ' + fullName(p);
+    const twoParents = (p.parents||[]).length>=2;
+    $('addParentBtn').disabled = twoParents;
+    $('reasonParent').textContent = twoParents ? 'Already has two parents recorded.' : '';
+    ['Child','Sibling','Spouse'].forEach(k=> $('reason'+k).textContent='');
+    $('addRelBackdrop').classList.add('open');
+    setTimeout(()=>{ try{ $('addChildBtn').focus(); }catch(_){} },30);
+  }
+  $('addRelativeBtn').onclick = openAddRel;
+  $('addRelCloseBtn').onclick = closeAddRel;
+  $('addRelBackdrop').addEventListener('click', e=>{ if(e.target.id==='addRelBackdrop') closeAddRel(); });
+  const relBtn = (id,type)=>{ $(id).onclick = ()=>{ const anchor=selectedId; closeAddRel(); openRelationPicker(type, anchor); }; };
+  relBtn('addChildBtn','child'); relBtn('addParentBtn','parent'); relBtn('addSiblingBtn','sibling'); relBtn('addSpouseBtn','spouse');
+  $('panelMoreBtn').onclick = ()=>{ const m=$('panelMore'); m.hidden=!m.hidden; $('panelMoreBtn').setAttribute('aria-expanded', String(!m.hidden)); };
+  $('panelBackdrop').addEventListener('click', closePanel);
+  $('panelBody').addEventListener('scroll', ()=>{ $('sidePanel').classList.toggle('compact', $('panelBody').scrollTop>28); }, {passive:true});
+  // swipe down on the header closes the drawer (mobile bottom-sheet)
+  (function(){
+    const hdr=$('panelHeader'); let st=null;
+    hdr.addEventListener('pointerdown', e=>{ if(window.innerWidth>820 || e.target.closest('button')) return; st={y:e.clientY,id:e.pointerId,dy:0}; });
+    hdr.addEventListener('pointermove', e=>{ if(!st||e.pointerId!==st.id) return; st.dy=Math.max(0,e.clientY-st.y); if(st.dy>6){ try{hdr.setPointerCapture(e.pointerId);}catch(_){} $('sidePanel').style.transition='none'; $('sidePanel').style.transform=`translateY(${st.dy}px)`; } });
+    const end=e=>{ if(!st) return; const dy=st.dy; st=null; $('sidePanel').style.transition=''; if(dy>90){ closePanel(); } else { $('sidePanel').style.transform=''; } };
+    hdr.addEventListener('pointerup', end); hdr.addEventListener('pointercancel', end);
+  })();
+  // Tuck the music pill away whenever a drawer, sheet or dialog is open (nothing floats over an overlay).
+  function syncOverlayState(){
+    const open = $('sidePanel').classList.contains('open') && window.innerWidth<=820
+      || [...document.querySelectorAll('.modal-backdrop, .sheet-backdrop')].some(m=>{ const cs=getComputedStyle(m); return cs.display!=='none' && (!m.classList.contains('sheet-backdrop') || m.classList.contains('open')); });
+    document.body.classList.toggle('overlay-open', !!open);
+  }
+  new MutationObserver(syncOverlayState).observe(document.body,{subtree:true,attributes:true,attributeFilter:['style','class']});
+  window.addEventListener('resize', syncOverlayState);
+  // Escape: topmost layer first (add-relative sheet, then the drawer if no dialog is open)
+  document.addEventListener('keydown', e=>{
+    if(e.key!=='Escape') return;
+    if($('addRelBackdrop').classList.contains('open')){ closeAddRel(); return; }
+    const modalOpen = [...document.querySelectorAll('.modal-backdrop, .sheet-backdrop.open')].some(m=>getComputedStyle(m).display!=='none');
+    if(modalOpen) return;
+    if($('sidePanel').classList.contains('open')) closePanel();
+  });
   $('pinToggleBtn').onclick = ()=>{
     const p = personById(selectedId);
     p.pinned = !p.pinned;
@@ -4220,23 +4802,59 @@
     return age>=0 ? age : null;
   }
 
-  // ---------- HOME ----------
+  // ---------- HOME (dashboard) ----------
+  let homeBooted = false;            // the holographic boot effect plays once per session
+  function userDisplayName(){
+    const u = currentUser || {}; const md = u.user_metadata || {};
+    const n = md.full_name || md.name || md.display_name;
+    if(n && String(n).trim()) return String(n).trim().split(/\s+/)[0];
+    const local = String(u.email||'').split('@')[0].replace(/\d+$/,'').replace(/[._-]+/g,' ').trim();
+    return local ? local.charAt(0).toUpperCase()+local.slice(1) : '';
+  }
+  // Completeness: average, over all members, of 4 real checks (name, birth date, a relationship link, a photo).
+  function treeCompleteness(people){
+    if(!people.length) return { pct:0, parts:{name:0,birth:0,link:0,photo:0} };
+    const parts = { name:0, birth:0, link:0, photo:0 };
+    people.forEach(p=>{
+      if(p.firstName && String(p.firstName).trim() && p.lastName && String(p.lastName).trim()) parts.name++;
+      if(p.birthDate && String(p.birthDate).trim()) parts.birth++;
+      if((p.parents||[]).length || (p.children||[]).length || (p.spouseIds||[]).length) parts.link++;
+      if(p.photo) parts.photo++;
+    });
+    const n = people.length;
+    const pct = Math.round(((parts.name+parts.birth+parts.link+parts.photo)/(4*n))*100);
+    return { pct, parts };
+  }
+  const HX_ICON = {
+    users:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 5a3 3 0 0 1 0 6M18 14c1.8.7 3 2.5 3 5"/></svg>',
+    gens:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.2"/><circle cx="6" cy="19" r="2.2"/><circle cx="18" cy="19" r="2.2"/><path d="M12 7v5M6 17v-3h12v3"/></svg>',
+    cal:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>',
+    brain:PF_ICON.brain,
+    plus:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>',
+    event:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.4 5 5.6.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.6-.8z"/></svg>',
+    tree:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.2"/><circle cx="6" cy="19" r="2.2"/><circle cx="18" cy="19" r="2.2"/><path d="M12 7v5M6 17v-3h12v3"/></svg>'
+  };
   function miniTreeSvg(layout){
     const ids = Object.keys(layout.positions);
     if(!ids.length) return '';
     const W=184, H=64;
     let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
     ids.forEach(id=>{ const p=layout.positions[id]; minX=Math.min(minX,p.x); minY=Math.min(minY,p.y); maxX=Math.max(maxX,p.x+W); maxY=Math.max(maxY,p.y+H); });
-    const pad=30, vbW=maxX-minX+pad*2, vbH=maxY-minY+pad*2;
+    const pad=40, vbW=maxX-minX+pad*2, vbH=maxY-minY+pad*2;
     const cx = id=> layout.positions[id].x - minX + pad + W/2;
     const top = id=> layout.positions[id].y - minY + pad;
-    let lines='', nodes='';
+    // font size in viewBox units so the labels land around 11px on screen whatever the tree size
+    const approxPx = Math.max(240, Math.min(window.innerWidth - 56, 640));
+    const fs = Math.max(20, Math.min(46, 11.5 * vbW / approxPx));
+    const R = Math.max(26, fs*1.15);
+    let lines='', flows='', nodes='';
     peopleArr().forEach(p=>{
       if(!layout.positions[p.id]) return;
       (p.parents||[]).forEach(pid=>{
         if(!layout.positions[pid]) return;
-        const x1=cx(pid), y1=top(pid)+H, x2=cx(p.id), y2=top(p.id), my=(y1+y2)/2;
-        lines += `<path d="M${x1} ${y1} V${my} H${x2} V${y2}" class="mt-line"/>`;
+        const x1=cx(pid), y1=top(pid)+H/2+R+fs*1.7, x2=cx(p.id), y2=top(p.id)+H/2-R, my=(y1+y2)/2;
+        const d = `M${x1} ${y1} V${my} H${x2} V${y2}`;
+        lines += `<path d="${d}" class="mt-line"/>`; flows += `<path d="${d}" class="mt-flow" pathLength="100"/>`;
       });
       (p.spouseIds||[]).forEach(sid=>{
         if(sid<p.id || !layout.positions[sid]) return;
@@ -4245,9 +4863,31 @@
     });
     peopleArr().forEach(p=>{
       if(!layout.positions[p.id]) return;
-      nodes += `<rect x="${cx(p.id)-W/2+10}" y="${top(p.id)+H/2-9}" width="${W-20}" height="18" rx="9" class="mt-node"/>`;
+      const x = cx(p.id), y = top(p.id)+H/2;
+      const short = (p.firstName||'?').length>9 ? (p.firstName||'?').slice(0,8)+'…' : (p.firstName||'?');
+      nodes += `<g class="mt-g" data-tree-node="${p.id}" role="button" tabindex="0" aria-label="Open ${escapeHtml(fullName(p))} in the tree" transform="translate(${x} ${y})">
+        <circle r="${R}" class="mt-node"/><text class="mt-ini" y="${fs*0.36}" font-size="${fs}">${escapeHtml(initialsOf(p))}</text>
+        <text class="mt-name" y="${R+fs*1.25}" font-size="${fs*0.92}">${escapeHtml(short)}</text></g>`;
     });
-    return `<svg class="mini-tree" viewBox="0 0 ${vbW} ${vbH}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Overview of your family tree">${lines}${nodes}</svg>`;
+    return `<svg class="mini-tree" viewBox="0 0 ${vbW} ${vbH+fs*2}" preserveAspectRatio="xMidYMid meet" role="group" aria-label="Overview of your family tree. Tap a person to open them in the tree.">${lines}${flows}${nodes}</svg>`;
+  }
+  // upcoming birthdays within 30 days (living members with a recorded birth date) — real dates only
+  function upcomingDates(people){
+    const out=[]; const now=new Date(); const t0=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+    people.forEach(p=>{
+      if(p.living===false && p.deathDate) return;
+      const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(p.birthDate||''); if(!m) return;
+      let d=new Date(t0.getFullYear(),+m[2]-1,+m[3]); if(d<t0) d=new Date(t0.getFullYear()+1,+m[2]-1,+m[3]);
+      const days=Math.round((d-t0)/86400000); if(days>30) return;
+      out.push({ p, days, age:d.getFullYear()-(+m[1]), date:d });
+    });
+    return out.sort((a,b)=>a.days-b.days).slice(0,4);
+  }
+  function countUp(el, to, ms){
+    if(isRM() || to<=0){ el.textContent = to; return; }
+    const t0=performance.now(); el.textContent = 0;
+    const tick=now=>{ const k=Math.min(1,(now-t0)/ms); el.textContent = Math.round(to*(1-Math.pow(1-k,3))); if(k<1) requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
   }
   function renderHome(){
     const root = $('homeRoot'); const t = tree(); if(!t) return;
@@ -4255,8 +4895,8 @@
     if(!people.length){
       root.innerHTML = `
         <div class="hx-hero hx-empty">
-          <div class="hx-eyebrow">FAMILY COMMAND CENTER</div>
-          <h2 class="hx-title">${escapeHtml(t.name)}</h2>
+          <div class="hx-eyebrow">FAMILY TREE · ${escapeHtml(t.name)}</div>
+          <h2 class="hx-title">Start your family tree</h2>
           <p class="hx-sub">Nothing is recorded yet. Add the first person — yourself, a parent, a grandparent — and the rest of your family network builds outward from there.</p>
           <button type="button" class="hx-btn hx-btn-primary" id="homeStartBtn">+ Add the first family member</button>
         </div>`;
@@ -4264,67 +4904,121 @@
       return;
     }
     const layout = computeLayout();
-    const gens = layout.maxGen+1;
-    const deceased = people.filter(p=>!p.living && p.deathDate).length;
+    const n = people.length, gens = layout.maxGen+1;
+    const withBirth = people.filter(p=>p.birthDate && String(p.birthDate).trim()).length;
+    const missingBirth = n - withBirth;
+    const withObs = people.filter(p=> normalizeTraits(p.traits).some(e=>traitEntryMeta(e))).length;
     const pinned = people.filter(p=>p.pinned).length;
-    const withObs = people.filter(p=> normalizeTraits(p.traits).length).length;
-    const years = people.map(p=>yearOf(p.birthDate)).filter(y=>y!==null);
-    const spanTxt = years.length ? `${Math.min(...years)} – ${Math.max(...years)}` : null;
-    const recent = people.filter(p=>p.createdAt).slice().sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt)).slice(0,4);
+    const comp = treeCompleteness(people);
     const events = collectTimelineEvents();
-    const today = new Date().toISOString().slice(0,10);
-    const past = events.filter(e=>e.date<=today).slice(-4).reverse();
-    const stat = (n,l)=>`<div class="hx-stat"><div class="hx-stat-n">${n}</div><div class="hx-stat-l">${l}</div></div>`;
+    const customEvents = (t.events||[]).length;
+    const recent = people.filter(p=>p.createdAt).slice().sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt)).slice(0,4);
+    const upcoming = upcomingDates(people);
+    const name = userDisplayName();
+    // 1–3 suggestions, only for things that are genuinely missing
+    const steps = [];
+    if(missingBirth>0) steps.push({ k:'dates', text:`${withBirth} of ${n} member${n===1?' has':'s have'} a birth date. Add the rest to build your Timeline.`, btn:'Add birth dates' });
+    if(withObs<n) steps.push({ k:'obs', text: withObs===0 ? 'No personality observations yet. Record your first one in Persona.' : `Only ${withObs} of ${n} member${n===1?' has':'s have'} personality observations.`, btn:'Add observation' });
+    if(!customEvents) steps.push({ k:'event', text:'No life events recorded yet. Marriages, moves and milestones show up on your Timeline.', btn:'Record an event' });
+    const nextSteps = steps.slice(0,3);
+    const R=44, C=2*Math.PI*R;
+    const stat = (id,icon,num,label,goto)=>`<button type="button" class="hx-stat hx-stat-btn" data-stat="${id}" aria-label="${label}: ${num}. ${goto}">
+        <span class="hx-stat-ico">${HX_ICON[icon]}</span><span class="hx-stat-n" data-count="${num}">${num}</span><span class="hx-stat-l">${label}</span></button>`;
+    const boot = !homeBooted && !isRM();
+    root.className = boot ? 'hx-boot' : '';
     root.innerHTML = `
-      <div class="hx-hero">
-        <div class="hx-eyebrow">FAMILY COMMAND CENTER</div>
-        <h2 class="hx-title">${escapeHtml(greetingText())}</h2>
-        <p class="hx-sub">${escapeHtml(t.name)}${t.description?' — '+escapeHtml(t.description):''}</p>
-        <div class="hx-stats">
-          ${stat(people.length, people.length===1?'Member':'Members')}
-          ${stat(gens, gens===1?'Generation':'Generations')}
-          ${stat(years.length, 'Birth dates recorded')}
-          ${stat(withObs, 'With observations')}
+      <section class="hx-hero hx-hero-d" aria-labelledby="hxGreet">
+        <div class="hx-eyebrow">FAMILY TREE · ${escapeHtml(t.name)}</div>
+        <div class="hx-hero-row">
+          <div class="hx-hero-text">
+            <h2 class="hx-title" id="hxGreet">${escapeHtml(greetingText())}${name?', '+escapeHtml(name):''}</h2>
+            <p class="hx-sub" style="margin-bottom:0;">Your family tree has <b>${n}</b> member${n===1?'':'s'} across <b>${gens}</b> generation${gens===1?'':'s'}.</p>
+          </div>
+          <div class="hx-ring" role="img" aria-label="Tree completeness ${comp.pct} percent">
+            <svg viewBox="0 0 110 110" aria-hidden="true"><circle cx="55" cy="55" r="${R}" class="hx-ring-bg"/><circle cx="55" cy="55" r="${R}" class="hx-ring-fg" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C*(1-comp.pct/100)).toFixed(1)}" transform="rotate(-90 55 55)"/></svg>
+            <div class="hx-ring-n"><b data-count="${comp.pct}">${comp.pct}</b><span>%</span></div>
+          </div>
         </div>
+        <p class="hx-ring-note">Tree completeness: how many names, birth dates, family links and photos are filled in across all ${n} member${n===1?'':'s'} (${comp.parts.name} names · ${comp.parts.birth} birth dates · ${comp.parts.link} linked · ${comp.parts.photo} photos).</p>
+      </section>
+      ${nextSteps.length ? `<section class="hx-panel hx-next" aria-labelledby="hxNextT">
+        <div class="hx-panel-head"><h3 id="hxNextT">Next steps</h3></div>
+        <div class="hx-next-list">${nextSteps.map(x=>`<div class="hx-next-row"><p>${escapeHtml(x.text)}</p><button type="button" class="hx-btn hx-btn-primary" data-next="${x.k}">${escapeHtml(x.btn)}</button></div>`).join('')}</div>
+      </section>` : ''}
+      <div class="hx-stats hx-stats-4">
+        ${stat('members','users',n,n===1?'Member':'Members','Opens the tree')}
+        ${stat('gens','gens',gens,gens===1?'Generation':'Generations','Opens the tree')}
+        ${stat('birth','cal',withBirth,'Birth dates', missingBirth?'Lists members missing a date':'Opens the Timeline')}
+        ${stat('obs','brain',withObs,'With observations','Opens Persona')}
       </div>
       <div class="hx-grid">
         <section class="hx-panel hx-span2" aria-labelledby="hxPreviewT">
           <div class="hx-panel-head"><h3 id="hxPreviewT">Family network</h3>
             <button type="button" class="hx-btn" data-goto="tree">Open full tree →</button></div>
           <div class="hx-preview">${miniTreeSvg(layout)}</div>
+          <p class="hx-muted" style="margin:8px 2px 0;">Tap a person to open them in the tree.</p>
         </section>
-        <section class="hx-panel" aria-labelledby="hxActT">
+        <section class="hx-panel hx-span2" aria-labelledby="hxActT">
           <div class="hx-panel-head"><h3 id="hxActT">Quick actions</h3></div>
-          <div class="hx-actions">
-            <button type="button" class="hx-action" id="homeAddBtn"><b>＋</b><span>Add a member</span></button>
-            <button type="button" class="hx-action" id="homeEventBtn"><b>◷</b><span>Record an event</span></button>
-            <button type="button" class="hx-action" data-goto="members"><b>☷</b><span>All members</span></button>
-            <button type="button" class="hx-action" data-goto="pinned"><b>★</b><span>Pinned (${pinned})</span></button>
+          <div class="hx-qa">
+            <button type="button" class="hx-qa-b" id="homeAddBtn"><span>${HX_ICON.plus}</span>Add member</button>
+            <button type="button" class="hx-qa-b" id="homeObsBtn"><span>${HX_ICON.brain}</span>Add observation</button>
+            <button type="button" class="hx-qa-b" id="homeEventBtn"><span>${HX_ICON.event}</span>Add event</button>
+            <button type="button" class="hx-qa-b" data-goto="tree"><span>${HX_ICON.tree}</span>Open tree</button>
           </div>
         </section>
-        <section class="hx-panel" aria-labelledby="hxRecT">
+        ${upcoming.length ? `<section class="hx-panel" aria-labelledby="hxUpT">
+          <div class="hx-panel-head"><h3 id="hxUpT">Coming up</h3></div>
+          <div class="hx-list">${upcoming.map(u=>`<div class="hx-row">${personLink(u.p)}<span class="hx-row-meta">${u.days===0?'Today':u.days===1?'Tomorrow':'in '+u.days+' days'} · ${u.age>0?'turns '+u.age:''}</span></div>`).join('')}</div>
+        </section>` : ''}
+        ${recent.length ? `<section class="hx-panel" aria-labelledby="hxRecT">
           <div class="hx-panel-head"><h3 id="hxRecT">Recently added</h3></div>
-          ${recent.length ? `<div class="hx-list">${recent.map(p=>`<div class="hx-row">${personLink(p)}<span class="hx-row-meta">${escapeHtml(fmtRelative(p.createdAt))}</span></div>`).join('')}</div>` : `<p class="hx-muted">No recently added members.</p>`}
-        </section>
-        <section class="hx-panel" aria-labelledby="hxEvT">
-          <div class="hx-panel-head"><h3 id="hxEvT">Recorded events</h3>
-            <button type="button" class="hx-btn" data-goto="timeline">Timeline →</button></div>
-          ${past.length ? `<div class="hx-list">${past.map(e=>`<div class="hx-row"><span class="hx-ev-ico hx-k-${e.kind}" aria-hidden="true"></span><span class="hx-row-main">${escapeHtml(e.title)}</span><span class="hx-row-meta">${escapeHtml(fmtDate(e.date))}</span></div>`).join('')}</div>` : `<p class="hx-muted">No dated events yet. Add birth dates in profiles, or record an event.</p>`}
-        </section>
-        <section class="hx-panel" aria-labelledby="hxHistT">
-          <div class="hx-panel-head"><h3 id="hxHistT">History overview</h3></div>
-          <dl class="hx-dl">
-            <div><dt>Birth years recorded</dt><dd>${years.length} of ${people.length}</dd></div>
-            <div><dt>Span of births</dt><dd>${spanTxt || '—'}</dd></div>
-            <div><dt>Deceased (date recorded)</dt><dd>${deceased}</dd></div>
-            <div><dt>Pinned members</dt><dd>${pinned}</dd></div>
-          </dl>
-        </section>
+          <div class="hx-list">${recent.map(p=>`<div class="hx-row">${personLink(p)}<span class="hx-row-meta">${escapeHtml(fmtRelative(p.createdAt))}</span></div>`).join('')}</div>
+        </section>` : ''}
       </div>`;
     bindViewActions(root);
-    $('homeAddBtn').onclick = ()=>{ switchView('tree'); const sel = selectedId && personById(selectedId) ? selectedId : people[0].id; selectedId = sel; openPanel(sel); toast('Choose Add Child, Parent, Sibling or Spouse from the profile.'); };
+    root.querySelectorAll('[data-tree-node]').forEach(g=>{
+      const go = ()=>{ const id=g.dataset.treeNode; switchView('tree'); afterLayout(()=>centerOnPerson(id)); };
+      g.addEventListener('click', go); g.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); go(); } });
+    });
+    root.querySelectorAll('[data-stat]').forEach(b=> b.onclick = ()=>{
+      const k=b.dataset.stat;
+      if(k==='members'||k==='gens') switchView('tree');
+      else if(k==='birth'){ if(missingBirth) openDatesSheet(); else switchView('timeline'); }
+      else if(k==='obs') switchView('persona');
+    });
+    root.querySelectorAll('[data-next]').forEach(b=> b.onclick = ()=>{
+      const k=b.dataset.next;
+      if(k==='dates') openDatesSheet(); else if(k==='obs') obsOpen({mode:'add'}); else if(k==='event') openEventModal();
+    });
+    $('homeAddBtn').onclick = ()=>{ const sel = selectedId && personById(selectedId) ? selectedId : people[0].id; selectedId = sel; switchView('tree'); openPanel(sel); openAddRel(); };
+    $('homeObsBtn').onclick = ()=> obsOpen({mode:'add'});
     $('homeEventBtn').onclick = ()=> openEventModal();
+    if(boot){ homeBooted = true; root.querySelectorAll('[data-count]').forEach(el=>countUp(el, +el.dataset.count, 800)); setTimeout(()=>root.classList.remove('hx-boot'), 1300); }
+    else homeBooted = true;
   }
+  // Quick list for adding missing birth dates (real members only; saved only after the write is confirmed).
+  function openDatesSheet(){
+    const miss = peopleArr().filter(p=>!(p.birthDate && String(p.birthDate).trim()));
+    const b = $('datesBackdrop');
+    $('datesList').innerHTML = miss.length ? miss.map(p=>`<label class="dt-row"><span class="rel-av" aria-hidden="true">${escapeHtml(initialsOf(p))}</span><span class="dt-name">${escapeHtml(fullName(p))}</span><input type="date" data-dt="${p.id}" aria-label="Birth date for ${escapeHtml(fullName(p))}"></label>`).join('') : '<p class="hx-muted">Everyone has a birth date.</p>';
+    $('datesError').textContent=''; $('datesSaveBtn').disabled=false; $('datesSaveBtn').textContent='Save dates';
+    b.classList.add('open'); setTimeout(()=>{ const f=b.querySelector('input'); if(f) try{f.focus({preventScroll:true});}catch(_){} },60);
+  }
+  function closeDatesSheet(){ $('datesBackdrop').classList.remove('open'); }
+  $('datesCloseBtn').onclick = closeDatesSheet; $('datesCancelBtn').onclick = closeDatesSheet;
+  $('datesBackdrop').addEventListener('click', e=>{ if(e.target.id==='datesBackdrop') closeDatesSheet(); });
+  $('datesSaveBtn').onclick = async ()=>{
+    const inputs=[...document.querySelectorAll('#datesList [data-dt]')].filter(i=>i.value);
+    if(!inputs.length){ $('datesError').textContent='Pick at least one date, or cancel.'; return; }
+    $('datesSaveBtn').disabled=true; $('datesSaveBtn').textContent='Saving…'; $('datesError').textContent='';
+    const before = inputs.map(i=>({id:i.dataset.dt, v:personById(i.dataset.dt).birthDate||''}));
+    inputs.forEach(i=>{ const p=personById(i.dataset.dt); p.birthDate=i.value; p.updatedAt=new Date().toISOString(); });
+    touchTree(); clearTimeout(saveTimer);
+    const ok = await persistDb();
+    if(!ok){ before.forEach(x=>{ personById(x.id).birthDate=x.v; }); touchTree(); $('datesError').textContent='Could not save — check your connection. Your dates are still in the list; try again.'; $('datesSaveBtn').disabled=false; $('datesSaveBtn').textContent='Save dates'; return; }
+    closeDatesSheet(); renderAll(); toast(inputs.length===1?'Birth date saved.':inputs.length+' birth dates saved.');
+  };
 
   // ---------- TIMELINE ----------
   let timelineFilter = 'all';
@@ -4419,6 +5113,7 @@
   $('eventCloseBtn').onclick = closeEventModal;
   $('eventCancelBtn').onclick = closeEventModal;
   $('eventModalBackdrop').addEventListener('click', e=>{ if(e.target===$('eventModalBackdrop')) closeEventModal(); });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape' && $('eventModalBackdrop').style.display==='flex') closeEventModal(); });
   $('evKind').addEventListener('change', ()=>{ $('evWithField').style.display = $('evKind').value==='marriage' ? 'block' : 'none'; });
   $('eventSaveBtn').onclick = async ()=>{
     const title = $('evTitle').value.trim(), date = $('evDate').value;
@@ -4545,6 +5240,10 @@
   document.addEventListener('visibilitychange', ()=>{ const r=$('personaRoot'); if(r) r.classList.toggle('pz-paused', document.hidden || currentView!=='persona'); });
 
   function pzBuildItems(){
+    const real = pzBuildRealItems();
+    return real.length ? real.concat([{ key:'new', kind:'ghost' }]) : real;   // trailing "+ New observation" card
+  }
+  function pzBuildRealItems(){
     const people = peopleArr(); const layout = computeLayout(); const q = PZ.query.trim().toLowerCase();
     if(PZ.mode==='member'){
       return people.map(p=>({ p, entries: normalizeTraits(p.traits).map(entry=>({entry, meta:traitEntryMeta(entry)})).filter(x=>x.meta) }))
@@ -4574,10 +5273,21 @@
     const frame = (inner, extra)=>`<div class="pz-edge1"></div><div class="pz-edge2"></div><div class="pz-body"></div><div class="pz-grid"></div><div class="pz-glare"></div>
       <i class="pz-tick pz-tick-t"></i><i class="pz-tick pz-tick-b"></i>${inner}`;
     let front, back;
+    if(item.kind==='ghost'){
+      return `<div class="pz-card pz-ghost" data-k="new"><div class="pz-glow"></div>
+        <div class="pz-flip"><div class="pz-face pz-front-face">${frame(`<div class="pz-content pz-front pz-ghost-c">
+          <div class="pz-hud"><span>${tag}</span><span>NEW</span></div>
+          <button type="button" class="pz-plus" data-pz-new aria-label="New observation"><span aria-hidden="true">+</span></button>
+          <h3 class="pz-name">New observation</h3>
+          <div class="pz-sub">Record a trait for a family member</div>
+          <div class="pz-status"><span class="pz-status-line"></span><span>TAP TO ADD · PRIVATE</span></div></div>`)}</div><div class="pz-face pz-back-face"></div></div>
+        <i class="pz-node pz-n1"></i><i class="pz-node pz-n2"></i><i class="pz-node pz-n3"></i><i class="pz-node pz-n4"></i></div>`;
+    }
     if(item.kind==='member'){
       const p = item.person; const total = item.entries.length;
-      const yrs = `${yearOf(p.birthDate)||'?'} – ${p.living ? 'Living' : (yearOf(p.deathDate)||'N/A')}`;
-      const maxChips = window.innerWidth<=820 ? 2 : 4;
+      const by = yearOf(p.birthDate), dy = yearOf(p.deathDate);
+      const yrs = p.living ? (by ? `${by} – Living` : 'Living') : (by && dy ? `${by} – ${dy}` : by ? `Born ${by}` : dy ? `Died ${dy}` : 'Dates not recorded');
+      const maxChips = 3;
       const chips = item.entries.slice(0,maxChips).map(e=>`<span class="pz-chip pz-tier-${e.meta.tier}">${escapeHtml(e.meta.title)}</span>`).join('') + (total>maxChips?`<span class="pz-chip pz-chip-more">+${total-maxChips}</span>`:'');
       front = frame(`<div class="pz-content pz-front">
         <div class="pz-hud"><span>${tag}</span><span>MEMBER</span></div>
@@ -4595,9 +5305,11 @@
         <div class="pz-hud"><span>${tag}</span><span>${escapeHtml(fullName(p))}</span></div>
         <div class="pz-back-scroll" tabindex="0" aria-label="Observations for ${escapeHtml(fullName(p))}">${rowsHtml}</div>
         <div class="pz-actions">
-          <button type="button" class="pz-act" data-pz-act="edit">Edit observations</button>
-          <button type="button" class="pz-act" data-pz-act="highlight">Highlight in Tree</button>
-          <button type="button" class="pz-act" data-pz-act="profile">Open profile</button></div></div>`);
+          <button type="button" class="pz-act pz-act-p" data-pz-act="addtrait">＋ Add trait</button>
+          <button type="button" class="pz-act pz-act-p" data-pz-act="edit">Edit</button>
+          <button type="button" class="pz-act pz-act-d" data-pz-act="remove">Remove</button>
+          <button type="button" class="pz-act pz-act-w" data-pz-act="highlight">Highlight in Tree</button>
+          <button type="button" class="pz-act pz-act-w" data-pz-act="profile">Open profile</button></div></div>`);
     } else {
       const m = item.meta; const catLabel = m.isCustom ? 'Other' : TRAIT_CATEGORY_BY_ID[m.category].label; const c = item.rows.length;
       front = frame(`<div class="pz-content pz-front">
@@ -4607,20 +5319,21 @@
         <p class="pz-expl">${escapeHtml(m.short)}</p>
         <div class="pz-bigcount"><b>${c}</b><span>${c===1?'family member':'family members'}</span></div>
         <div class="pz-status"><span class="pz-status-line"></span><span>PERSONAL OBSERVATION · TAP TO FLIP</span></div></div>`);
-      const rowsHtml = item.rows.map(r=>`<div class="pz-trait"><button type="button" class="hx-person" data-pz-person="${r.person.id}">${avatarMini(r.person)}<span>${escapeHtml(fullName(r.person))}</span></button>
+      const rowsHtml = item.rows.map(r=>`<div class="pz-trait"><div class="pz-trait-row"><button type="button" class="hx-person" data-pz-person="${r.person.id}">${avatarMini(r.person)}<span>${escapeHtml(fullName(r.person))}</span></button>
+          <span class="pz-row-btns"><button type="button" class="pz-mini" data-pz-edit="${r.person.id}" aria-label="Edit observations for ${escapeHtml(fullName(r.person))}">Edit</button><button type="button" class="pz-mini pz-mini-d" data-pz-rm="${r.person.id}" aria-label="Remove ${escapeHtml(m.title)} from ${escapeHtml(fullName(r.person))}">✕</button></span></div>
           ${r.note&&r.note.trim()?`<div class="pz-note"><b>Notes</b> ${escapeHtml(r.note)}</div>`:''}</div>`).join('');
       back = frame(`<div class="pz-content pz-backc">
         <div class="pz-hud"><span>${tag}</span><span>${escapeHtml(m.title)}</span></div>
         <div class="pz-back-scroll" tabindex="0" aria-label="Members with ${escapeHtml(m.title)}">
           ${m.isCustom?'':`<div class="pz-trait-d" style="margin-bottom:8px;">${escapeHtml(m.full)}</div>`}${rowsHtml}</div>
-        <div class="pz-actions"><button type="button" class="pz-act" data-pz-act="highlight">Highlight in Tree</button></div></div>`);
+        <div class="pz-actions"><button type="button" class="pz-act pz-act-p" data-pz-act="addmember">＋ Add member</button><button type="button" class="pz-act pz-act-w" data-pz-act="highlight">Highlight in Tree</button></div></div>`);
     }
     return `<div class="pz-card" data-k="${escapeHtml(item.key)}"><div class="pz-glow"></div>
       <div class="pz-flip"><div class="pz-face pz-front-face">${front}</div><div class="pz-face pz-back-face">${back}</div></div>
       <i class="pz-node pz-n1"></i><i class="pz-node pz-n2"></i><i class="pz-node pz-n3"></i><i class="pz-node pz-n4"></i><div class="pz-scan"></div></div>`;
   }
   function pzCardLabel(item, idx, n){
-    return `Card ${idx+1} of ${n}: ${item.kind==='member' ? fullName(item.person) : item.meta.title}`;
+    return `Card ${idx+1} of ${n}: ${item.kind==='ghost' ? 'New observation' : item.kind==='member' ? fullName(item.person) : item.meta.title}`;
   }
 
   // ---- constellation: the real family drawn as faint dots and lines ----
@@ -4630,7 +5343,7 @@
     let minX=1e9,minY=1e9,maxX=-1e9,maxY=-1e9;
     ids.forEach(id=>{ const q=layout.positions[id]; minX=Math.min(minX,q.x); maxX=Math.max(maxX,q.x); minY=Math.min(minY,q.y); maxY=Math.max(maxY,q.y); });
     const w=Math.max(1,maxX-minX), h=Math.max(1,maxY-minY);
-    const X = id=> 6 + (layout.positions[id].x-minX)/w*88, Y = id=> 8 + (layout.positions[id].y-minY)/h*84;
+    const X = id=> 22 + (layout.positions[id].x-minX)/w*56, Y = id=> 8 + (layout.positions[id].y-minY)/h*84;
     let lines='', dots='';
     peopleArr().forEach(p=>{
       if(!layout.positions[p.id]) return;
@@ -4645,10 +5358,16 @@
     const prevKey = PZ.items[PZ.index] ? PZ.items[PZ.index].key : null;   // remember the card across tab switches / filters
     cancelAnimationFrame(PZ.raf); PZ.raf = 0; PZ.drag = null; PZ.p = 0;
     PZ.items = pzBuildItems();
+    let focusIdx = -1;
+    if(PZ.focusKey){
+      focusIdx = PZ.items.findIndex(i=>i.key===PZ.focusKey);
+      if(focusIdx<0 && (PZ.query||PZ.cat!=='all')){ PZ.query=''; PZ.cat='all'; PZ.items = pzBuildItems(); focusIdx = PZ.items.findIndex(i=>i.key===PZ.focusKey); }
+    }
     const n = PZ.items.length;
-    const found = prevKey ? PZ.items.findIndex(i=>i.key===prevKey) : -1;
+    const found = focusIdx>=0 ? focusIdx : (prevKey ? PZ.items.findIndex(i=>i.key===prevKey) : -1);
     PZ.index = found>=0 ? found : Math.min(PZ.index, Math.max(0, n-1));
     if(found<0) PZ.index = 0;
+    const materialize = focusIdx>=0 ? PZ.focusKey : null; PZ.focusKey = null;
     if(PZ.filtersOpen===null) PZ.filtersOpen = window.innerWidth>820;
     root.className = 'pz-wrap' + (isRM()?' pz-rm':'');
     const any = pzHasAnyObservations();
@@ -4661,6 +5380,7 @@
           </div>
           <button type="button" class="pz-tog" id="pzLoopBtn" aria-pressed="${!!db.settings.personaLoop}" title="Loop the deck endlessly">∞ Loop</button>
           <button type="button" class="pz-tog" id="pzFilterBtn" aria-expanded="${PZ.filtersOpen}" aria-controls="pzFilters">Filters</button>
+          <button type="button" class="pz-add" id="pzAddBtn"><span aria-hidden="true">＋</span> Add observation</button>
         </div>
         <div class="pz-filters" id="pzFilters"${PZ.filtersOpen?'':' hidden'}>
           <input type="search" id="pzSearch" placeholder="Search members or traits…" aria-label="Search the deck" value="${escapeHtml(PZ.query)}">
@@ -4687,10 +5407,11 @@
     for(let s=-2;s<=2;s++){ const el=document.createElement('div'); el.className='pz-slot'; el.dataset.s=s; deck.appendChild(el); PZ.els.push(el); }
     bindPersonaControls(root);
     PZ.built = true;
-    if(!n){ pzShowEmpty(any); pzUpdateNav(); return; }
+    if(!n){ $('pzDeck').style.display='none'; pzShowEmpty(any); pzUpdateNav(); return; }
     $('pzEmpty').hidden = true;
     pzSizeStage(); pzRebind(true);
     if(!keepPlace) pzEnter();
+    if(materialize && !isRM()){ const c=PZ.els[2] && PZ.els[2].firstElementChild; if(c){ c.classList.add('pz-materialize'); setTimeout(()=>c.classList.remove('pz-materialize'),1100); } }
     root.classList.remove('pz-paused');
   }
   function pzShowEmpty(any){
@@ -4702,7 +5423,7 @@
         <div class="pz-empty-row"><select id="pzEmptyPick" aria-label="Family member">${people.map(p=>`<option value="${p.id}">${escapeHtml(fullName(p))}</option>`).join('')}</select>
         <button type="button" class="hx-btn hx-btn-primary" id="pzEmptyBtn">Add the first observation</button></div>`
         : `<h3>No family members yet</h3><p>Add a family member first, then record observations in their profile.</p><button type="button" class="hx-btn hx-btn-primary" id="pzEmptyTree">Go to the tree</button>`;
-      if($('pzEmptyBtn')) $('pzEmptyBtn').onclick = ()=>{ const id=$('pzEmptyPick').value; selectedId=id; pendingRelation=null; openPersonModal(id); $('openTraitPickerBtn').click(); };
+      if($('pzEmptyBtn')) $('pzEmptyBtn').onclick = ()=>{ obsOpen({ mode:'add', personId:$('pzEmptyPick').value, lock:true }); };
       if($('pzEmptyTree')) $('pzEmptyTree').onclick = ()=> switchView('tree');
     } else {
       el.innerHTML = `<h3>No cards match</h3><p>Nothing in the deck matches your search or category.</p><button type="button" class="hx-btn" id="pzClearFilters">Clear filters</button>`;
@@ -4714,7 +5435,7 @@
     const st = $('pzStage'); if(!st) return;
     const W = st.clientWidth || window.innerWidth, H = st.clientHeight || 420;
     PZ.stageW = W; PZ.stageH = H;
-    const phone = W < 700;
+    const phone = W < 700; PZ.phone = phone;
     PZ.cw = phone ? Math.max(210, Math.min(340, W - 100)) : Math.min(360, Math.max(280, W*0.30));
     PZ.ch = Math.max(300, Math.min(500, H - 84));
     const sideScale = 0.82;
@@ -4741,7 +5462,8 @@
       const rotY = rm ? 0 : Math.max(-38, Math.min(38, -e*28));
       const rotZ = rm ? 0 : p*4*(1-Math.min(ae,1));
       let op = ae<=1 ? 1 - 0.5*ae : Math.max(0, 0.5 - (ae-1)*0.9);
-      if(rm) op = ae<0.5 ? 1 : (ae<=1.05 ? 0.5 : 0);
+      if(PZ.phone) op = Math.max(0, 1 - ae);
+      if(rm) op = ae<0.5 ? 1 : (ae<=1.05 ? (PZ.phone?0:0.5) : 0);
       el.style.transform = `translate3d(${x.toFixed(1)}px,0,${(-ae*60).toFixed(0)}px) rotateY(${rotY.toFixed(2)}deg) rotateZ(${rotZ.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
       el.style.opacity = op.toFixed(3);
       el.style.zIndex = String(10 - Math.round(ae*3));
@@ -4805,11 +5527,11 @@
     cancelAnimationFrame(PZ.raf);
     if(isRM()){ PZ.p = target; pzLayout(); PZ.raf=0; if(done) done(); return; }
     let x = PZ.p, v = v0||0, last = performance.now();
-    const K = 220, C = 26;                 // same spring for both directions
+    const K = 280, C = 30;                 // same spring for both directions
     const step = now=>{
       const dt = Math.min(0.032, (now-last)/1000); last = now;
       v += (-K*(x-target) - C*v) * dt; x += v*dt; PZ.p = x; pzLayout();
-      if(Math.abs(x-target)<0.002 && Math.abs(v)<0.02){ PZ.p = target; pzLayout(); PZ.raf=0; if(done) done(); return; }
+      if(Math.abs(x-target)<0.004 && Math.abs(v)<0.05){ PZ.p = target; pzLayout(); PZ.raf=0; if(done) done(); return; }
       PZ.raf = requestAnimationFrame(step);
     };
     PZ.raf = requestAnimationFrame(step);
@@ -4841,6 +5563,7 @@
   }
   function pzFlip(){
     const card = PZ.els[2] && PZ.els[2].firstElementChild; if(!card) return;
+    if(card.classList.contains('pz-ghost')) return pzOpenAdd();      // the ghost card has no back: it starts the add flow
     card.classList.toggle('flipped');
     pzVibrate(10); pzTone(card.classList.contains('flipped')?660:440, 0.09);
     if(!isRM()){ card.classList.remove('scanning'); void card.offsetWidth; card.classList.add('scanning'); setTimeout(()=>card.classList.remove('scanning'), 700); }
@@ -4868,13 +5591,14 @@
     $('pzLoopBtn').onclick = ()=>{ db.settings.personaLoop = !db.settings.personaLoop; scheduleSave(); $('pzLoopBtn').setAttribute('aria-pressed', String(!!db.settings.personaLoop)); if(PZ.items.length){ pzRebind(false); } };
     $('pzFilterBtn').onclick = ()=>{ PZ.filtersOpen = !PZ.filtersOpen; $('pzFilters').hidden = !PZ.filtersOpen; $('pzFilterBtn').setAttribute('aria-expanded', String(PZ.filtersOpen)); setTimeout(()=>{ pzSizeStage(); },30); };
     $('pzSearch').addEventListener('input', e=>{ PZ.query = e.target.value; renderPersonaKeepFocus(); });
+    $('pzAddBtn').onclick = pzOpenAdd;
     $('pzPrev').onclick = ()=> pzGo(-1);
     $('pzNext').onclick = ()=> pzGo(1);
     $('pzProgress').addEventListener('click', e=>{ const b=e.target.closest('[data-pz-dot]'); if(b) pzJump(parseInt(b.dataset.pzDot,10)); });
     const deck = $('pzDeck');
     deck.addEventListener('pointerdown', e=>{
       if(PZ.drag || (e.pointerType==='mouse' && e.button!==0) || !PZ.items.length) return;
-      if(e.target.closest('button,a,input,select,textarea')) return;
+      if(e.target.closest('input,select,textarea')) return;   // buttons may start a swipe; a real drag suppresses the click that follows
       if(PZ.busyMove){ return; }
       cancelAnimationFrame(PZ.raf); PZ.raf=0;
       PZ.drag = { id:e.pointerId, sx:e.clientX, sy:e.clientY, lx:e.clientX, lt:performance.now(), vx:0, locked:null, baseP:PZ.p, rawDx:0 };
@@ -4918,6 +5642,9 @@
       if(PZ.suppressClick) return;
       const act = e.target.closest('[data-pz-act]');
       if(act){ return pzAction(act.dataset.pzAct); }
+      const ed = e.target.closest('[data-pz-edit]'); if(ed){ return obsOpen({ mode:'edit', personId:ed.dataset.pzEdit, lock:true }); }
+      const rm = e.target.closest('[data-pz-rm]'); if(rm){ const it=PZ.items[PZ.index]; return pzRemove(rm.dataset.pzRm, it && it.traitKey); }
+      if(e.target.closest('[data-pz-new]')){ return pzOpenAdd(); }
       const pp = e.target.closest('[data-pz-person]'); if(pp){ return openPanel(pp.dataset.pzPerson); }
       if(e.target.closest('button,a,input,select,textarea')) return;
       const card = e.target.closest('.pz-card'); if(!card) return;
@@ -4947,14 +5674,193 @@
     else if(e.key==='ArrowLeft'){ e.preventDefault(); pzGo(-1); }
   });
   function pzAction(kind){
-    const item = PZ.items[PZ.index]; if(!item) return;
-    if(kind==='edit' && item.kind==='member'){ selectedId=item.person.id; pendingRelation=null; openPersonModal(item.person.id); $('openTraitPickerBtn').click(); }
+    const item = PZ.items[PZ.index]; if(!item || item.kind==='ghost') return;
+    if(kind==='edit' && item.kind==='member') obsOpen({ mode:'edit', personId:item.person.id, lock:true });
+    else if(kind==='addtrait' && item.kind==='member') obsOpen({ mode:'add', personId:item.person.id, lock:true });
+    else if(kind==='remove' && item.kind==='member') pzRemove(item.person.id, null);
+    else if(kind==='addmember' && item.kind==='trait') obsOpen({ mode:'add', multi:true, trait:item.meta, traitKey:item.traitKey });
     else if(kind==='profile' && item.kind==='member'){ openPanel(item.person.id); }
     else if(kind==='highlight'){
       if(item.kind==='member'){ selectedId = item.person.id; switchView('tree'); afterLayout(()=>centerOnPerson(item.person.id)); }
       else { activeTraitHighlight = item.traitKey; $('searchInput').value=''; selectedId=null; switchView('tree'); }
     }
   }
+  // The top "+ Add observation" button: in By Trait mode the current trait is preselected.
+  function pzOpenAdd(){
+    const item = PZ.items[PZ.index];
+    if(PZ.mode==='trait' && item && item.kind==='trait') obsOpen({ mode:'add', multi:true, trait:item.meta, traitKey:item.traitKey });
+    else obsOpen({ mode:'add' });
+  }
+
+  // ---------- Add / edit / remove observations (holographic sheet) ----------
+  const OBS = { mode:'add', memberIds:[], multi:false, lock:false, traits:[], q:'', cat:'all', mq:'', saving:false };
+  const traitKeyOf = e=> e.custom ? customTraitKey(e.title) : e.id;
+  function obsOpen(opts){
+    opts = opts||{};
+    OBS.mode = opts.mode||'add'; OBS.q=''; OBS.cat='all'; OBS.mq=''; OBS.saving=false;
+    OBS.memberIds = opts.personId ? [opts.personId] : [];
+    OBS.lock = !!opts.lock && !!opts.personId; OBS.multi = !!opts.multi;
+    OBS.traits = [];
+    if(OBS.mode==='edit' && opts.personId){
+      OBS.traits = normalizeTraits(personById(opts.personId).traits).filter(e=>traitEntryMeta(e)).map(e=>({id:e.id,custom:!!e.custom,title:e.title||'',note:e.note||''}));
+    }
+    if(opts.trait){
+      OBS.traits.push(opts.trait.isCustom ? { id:newCustomTraitId(), custom:true, title:opts.trait.title, note:'' } : { id:opts.trait.id, custom:false, title:'', note:'' });
+    }
+    $('obsTitle').textContent = OBS.mode==='edit' ? 'Edit observations' : 'Add observation';
+    $('obsTraitSearch').value=''; $('obsOtherInput').value=''; $('obsError').textContent='';
+    $('obsSaveBtn').disabled=false; $('obsSaveBtn').textContent = OBS.mode==='edit' ? 'Save changes' : 'Save observation';
+    closePanelForSheet();
+    obsRenderMember(true); obsRenderTraits(); obsRenderNotes();
+    obsPickCat('all');
+    $('obsBody').scrollTop = 0;
+    $('obsBackdrop').classList.add('open');
+    setTimeout(()=>{ const f = OBS.memberIds.length ? $('obsTraitSearch') : $('obsMemberSearch'); if(f && f.offsetParent){ try{ f.focus({preventScroll:true}); }catch(_){} } }, 60);
+  }
+  function closePanelForSheet(){ /* the profile drawer may stay open behind; nothing to do */ }
+  function obsPickCat(c){ OBS.cat=c; renderTraitCatFilter('obsCats', OBS.cat, obsPickCat); obsRenderTraits(); }
+  function obsClose(){ $('obsBackdrop').classList.remove('open'); OBS.saving=false; }
+  function obsRenderMember(rebuild){
+    const box = $('obsMember');
+    if(OBS.lock){
+      const p = personById(OBS.memberIds[0]);
+      box.innerHTML = `<div class="obs-locked"><span class="rel-av" aria-hidden="true">${escapeHtml(initialsOf(p))}</span><b>${escapeHtml(fullName(p))}</b></div>`;
+      return;
+    }
+    if(rebuild || !$('obsMemberSearch')){
+      box.innerHTML = `<input type="search" id="obsMemberSearch" placeholder="Search family members…" aria-label="Search family members" autocomplete="off">
+        <div class="obs-list" id="obsMemberList" role="listbox" aria-label="Family members"${OBS.multi?' aria-multiselectable="true"':''}></div>`;
+      $('obsMemberSearch').addEventListener('input', e=>{ OBS.mq = e.target.value; obsRenderMember(false); });
+    }
+    const q = OBS.mq.trim().toLowerCase();
+    const list = peopleArr().filter(p=>!q || fullName(p).toLowerCase().includes(q));
+    const el = $('obsMemberList');
+    el.innerHTML = list.length ? list.map(p=>{
+      const n = normalizeTraits(p.traits).filter(e=>traitEntryMeta(e)).length; const sel = OBS.memberIds.includes(p.id);
+      return `<div class="obs-row${sel?' selected':''}" role="option" aria-selected="${sel}" tabindex="0" data-obs-member="${p.id}">
+        <span class="rel-av" aria-hidden="true">${escapeHtml(initialsOf(p))}</span>
+        <span class="obs-row-main"><span class="obs-row-t">${escapeHtml(fullName(p))}</span><span class="obs-row-s">${n? n+' observation'+(n===1?'':'s') : 'No observations yet'}</span></span>
+        <span class="obs-check" aria-hidden="true">${sel?'✓':''}</span></div>`;
+    }).join('') : `<div class="rel-empty" style="padding:10px;">No family members match.</div>`;
+    const toggle = id=>{
+      if(OBS.multi){ OBS.memberIds = OBS.memberIds.includes(id) ? OBS.memberIds.filter(x=>x!==id) : OBS.memberIds.concat([id]); }
+      else OBS.memberIds = [id];
+      obsRenderMember(false); obsRenderTraits(); obsUpdateSave();
+    };
+    el.querySelectorAll('[data-obs-member]').forEach(row=>{
+      row.addEventListener('click', ()=>toggle(row.dataset.obsMember));
+      row.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(row.dataset.obsMember); } });
+    });
+    obsUpdateSave();
+  }
+  function obsRenderTraits(){
+    const chosen = $('obsChosen');
+    chosen.innerHTML = OBS.traits.length ? OBS.traits.map(e=>{ const m = traitEntryMeta(e.custom?e:{id:e.id}); const title = e.custom ? (e.title||'Other') : (m?m.title:e.id);
+      return `<span class="obs-chip">${escapeHtml(title)}<button type="button" data-obs-unpick="${e.id}" aria-label="Remove ${escapeHtml(title)}">✕</button></span>`; }).join('') : `<span class="obs-hint">No traits chosen yet.</span>`;
+    chosen.querySelectorAll('[data-obs-unpick]').forEach(b=> b.onclick = ()=>{ OBS.traits = OBS.traits.filter(e=>e.id!==b.dataset.obsUnpick); obsRenderTraits(); obsRenderNotes(); });
+    const list = filteredTraits($('obsTraitSearch').value, OBS.cat);
+    const existing = (OBS.mode==='add' && OBS.memberIds.length===1) ? new Set(normalizeTraits(personById(OBS.memberIds[0]).traits).map(traitKeyOf)) : new Set();
+    const el = $('obsTraitList');
+    el.innerHTML = list.length ? groupTraitsByCategory(list).map(g=>`<div class="trait-cat-heading">${escapeHtml(g.cat.label)}</div>` + g.traits.map(t=>{
+      const sel = OBS.traits.some(e=>!e.custom && e.id===t.id); const has = existing.has(t.id);
+      return `<div class="obs-row${sel?' selected':''}${has?' obs-has':''}" role="option" aria-selected="${sel}" tabindex="0" data-obs-trait="${t.id}">
+        <span class="trait-tier-dot trait-tier-${t.tier}"></span>
+        <span class="obs-row-main"><span class="obs-row-t">${escapeHtml(t.title)}${has?' <em>already recorded</em>':''}</span><span class="obs-row-s">${escapeHtml(t.short)}</span></span>
+        <span class="obs-check" aria-hidden="true">${sel?'✓':''}</span></div>`; }).join('')).join('') : `<div class="rel-empty" style="padding:10px;">No traits match your search.</div>`;
+    const pick = id=>{ if(OBS.traits.some(e=>!e.custom&&e.id===id)) OBS.traits = OBS.traits.filter(e=>e.custom||e.id!==id); else OBS.traits.push({id,custom:false,title:'',note:''}); obsRenderTraits(); obsRenderNotes(); };
+    el.querySelectorAll('[data-obs-trait]').forEach(row=>{
+      row.addEventListener('click', ()=>pick(row.dataset.obsTrait));
+      row.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); pick(row.dataset.obsTrait); } });
+    });
+    obsUpdateSave();
+  }
+  function obsRenderNotes(){
+    const box = $('obsNotes');
+    if(!OBS.traits.length){ box.innerHTML = `<div class="obs-hint">Choose a trait above to add your own notes about it.</div>`; return; }
+    const multiNote = OBS.memberIds.length>1 ? `<p class="obs-hint">This note is saved on each selected member.</p>` : '';
+    box.innerHTML = multiNote + OBS.traits.map(e=>{ const m = e.custom?null:traitEntryMeta({id:e.id}); const title = e.custom ? (e.title||'Other') : (m?m.title:e.id);
+      return `<label class="obs-note"><span>${escapeHtml(title)}</span><textarea data-obs-note="${e.id}" rows="2" maxlength="1000" placeholder="Your own observation — when it shows up, what you've noticed (optional)">${escapeHtml(e.note||'')}</textarea></label>`; }).join('');
+    box.querySelectorAll('[data-obs-note]').forEach(t=> t.addEventListener('input', ()=>{ const e=OBS.traits.find(x=>x.id===t.dataset.obsNote); if(e) e.note=t.value; }));
+  }
+  function obsUpdateSave(){
+    const ok = OBS.memberIds.length && (OBS.traits.length || OBS.mode==='edit');
+    $('obsSaveBtn').disabled = !ok || OBS.saving;
+  }
+  async function obsSave(){
+    if(OBS.saving) return;
+    const err = $('obsError'); err.textContent = '';
+    if(!OBS.memberIds.length){ err.textContent = 'Choose a family member first.'; return; }
+    const traits = OBS.traits.map(e=>({ id:e.id, custom:!!e.custom, title:(e.title||'').trim(), note:(e.note||'').trim() })).filter(e=>!e.custom || e.title);
+    if(!traits.length && OBS.mode!=='edit'){ err.textContent = 'Choose at least one trait.'; return; }
+    OBS.saving = true; $('obsSaveBtn').disabled = true; $('obsSaveBtn').textContent = 'Saving…';
+    const snaps = OBS.memberIds.map(id=>({ id, before: JSON.stringify(personById(id).traits||[]) }));
+    const toEntry = e=> e.custom ? { id:e.id, custom:true, title:e.title, note:e.note } : { id:e.id, note:e.note };
+    OBS.memberIds.forEach(id=>{
+      const p = personById(id); let next;
+      if(OBS.mode==='edit') next = traits.map(toEntry);
+      else {
+        next = normalizeTraits(p.traits).map(x=>x.custom?{id:x.id,custom:true,title:x.title,note:x.note}:{id:x.id,note:x.note});
+        traits.forEach(e=>{ const k=traitKeyOf(e); const i=next.findIndex(x=>traitKeyOf(x)===k); const ent=toEntry(e);
+          if(i>=0){ if(ent.note) next[i] = Object.assign({}, next[i], { note:ent.note }); } else next.push(ent); });
+      }
+      p.traits = next; p.updatedAt = new Date().toISOString();
+    });
+    touchTree(); clearTimeout(saveTimer);
+    const ok = await persistDb();
+    OBS.saving = false;
+    if(!ok){
+      snaps.forEach(sn=>{ personById(sn.id).traits = JSON.parse(sn.before); }); touchTree();
+      err.textContent = 'Could not save — check your connection. Nothing was changed, and what you typed is still here. Try again.';
+      $('obsSaveBtn').textContent = OBS.mode==='edit' ? 'Save changes' : 'Save observation'; obsUpdateSave();
+      return;
+    }
+    obsClose();
+    const firstTrait = traits[0];
+    PZ.focusKey = (PZ.mode==='trait' && firstTrait) ? 't:'+traitKeyOf(firstTrait) : 'm:'+OBS.memberIds[0];
+    renderAll();
+    if(currentView!=='persona') switchView('persona');
+    toast(OBS.mode==='edit' ? 'Changes saved.' : 'Observation saved.');
+  }
+  async function pzRemove(personId, traitKey){
+    const p = personById(personId); if(!p) return;
+    const before = JSON.stringify(p.traits||[]); const cur = normalizeTraits(p.traits);
+    const next = traitKey ? cur.filter(e=>traitKeyOf(e)!==traitKey) : [];
+    if(next.length===cur.length && traitKey) return;
+    const what = traitKey ? `this trait from ${fullName(p)}` : `${cur.length===1?'the observation':'all '+cur.length+' observations'} for ${fullName(p)}`;
+    const yes = await pzConfirm('Remove observation?', `Remove ${what}? Your notes on it go with it. You can undo right after.`, 'Remove');
+    if(!yes) return;
+    p.traits = next.map(x=>x.custom?{id:x.id,custom:true,title:x.title,note:x.note}:{id:x.id,note:x.note}); touchTree(); clearTimeout(saveTimer);
+    const ok = await persistDb();
+    if(!ok){ p.traits = JSON.parse(before); touchTree(); toast('Could not remove — nothing was changed. Check your connection and try again.'); return; }
+    renderAll();
+    toastWithUndo('Observation removed.', async ()=>{ p.traits = JSON.parse(before); touchTree(); await persistDb(); renderAll(); });
+  }
+  function pzConfirm(title, text, okLabel){
+    return new Promise(resolve=>{
+      let b = $('confirmBackdrop');
+      if(!b){ b = document.createElement('div'); b.id='confirmBackdrop'; b.className='sheet-backdrop';
+        b.innerHTML = `<div class="sheet confirm-sheet" role="alertdialog" aria-modal="true" aria-labelledby="cfTitle" aria-describedby="cfText"><h3 id="cfTitle"></h3><p id="cfText" class="sheet-sub"></p><div class="obs-foot-row"><button type="button" class="btn-flat" id="cfNo">Cancel</button><button type="button" class="pf-primary pf-danger" id="cfYes"></button></div></div>`;
+        document.body.appendChild(b); }
+      $('cfTitle').textContent = title; $('cfText').textContent = text; $('cfYes').textContent = okLabel||'Confirm';
+      const done = v=>{ b.classList.remove('open'); document.removeEventListener('keydown', onKey, true); resolve(v); };
+      const onKey = e=>{ if(e.key==='Escape'){ e.stopPropagation(); done(false); } };
+      document.addEventListener('keydown', onKey, true);
+      $('cfNo').onclick = ()=>done(false); $('cfYes').onclick = ()=>done(true);
+      b.onclick = e=>{ if(e.target===b) done(false); };
+      b.classList.add('open'); setTimeout(()=>{ try{ $('cfNo').focus(); }catch(_){} },30);
+    });
+  }
+  $('obsCloseBtn').onclick = obsClose; $('obsCancelBtn').onclick = obsClose;
+  $('obsBackdrop').addEventListener('click', e=>{ if(e.target.id==='obsBackdrop') obsClose(); });
+  $('obsSaveBtn').onclick = obsSave;
+  $('obsTraitSearch').addEventListener('input', obsRenderTraits);
+  $('obsOtherAdd').onclick = ()=>{
+    const inp = $('obsOtherInput'); const v = inp.value.trim(); if(!v){ inp.focus(); return; }
+    if(!OBS.traits.some(e=>e.custom && customTraitKey(e.title)===customTraitKey(v))) OBS.traits.push({ id:newCustomTraitId(), custom:true, title:v, note:'' });
+    inp.value=''; obsRenderTraits(); obsRenderNotes(); inp.focus();
+  };
+  $('obsOtherInput').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); $('obsOtherAdd').click(); } });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape' && $('obsBackdrop').classList.contains('open') && !$('confirmBackdrop')?.classList.contains('open')) obsClose(); });
 
   // ---------- members / pinned ----------
   function renderMembers(){
