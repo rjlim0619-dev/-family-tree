@@ -1565,6 +1565,45 @@
   .shell .view-panel.active{animation:hkViewIn .2s ease-out;}
   .shell .view-panel.active::after{content:"";position:absolute;left:0;right:0;top:0;height:2px;pointer-events:none;z-index:30;background:linear-gradient(90deg,transparent,var(--cy-2),transparent);box-shadow:0 0 12px var(--cy);animation:hkViewScan .22s ease-out 1 both;}
   @media (prefers-reduced-motion:reduce){ .shell .view-panel.active::after{display:none;} .shell .view-panel.active{animation:hkViewIn .12s linear;} }
+
+  /* ===== MY TREES (dashboard) ===== */
+  #viewDashboard .view-scroll{padding:calc(18px + env(safe-area-inset-top)) 16px 96px 16px;}
+  .dt{max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:20px;}
+  .dt-hero .hf-in{padding:20px 18px 18px;} .dt-signout{position:absolute;top:14px;right:14px;z-index:3;}
+  .dt-hero .hx-eyebrow{padding-right:90px;} .dt-hero .hx-title{margin-top:6px;}
+  .dt-stage{height:280px;margin-top:2px;}
+  .dt-hero .hh-plat{height:70px;margin-top:-28px;} .dt-hero .hh-plat .hp{height:70px;}
+  .dt-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:10px;align-items:center;margin-top:6px;}
+  .dt-metrics .dt-ring{display:flex;justify-content:center;} .dt-metrics:not(:has(.dt-ring)){grid-template-columns:repeat(3,minmax(0,1fr));}
+  .dt-stat{display:flex;flex-direction:column;min-width:0;} .hx-stat-n.warm{color:#f0c585;}
+  .dt-sec-h{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px;}
+  .dt-h3{margin:4px 0 0;font-family:var(--font-display);font-size:1.35rem;font-weight:600;display:flex;align-items:center;gap:10px;}
+  .dt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px;}
+  .dt-card{position:relative;background:none;border:0;padding:0;border-radius:0;text-align:left;cursor:pointer;transition:none;outline:none;}
+  .dt-card:hover{transform:none;border:0;} .dt-card:focus-visible .hf{outline:2px solid var(--cy);outline-offset:3px;}
+  .dt-card .hf{transition:transform .18s ease-out,box-shadow .2s;will-change:transform;} .dt-card:hover .hf{box-shadow:0 0 28px var(--cy-glow);}
+  .dt-card .hf-in{padding:16px 16px 14px;display:flex;flex-direction:column;gap:8px;min-height:292px;}
+  .dt-card .t-name{font-size:1.2rem;margin:0;padding-right:34px;} .dt-card .t-desc{margin:0;min-height:0;}
+  .dt-mini-w{border:1px solid var(--cy-line);background:rgba(4,10,20,.5);border-radius:10px;padding:6px;} .dt-mini{display:block;width:100%;height:64px;}
+  .dt-mini line{stroke:rgba(39,230,255,.4);stroke-width:1;vector-effect:non-scaling-stroke;} .dt-mini circle{fill:#0a1a2e;stroke:var(--cy);stroke-width:1.4;filter:drop-shadow(0 0 3px var(--cy-glow));}
+  .dt-mini-empty{font-size:.78rem;color:var(--text-dim);padding:14px 10px;text-align:center;}
+  .dt-row{display:flex;align-items:center;justify-content:space-between;gap:10px;} .dt-nums{display:flex;flex-direction:column;gap:2px;font-size:.78rem;color:var(--text-dim);} .dt-nums b{color:var(--cy-2);font-family:var(--font-display);font-size:1rem;}
+  .dt-av-row{display:flex;align-items:center;} .dt-av{width:30px;height:30px;border-radius:50%;margin-right:-8px;border:1.5px solid var(--cy);background:#07162a;color:var(--cy-2);display:inline-flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:600;overflow:hidden;font-family:var(--font-display);} .dt-av img{width:100%;height:100%;object-fit:cover;} .dt-av-more{background:rgba(39,230,255,.12);}
+  .dt-card .t-meta{display:flex;justify-content:space-between;align-items:center;margin-top:auto;} .dt-open{color:var(--cy);font-weight:600;font-size:.78rem;letter-spacing:.04em;}
+  .dt-card .t-menu-btn{top:10px;right:10px;z-index:6;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--cy-2);}
+  .dt-card .t-menu{top:50px;right:10px;z-index:8;}
+  .dt-ghost .hf-in{align-items:center;justify-content:center;text-align:center;} .dt-ghost-in{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;flex:1;}
+  .dt-pin-row{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 10px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;}
+  .dt-pin{flex:0 0 150px;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;gap:2px;padding:14px 10px;border-radius:14px;border:1px solid var(--cy-line);background:linear-gradient(180deg,rgba(10,26,46,.9),rgba(5,12,24,.9));color:var(--text);font:inherit;cursor:pointer;min-height:44px;}
+  .dt-pin:hover{border-color:var(--cy);box-shadow:0 0 16px var(--cy-glow);}
+  .dt-none{margin:0;color:var(--text-dim);font-size:.85rem;}
+  .hh-sub{font-size:.74rem;color:var(--text-dim);margin:0 0 6px;}
+  @media(min-width:900px){ .dt-hero .hf-in{padding:26px 28px 22px;} .dt-stage{height:340px;} #viewDashboard .view-scroll{padding:calc(26px + env(safe-area-inset-top)) 30px 90px;} }
+  @media(max-width:520px){ .dt-metrics{grid-template-columns:repeat(3,minmax(0,1fr));} .dt-metrics .dt-ring{grid-column:1/-1;} .dt-grid{grid-template-columns:1fr;} .dt-hero .hx-title{font-size:1.4rem;} }
+  @media(prefers-reduced-motion:reduce){ .dt-card .hf{transition:none;} }
+  @media(min-width:900px){ .dt-hero .hf-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);grid-template-areas:"head vis" "metrics vis";column-gap:28px;align-content:center;} .dt-head{grid-area:head;align-self:end;} .dt-vis{grid-area:vis;} .dt-metrics{grid-area:metrics;align-self:start;margin-top:14px;} .dt-hero:not(:has(.dt-vis)) .hf-in{display:block;} .dt-stage{height:320px;} }
+  .dt-ghost .t-meta{margin-top:0;display:block;text-align:center;} .dt-ghost .t-name{padding-right:0;text-align:center;} .dt-ghost .hf-in{gap:4px;}
+  .dt-stat{background:rgba(4,10,20,0.55);border:1px solid var(--border-2);border-radius:12px;padding:12px 14px;} .dt-stat .hx-stat-n{display:block;}
 </style>
 </head>
 <body>
@@ -1636,20 +1675,7 @@
   <!-- ===== DASHBOARD (My Family Trees) ===== -->
   <div class="view-panel active" id="viewDashboard" style="position:absolute;inset:0;">
     <div class="view-scroll">
-      <div class="dash-hero" id="dashHero">
-        <button class="tb-chip" id="dashSignOutBtn" title="Sign out" style="position:absolute;top:16px;right:16px;z-index:2;">Sign out</button>
-        <h2 class="section-title" id="dashGreeting" style="margin-bottom:4px;">My Family Trees</h2>
-        <p class="dash-hero-sub" id="dashHeroSub"></p>
-        <div class="stats-grid" id="dashStats" style="display:none;"></div>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin:28px 0 16px 0;">
-        <h3 style="margin:0;font-size:1rem;color:var(--text-dim);font-weight:600;letter-spacing:.01em;">Your Trees</h3>
-      </div>
-      <button class="big-create-btn" id="createTreeFromDashBtn" style="margin-bottom:24px;">+ Create Family Tree</button>
-      <div id="treesGrid"></div>
-
-      <h2 class="section-title" style="margin-top:32px;">Pinned Family Members</h2>
-      <div id="dashPinnedGrid"></div>
+      <div id="dashRoot" class="dt"></div>
     </div>
   </div>
 
@@ -3337,91 +3363,119 @@
     return 'Good evening 🌙';
   }
 
+  let dashCleanup = null, dashBooted = false;
+  function treeGenerations(t){
+    const byId={}; t.people.forEach(p=>byId[p.id]=p); const memo={};
+    const g=(p,seen)=>{ if(memo[p.id]!=null) return memo[p.id]; if(seen[p.id]) return 0; seen[p.id]=1; let m=0; (p.parents||[]).forEach(id=>{ const q=byId[id]; if(q) m=Math.max(m,1+g(q,seen)); }); memo[p.id]=m; return m; };
+    const out={}; t.people.forEach(p=>out[p.id]=g(p,{})); return out;
+  }
+  function dashTreeMini(t, gens){
+    const rows={}; t.people.forEach(p=>{ (rows[gens[p.id]]=rows[gens[p.id]]||[]).push(p); });
+    const keys=Object.keys(rows).map(Number).sort((a,b)=>a-b).slice(0,6); if(!keys.length) return '';
+    const W=200,H=64,rh=H/(keys.length+0.4); let out='',prev=null;
+    keys.forEach((k,ri)=>{ const L=rows[k].slice(0,9), y=rh*(ri+0.7); const pts=L.map((p,i)=>[W*(i+1)/(L.length+1),y]);
+      if(prev){ pts.forEach((q,i)=>{ const pq=prev[Math.min(prev.length-1,Math.floor(i*prev.length/pts.length))]; out+=`<line x1="${pq[0].toFixed(1)}" y1="${pq[1].toFixed(1)}" x2="${q[0].toFixed(1)}" y2="${q[1].toFixed(1)}"/>`; }); }
+      out+=pts.map(q=>`<circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="3.1"/>`).join(''); prev=pts; });
+    return `<svg class="dt-mini" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${keys.length} generation${keys.length===1?'':'s'}, ${t.people.length} member${t.people.length===1?'':'s'}">${out}</svg>`;
+  }
   function renderDashboard(){
-    $('dashGreeting').textContent = db.trees.length ? greetingText() : 'My Family Trees';
-    const statsEl = $('dashStats');
-    if(db.trees.length){
-      const totalPeople = db.trees.reduce((s,t)=>s+t.people.length,0);
-      const totalPinned = db.trees.reduce((s,t)=>s+t.people.filter(p=>p.pinned).length,0);
-      $('dashHeroSub').textContent = totalPeople===0
-        ? "You've started a tree. Add your first family member whenever you're ready."
-        : `${totalPeople} ${totalPeople===1?'person':'people'} documented across ${db.trees.length} family tree${db.trees.length===1?'':'s'}.`;
-      statsEl.style.display='grid';
-      statsEl.innerHTML = `
-        <div class="stat-card"><div class="stat-num">${db.trees.length}</div><div class="stat-label">Family Tree${db.trees.length===1?'':'s'}</div></div>
-        <div class="stat-card"><div class="stat-num">${totalPeople}</div><div class="stat-label">People Added</div></div>
-        <div class="stat-card"><div class="stat-num warm">${totalPinned}</div><div class="stat-label">Pinned</div></div>
-      `;
-    } else {
-      $('dashHeroSub').textContent = 'Every family has a story worth keeping. Start with the first tree below.';
-      statsEl.style.display='none';
+    const root = $('dashRoot'); if(!root) return;
+    if(dashCleanup){ try{ dashCleanup(); }catch(_){} dashCleanup=null; }
+    const trees = db.trees.slice().sort((a,b)=> new Date(b.updatedAt)-new Date(a.updatedAt));
+    const totalPeople = trees.reduce((s,t)=>s+t.people.length,0);
+    const pinned = []; trees.forEach(t=> t.people.filter(p=>p.pinned).forEach(p=> pinned.push({p,treeId:t.id,treeName:t.name})));
+    pinned.sort((a,b)=> new Date(b.p.pinnedAt||0)-new Date(a.p.pinnedAt||0));
+    const name = (typeof userDisplayName==='function') ? userDisplayName() : '';
+    const dateLine = new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
+    const boot = !dashBooted && !HK.rm(); const sr = boot ? 'sr sr-pre' : 'sr';
+    const signOut = `<button class="tb-chip dt-signout" id="dashSignOutBtn" type="button" title="Sign out">Sign out</button>`;
+    const newBtn = `<button type="button" class="hb hb-primary" id="createTreeFromDashBtn"><span>+ Create Family Tree</span></button>`;
+    if(!trees.length){
+      root.innerHTML = `<section class="dt-hero ${sr}" id="dashHero">${HK.frame(`${signOut}<div class="hx-eyebrow">MY FAMILY TREES · ${escapeHtml(dateLine)}</div>`+HK.empty('Start your first family tree','Every family has a story worth keeping. Create a tree, add the first person, and your family network builds outward from there.',newBtn),{variant:'hero',intensity:'active',tick:true})}</section>`;
+      HK.fillRings(root); HK.scanReveal(root, 0); dashBooted=true; bindDash(root); return;
     }
-    const grid = $('treesGrid');
-    grid.innerHTML='';
-    if(db.trees.length===0){
-      grid.innerHTML = `<p style="color:var(--text-dim);grid-column:1/-1;">No family trees yet. Create your first one above.</p>`;
-    }
-    db.trees.slice().sort((a,b)=> new Date(b.updatedAt)-new Date(a.updatedAt)).forEach(t=>{
-      const tile=document.createElement('div');
-      tile.className='tree-tile';
-      tile.innerHTML = `
-        <button class="t-menu-btn">⋮</button>
-        <div class="t-menu">
-          <button data-act="rename">Rename / Edit</button>
-          <button data-act="duplicate">Duplicate</button>
-          <button data-act="delete" class="danger">Delete</button>
-        </div>
+    // ---- hologram: real members across all trees, capped, most-connected first ----
+    const CAP=24, per=Math.max(3,Math.ceil(CAP/trees.length)), links=p=>(p.parents||[]).length+(p.children||[]).length+(p.spouseIds||[]).length;
+    const nodes=[], edges=[]; const layerNames=[]; let hidden=0;
+    trees.forEach((t,ti)=>{
+      layerNames.push(t.name); const gens=treeGenerations(t);
+      const ranked=t.people.slice().sort((a,b)=>links(b)-links(a)||fullName(a).localeCompare(fullName(b))).slice(0,per); hidden+=t.people.length-ranked.length;
+      const keep=new Set(ranked.map(p=>p.id));
+      ranked.sort((a,b)=>(gens[a.id]-gens[b.id])||fullName(a).localeCompare(fullName(b)));
+      ranked.forEach((p,i)=>nodes.push({id:t.id+':'+p.id, pid:p.id, treeId:t.id, ini:initialsOf(p), name:fullName(p), treeName:t.name, gen:ti, a:((i+0.5)/ranked.length)*Math.PI*2 + ti*0.7 + 0.4}));
+      ranked.forEach(p=>{ (p.parents||[]).forEach(pid=>{ if(keep.has(pid)) edges.push({a:t.id+':'+pid,b:t.id+':'+p.id}); }); (p.spouseIds||[]).forEach(sid=>{ if(sid>p.id && keep.has(sid)) edges.push({a:t.id+':'+p.id,b:t.id+':'+sid,spouse:true}); }); });
+    });
+    const allP=[].concat(...trees.map(t=>t.people));
+    const comp = treeCompleteness(allP);
+    const stat=(num,label,warm)=>`<div class="dt-stat"><span class="hx-stat-n${warm?' warm':''}" data-count="${num}">${num}</span><span class="hx-stat-l">${label}</span></div>`;
+    const sub = totalPeople===0 ? "You've started a tree. Add your first family member whenever you're ready."
+      : `${totalPeople} ${totalPeople===1?'person':'people'} documented across ${trees.length} family tree${trees.length===1?'':'s'}.`;
+    const treeCards = trees.map((t,i)=>{
+      const gens=treeGenerations(t); const gc = t.people.length? Math.max(...Object.values(gens))+1 : 0; const c=treeCompleteness(t.people);
+      const pin=t.people.filter(p=>p.pinned).length;
+      const av = t.people.slice(0,4).map(p=>`<span class="dt-av" title="${escapeHtml(fullName(p))}">${p.photo?`<img src="${escapeHtml(p.photo)}" alt="">`:escapeHtml(initialsOf(p))}</span>`).join('')+(t.people.length>4?`<span class="dt-av dt-av-more">+${t.people.length-4}</span>`:'');
+      const inner = `<div class="dt-top"><div class="hx-eyebrow">TREE ${String(i+1).padStart(2,'0')}</div></div>
         <div class="t-name">${escapeHtml(t.name)}</div>
         <div class="t-desc">${escapeHtml(t.description||'')}</div>
-        <div class="t-meta">${t.people.length} member${t.people.length===1?'':'s'} · Updated ${fmtRelative(t.updatedAt)}</div>
-      `;
-      tile.addEventListener('click', (e)=>{
-        if(e.target.closest('.t-menu-btn') || e.target.closest('.t-menu')) return;
-        openTree(t.id);
-      });
-      const menuBtn = tile.querySelector('.t-menu-btn');
-      const menu = tile.querySelector('.t-menu');
-      menuBtn.onclick = (e)=>{ e.stopPropagation(); document.querySelectorAll('.t-menu.open').forEach(m=>{if(m!==menu)m.classList.remove('open');}); menu.classList.toggle('open'); };
-      menu.querySelector('[data-act="rename"]').onclick = (e)=>{ e.stopPropagation(); menu.classList.remove('open'); openTreeModal(t.id); };
-      menu.querySelector('[data-act="duplicate"]').onclick = (e)=>{ e.stopPropagation(); menu.classList.remove('open'); duplicateTree(t.id); };
-      menu.querySelector('[data-act="delete"]').onclick = (e)=>{
-        e.stopPropagation();
-        const btn = e.target;
-        if(btn.dataset.armed==='1'){
-          menu.classList.remove('open');
-          deleteTree(t.id);
-        } else {
-          btn.dataset.armed='1';
-          btn.textContent='Click again to confirm';
-          setTimeout(()=>{ btn.dataset.armed='0'; btn.textContent='Delete'; }, 3000);
-        }
-      };
-      grid.appendChild(tile);
-    });
-    document.addEventListener('click', ()=>{ document.querySelectorAll('.t-menu.open').forEach(m=>m.classList.remove('open')); });
-
-    const pinnedGrid = $('dashPinnedGrid');
-    pinnedGrid.innerHTML='';
-    const pinned = [];
-    db.trees.forEach(t=> t.people.filter(p=>p.pinned).forEach(p=> pinned.push({p,treeId:t.id,treeName:t.name})));
-    if(pinned.length===0){
-      pinnedGrid.innerHTML = `<p style="color:var(--text-dim);grid-column:1/-1;">No pinned members yet.</p>`;
-    } else {
-      pinned.sort((a,b)=> new Date(b.p.pinnedAt||0)-new Date(a.p.pinnedAt||0)).forEach(({p,treeId,treeName})=>{
-        const tile=document.createElement('div');
-        tile.className='member-tile pinned';
-        const photoHtml = p.photo ? `<img class="card-photo" src="${p.photo}">` : `<div class="card-photo-placeholder">N/A</div>`;
-        tile.innerHTML = `${photoHtml}<div class="card-name">${escapeHtml(fullName(p))}</div><div class="card-dates">${escapeHtml(treeName)}</div>`;
-        tile.onclick = ()=>{
-          openTree(treeId);
-          afterLayout(()=>{ openPanel(p.id); centerOnPerson(p.id); });
-        };
-        pinnedGrid.appendChild(tile);
-      });
+        ${t.people.length?`<div class="dt-mini-w">${dashTreeMini(t,gens)}</div>`:`<div class="dt-mini-w dt-mini-empty">No members yet — open it to add the first person.</div>`}
+        <div class="dt-row"><div class="dt-nums"><span><b>${t.people.length}</b> member${t.people.length===1?'':'s'}</span><span><b>${gc}</b> gen${gc===1?'':'s'}</span>${pin?`<span><b>${pin}</b> pinned</span>`:''}</div>${t.people.length?HK.ring({value:c.pct,label:'Completeness',size:52}):''}</div>
+        <div class="dt-av-row">${av}</div>
+        <div class="t-meta">Updated ${fmtRelative(t.updatedAt)} <span class="dt-open">Open →</span></div>`;
+      return `<div class="tree-tile dt-card ${sr}" tabindex="0" role="button" aria-label="Open ${escapeHtml(t.name)}, ${t.people.length} members" data-tree="${t.id}">${HK.frame(inner,{variant:'standard',intensity:'idle',tick:true})}
+        <button class="t-menu-btn" type="button" aria-label="Tree options" aria-haspopup="true">⋮</button>
+        <div class="t-menu"><button data-act="rename" type="button">Rename / Edit</button><button data-act="duplicate" type="button">Duplicate</button><button data-act="delete" class="danger" type="button">Delete</button></div></div>`;
+    }).join('');
+    const ghost = `<div class="dt-card dt-ghost ${sr}" tabindex="0" role="button" id="dtGhostNew">${HK.frame(`<div class="dt-ghost-in"><span class="hh-plus">+</span><div class="t-name">New family tree</div><div class="t-meta">Start another branch of your story</div></div>`,{variant:'ghost',intensity:'idle',tick:true})}</div>`;
+    const pinHtml = pinned.length ? `<div class="dt-pin-row" id="dashPinnedGrid">${pinned.map(({p,treeId,treeName})=>`<button type="button" class="member-tile pinned dt-pin hf-tap" data-pin-tree="${treeId}" data-pin-id="${p.id}">${p.photo?`<img class="card-photo" src="${escapeHtml(p.photo)}" alt="">`:`<div class="card-photo-placeholder">${escapeHtml(initialsOf(p))}</div>`}<span class="card-name">${escapeHtml(fullName(p))}</span><span class="card-dates">${escapeHtml(treeName)}</span></button>`).join('')}</div>`
+      : `<div id="dashPinnedGrid">${HK.frame(`<p class="dt-none">No pinned members yet. Pin someone from the tree and they appear here for quick access.</p>`,{variant:'compact',intensity:'idle'})}</div>`;
+    root.innerHTML = `
+      <section class="dt-hero ${sr}" id="dashHero">${HK.frame(`${signOut}
+        <div class="dt-head"><div class="hx-eyebrow">MY FAMILY TREES · ${escapeHtml(dateLine)}</div>
+        <h2 class="hx-title" id="dashGreeting">${escapeHtml(greetingText())}${name?', '+escapeHtml(name):''}</h2>
+        <p class="hx-sub" id="dashHeroSub">${escapeHtml(sub)}</p></div>
+        ${nodes.length?'<div class="dt-vis">'+`<div class="hh-stage dt-stage" id="dtStage" data-node-count="${nodes.length}" role="group" aria-label="Rotating hologram of your family members across all trees. The tree cards below are a keyboard-friendly list."><div class="hh-label" id="dtLabel" hidden></div>${hidden?`<span class="hc hh-more">+${hidden} more</span>`:''}</div><div class="hh-plat">${HK.platform('M')}</div>`+'</div>':''}
+        <div class="dt-metrics" id="dashStats">${stat(trees.length,trees.length===1?'Family Tree':'Family Trees')}${stat(totalPeople,'People Added')}${stat(pinned.length,'Pinned',true)}${totalPeople?`<div class="dt-ring">${HK.ring({value:comp.pct,label:'Overall completeness',size:84})}</div>`:''}</div>`,{variant:'hero',intensity:'active',glare:true,tick:true})}</section>
+      <section class="dt-sec ${sr}"><div class="dt-sec-h"><div><div class="hx-eyebrow">YOUR TREES</div><h3 class="dt-h3">Family trees <span class="hc">${trees.length}</span></h3></div>${newBtn}</div></section>
+      <div id="treesGrid" class="dt-grid">${treeCards}${ghost}</div>
+      <section class="dt-sec ${sr}"><div class="dt-sec-h"><div><div class="hx-eyebrow">QUICK ACCESS</div><h3 class="dt-h3">Pinned family members</h3></div></div>${pinHtml}</section>`;
+    let core=null;
+    if(nodes.length){
+      const stage=$('dtStage'), label=$('dtLabel');
+      core = holoCore(stage, nodes, edges, { layerLabel:g=> (layerNames[g]||'').slice(0,12).toUpperCase(), select(sel){
+        if(!sel){ label.hidden=true; return; }
+        label.hidden=false; label.innerHTML=`<b>${escapeHtml(sel.n.name)}</b><div class="hh-sub">${escapeHtml(sel.n.treeName)}</div><div class="hh-lb-row"><button type="button" class="hb hb-primary" data-lb-open><span>View profile</span></button><button type="button" class="hb" data-lb-tree><span>Open tree</span></button></div>`;
+        const w=label.offsetWidth||200, h=label.offsetHeight||96; label.style.left=Math.max(6,Math.min(sel.W-w-6,sel.x-w/2))+'px'; label.style.top=Math.max(6,Math.min(sel.H-h-6, sel.y+26>sel.H-h-6? sel.y-h-26 : sel.y+26))+'px';
+        label.querySelector('[data-lb-open]').onclick=()=>{ openTree(sel.n.treeId); afterLayout(()=>{ openPanel(sel.n.pid); centerOnPerson(sel.n.pid); }); };
+        label.querySelector('[data-lb-tree]').onclick=()=>openTree(sel.n.treeId);
+      }});
+      stage.addEventListener('click',e=>{ if(e.target===stage){ label.hidden=true; core.select&&core.select(null); } });
     }
+    // pointer tilt on cards (mouse only, never with reduced motion)
+    const tiltOff=[];
+    if(!HK.rm()) root.querySelectorAll('.dt-card').forEach(c=>{ const f=c.querySelector('.hf'); if(!f) return;
+      const mv=e=>{ if(e.pointerType!=='mouse') return; const r=c.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5; f.style.transform=`perspective(700px) rotateY(${(x*7).toFixed(2)}deg) rotateX(${(-y*7).toFixed(2)}deg)`; };
+      const lv=()=>{ f.style.transform=''; }; c.addEventListener('pointermove',mv); c.addEventListener('pointerleave',lv); });
+    dashCleanup = ()=>{ if(core) core.destroy(); };
+    HK.fillRings(root);
+    if(boot){ HK.scanReveal(root, 90); root.querySelectorAll('[data-count]').forEach(el=>countUp(el, +el.dataset.count, 700)); } else HK.scanReveal(root,0);
+    dashBooted=true; bindDash(root);
+    root.querySelectorAll('.dt-card[data-tree]').forEach(card=>{
+      const t = db.trees.find(x=>x.id===card.dataset.tree); if(!t) return; const menu=card.querySelector('.t-menu'), menuBtn=card.querySelector('.t-menu-btn');
+      card.addEventListener('click', e=>{ if(e.target.closest('.t-menu-btn')||e.target.closest('.t-menu')) return; openTree(t.id); });
+      card.addEventListener('keydown', e=>{ if((e.key==='Enter'||e.key===' ') && e.target===card){ e.preventDefault(); openTree(t.id); } });
+      menuBtn.onclick = e=>{ e.stopPropagation(); document.querySelectorAll('.t-menu.open').forEach(m=>{ if(m!==menu) m.classList.remove('open'); }); menu.classList.toggle('open'); };
+      menu.querySelector('[data-act="rename"]').onclick = e=>{ e.stopPropagation(); menu.classList.remove('open'); openTreeModal(t.id); };
+      menu.querySelector('[data-act="duplicate"]').onclick = e=>{ e.stopPropagation(); menu.classList.remove('open'); duplicateTree(t.id); };
+      menu.querySelector('[data-act="delete"]').onclick = e=>{ e.stopPropagation(); const btn=e.target; if(btn.dataset.armed==='1'){ menu.classList.remove('open'); deleteTree(t.id); } else { btn.dataset.armed='1'; btn.textContent='Click again to confirm'; setTimeout(()=>{ btn.dataset.armed='0'; btn.textContent='Delete'; }, 3000); } };
+    });
+    root.querySelectorAll('[data-pin-tree]').forEach(b=> b.onclick=()=>{ const tid=b.dataset.pinTree, pid=b.dataset.pinId; openTree(tid); afterLayout(()=>{ openPanel(pid); centerOnPerson(pid); }); });
   }
-
-  $('createTreeFromDashBtn').onclick = ()=> openTreeModal(null);
+  function bindDash(root){
+    const nb = root.querySelector('#createTreeFromDashBtn'); if(nb) nb.onclick = ()=> openTreeModal(null);
+    const g = root.querySelector('#dtGhostNew'); if(g){ g.onclick=()=>openTreeModal(null); g.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openTreeModal(null); } }; }
+    const so = root.querySelector('#dashSignOutBtn'); if(so) so.onclick = async ()=>{ await sb.auth.signOut(); };
+  }
+  if(!window.__dashMenuClose){ window.__dashMenuClose=1; document.addEventListener('click', ()=>{ document.querySelectorAll('.t-menu.open').forEach(m=>m.classList.remove('open')); }); }
   function openTreeModal(treeId){
     editingTreeId = treeId;
     const t = treeId ? db.trees.find(x=>x.id===treeId) : null;
@@ -3499,7 +3553,6 @@
   // Same sign-out, reachable from the dashboard itself — the topbar's version
   // only exists inside an open tree, so anyone with zero trees (or who hasn't
   // opened one yet) would otherwise have no way to sign out at all.
-  $('dashSignOutBtn').onclick = async ()=>{ await sb.auth.signOut(); };
   $('syncChip').onclick = ()=>{ if(syncState==='error') persistDb(); };
   window.addEventListener('offline', ()=>setSync('error'));
   window.addEventListener('online', ()=>{ if(syncState==='error') persistDb(); });
@@ -5368,7 +5421,7 @@
       // generation discs (faint ellipses) for readable structure
       for(let g=0; g<=maxGen; g++){ const y=(g-maxGen/2)*LY; ctx.beginPath(); for(let t=0;t<=64;t++){ const a=t/64*Math.PI*2, x=R*Math.cos(a), z=R*Math.sin(a); const y1=y*cosT - z*sinT, z1=y*sinT + z*cosT, k=F/(F+z1); const px=cx+x*k, py=cy+y1*k; t?ctx.lineTo(px,py):ctx.moveTo(px,py); }
         ctx.strokeStyle='rgba(39,230,255,'+(bt*0.16)+')'; ctx.lineWidth=1; ctx.stroke();
-        ctx.fillStyle='rgba(143,245,255,'+(bt*0.55)+')'; ctx.font='600 9px Inter,system-ui,sans-serif'; ctx.textAlign='left'; ctx.fillText('GEN '+(g+1), cx-R-4 > 4 ? 6 : 6, cy+(y*cosT)-4); }
+        ctx.fillStyle='rgba(143,245,255,'+(bt*0.55)+')'; ctx.font='600 9px Inter,system-ui,sans-serif'; ctx.textAlign='left'; ctx.fillText(cb.layerLabel?cb.layerLabel(g):'GEN '+(g+1), 6, cy+(y*cosT)-4); }
       // edges
       edges.forEach(e=>{ const A=P[e.a], B=P[e.b]; if(!A||!B) return; const v=Math.min(A.vis,B.vis); if(v<=0) return; const depth=Math.max(0.25,Math.min(1,0.65+(A.k+B.k-2)*2.2)); const hot = sel && (e.a===sel||e.b===sel);
         ctx.beginPath(); ctx.moveTo(A.sx,A.sy); ctx.lineTo(A.sx+(B.sx-A.sx)*v,A.sy+(B.sy-A.sy)*v); ctx.strokeStyle = e.spouse?('rgba(240,197,133,'+(0.55*depth)+')'):(hot?'rgba(143,245,255,.95)':'rgba(39,230,255,'+(0.5*depth)+')'); ctx.lineWidth = hot?2:1.2; if(e.spouse) ctx.setLineDash([4,4]); ctx.stroke(); ctx.setLineDash([]); });
