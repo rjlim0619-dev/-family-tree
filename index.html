@@ -39,6 +39,21 @@
     --text:#FFFFFF;
     --text-dim:#9AA6BE;
     --text-faint:#5C6478;
+    /* ---- Holographic system (12,026) ----
+       Cyan is reserved for the ~20% that matters: selection, active nav,
+       primary focus, relationship paths. Everything else stays restrained. */
+    --cy:#27E6FF;
+    --cy-2:#8FF5FF;
+    --cy-dim:rgba(39,230,255,0.55);
+    --cy-line:rgba(39,230,255,0.30);
+    --cy-glow:rgba(39,230,255,0.35);
+    --cy-faint:rgba(39,230,255,0.08);
+    --glass:rgba(10,18,32,0.72);
+    --glass-2:rgba(14,26,44,0.60);
+    --nav-muted:#7C8DA8;
+    --dock-h:64px;
+    --ease:cubic-bezier(.22,.8,.24,1);
+    --dur-1:.15s; --dur-2:.28s; --dur-3:.45s;
     --font-display:'Fraunces', Georgia, serif;
     --font-body:'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   }
@@ -88,7 +103,7 @@
 
   /* ============ APP SHELL ============ */
   #app{display:none;height:100vh;height:100dvh;width:100vw;position:relative;}
-  .shell{display:grid;grid-template-columns:220px 1fr;grid-template-rows:60px 1fr;height:100%;}
+  .shell{display:grid;grid-template-columns:220px minmax(0,1fr);grid-template-rows:60px 1fr;height:100%;}
   #particleCanvas{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:0.6;}
 
   /* Sidebar */
@@ -165,7 +180,7 @@
     border:1px solid var(--border-2);border-radius:10px;padding:8px 12px;font-size:0.68rem;color:var(--text-dim);}
   .leg-item{display:flex;align-items:center;gap:7px;}
   .leg-line{display:inline-block;width:22px;height:0;border-top:2px solid;}
-  .leg-line-parent{border-top-color:rgba(130,175,255,0.9);}
+  .leg-line-parent{border-top-color:rgba(39,230,255,0.9);}
   .leg-line-spouse{border-top-style:dashed;border-top-color:rgba(240,197,133,0.9);}
   @media (max-width:820px){ #treeLegend{display:none !important;} }
   #firstRunTip{display:none;position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:4;
@@ -187,40 +202,54 @@
      as the primary visual anchor. */
   .person-node{position:absolute;width:184px;height:64px;box-sizing:border-box;
     display:flex;align-items:center;gap:10px;padding:0 14px 0 8px;
-    background:linear-gradient(180deg, var(--card-hover), var(--card));
-    border:1px solid var(--border-2);border-radius:14px;
-    box-shadow:0 1px 0 rgba(255,255,255,0.04) inset, 0 8px 18px rgba(0,0,0,0.35);
-    cursor:pointer;animation:nodeIn .25s ease;
-    transition:border-color .15s ease, box-shadow .15s ease, transform .12s ease;}
+    background:linear-gradient(180deg, rgba(20,34,56,0.92), rgba(10,18,32,0.94));
+    border:1px solid rgba(39,230,255,0.22);border-radius:14px;
+    box-shadow:0 1px 0 rgba(143,245,255,0.07) inset, 0 8px 18px rgba(0,0,0,0.38);
+    cursor:pointer;animation:nodeIn .25s ease;outline:none;
+    transition:border-color .15s ease, box-shadow .15s ease, transform .12s ease, opacity .2s ease;}
   @keyframes nodeIn{from{opacity:0;transform:scale(0.92);}to{opacity:1;transform:scale(1);}}
-  .person-node:hover{border-color:rgba(124,176,255,0.5);transform:translateY(-1px);
-    box-shadow:0 1px 0 rgba(255,255,255,0.05) inset, 0 12px 24px rgba(0,0,0,0.42);}
+  .person-node:hover{border-color:rgba(39,230,255,0.55);transform:translateY(-1px);
+    box-shadow:0 1px 0 rgba(143,245,255,0.1) inset, 0 12px 24px rgba(0,0,0,0.45), 0 0 14px rgba(39,230,255,0.12);}
   .person-node:active{transform:translateY(0) scale(0.98);}
-  .person-node.selected{border-color:var(--accent);
-    box-shadow:0 0 0 3px var(--accent-glow), 0 10px 22px rgba(0,0,0,0.4);}
+  .person-node:focus-visible{border-color:var(--cy);box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--cy);}
+  /* Selected = the brightest cyan on screen (80/20 rule): crisp outline,
+     bloom, and one soft focus pulse — then it settles, no looping. */
+  .person-node.selected{border-color:var(--cy);
+    box-shadow:0 0 0 1px var(--cy), 0 0 22px var(--cy-glow), 0 10px 22px rgba(0,0,0,0.45);
+    animation:nodeFocus .7s var(--ease) 1;}
+  @keyframes nodeFocus{0%{box-shadow:0 0 0 1px var(--cy),0 0 0 0 var(--cy-glow),0 10px 22px rgba(0,0,0,.45);}
+    60%{box-shadow:0 0 0 1px var(--cy),0 0 0 10px rgba(39,230,255,0),0 10px 22px rgba(0,0,0,.45);}
+    100%{box-shadow:0 0 0 1px var(--cy),0 0 22px var(--cy-glow),0 10px 22px rgba(0,0,0,.45);}}
   .person-node.dimmed{opacity:0.22;}
-  .person-node.highlight{border-color:var(--accent-2);box-shadow:0 0 0 3px var(--accent-glow);}
+  .person-node.highlight{border-color:var(--cy-2);box-shadow:0 0 0 2px var(--cy-glow), 0 0 20px var(--cy-glow);}
   /* Selecting someone highlights their immediate family and quietly recedes
      everyone else, so the relationships around that person stand out. */
   .person-node.kin-dim{opacity:0.4;}
-  .person-node.kin{border-color:rgba(255,255,255,0.5);box-shadow:0 0 0 2px rgba(255,255,255,0.12);}
-  /* Pinned people get the warm "heirloom" treatment instead of the structural
-     blue — a visual cue that this person has been marked as significant. */
+  .person-node.kin{border-color:rgba(39,230,255,0.6);box-shadow:0 0 0 2px rgba(39,230,255,0.12);}
+  /* Pinned people get the warm "heirloom" treatment — a visual cue that this
+     person has been marked as significant. */
   .person-node.pinned{border-color:rgba(240,197,133,0.65);box-shadow:0 0 0 2px rgba(227,165,85,0.18);}
   .node-photo{width:42px;height:42px;flex:none;border-radius:50%;object-fit:cover;display:block;
-    border:2px solid rgba(124,176,255,0.4);background:#1a2438;}
-  .node-photo-placeholder{width:42px;height:42px;flex:none;border-radius:50%;background:#1a2438;
-    border:2px solid rgba(124,176,255,0.35);display:flex;align-items:center;justify-content:center;
-    font-size:0.8rem;font-weight:700;color:var(--text-dim);}
+    border:2px solid rgba(39,230,255,0.45);background:#0e1a2c;}
+  .node-photo-placeholder{width:42px;height:42px;flex:none;border-radius:50%;background:#0e1a2c;
+    border:2px solid rgba(39,230,255,0.4);display:flex;align-items:center;justify-content:center;
+    font-size:0.8rem;font-weight:700;color:var(--cy-2);}
   .person-node.pinned .node-photo, .person-node.pinned .node-photo-placeholder{border-color:rgba(240,197,133,0.75);}
   .node-pin{position:absolute;top:-7px;right:-7px;width:18px;height:18px;border-radius:50%;
     background:var(--panel);border:1px solid var(--border-2);display:flex;align-items:center;justify-content:center;
     font-size:0.64rem;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.5));}
+  /* Small dot = this person has notes or recorded observations in their profile. */
+  .node-flag{position:absolute;left:6px;bottom:5px;width:6px;height:6px;border-radius:50%;background:var(--cy);
+    box-shadow:0 0 6px var(--cy-glow);pointer-events:none;}
   .node-info{min-width:0;flex:1;display:flex;flex-direction:column;justify-content:center;}
   .node-name{font-size:0.86rem;font-weight:700;color:var(--text);line-height:1.25;
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .node-dates{font-size:0.7rem;color:var(--text-dim);margin-top:2px;
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  @media (prefers-reduced-motion: reduce){
+    .person-node,.person-node.selected{animation:none;transition:none;}
+    .flow-line{animation:none;}
+  }
   @media (max-width:820px){
     /* Font size only — the card's box stays the exact size the layout
        engine measured (CARD_W/CARD_H), so connector lines stay centered
@@ -596,21 +625,52 @@
   #builtinVolume{width:100%;margin-top:10px;}
 
   /* Mobile */
-  #bottomNav{display:none;position:fixed;bottom:0;left:0;right:0;height:62px;
-    background:rgba(10,14,22,0.92);backdrop-filter:blur(14px);border-top:1px solid var(--border-2);
-    z-index:90;align-items:center;justify-content:space-around;padding-bottom:env(safe-area-inset-bottom);}
-  #bottomNav button{background:none;border:none;color:var(--text-dim);font-size:0.65rem;display:flex;
-    flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:6px 10px;}
-  #bottomNav button.active{color:var(--accent-2);}
-  #bottomNav button .bn-icon{font-size:1.15rem;}
+  /* ============ HOLOGRAPHIC NAV (dock + rail) ============ */
+  /* One nav config drives both. Dock = mobile/tablet (<=820px), rail = desktop. */
+  #bottomNav{display:none;position:fixed;left:0;right:0;bottom:0;
+    height:calc(var(--dock-h) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);
+    grid-template-columns:repeat(5,1fr);align-items:stretch;
+    background:linear-gradient(180deg,rgba(8,18,32,0.80),rgba(4,9,18,0.95));
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border-top:1px solid var(--cy-line);box-shadow:0 -6px 26px rgba(39,230,255,0.07);z-index:90;}
+  .dock-indicator{position:absolute;top:-1px;left:0;width:20%;height:2px;pointer-events:none;
+    transform:translateX(calc(var(--i,0) * 100%));transition:transform var(--dur-2) var(--ease);}
+  .dock-indicator::before{content:"";position:absolute;left:22%;right:22%;top:0;height:2px;border-radius:2px;
+    background:var(--cy);box-shadow:0 0 10px var(--cy),0 0 22px var(--cy-glow);}
+  .dock-btn{position:relative;background:none;border:none;color:var(--nav-muted);cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+    min-height:44px;padding:6px 2px;font-size:0.66rem;letter-spacing:.04em;font-weight:500;
+    transition:color var(--dur-1),transform var(--dur-1);}
+  .dock-btn .nav-icon{width:24px;height:24px;display:block;}
+  .dock-btn .nav-icon svg{width:24px;height:24px;display:block;}
+  .dock-btn:active{transform:scale(0.94);}
+  .dock-btn[aria-current="page"]{color:var(--cy);}
+  .dock-btn[aria-current="page"] .nav-icon{filter:drop-shadow(0 0 6px var(--cy-glow));}
+  .dock-btn:focus-visible,.nav-btn:focus-visible{outline:2px solid var(--cy);outline-offset:-3px;border-radius:10px;}
+  .nav-rail{display:flex;flex-direction:column;gap:4px;}
+  .nav-btn .nav-icon svg{width:20px;height:20px;display:block;}
+  .nav-btn[aria-current="page"]{position:relative;color:var(--cy-2);
+    background:linear-gradient(90deg,rgba(39,230,255,0.14),rgba(39,230,255,0.02));
+    box-shadow:inset 0 0 0 1px var(--cy-line);}
+  .nav-btn[aria-current="page"]::before{content:"";position:absolute;left:-14px;top:22%;bottom:22%;width:3px;border-radius:3px;
+    background:var(--cy);box-shadow:0 0 10px var(--cy),0 0 18px var(--cy-glow);}
+  .nav-btn[aria-current="page"] .nav-icon{color:var(--cy);filter:drop-shadow(0 0 5px var(--cy-glow));}
+  @media (prefers-reduced-motion: reduce){
+    .dock-indicator{transition:none;}
+    .dock-btn,.nav-btn{transition:none;}
+  }
+  /* Controls that only make sense on the tree canvas */
+  #treeShell:not(.view-tree) .tree-only{display:none !important;}
+  #treeShell:not(.view-tree):not(.view-members) #searchInput{display:none;}
+  #treeShell:not(.view-tree):not(.view-members) #moreMenuBtn{display:none !important;}
 
   @media (max-width:820px){
     .shell{grid-template-columns:1fr;grid-template-rows:calc(56px + env(safe-area-inset-top)) 1fr;}
     #sidebar{display:none;}
     #topbar{grid-column:1;}
     #mainArea{grid-column:1;}
-    #bottomNav{display:flex;}
-    #mainArea{padding-bottom:calc(62px + env(safe-area-inset-bottom));}
+    #bottomNav{display:grid;}
+    #mainArea{padding-bottom:calc(var(--dock-h) + env(safe-area-inset-bottom));}
     #topbar{padding-top:env(safe-area-inset-top);padding-left:calc(12px + env(safe-area-inset-left));padding-right:calc(12px + env(safe-area-inset-right));}
     #treeNameInput{width:90px;font-size:0.85rem;}
     #backBtn{display:flex;}
@@ -633,11 +693,146 @@
     #topbarExtrasBackdrop.open{display:block;}
     #sidePanel{width:100vw;max-width:100vw;padding-bottom:env(safe-area-inset-bottom);}
     .panel-actions{padding-bottom:calc(20px + env(safe-area-inset-bottom));}
-    #bottomNav{padding-bottom:env(safe-area-inset-bottom);height:calc(62px + env(safe-area-inset-bottom));}
     .view-scroll{padding:18px 16px calc(90px + env(safe-area-inset-bottom)) 16px;}
     #viewDashboard .view-scroll{padding-top:calc(18px + env(safe-area-inset-top));}
-    .music-fab{bottom:calc(62px + env(safe-area-inset-bottom) + 14px);right:16px;}
-    .music-panel{bottom:calc(62px + env(safe-area-inset-bottom) + 76px);right:16px;left:16px;width:auto;}
+    .music-fab{bottom:calc(var(--dock-h) + env(safe-area-inset-bottom) + 14px);right:16px;}
+    .music-panel{bottom:calc(var(--dock-h) + env(safe-area-inset-bottom) + 76px);right:16px;left:16px;width:auto;}
+  }
+
+  /* ============ HOLOGRAPHIC SECTION VIEWS (Home / Timeline / Insights) ============ */
+  .hx-eyebrow{font-size:0.68rem;letter-spacing:.22em;color:var(--cy);font-weight:600;text-shadow:0 0 12px var(--cy-glow);}
+  .hx-title{font-family:var(--font-display);font-size:1.7rem;font-weight:600;margin:4px 0 6px 0;}
+  .hx-sub{color:var(--text-dim);font-size:0.9rem;line-height:1.55;margin:0 0 16px 0;max-width:60ch;}
+  .hx-muted{color:var(--text-faint);font-size:0.84rem;margin:6px 0;}
+  .hx-h3{font-size:0.95rem;color:var(--text-dim);font-weight:600;margin:26px 0 10px 0;letter-spacing:.02em;}
+  .hx-pagehead{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:14px;}
+  .hx-back{background:none;border:none;color:var(--cy);cursor:pointer;font-size:0.82rem;padding:8px 0;margin-bottom:4px;min-height:44px;}
+  .hx-back:hover{color:var(--cy-2);}
+  .hx-hero{position:relative;overflow:hidden;border-radius:18px;padding:24px 22px;margin-bottom:16px;
+    background:linear-gradient(135deg,rgba(39,230,255,0.10),rgba(76,141,255,0.05) 55%,rgba(5,10,18,0.4)),var(--glass);
+    border:1px solid var(--cy-line);box-shadow:0 0 0 1px rgba(39,230,255,0.04) inset,0 10px 40px rgba(0,0,0,0.45),0 0 28px rgba(39,230,255,0.06);}
+  .hx-hero::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+    background-image:linear-gradient(rgba(39,230,255,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(39,230,255,0.05) 1px,transparent 1px);
+    background-size:28px 28px;-webkit-mask-image:linear-gradient(180deg,#000,transparent 85%);mask-image:linear-gradient(180deg,#000,transparent 85%);}
+  .hx-hero > *{position:relative;}
+  .hx-empty{text-align:center;padding:40px 22px;}
+  .hx-empty .hx-sub{margin-left:auto;margin-right:auto;}
+  .hx-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-top:6px;}
+  .hx-stat{background:rgba(4,10,20,0.55);border:1px solid var(--border-2);border-radius:12px;padding:12px 14px;}
+  .hx-stat-n{font-family:var(--font-display);font-size:1.7rem;font-weight:600;line-height:1.1;color:var(--cy-2);}
+  .hx-stat-l{font-size:0.72rem;color:var(--text-dim);margin-top:2px;letter-spacing:.04em;}
+  .hx-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+  .hx-span2{grid-column:1/-1;}
+  .hx-panel{background:var(--glass);border:1px solid var(--border-2);border-radius:16px;padding:16px 16px 14px 16px;
+    box-shadow:0 8px 28px rgba(0,0,0,0.35);}
+  .hx-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;}
+  .hx-panel-head h3{margin:0;font-size:0.82rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);font-weight:600;}
+  .hx-btn{padding:9px 14px;min-height:40px;border-radius:10px;border:1px solid var(--border-2);background:rgba(255,255,255,0.03);
+    color:var(--text-dim);font-size:0.8rem;cursor:pointer;transition:var(--dur-1);}
+  .hx-btn:hover{color:var(--text);border-color:var(--cy-line);background:var(--cy-faint);}
+  .hx-btn-primary{background:linear-gradient(135deg,rgba(39,230,255,0.9),rgba(24,150,230,0.9));color:#031018;border:none;font-weight:700;
+    box-shadow:0 0 18px var(--cy-glow);}
+  .hx-btn-primary:hover{color:#031018;background:linear-gradient(135deg,var(--cy-2),var(--cy));}
+  .hx-btn:focus-visible,.hx-chip:focus-visible,.hx-action:focus-visible,.hx-person:focus-visible,.tl-head:focus-visible,.hx-back:focus-visible,.ins-row:focus-visible{outline:2px solid var(--cy);outline-offset:2px;}
+  .hx-preview{border-radius:12px;border:1px solid var(--border);background:radial-gradient(ellipse at 50% 0%,rgba(39,230,255,0.07),transparent 70%),rgba(2,6,14,0.6);
+    padding:10px;height:260px;display:flex;}
+  .mini-tree{width:100%;height:100%;}
+  .mt-line{fill:none;stroke:var(--cy-dim);stroke-width:3;stroke-linejoin:round;}
+  .mt-spouse{stroke:var(--warm);stroke-dasharray:6 5;opacity:.8;}
+  .mt-node{fill:rgba(39,230,255,0.16);stroke:var(--cy);stroke-width:2;}
+  .hx-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .hx-action{display:flex;align-items:center;gap:10px;padding:12px;min-height:48px;border-radius:12px;border:1px solid var(--border-2);
+    background:rgba(255,255,255,0.025);color:var(--text);cursor:pointer;font-size:0.82rem;text-align:left;transition:var(--dur-1);}
+  .hx-action b{color:var(--cy);font-size:1.05rem;width:20px;text-align:center;}
+  .hx-action:hover{border-color:var(--cy-line);background:var(--cy-faint);}
+  .hx-list{display:flex;flex-direction:column;gap:2px;}
+  .hx-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);}
+  .hx-row:last-child{border-bottom:none;}
+  .hx-row-main{flex:1;min-width:0;font-size:0.84rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .hx-row-meta{color:var(--text-faint);font-size:0.74rem;white-space:nowrap;}
+  .hx-person{display:inline-flex;align-items:center;gap:8px;background:none;border:none;color:var(--text);cursor:pointer;font-size:0.84rem;
+    padding:4px 6px 4px 0;min-height:36px;border-radius:8px;text-align:left;}
+  .hx-person:hover span:last-child{color:var(--cy-2);text-decoration:underline;}
+  .hx-av{width:28px;height:28px;border-radius:50%;object-fit:cover;flex:none;border:1px solid var(--cy-line);}
+  .hx-av-init{display:inline-flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:700;color:var(--cy-2);background:var(--cy-faint);}
+  .hx-ev-ico{width:9px;height:9px;border-radius:50%;flex:none;background:var(--cy);box-shadow:0 0 8px var(--cy-glow);}
+  .hx-k-death{background:var(--text-faint);box-shadow:none;} .hx-k-marriage{background:var(--warm);box-shadow:0 0 8px var(--warm-glow);}
+  .hx-dl{margin:0;display:grid;gap:8px;} .hx-dl div{display:flex;justify-content:space-between;gap:10px;font-size:0.84rem;border-bottom:1px solid var(--border);padding-bottom:6px;}
+  .hx-dl dt{color:var(--text-dim);} .hx-dl dd{margin:0;font-weight:600;color:var(--cy-2);}
+  .hx-chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px 0;}
+  .hx-chip{padding:8px 14px;min-height:40px;border-radius:999px;border:1px solid var(--border-2);background:none;color:var(--text-dim);font-size:0.78rem;cursor:pointer;}
+  .hx-chip.active{color:var(--cy-2);border-color:var(--cy);background:var(--cy-faint);box-shadow:0 0 12px var(--cy-glow);}
+  .hx-search input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border-2);background:rgba(0,0,0,0.3);color:var(--text);font-size:0.9rem;margin-bottom:10px;}
+  .hx-search input:focus{outline:none;border-color:var(--cy);box-shadow:0 0 0 3px var(--cy-faint);}
+  /* timeline */
+  .tl{list-style:none;margin:0;padding:0 0 0 22px;position:relative;}
+  .tl::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:2px;background:linear-gradient(180deg,var(--cy-line),rgba(39,230,255,0.06));}
+  .tl-year{margin:18px 0 8px -22px;font-family:var(--font-display);font-size:1.05rem;color:var(--cy-2);letter-spacing:.06em;}
+  .tl-year span{background:var(--bg);padding-right:8px;}
+  .tl-item{position:relative;margin:0 0 10px 0;}
+  .tl-dot{position:absolute;left:-22px;top:18px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--cy);box-shadow:0 0 10px var(--cy-glow);}
+  .tl-death .tl-dot{border-color:var(--text-faint);box-shadow:none;} .tl-marriage .tl-dot{border-color:var(--warm);box-shadow:0 0 10px var(--warm-glow);}
+  .tl-card{background:var(--glass);border:1px solid var(--border-2);border-radius:14px;overflow:hidden;}
+  .tl-head{width:100%;display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:12px 14px;min-height:48px;background:none;border:none;color:var(--text);cursor:pointer;text-align:left;font-size:0.88rem;}
+  .tl-head:hover{background:var(--cy-faint);}
+  .tl-kind{font-size:0.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--cy);border:1px solid var(--cy-line);border-radius:6px;padding:2px 6px;}
+  .tl-death .tl-kind{color:var(--text-dim);border-color:var(--border-2);} .tl-marriage .tl-kind{color:var(--warm);border-color:var(--warm-glow);}
+  .tl-title{min-width:0;overflow-wrap:anywhere;} .tl-date{color:var(--text-faint);font-size:0.74rem;white-space:nowrap;}
+  .tl-detail{padding:0 14px 14px 14px;font-size:0.84rem;color:var(--text-dim);} .tl-detail p{margin:6px 0;} .tl-detail b{color:var(--text);}
+  .tl-people{display:flex;flex-wrap:wrap;gap:4px 14px;margin:8px 0;}
+  /* insights */
+  .ins-row{width:100%;text-align:left;color:inherit;font:inherit;background:var(--card);cursor:pointer;}
+  .ins-row .trait-row-main{display:flex;flex-direction:column;gap:2px;}
+  .ins-members{display:flex;flex-direction:column;}
+  @media (max-width:820px){
+    .hx-grid{grid-template-columns:1fr;}
+    .hx-title{font-size:1.45rem;}
+    .hx-preview{height:220px;}
+    .tl-head{grid-template-columns:1fr auto;} .tl-kind{grid-column:1/-1;justify-self:start;}
+  }
+  @media (prefers-reduced-motion: reduce){ .hx-btn,.hx-action{transition:none;} }
+
+  /* ---- floating tree controls: always above the dock/music button, never over them ---- */
+  #treeFab{position:absolute;right:14px;bottom:92px;z-index:6;display:flex;flex-direction:column;gap:6px;padding:6px;
+    background:var(--glass);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    border:1px solid var(--cy-line);border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,0.45),0 0 18px rgba(39,230,255,0.06);}
+  #treeFab button{width:44px;height:44px;border-radius:10px;border:1px solid transparent;background:none;color:var(--text-dim);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;transition:var(--dur-1);}
+  #treeFab button svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  #treeFab button:hover{color:var(--cy-2);background:var(--cy-faint);border-color:var(--cy-line);}
+  #treeFab button:active{transform:scale(0.93);}
+  #treeFab button:focus-visible{outline:2px solid var(--cy);outline-offset:1px;}
+  #treeFab button:disabled{opacity:.35;cursor:default;}
+  .fab-gen{display:flex;flex-direction:column;align-items:center;border-top:1px solid var(--border);padding-top:6px;margin-top:2px;}
+  #fabGenLabel{font-size:0.62rem;letter-spacing:.06em;color:var(--cy);padding:2px 0;white-space:nowrap;}
+  @media (max-width:820px){
+    /* Horizontal strip along the bottom-left (above the dock, left of the music
+       button) so it doesn't cover the canvas the way a tall column would. */
+    #treeFab{flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between;left:12px;right:auto;
+      width:min(236px, calc(100vw - 106px));bottom:calc(var(--dock-h) + env(safe-area-inset-bottom) + 14px);}
+    #treeFab > button{flex:1 1 0;min-width:44px;}
+    .fab-gen{flex:1 0 100%;flex-direction:row;justify-content:space-between;border-top:1px solid var(--border);border-left:none;padding:4px 0 0 0;margin:2px 0 0 0;}
+    #fabGenLabel{padding:0 4px;font-size:0.7rem;}
+  }
+  @media (prefers-reduced-motion: reduce){ #treeFab button{transition:none;} }
+
+  /* ---- holographic shell skin: thin illuminated outlines, technical grid ---- */
+  #sidebar{background:linear-gradient(180deg,rgba(10,20,36,0.96),rgba(4,9,18,0.98));border-right:1px solid var(--cy-line);box-shadow:1px 0 18px rgba(39,230,255,0.05);}
+  #topbar{background:rgba(6,14,26,0.82);border-bottom:1px solid var(--cy-line);}
+  #treeViewport{background-image:linear-gradient(rgba(39,230,255,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(39,230,255,0.035) 1px,transparent 1px);
+    background-size:40px 40px;}
+  #treeViewport::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 40%,transparent 45%,rgba(2,6,14,0.55) 100%);}
+  #treeViewport > *{z-index:1;}
+
+  /* Mid-width desktops (821-1180px): the topbar's many controls used to force the
+     grid column wider than the screen, pushing the canvas and its floating
+     controls off-screen. The floating cluster already offers zoom/fit/center,
+     so the duplicates drop out here and the bar can never exceed its column. */
+  #topbar{min-width:0;overflow:hidden;}
+  @media (min-width:821px) and (max-width:1180px){
+    .topbar-extras .zoom-controls,#centerBtn,#fullscreenBtn{display:none !important;}
+    #searchInput{max-width:150px;}
+    #treeNameInput{width:130px;}
   }
 </style>
 </head>
@@ -735,11 +930,7 @@
     <div id="sidebar">
       <button class="back-link" id="backToTreesBtn">← My Trees</button>
       <div class="brand">🌳 <span id="sidebarTreeName">Family Tree</span></div>
-      <button class="nav-btn active" data-view="tree"><span class="nav-icon">🌳</span><span class="label">Family Tree</span></button>
-      <button class="nav-btn" data-view="members"><span class="nav-icon">👤</span><span class="label">Members</span></button>
-      <button class="nav-btn" data-view="pinned"><span class="nav-icon">📌</span><span class="label">Pinned</span></button>
-      <button class="nav-btn" data-view="guidelines"><span class="nav-icon">📖</span><span class="label">Guidelines</span></button>
-      <button class="nav-btn" data-view="settings"><span class="nav-icon">⚙️</span><span class="label">Settings</span></button>
+      <nav id="sideRail" class="nav-rail" aria-label="Primary"></nav>
     </div>
 
     <div id="topbar">
@@ -749,16 +940,16 @@
       <div class="topbar-spacer"></div>
       <div class="topbar-extras" id="topbarExtras">
         <input id="searchInput" placeholder="Search members…">
-        <button class="tb-btn" id="traitHighlightBtn">🧠 Traits</button>
-        <div class="zoom-controls">
+        <button class="tb-btn tree-only" id="traitHighlightBtn">🧠 Traits</button>
+        <div class="zoom-controls tree-only">
           <button class="icon-btn" id="zoomOutBtn">−</button>
           <span id="zoomLabel">100%</span>
           <button class="icon-btn" id="zoomInBtn">+</button>
         </div>
-        <button class="tb-btn" id="fitBtn">Fit</button>
-        <button class="tb-btn" id="centerBtn">Center</button>
-        <button class="tb-btn" id="resetViewBtn">Reset</button>
-        <button class="tb-btn" id="fullscreenBtn">Fullscreen</button>
+        <button class="tb-btn tree-only" id="fitBtn">Fit</button>
+        <button class="tb-btn tree-only" id="centerBtn">Center</button>
+        <button class="tb-btn tree-only" id="resetViewBtn">Reset</button>
+        <button class="tb-btn tree-only" id="fullscreenBtn">Fullscreen</button>
         <button class="tb-btn save" id="saveBtn">Save</button>
       </div>
       <button class="icon-btn" id="moreMenuBtn" title="More">⋯</button>
@@ -788,6 +979,17 @@
           </div>
           <button type="button" class="thb-clear" id="thbClearBtn">Clear Highlight</button>
         </div>
+        <div id="treeFab" role="toolbar" aria-label="Tree controls" style="display:none;">
+          <button type="button" id="fabZoomIn" title="Zoom in" aria-label="Zoom in"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+          <button type="button" id="fabZoomOut" title="Zoom out" aria-label="Zoom out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+          <button type="button" id="fabFit" title="Fit to screen" aria-label="Fit to screen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+          <button type="button" id="fabCenter" title="Center on selected member" aria-label="Center on selected member"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg></button>
+          <div class="fab-gen" role="group" aria-label="Generation navigation">
+            <button type="button" id="fabGenUp" title="Previous generation (older)" aria-label="Previous generation, older"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 14 6-6 6 6"/></svg></button>
+            <span id="fabGenLabel" aria-live="polite">Gen 1</span>
+            <button type="button" id="fabGenDown" title="Next generation (younger)" aria-label="Next generation, younger"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 10 6 6 6-6"/></svg></button>
+          </div>
+        </div>
         <div id="treeLegend">
           <span class="leg-item"><span class="leg-line leg-line-parent"></span>Parent → Child</span>
           <span class="leg-item"><span class="leg-line leg-line-spouse"></span>Spouse / Partner</span>
@@ -798,8 +1000,21 @@
         </div>
       </div>
 
+      <div class="view-panel" id="viewHome">
+        <div class="view-scroll"><div id="homeRoot"></div></div>
+      </div>
+
+      <div class="view-panel" id="viewTimeline">
+        <div class="view-scroll"><div id="timelineRoot"></div></div>
+      </div>
+
+      <div class="view-panel" id="viewInsights">
+        <div class="view-scroll"><div id="insightsRoot"></div></div>
+      </div>
+
       <div class="view-panel" id="viewMembers">
         <div class="view-scroll">
+          <button type="button" class="hx-back" data-goto="home">← Home</button>
           <h2 class="section-title">Members</h2>
           <div id="membersGrid"></div>
         </div>
@@ -807,6 +1022,7 @@
 
       <div class="view-panel" id="viewPinned">
         <div class="view-scroll">
+          <button type="button" class="hx-back" data-goto="home">← Home</button>
           <h2 class="section-title">Pinned Family Members</h2>
           <div id="pinnedGrid"></div>
         </div>
@@ -814,6 +1030,7 @@
 
       <div class="view-panel" id="viewGuidelines">
         <div class="view-scroll">
+          <button type="button" class="hx-back" data-goto="settings">← Me</button>
           <h2 class="section-title">Guidelines</h2>
           <div class="guide-grid" id="guideGrid"></div>
         </div>
@@ -821,7 +1038,11 @@
 
       <div class="view-panel" id="viewSettings">
         <div class="view-scroll">
-          <h2 class="section-title">Settings</h2>
+          <h2 class="section-title">Me &amp; Settings</h2>
+          <div class="settings-block">
+            <h3>Help</h3>
+            <button type="button" class="hx-btn" data-goto="guidelines">📖 How the app works (Guidelines)</button>
+          </div>
 
           <div class="settings-block">
             <h3>This family tree</h3>
@@ -883,12 +1104,7 @@
     </div>
   </div>
 
-  <div id="bottomNav">
-    <button class="active" data-view="tree"><span class="bn-icon">🌳</span>Tree</button>
-    <button data-view="members"><span class="bn-icon">👥</span>Members</button>
-    <button data-view="pinned"><span class="bn-icon">📌</span>Pinned</button>
-    <button data-view="settings"><span class="bn-icon">⚙️</span>More</button>
-  </div>
+  <nav id="bottomNav" aria-label="Primary"></nav>
 </div>
 
 <!-- ============ MUSIC PLAYER (floating) ============ -->
@@ -1077,6 +1293,32 @@
         <div class="trait-cat-filter" id="traitHighlightCats"></div>
       </div>
       <div class="trait-list" id="traitHighlightList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ EVENT MODAL (timeline: add / edit / delete a recorded event) ============ -->
+<div class="modal-backdrop" id="eventModalBackdrop">
+  <div class="modal has-header" role="dialog" aria-modal="true" aria-labelledby="eventModalTitle" style="max-width:440px;">
+    <div class="modal-header">
+      <div class="modal-header-text"><h2 id="eventModalTitle">Record an event</h2>
+        <div class="modal-sub">Births and deaths come from profiles automatically. Add anything else here.</div></div>
+      <button type="button" class="modal-close" id="eventCloseBtn" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label for="evKind">Type</label>
+        <select id="evKind"><option value="milestone">Milestone</option><option value="marriage">Marriage</option><option value="other">Other</option></select></div>
+      <div class="field"><label for="evTitle">Title</label><input id="evTitle" maxlength="120" placeholder="e.g. Moved to a new home"></div>
+      <div class="field"><label for="evDate">Date</label><input type="date" id="evDate"></div>
+      <div class="field"><label for="evPerson">Person (optional)</label><select id="evPerson"></select></div>
+      <div class="field" id="evWithField" style="display:none;"><label for="evWith">With (optional)</label><select id="evWith"></select></div>
+      <div class="field"><label for="evNotes">Details (optional)</label><textarea id="evNotes" rows="3"></textarea></div>
+      <div class="lock-error" id="evError" role="alert"></div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="link-danger" id="eventDeleteBtn" style="display:none;">Delete</button>
+      <div class="right"><button type="button" class="btn-flat" id="eventCancelBtn">Cancel</button>
+        <button type="button" class="btn-primary" id="eventSaveBtn">Save</button></div>
     </div>
   </div>
 </div>
@@ -1988,7 +2230,9 @@
     initMusicPlayerUI();
     initParticles();
     renderGuidelines();
-    showDashboard();
+    renderNav();
+    showDashboard(true);
+    applyRoute(); // honor a deep link such as #/t/<id>/timeline after sign-in
   }
   let appEntered = false;
   async function boot(){
@@ -2022,14 +2266,15 @@
   // either condition could have changed (dashboard, tree open, resize),
   // otherwise a stale inline value permanently overrides the CSS breakpoint.
   function syncBottomNav(){
-    $('bottomNav').style.display = (window.innerWidth<=820 && currentTreeId) ? 'flex' : 'none';
+    $('bottomNav').style.display = (window.innerWidth<=820 && currentTreeId) ? 'grid' : 'none';
   }
-  function showDashboard(){
+  function showDashboard(noRoute){
     currentTreeId = null;
     $('viewDashboard').style.display='block';
     $('treeShell').style.display='none';
     syncBottomNav();
     renderDashboard();
+    if(!noRoute) pushRoute();
   }
   function newId(){ return 'x'+Date.now()+Math.floor(Math.random()*1000); }
 
@@ -2173,7 +2418,8 @@
     persistDb();
   }
 
-  function openTree(id){
+  let treeNeedsFit = false;
+  function openTree(id, view, noRoute){
     currentTreeId = id;
     activeTraitHighlight = null;
     const t = tree();
@@ -2185,11 +2431,12 @@
     $('treeShell').style.display='grid';
     syncBottomNav();
     burstParticles(window.innerWidth/2, window.innerHeight*0.35, 16);
-    switchView('tree');
-    renderTree();
-    // Fit the whole tree in view on open, rather than centering at a fixed
-    // 100% — a tree of 30 people shouldn't open half off-screen.
-    if(peopleArr().length) afterLayout(fitToScreen);
+    // Fit the whole tree in view on first show, rather than centering at a
+    // fixed 100% — a tree of 30 people shouldn't open half off-screen. The
+    // fit is deferred to the first time the tree tab is actually visible
+    // (the viewport has no size while another tab is showing).
+    treeNeedsFit = true;
+    switchView(view || 'tree', {noRoute});
   }
   $('backToTreesBtn').onclick = ()=>{ closePanel(); showDashboard(); };
   $('backBtn').onclick = ()=>{ closePanel(); showDashboard(); };
@@ -2217,20 +2464,97 @@
   function touchTree(){ const t=tree(); if(t) t.updatedAt=new Date().toISOString(); }
 
   // ---------- navigation ----------
-  function switchView(view){
+  // One config drives the mobile dock AND the desktop rail, so they can never
+  // drift apart. `views` = every view that should light that tab up.
+  const ICONS = {
+    home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 11 12 3.8 20.5 11"/><path d="M5.5 9.8V20h13V9.8"/><path d="M10 20v-5.2h4V20"/><circle cx="12" cy="9.2" r=".9" fill="currentColor" stroke="none"/></svg>',
+    tree:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4.6" r="2.1"/><circle cx="5.2" cy="19.2" r="2.1"/><circle cx="12" cy="19.2" r="2.1"/><circle cx="18.8" cy="19.2" r="2.1"/><path d="M12 6.7v4.6M5.2 17.1v-3.4h13.6v3.4M12 11.3v5.8"/></svg>',
+    timeline:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v17"/><circle cx="12" cy="7" r="1.9" fill="currentColor" fill-opacity=".25"/><circle cx="12" cy="15.5" r="1.9" fill="currentColor" fill-opacity=".25"/><path d="M14.2 7H20M3.8 15.5h6"/></svg>',
+    insights:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.4a6.2 6.2 0 0 0-3.6 11.2c.7.6 1.1 1.3 1.1 2.1v.6h5v-.6c0-.8.4-1.5 1.1-2.1A6.2 6.2 0 0 0 12 3.4Z"/><path d="M9.8 20.2h4.4M10.5 8.6c.4-.8 1.1-1.2 2-1.2"/></svg>',
+    me:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.2" r="3.6"/><path d="M4.6 20c.9-3.7 3.9-5.6 7.4-5.6s6.5 1.9 7.4 5.6"/></svg>'
+  };
+  const NAV = [
+    { id:'home',     label:'Home',     view:'home',     views:['home','members','pinned'] },
+    { id:'tree',     label:'Tree',     view:'tree',     views:['tree'] },
+    { id:'timeline', label:'Timeline', view:'timeline', views:['timeline'] },
+    { id:'insights', label:'Insights', view:'insights', views:['insights'] },
+    { id:'me',       label:'Me',       view:'settings', views:['settings','guidelines'] }
+  ];
+  const VIEW_PANEL = { home:'viewHome', tree:'viewTree', timeline:'viewTimeline', insights:'viewInsights',
+    members:'viewMembers', pinned:'viewPinned', guidelines:'viewGuidelines', settings:'viewSettings' };
+  function navIndexForView(view){ return Math.max(0, NAV.findIndex(n=>n.views.includes(view))); }
+  function renderNav(){
+    const btns = cls => NAV.map(n=>`<button type="button" class="${cls}" data-nav="${n.id}" data-view="${n.view}"><span class="nav-icon">${ICONS[n.id]}</span><span class="label">${n.label}</span></button>`).join('');
+    $('sideRail').innerHTML = btns('nav-btn');
+    $('bottomNav').innerHTML = '<span class="dock-indicator" aria-hidden="true"></span>' + btns('dock-btn');
+    [$('sideRail'), $('bottomNav')].forEach(nav=> nav.addEventListener('click', e=>{
+      const b = e.target.closest('button[data-view]'); if(!b) return;
+      sfx.click(); switchView(b.dataset.view);
+    }));
+    syncNavActive();
+  }
+  function syncNavActive(){
+    const idx = navIndexForView(currentView);
+    document.querySelectorAll('#sideRail button, #bottomNav button').forEach(b=>{
+      const on = b.dataset.nav === NAV[idx].id;
+      b.classList.toggle('active', on);
+      if(on) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current');
+    });
+    $('bottomNav').style.setProperty('--i', idx);
+  }
+
+  // ---------- routing (hash-based, so refresh / back / deep links all work) ----------
+  // #/                     My Family Trees
+  // #/t/<treeId>/<view>    a tab inside an open tree
+  function parseRoute(){
+    const m = location.hash.match(/^#\/t\/([^/]+)\/([a-z]+)$/);
+    return m ? { treeId: decodeURIComponent(m[1]), view: m[2] } : null;
+  }
+  function pushRoute(){
+    const h = currentTreeId ? '#/t/'+encodeURIComponent(currentTreeId)+'/'+currentView : '#/';
+    if(location.hash !== h) location.hash = h;
+  }
+  function applyRoute(){
+    if(!currentUser || !db || !db.trees) return;
+    const r = parseRoute();
+    if(!r){ if(currentTreeId) showDashboard(true); return; }
+    if(!db.trees.some(t=>t.id===r.treeId) || !VIEW_PANEL[r.view]){
+      // Unknown tree or tab (deleted, typo): fall back safely, never a blank screen.
+      if(currentTreeId) showDashboard(true);
+      history.replaceState(null,'','#/');
+      return;
+    }
+    if(currentTreeId!==r.treeId) openTree(r.treeId, r.view, true);
+    else if(currentView!==r.view) switchView(r.view, {noRoute:true});
+  }
+  window.addEventListener('hashchange', applyRoute);
+
+  // ---------- navigation ----------
+  function switchView(view, opts){
+    opts = opts || {};
+    if(!VIEW_PANEL[view]) view = 'tree';
+    if($('sidePanel').classList.contains('open') && view!==currentView) closePanel();
     currentView = view;
-    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.view===view));
-    document.querySelectorAll('#bottomNav button').forEach(b=>b.classList.toggle('active', b.dataset.view===view));
+    syncNavActive();
+    const shell = $('treeShell');
+    shell.className = shell.className.replace(/\bview-\w+/g,'').trim() + ' view-' + view;
     document.querySelectorAll('.shell .view-panel').forEach(v=>v.classList.remove('active'));
-    const map = {tree:'viewTree', members:'viewMembers', pinned:'viewPinned', guidelines:'viewGuidelines', settings:'viewSettings'};
-    $(map[view]).classList.add('active');
+    $(VIEW_PANEL[view]).classList.add('active');
+    $('topbarExtras').classList.remove('open'); $('topbarExtrasBackdrop').classList.remove('open');
+    // Each panel re-renders from live data when shown (cheap), but the tree
+    // keeps its own zoom/pan/selection across tab switches.
+    if(view==='home') renderHome();
     if(view==='members') renderMembers();
     if(view==='pinned') renderPinned();
+    if(view==='timeline') renderTimeline();
+    if(view==='insights') renderInsights();
     if(view==='settings'){ $('settingsTreeName').value=tree()?tree().name:''; $('settingsTreeDesc').value=tree()?(tree().description||''):''; }
-    if(view==='tree') afterLayout(centerTree);
+    if(view==='tree'){
+      renderTree();
+      if(treeNeedsFit){ treeNeedsFit=false; if(peopleArr().length) afterLayout(fitToScreen); }
+    }
+    if(!opts.noRoute) pushRoute();
   }
-  document.querySelectorAll('.nav-btn').forEach(btn=> btn.addEventListener('click', ()=>{ sfx.click(); switchView(btn.dataset.view); }));
-  document.querySelectorAll('#bottomNav button').forEach(btn=> btn.addEventListener('click', ()=>{ sfx.click(); switchView(btn.dataset.view); }));
 
   $('treeNameInput').addEventListener('change', e=>{
     const t=tree(); t.name=e.target.value.trim()||'Untitled Family'; touchTree();
@@ -2405,6 +2729,8 @@
     const hasPeople = people.length>0;
     $('treeEmptyState').style.display = hasPeople ? 'none' : 'flex';
     $('treeViewport').style.display = hasPeople ? 'block' : 'none';
+    $('treeFab').style.display = hasPeople ? 'flex' : 'none';
+    if(hasPeople) updateGenLabel();
     $('treeLegend').style.display = hasPeople ? 'flex' : 'none';
     maybeShowFirstRunTip(hasPeople);
     if(!hasPeople) return;
@@ -2487,19 +2813,19 @@
       // blurred glow underlay
       const glow=document.createElementNS(svgNS,'line');
       glow.setAttribute('x1',sx);glow.setAttribute('y1',sy);glow.setAttribute('x2',ex);glow.setAttribute('y2',ey);
-      glow.setAttribute('stroke',`rgba(90,150,255,${baseOp*0.55})`);glow.setAttribute('stroke-width',emph?'7':'5');
+      glow.setAttribute('stroke',`rgba(39,230,255,${baseOp*0.55})`);glow.setAttribute('stroke-width',emph?'7':'5');
       glow.setAttribute('filter','url(#lineGlow)');
       svg.appendChild(glow);
       // crisp line on top
       const l=document.createElementNS(svgNS,'line');
       l.setAttribute('x1',sx);l.setAttribute('y1',sy);l.setAttribute('x2',ex);l.setAttribute('y2',ey);
-      l.setAttribute('stroke',`rgba(180,210,255,${dim?0.18:Math.min(1,baseOp+0.25)})`);l.setAttribute('stroke-width',emph?'2':'1.1');
+      l.setAttribute('stroke',`rgba(143,235,255,${dim?0.18:Math.min(1,baseOp+0.25)})`);l.setAttribute('stroke-width',emph?'2':'1.1');
       svg.appendChild(l);
       // animated flowing pulse riding along the line
       if(db.settings.animations && !dim){
         const flow=document.createElementNS(svgNS,'line');
         flow.setAttribute('x1',sx);flow.setAttribute('y1',sy);flow.setAttribute('x2',ex);flow.setAttribute('y2',ey);
-        flow.setAttribute('stroke','rgba(220,235,255,0.85)');flow.setAttribute('stroke-width',emph?'2.1':'1.6');
+        flow.setAttribute('stroke','rgba(210,252,255,0.9)');flow.setAttribute('stroke-width',emph?'2.1':'1.6');
         flow.setAttribute('stroke-dasharray','5 26');
         flow.setAttribute('class','flow-line');
         flow.style.animationDuration = (2.4 + Math.random()*1.4).toFixed(2)+'s';
@@ -2519,18 +2845,18 @@
       const baseOp = emph?0.75:(dim?0.08:0.35);
       const glow=document.createElementNS(svgNS,'path');
       glow.setAttribute('d',d); glow.setAttribute('fill','none');
-      glow.setAttribute('stroke',`rgba(90,150,255,${baseOp*0.55})`); glow.setAttribute('stroke-width',emph?'7':'5');
+      glow.setAttribute('stroke',`rgba(39,230,255,${baseOp*0.55})`); glow.setAttribute('stroke-width',emph?'7':'5');
       glow.setAttribute('stroke-linecap','round'); glow.setAttribute('filter','url(#lineGlow)');
       svg.appendChild(glow);
       const l=document.createElementNS(svgNS,'path');
       l.setAttribute('d',d); l.setAttribute('fill','none');
-      l.setAttribute('stroke',`rgba(180,210,255,${dim?0.18:Math.min(1,baseOp+0.25)})`); l.setAttribute('stroke-width',emph?'2':'1.1');
+      l.setAttribute('stroke',`rgba(143,235,255,${dim?0.18:Math.min(1,baseOp+0.25)})`); l.setAttribute('stroke-width',emph?'2':'1.1');
       l.setAttribute('stroke-linecap','round');
       svg.appendChild(l);
       if(db.settings.animations && !dim){
         const flow=document.createElementNS(svgNS,'path');
         flow.setAttribute('d',d); flow.setAttribute('fill','none');
-        flow.setAttribute('stroke','rgba(220,235,255,0.85)'); flow.setAttribute('stroke-width',emph?'2.1':'1.6');
+        flow.setAttribute('stroke','rgba(210,252,255,0.9)'); flow.setAttribute('stroke-width',emph?'2.1':'1.6');
         flow.setAttribute('stroke-dasharray','5 26'); flow.setAttribute('stroke-linecap','round');
         flow.setAttribute('class','flow-line');
         flow.style.animationDuration = (2.4 + Math.random()*1.4).toFixed(2)+'s';
@@ -2575,7 +2901,7 @@
         const ring=document.createElementNS(svgNS,'circle');
         ring.setAttribute('cx',collectX); ring.setAttribute('cy',collectY); ring.setAttribute('r', trunkEmph?'4':'3');
         ring.setAttribute('fill',`rgba(10,12,20,${trunkDim?0.5:0.9})`);
-        ring.setAttribute('stroke',`rgba(180,210,255,${trunkDim?0.2:0.85})`);
+        ring.setAttribute('stroke',`rgba(143,235,255,${trunkDim?0.2:0.85})`);
         ring.setAttribute('stroke-width','1.4');
         svg.appendChild(ring);
       }
@@ -2637,7 +2963,11 @@
       const dYear = p.living ? 'Living' : (p.deathDate ? new Date(p.deathDate).getFullYear() : 'N/A');
       const nameFull = fullName(p);
       node.title = nameFull; // full name on hover/long-press when the single-line name is truncated
-      node.innerHTML = `${p.pinned?'<div class="node-pin">📌</div>':''}${photoHtml}<div class="node-info"><div class="node-name">${escapeHtml(nameFull)}</div><div class="node-dates">${bYear} – ${dYear}</div></div>`;
+      node.tabIndex = 0; node.setAttribute('role','button');
+      node.setAttribute('aria-label', `${nameFull}, ${bYear} to ${dYear}. Open profile`);
+      node.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openPanel(p.id); } });
+      const hasMore = !!((p.notes && p.notes.trim()) || normalizeTraits(p.traits).length);
+      node.innerHTML = `${p.pinned?'<div class="node-pin">📌</div>':''}${hasMore?'<span class="node-flag" title="Has notes or observations"></span>':''}${photoHtml}<div class="node-info"><div class="node-name">${escapeHtml(nameFull)}</div><div class="node-dates">${bYear} – ${dYear}</div></div>`;
       node.addEventListener('click', (e)=>{ e.stopPropagation(); openPanel(p.id); });
 
       // Hover (desktop) / long-press (mobile) quick-info popup
@@ -2762,6 +3092,38 @@
     zoom = Math.max(0.4, Math.min(2, scale));
     centerTree();
   }
+
+  // ---------- floating tree controls ----------
+  let navGen = 0;
+  function genRows(){
+    const layout = computeLayout(); const rows = {};
+    Object.keys(layout.positions).forEach(id=>{ const g = layout.genCache[id]; (rows[g]=rows[g]||[]).push(layout.positions[id]); });
+    return { rows, count: layout.maxGen+1 };
+  }
+  function updateGenLabel(){
+    const {count} = genRows();
+    navGen = Math.max(0, Math.min(count-1, navGen));
+    $('fabGenLabel').textContent = `Gen ${navGen+1}/${count}`;
+    $('fabGenUp').disabled = navGen<=0; $('fabGenDown').disabled = navGen>=count-1;
+  }
+  function goToGeneration(delta){
+    const {rows,count} = genRows();
+    navGen = Math.max(0, Math.min(count-1, navGen+delta));
+    const row = rows[navGen]; if(!row||!row.length) return;
+    const vp = $('treeViewport');
+    const vw = vp.clientWidth || window.innerWidth, vh = vp.clientHeight || (window.innerHeight-56);
+    const xs = row.map(r=>r.x); const cx = (Math.min(...xs)+Math.max(...xs))/2 + 80, cy = row[0].y + 80;
+    panX = vw/2 - cx*zoom; panY = vh/2 - cy*zoom; applyTransform(); updateGenLabel();
+  }
+  $('fabZoomIn').onclick = ()=>{ zoom=Math.min(2, zoom+0.1); applyTransform(); };
+  $('fabZoomOut').onclick = ()=>{ zoom=Math.max(0.4, zoom-0.1); applyTransform(); };
+  $('fabFit').onclick = ()=> fitToScreen();
+  $('fabCenter').onclick = ()=>{
+    if(selectedId && personById(selectedId)) centerOnPerson(selectedId);
+    else toast('Select a family member first, then center on them.');
+  };
+  $('fabGenUp').onclick = ()=> goToGeneration(-1);
+  $('fabGenDown').onclick = ()=> goToGeneration(1);
 
   $('zoomInBtn').onclick = ()=>{ zoom=Math.min(2, zoom+0.1); applyTransform(); };
   $('zoomOutBtn').onclick = ()=>{ zoom=Math.max(0.4, zoom-0.1); applyTransform(); };
@@ -3645,6 +4007,325 @@
     sfx.add(); toast('Added.');
   }
   $('modalSaveBtn').onclick = saveModal;
+
+  // =====================================================================
+  // HOME / TIMELINE / INSIGHTS — the three section views added by the
+  // holographic navigation. Every number shown here is computed from the
+  // tree's real data; nothing is sample, estimated, or decorative.
+  // =====================================================================
+  const yearOf = d => { const y = d ? parseInt(String(d).slice(0,4),10) : NaN; return isNaN(y) ? null : y; };
+  function initialsOf(p){ return ((p.firstName||'?')[0] + ((p.lastName||'')[0]||'')).toUpperCase(); }
+  function avatarMini(p){
+    return p.photo ? `<img class="hx-av" src="${escapeHtml(p.photo)}" alt="">` : `<span class="hx-av hx-av-init" aria-hidden="true">${escapeHtml(initialsOf(p))}</span>`;
+  }
+  function personLink(p){
+    return `<button type="button" class="hx-person" data-open-person="${p.id}">${avatarMini(p)}<span>${escapeHtml(fullName(p))}</span></button>`;
+  }
+  function bindViewActions(root){
+    root.querySelectorAll('[data-open-person]').forEach(b=> b.onclick = ()=> openPanel(b.dataset.openPerson));
+    root.querySelectorAll('[data-goto]').forEach(b=> b.onclick = ()=>{ sfx.click(); switchView(b.dataset.goto); });
+  }
+  document.querySelectorAll('[data-goto]').forEach(b=> b.addEventListener('click', ()=>{ sfx.click(); switchView(b.dataset.goto); }));
+
+  // ---------- timeline data ----------
+  function collectTimelineEvents(){
+    const t = tree(); const out = [];
+    peopleArr().forEach(p=>{
+      if(p.birthDate && yearOf(p.birthDate)!==null)
+        out.push({ key:'birth:'+p.id, kind:'birth', date:p.birthDate, title:`${fullName(p)} was born`, personIds:[p.id] });
+      if(!p.living && p.deathDate && yearOf(p.deathDate)!==null)
+        out.push({ key:'death:'+p.id, kind:'death', date:p.deathDate, title:`${fullName(p)} passed away`, personIds:[p.id] });
+    });
+    (t.events||[]).forEach(e=>{
+      if(!e.date || yearOf(e.date)===null) return;
+      const ids = [e.personId, e.withPersonId].filter(id=>id && personById(id));
+      out.push({ key:'custom:'+e.id, kind:e.kind||'milestone', custom:true, id:e.id, date:e.date, title:e.title, notes:e.notes||'', personIds:ids });
+    });
+    out.sort((a,b)=> String(a.date).localeCompare(String(b.date)) || a.title.localeCompare(b.title));
+    return out;
+  }
+  function ageBetween(from, to){
+    const a = new Date(from+'T00:00:00'), b = new Date(to+'T00:00:00');
+    if(isNaN(a)||isNaN(b)) return null;
+    let age = b.getFullYear()-a.getFullYear();
+    const m = b.getMonth()-a.getMonth();
+    if(m<0 || (m===0 && b.getDate()<a.getDate())) age--;
+    return age>=0 ? age : null;
+  }
+
+  // ---------- HOME ----------
+  function miniTreeSvg(layout){
+    const ids = Object.keys(layout.positions);
+    if(!ids.length) return '';
+    const W=184, H=64;
+    let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+    ids.forEach(id=>{ const p=layout.positions[id]; minX=Math.min(minX,p.x); minY=Math.min(minY,p.y); maxX=Math.max(maxX,p.x+W); maxY=Math.max(maxY,p.y+H); });
+    const pad=30, vbW=maxX-minX+pad*2, vbH=maxY-minY+pad*2;
+    const cx = id=> layout.positions[id].x - minX + pad + W/2;
+    const top = id=> layout.positions[id].y - minY + pad;
+    let lines='', nodes='';
+    peopleArr().forEach(p=>{
+      if(!layout.positions[p.id]) return;
+      (p.parents||[]).forEach(pid=>{
+        if(!layout.positions[pid]) return;
+        const x1=cx(pid), y1=top(pid)+H, x2=cx(p.id), y2=top(p.id), my=(y1+y2)/2;
+        lines += `<path d="M${x1} ${y1} V${my} H${x2} V${y2}" class="mt-line"/>`;
+      });
+      (p.spouseIds||[]).forEach(sid=>{
+        if(sid<p.id || !layout.positions[sid]) return;
+        lines += `<path d="M${cx(p.id)} ${top(p.id)+H/2} H${cx(sid)}" class="mt-line mt-spouse"/>`;
+      });
+    });
+    peopleArr().forEach(p=>{
+      if(!layout.positions[p.id]) return;
+      nodes += `<rect x="${cx(p.id)-W/2+10}" y="${top(p.id)+H/2-9}" width="${W-20}" height="18" rx="9" class="mt-node"/>`;
+    });
+    return `<svg class="mini-tree" viewBox="0 0 ${vbW} ${vbH}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Overview of your family tree">${lines}${nodes}</svg>`;
+  }
+  function renderHome(){
+    const root = $('homeRoot'); const t = tree(); if(!t) return;
+    const people = peopleArr();
+    if(!people.length){
+      root.innerHTML = `
+        <div class="hx-hero hx-empty">
+          <div class="hx-eyebrow">FAMILY COMMAND CENTER</div>
+          <h2 class="hx-title">${escapeHtml(t.name)}</h2>
+          <p class="hx-sub">Nothing is recorded yet. Add the first person — yourself, a parent, a grandparent — and the rest of your family network builds outward from there.</p>
+          <button type="button" class="hx-btn hx-btn-primary" id="homeStartBtn">+ Add the first family member</button>
+        </div>`;
+      $('homeStartBtn').onclick = ()=>{ switchView('tree'); $('createFirstPersonBtn').click(); };
+      return;
+    }
+    const layout = computeLayout();
+    const gens = layout.maxGen+1;
+    const deceased = people.filter(p=>!p.living && p.deathDate).length;
+    const pinned = people.filter(p=>p.pinned).length;
+    const withObs = people.filter(p=> normalizeTraits(p.traits).length).length;
+    const years = people.map(p=>yearOf(p.birthDate)).filter(y=>y!==null);
+    const spanTxt = years.length ? `${Math.min(...years)} – ${Math.max(...years)}` : null;
+    const recent = people.filter(p=>p.createdAt).slice().sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt)).slice(0,4);
+    const events = collectTimelineEvents();
+    const today = new Date().toISOString().slice(0,10);
+    const past = events.filter(e=>e.date<=today).slice(-4).reverse();
+    const stat = (n,l)=>`<div class="hx-stat"><div class="hx-stat-n">${n}</div><div class="hx-stat-l">${l}</div></div>`;
+    root.innerHTML = `
+      <div class="hx-hero">
+        <div class="hx-eyebrow">FAMILY COMMAND CENTER</div>
+        <h2 class="hx-title">${escapeHtml(greetingText())}</h2>
+        <p class="hx-sub">${escapeHtml(t.name)}${t.description?' — '+escapeHtml(t.description):''}</p>
+        <div class="hx-stats">
+          ${stat(people.length, people.length===1?'Member':'Members')}
+          ${stat(gens, gens===1?'Generation':'Generations')}
+          ${stat(years.length, 'Birth dates recorded')}
+          ${stat(withObs, 'With observations')}
+        </div>
+      </div>
+      <div class="hx-grid">
+        <section class="hx-panel hx-span2" aria-labelledby="hxPreviewT">
+          <div class="hx-panel-head"><h3 id="hxPreviewT">Family network</h3>
+            <button type="button" class="hx-btn" data-goto="tree">Open full tree →</button></div>
+          <div class="hx-preview">${miniTreeSvg(layout)}</div>
+        </section>
+        <section class="hx-panel" aria-labelledby="hxActT">
+          <div class="hx-panel-head"><h3 id="hxActT">Quick actions</h3></div>
+          <div class="hx-actions">
+            <button type="button" class="hx-action" id="homeAddBtn"><b>＋</b><span>Add a member</span></button>
+            <button type="button" class="hx-action" id="homeEventBtn"><b>◷</b><span>Record an event</span></button>
+            <button type="button" class="hx-action" data-goto="members"><b>☷</b><span>All members</span></button>
+            <button type="button" class="hx-action" data-goto="pinned"><b>★</b><span>Pinned (${pinned})</span></button>
+          </div>
+        </section>
+        <section class="hx-panel" aria-labelledby="hxRecT">
+          <div class="hx-panel-head"><h3 id="hxRecT">Recently added</h3></div>
+          ${recent.length ? `<div class="hx-list">${recent.map(p=>`<div class="hx-row">${personLink(p)}<span class="hx-row-meta">${escapeHtml(fmtRelative(p.createdAt))}</span></div>`).join('')}</div>` : `<p class="hx-muted">No recently added members.</p>`}
+        </section>
+        <section class="hx-panel" aria-labelledby="hxEvT">
+          <div class="hx-panel-head"><h3 id="hxEvT">Recorded events</h3>
+            <button type="button" class="hx-btn" data-goto="timeline">Timeline →</button></div>
+          ${past.length ? `<div class="hx-list">${past.map(e=>`<div class="hx-row"><span class="hx-ev-ico hx-k-${e.kind}" aria-hidden="true"></span><span class="hx-row-main">${escapeHtml(e.title)}</span><span class="hx-row-meta">${escapeHtml(fmtDate(e.date))}</span></div>`).join('')}</div>` : `<p class="hx-muted">No dated events yet. Add birth dates in profiles, or record an event.</p>`}
+        </section>
+        <section class="hx-panel" aria-labelledby="hxHistT">
+          <div class="hx-panel-head"><h3 id="hxHistT">History overview</h3></div>
+          <dl class="hx-dl">
+            <div><dt>Birth years recorded</dt><dd>${years.length} of ${people.length}</dd></div>
+            <div><dt>Span of births</dt><dd>${spanTxt || '—'}</dd></div>
+            <div><dt>Deceased (date recorded)</dt><dd>${deceased}</dd></div>
+            <div><dt>Pinned members</dt><dd>${pinned}</dd></div>
+          </dl>
+        </section>
+      </div>`;
+    bindViewActions(root);
+    $('homeAddBtn').onclick = ()=>{ switchView('tree'); const sel = selectedId && personById(selectedId) ? selectedId : people[0].id; selectedId = sel; openPanel(sel); toast('Choose Add Child, Parent, Sibling or Spouse from the profile.'); };
+    $('homeEventBtn').onclick = ()=> openEventModal();
+  }
+
+  // ---------- TIMELINE ----------
+  let timelineFilter = 'all';
+  const KIND_LABEL = { birth:'Birth', death:'Death', marriage:'Marriage', milestone:'Milestone', other:'Other' };
+  function renderTimeline(){
+    const root = $('timelineRoot'); const t = tree(); if(!t) return;
+    const all = collectTimelineEvents();
+    const shown = all.filter(e=> timelineFilter==='all' || e.kind===timelineFilter);
+    const filters = ['all','birth','death','marriage','milestone','other'];
+    const chips = filters.map(f=>`<button type="button" class="hx-chip${f===timelineFilter?' active':''}" data-tl-filter="${f}">${f==='all'?'All':KIND_LABEL[f]+(f==='other'?'':'s')}</button>`).join('');
+    let body;
+    if(!all.length){
+      body = `<div class="hx-hero hx-empty"><p class="hx-sub">The timeline is built from dates you record: birth and death dates in each profile, plus any events you add. Nothing has been dated yet.</p>
+        <button type="button" class="hx-btn hx-btn-primary" id="tlEmptyAdd">+ Record an event</button></div>`;
+    } else if(!shown.length){
+      body = `<p class="hx-muted">No events match this filter.</p>`;
+    } else {
+      let lastYear = null, html = '<ol class="tl" aria-label="Family timeline">';
+      shown.forEach((e,i)=>{
+        const y = yearOf(e.date);
+        if(y!==lastYear){ html += `<li class="tl-year" aria-hidden="true"><span>${y}</span></li>`; lastYear=y; }
+        const people = e.personIds.map(personById).filter(Boolean);
+        let detail = '';
+        if(e.kind==='birth' && people[0]){
+          const p = people[0];
+          const end = (!p.living && p.deathDate) ? p.deathDate : new Date().toISOString().slice(0,10);
+          const age = ageBetween(e.date, end);
+          if(age!==null) detail += `<p>${p.living?'Age today':'Lived'}: <b>${age}</b> years.</p>`;
+        }
+        if(e.kind==='death' && people[0] && people[0].birthDate){
+          const age = ageBetween(people[0].birthDate, e.date);
+          if(age!==null) detail += `<p>Age at death: <b>${age}</b>.</p>`;
+        }
+        if(e.notes) detail += `<p>${escapeHtml(e.notes)}</p>`;
+        detail += people.length ? `<div class="tl-people">${people.map(personLink).join('')}</div>` : '';
+        if(e.custom) detail += `<button type="button" class="hx-btn" data-edit-event="${e.id}">Edit event</button>`;
+        const id = 'tl-d-'+i;
+        html += `<li class="tl-item tl-${e.kind}">
+          <span class="tl-dot" aria-hidden="true"></span>
+          <div class="tl-card">
+            <button type="button" class="tl-head" aria-expanded="false" aria-controls="${id}" data-tl-toggle>
+              <span class="tl-kind">${KIND_LABEL[e.kind]||'Event'}</span>
+              <span class="tl-title">${escapeHtml(e.title)}</span>
+              <span class="tl-date">${escapeHtml(fmtDate(e.date))}</span>
+            </button>
+            <div class="tl-detail" id="${id}" hidden>${detail}</div>
+          </div></li>`;
+      });
+      body = html + '</ol>';
+    }
+    root.innerHTML = `
+      <div class="hx-pagehead"><div><div class="hx-eyebrow">FAMILY HISTORY</div><h2 class="hx-title">Timeline</h2></div>
+        <button type="button" class="hx-btn hx-btn-primary" id="tlAddBtn">+ Event</button></div>
+      <div class="hx-chips" role="group" aria-label="Filter events">${chips}</div>${body}`;
+    root.querySelectorAll('[data-tl-filter]').forEach(b=> b.onclick = ()=>{ timelineFilter=b.dataset.tlFilter; renderTimeline(); });
+    root.querySelectorAll('[data-tl-toggle]').forEach(b=> b.onclick = ()=>{
+      const open = b.getAttribute('aria-expanded')==='true';
+      b.setAttribute('aria-expanded', String(!open));
+      $(b.getAttribute('aria-controls')).hidden = open;
+    });
+    root.querySelectorAll('[data-edit-event]').forEach(b=> b.onclick = ()=> openEventModal(b.dataset.editEvent));
+    bindViewActions(root);
+    $('tlAddBtn').onclick = ()=> openEventModal();
+    if($('tlEmptyAdd')) $('tlEmptyAdd').onclick = ()=> openEventModal();
+  }
+
+  // ---------- event add/edit/delete (stored on the tree itself: tree.events) ----------
+  let editingEventId = null;
+  function fillEventPeopleSelects(){
+    const opts = peopleArr().map(p=>`<option value="${p.id}">${escapeHtml(fullName(p))}</option>`).join('');
+    $('evPerson').innerHTML = '<option value="">— none —</option>'+opts;
+    $('evWith').innerHTML = '<option value="">— none —</option>'+opts;
+  }
+  function openEventModal(id){
+    if(!tree()) return;
+    editingEventId = id || null;
+    fillEventPeopleSelects();
+    const e = id ? (tree().events||[]).find(x=>x.id===id) : null;
+    $('eventModalTitle').textContent = e ? 'Edit event' : 'Record an event';
+    $('evKind').value = e ? (e.kind||'milestone') : 'milestone';
+    $('evTitle').value = e ? e.title : '';
+    $('evDate').value = e ? e.date : '';
+    $('evPerson').value = e && e.personId ? e.personId : '';
+    $('evWith').value = e && e.withPersonId ? e.withPersonId : '';
+    $('evNotes').value = e ? (e.notes||'') : '';
+    $('evError').textContent = '';
+    $('eventDeleteBtn').style.display = e ? 'inline-block' : 'none';
+    $('eventModalBackdrop').style.display = 'flex';
+    setTimeout(()=> $('evTitle').focus(), 30);
+  }
+  function closeEventModal(){ $('eventModalBackdrop').style.display = 'none'; editingEventId = null; }
+  $('eventCloseBtn').onclick = closeEventModal;
+  $('eventCancelBtn').onclick = closeEventModal;
+  $('eventModalBackdrop').addEventListener('click', e=>{ if(e.target===$('eventModalBackdrop')) closeEventModal(); });
+  $('evKind').addEventListener('change', ()=>{ $('evWithField').style.display = $('evKind').value==='marriage' ? 'block' : 'none'; });
+  $('eventSaveBtn').onclick = async ()=>{
+    const title = $('evTitle').value.trim(), date = $('evDate').value;
+    if(!title){ $('evError').textContent = 'Please give the event a title.'; $('evTitle').focus(); return; }
+    if(!date){ $('evError').textContent = 'Please choose a date — the timeline is ordered by date.'; $('evDate').focus(); return; }
+    const t = tree(); t.events = t.events || [];
+    const kind = $('evKind').value;
+    const data = { kind, title, date, notes:$('evNotes').value.trim(),
+      personId:$('evPerson').value||'', withPersonId: kind==='marriage' ? ($('evWith').value||'') : '' };
+    if(editingEventId){
+      const e = t.events.find(x=>x.id===editingEventId); if(e) Object.assign(e, data);
+    } else {
+      t.events.push(Object.assign({ id:newId() }, data));
+    }
+    touchTree(); await persistDb(); closeEventModal();
+    if(currentView==='timeline') renderTimeline(); if(currentView==='home') renderHome();
+    toast('Event saved.');
+  };
+  $('eventDeleteBtn').onclick = async ()=>{
+    const t = tree(); if(!t || !editingEventId) return;
+    t.events = (t.events||[]).filter(e=>e.id!==editingEventId);
+    touchTree(); await persistDb(); closeEventModal();
+    if(currentView==='timeline') renderTimeline(); if(currentView==='home') renderHome();
+    toast('Event deleted.');
+  };
+
+  // ---------- INSIGHTS (Psychology & Personality) ----------
+  let insightsCat = 'all', insightsQuery = '';
+  function renderInsights(){
+    const root = $('insightsRoot'); const t = tree(); if(!t) return;
+    const people = peopleArr();
+    const withObs = people.filter(p=> normalizeTraits(p.traits).length);
+    root.innerHTML = `
+      <div class="hx-pagehead"><div><div class="hx-eyebrow">PSYCHOLOGY &amp; PERSONALITY</div><h2 class="hx-title">Insights</h2></div></div>
+      <div class="trait-disclaimer"><span class="ico">ℹ️</span><span>These are personal observations recorded by you, not a clinical diagnosis of anyone in this tree. Nothing here is inferred automatically.</span></div>
+      <p class="hx-sub" id="insSummary"></p>
+      <div class="hx-search"><input type="search" id="insSearch" placeholder="Search traits and patterns…" aria-label="Search traits" value="${escapeHtml(insightsQuery)}"></div>
+      <div class="trait-cat-filter" id="insCats" role="group" aria-label="Trait categories"></div>
+      <div class="ins-list" id="insList"></div>
+      <h3 class="hx-h3">Members with recorded observations</h3>
+      <div class="ins-members" id="insMembers"></div>`;
+    $('insSummary').textContent = people.length
+      ? `${withObs.length} of ${people.length} ${people.length===1?'member has':'members have'} recorded observations. Choose a trait to highlight matching members on the tree.`
+      : 'Add family members first, then record observations in their profiles.';
+    renderTraitCatFilter('insCats', insightsCat, cat=>{ insightsCat=cat; renderInsights(); });
+    $('insSearch').addEventListener('input', e=>{ insightsQuery=e.target.value; renderInsightsList(); });
+    renderInsightsList();
+    $('insMembers').innerHTML = withObs.length ? withObs.map(p=>{
+      const entries = normalizeTraits(p.traits);
+      const notes = entries.filter(e=>e.note && e.note.trim()).length;
+      return `<div class="hx-row">${personLink(p)}<span class="hx-row-meta">${entries.length} ${entries.length===1?'trait':'traits'}${notes?` · 📝 ${notes}`:''}</span></div>`;
+    }).join('') : `<p class="hx-muted">No observations recorded yet. Open a member and use “Add / Edit Traits”.</p>`;
+    bindViewActions(root);
+  }
+  function renderInsightsList(){
+    const el = $('insList'); const people = peopleArr();
+    const q = insightsQuery.trim().toLowerCase();
+    const lib = filteredTraits(q, insightsCat);
+    const customs = insightsCat==='all' ? collectCustomTraitGroups().filter(g=>!q || g.title.toLowerCase().includes(q)) : [];
+    if(!lib.length && !customs.length){ el.innerHTML = `<div class="trait-empty-note">No traits match your search.</div>`; return; }
+    const count = id => people.filter(p=> normalizeTraits(p.traits).some(e=>!e.custom && e.id===id)).length;
+    const row = (key,title,short,tier,n)=>`<button type="button" class="trait-row ins-row" data-ins-trait="${escapeHtml(key)}">
+      <span class="trait-tier-dot trait-tier-${tier}"></span>
+      <span class="trait-row-main"><span class="trait-row-title">${escapeHtml(title)}</span><span class="trait-row-short">${escapeHtml(short)}</span></span>
+      <span class="trait-match-badge${n?' has-matches':''}">${n} ${n===1?'match':'matches'}</span></button>`;
+    let html = groupTraitsByCategory(lib).map(g=> `<div class="trait-cat-heading">${escapeHtml(g.cat.label)}</div>` + g.traits.map(tr=>row(tr.id,tr.title,tr.short,tr.tier,count(tr.id))).join('')).join('');
+    if(customs.length) html += `<div class="trait-cat-heading">Other</div>` + customs.map(g=>row(g.key,g.title,'A personal observation added by you.','neutral',g.count)).join('');
+    el.innerHTML = html;
+    el.querySelectorAll('[data-ins-trait]').forEach(b=> b.onclick = ()=>{
+      activeTraitHighlight = b.dataset.insTrait;
+      $('searchInput').value = '';
+      switchView('tree');   // highlight persists on the tree until “Clear Highlight”
+    });
+  }
 
   // ---------- members / pinned ----------
   function renderMembers(){
