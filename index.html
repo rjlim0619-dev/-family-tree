@@ -614,7 +614,7 @@
         <div id="treeEmptyState">
           <div class="empty-glow-icon">🌳</div>
           <h2>Where your family's story begins</h2>
-          <p>Add the first person — yourself, a parent, a grandparent — and build outward from there.</p>
+          <p>Add the first person (yourself, a parent, a grandparent) and build outward from there.</p>
           <button class="big-create-btn" id="createFirstPersonBtn">+ Add Family Member</button>
         </div>
         <div id="treeViewport" style="display:none;">
@@ -682,7 +682,7 @@
               <label>Volume</label>
               <input type="range" id="musicVolume" min="0" max="1" step="0.05" value="0.15">
             </div>
-            <p style="font-size:0.72rem;color:var(--text-faint);margin:6px 0 0 0;">Gently generated in-browser — not licensed music.</p>
+            <p style="font-size:0.72rem;color:var(--text-faint);margin:6px 0 0 0;">Gently generated in-browser, not licensed music.</p>
           </div>
 
           <div class="settings-block">
@@ -747,7 +747,7 @@
       <div id="spotifyEmbedHost"></div>
       <button class="link-danger" id="spotifyRemoveBtn" style="margin-top:8px;">Remove</button>
     </div>
-    <p class="music-footnote">Plays through Spotify's own embedded player — its controls and attribution can't be changed. Some tracks may need a Spotify Premium account to play in full; that sign-in, if needed, happens inside the player itself.</p>
+    <p class="music-footnote">Plays through Spotify's own embedded player; its controls and attribution can't be changed. Some tracks may need a Spotify Premium account to play in full; that sign-in, if needed, happens inside the player itself.</p>
   </div>
 
   <div class="music-tab-body" id="musicTabBodyBuiltin">
@@ -1024,7 +1024,7 @@
   // so a missing file is shown as unavailable instead of silently failing.
   const BUILTIN_TRACKS = [
     { id:'ambient-generated', name:'Soft Ambient (generated)', src:null },
-    { id:'piano-reflection', name:'Gentle Piano — Reflection', src:'audio/piano-reflection.mp3' },
+    { id:'piano-reflection', name:'Gentle Piano: Reflection', src:'audio/piano-reflection.mp3' },
     { id:'warm-ambient', name:'Warm Ambient', src:'audio/warm-ambient.mp3' },
     { id:'remembrance-strings', name:'Remembrance Strings', src:'audio/remembrance-strings.mp3' }
   ];
@@ -1056,7 +1056,7 @@
         const ok = await probeTrack(track);
         if(!ok){
           btn.classList.add('unavailable');
-          $('builtinTrackStatus').textContent = "Not available yet — this audio file hasn't been added.";
+          $('builtinTrackStatus').textContent = "Not available yet: this audio file hasn't been added.";
           return;
         }
         selectBuiltinTrack(track.id, true);
@@ -1116,7 +1116,7 @@
       $('builtinTrackStatus').textContent = 'Playing';
     }).catch(()=>{
       bgAudioPlaying = false;
-      $('builtinTrackStatus').textContent = "Couldn't play this track — the audio file may be missing.";
+      $('builtinTrackStatus').textContent = "Couldn't play this track: the audio file may be missing.";
       $('musicFab').classList.remove('playing');
     });
   }
@@ -1277,7 +1277,7 @@
       const settings = (settingsRow && settingsRow.settings && Object.keys(settingsRow.settings).length) ? settingsRow.settings : {...DEFAULT_SETTINGS};
       return migrateDb({ trees, settings });
     }catch(e){
-      toast('Could not load your family trees — check your connection and reload.');
+      toast('Could not load your family trees. Check your connection and reload.');
       return { trees: [], settings: {...DEFAULT_SETTINGS} };
     }
   }
@@ -1303,7 +1303,7 @@
       // edit (or a manual retry) will simply try saving again.
       $('saveStatus').textContent = 'Could not save';
       sfx.error();
-      toast('Could not save — check your connection. Your changes are kept and will save once you\'re back online.');
+      toast('Could not save. Check your connection. Your changes are kept and will save once you\'re back online.');
     }
   }
   function scheduleSave(){
@@ -1425,8 +1425,8 @@
   function humanizeAuthError(err){
     const msg = (err && err.message) || 'Something went wrong. Please try again.';
     if(/invalid login credentials/i.test(msg)) return 'Incorrect email or password.';
-    if(/already registered|already exists/i.test(msg)) return 'An account with this email already exists — try signing in instead.';
-    if(/network/i.test(msg)) return 'Could not reach the server — check your connection.';
+    if(/already registered|already exists/i.test(msg)) return 'An account with this email already exists. Try signing in instead.';
+    if(/network/i.test(msg)) return 'Could not reach the server. Check your connection.';
     return msg;
   }
 
@@ -1453,10 +1453,10 @@
   }
   function openMigrationModal(info){
     const n = info.localTrees.length;
-    $('migrationModalSub').textContent = `We found ${n} family tree${n===1?'':'s'} saved on this device, from before you signed in. Import ${n===1?'it':'them'} into your account so it's backed up and available on your other devices too — nothing on this device will be changed or deleted either way.`;
-    $('migrationTreeList').innerHTML = info.localTrees.map(t=>`<div>🌳 ${escapeHtml(t.name||'Untitled tree')} — ${(t.people||[]).length} ${((t.people||[]).length===1?'person':'people')}</div>`).join('');
+    $('migrationModalSub').textContent = `We found ${n} family tree${n===1?'':'s'} saved on this device, from before you signed in. Import ${n===1?'it':'them'} into your account so it's backed up and available on your other devices too. Nothing on this device will be changed or deleted either way.`;
+    $('migrationTreeList').innerHTML = info.localTrees.map(t=>`<div>🌳 ${escapeHtml(t.name||'Untitled tree')}: ${(t.people||[]).length} ${((t.people||[]).length===1?'person':'people')}</div>`).join('');
     $('migrationError').textContent='';
-    $('migrationSuccess').textContent = info.cloudHasTrees ? 'You already have trees in your account — importing will add these as additional trees; nothing already there will be replaced or removed.' : '';
+    $('migrationSuccess').textContent = info.cloudHasTrees ? 'You already have trees in your account. Importing will add these as additional trees; nothing already there will be replaced or removed.' : '';
     $('migrationModalBackdrop').style.display='flex';
     $('migrationImportBtn').onclick = ()=>importLocalTrees(info.localTrees);
     $('migrationSkipBtn').onclick = ()=>skipMigration();
@@ -1478,7 +1478,7 @@
       setTimeout(async ()=>{ $('migrationModalBackdrop').style.display='none'; await finishEnteringApp(); }, 700);
     }catch(err){
       // Local data is untouched; nothing was marked migrated, so the user can just try again.
-      $('migrationError').textContent = 'Could not import — check your connection and try again. Your data on this device is safe and unchanged.';
+      $('migrationError').textContent = 'Could not import. Check your connection and try again. Your data on this device is safe and unchanged.';
       btn.disabled=false; btn.textContent=origLabel;
     }
   }
@@ -1580,7 +1580,7 @@
       const totalPeople = db.trees.reduce((s,t)=>s+t.people.length,0);
       const totalPinned = db.trees.reduce((s,t)=>s+t.people.filter(p=>p.pinned).length,0);
       $('dashHeroSub').textContent = totalPeople===0
-        ? "You've started a tree — add your first family member whenever you're ready."
+        ? "You've started a tree. Add your first family member whenever you're ready."
         : `${totalPeople} ${totalPeople===1?'person':'people'} documented across ${db.trees.length} family tree${db.trees.length===1?'':'s'}.`;
       statsEl.style.display='grid';
       statsEl.innerHTML = `
@@ -1595,7 +1595,7 @@
     const grid = $('treesGrid');
     grid.innerHTML='';
     if(db.trees.length===0){
-      grid.innerHTML = `<p style="color:var(--text-dim);grid-column:1/-1;">No family trees yet — create your first one above.</p>`;
+      grid.innerHTML = `<p style="color:var(--text-dim);grid-column:1/-1;">No family trees yet. Create your first one above.</p>`;
     }
     db.trees.slice().sort((a,b)=> new Date(b.updatedAt)-new Date(a.updatedAt)).forEach(t=>{
       const tile=document.createElement('div');
@@ -2447,7 +2447,7 @@
     if(q) candidates = candidates.filter(p=> fullName(p).toLowerCase().includes(q));
     const listEl = $('relationCandidateList');
     if(candidates.length===0){
-      listEl.innerHTML = `<p style="color:var(--text-dim);font-size:0.82rem;padding:6px 0;">No eligible existing members for this relation${type==='sibling'?' — if this is a half-sibling, use "Add Child" on the shared parent instead.':'.'}</p>`;
+      listEl.innerHTML = `<p style="color:var(--text-dim);font-size:0.82rem;padding:6px 0;">No eligible existing members for this relation${type==='sibling'?'. If this is a half-sibling, use "Add Child" on the shared parent instead.':'.'}</p>`;
       return;
     }
     listEl.innerHTML='';
@@ -2652,7 +2652,7 @@
     const q = $('searchInput').value.trim().toLowerCase();
     const list = peopleArr().filter(p=> !q || fullName(p).toLowerCase().includes(q));
     if(list.length===0){
-      grid.innerHTML = `<p style="color:var(--text-dim);">No members yet — add your first person from the Family Tree tab.</p>`;
+      grid.innerHTML = `<p style="color:var(--text-dim);">No members yet. Add your first person from the Family Tree tab.</p>`;
       return;
     }
     list.forEach(p=>{
@@ -2684,15 +2684,15 @@
     const items = [
       ['🌳 Family Tree','View and organize your family members visually, connected by generation.'],
       ['➕ Add Child','Adds a child under the selected member. If they have more than one spouse/partner, you choose who the other parent is (or none).'],
-      ['⬆️ Add Parent','Adds a parent above the selected member. Each person can have up to two parents — they are not assumed to be a couple unless you link them as spouses too.'],
+      ['⬆️ Add Parent','Adds a parent above the selected member. Each person can have up to two parents. They are not assumed to be a couple unless you link them as spouses too.'],
       ['↔️ Add Sibling','Adds a full sibling beside the selected member, sharing the same parents. For a half-sibling who only shares one parent, use "Add Child" on that shared parent instead.'],
-      ['💍 Add Spouse/Partner','Connects a spouse or partner. A person can have more than one over time — remarriages and blended families are fully supported.'],
-      ['🔗 Link existing person','Every "Add" button also lets you link someone already in this tree instead of creating a duplicate — useful whenever a relative already exists elsewhere in the family.'],
+      ['💍 Add Spouse/Partner','Connects a spouse or partner. A person can have more than one over time; remarriages and blended families are fully supported.'],
+      ['🔗 Link existing person','Every "Add" button also lets you link someone already in this tree instead of creating a duplicate. Useful whenever a relative already exists elsewhere in the family.'],
       ['✕ Unlink','Each parent, spouse, and child listed on a member\'s panel has a small ✕ to remove just that link, without deleting the person. Mistakes can be undone from the confirmation toast.'],
       ['📌 Pin','Saves an important family member to your Pinned list for quick access.'],
       ['✏️ Edit Member',"Change a family member's information, including their photo."],
       ['🗑️ Delete','Removes a family member entirely from the tree and cleans up their connections.'],
-      ['🔍 Search','Find a family member by name — matches are highlighted and centered.'],
+      ['🔍 Search','Find a family member by name. Matches are highlighted and centered.'],
       ['🎯 Center / Reset','Centers the tree on screen, or resets zoom and position.'],
       ['🔎 Zoom','Zoom in or out using the buttons, your scroll wheel, or pinch on mobile.'],
       ['💾 Save','Saves your latest changes. The app also autosaves shortly after each change.']
@@ -2826,7 +2826,7 @@
     $('authForm').style.display='none';
     $('authTitle').textContent = 'Could not load';
     $('authSub').textContent = '';
-    $('authError').textContent = "Couldn't load a required library — check your internet connection and reload this page. If it keeps happening, try disabling any ad blocker or content blocker for this site.";
+    $('authError').textContent = "Couldn't load a required library. Check your internet connection and reload this page. If it keeps happening, try disabling any ad blocker or content blocker for this site.";
   } else {
     boot();
   }
