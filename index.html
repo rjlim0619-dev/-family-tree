@@ -1825,6 +1825,54 @@
   html[data-motion="off"] .is-pop,html[data-motion="off"] .view-scroll > *,html[data-motion="off"] .person-node,html[data-motion="off"] .modal,html[data-motion="off"] .modal-backdrop,html[data-motion="off"] .sheet,html[data-motion="off"] .tl-item,html[data-motion="off"] .member-tile{animation:none !important;}
   html[data-motion="off"] .tree-tile,html[data-motion="off"] .hb,html[data-motion="off"] .hx-qa-b,html[data-motion="off"] .hx-stat-btn,html[data-motion="off"] #sidePanel{transition-duration:.01s !important;}
   @media (prefers-reduced-motion:reduce){ .is-pop,.view-scroll > *,.person-node,.modal,.modal-backdrop,.sheet,.tl-item,.member-tile{animation:none !important;} .tree-tile:hover,.member-tile:hover,.hx-qa-b:hover,.hx-stat-btn:hover{translate:none;} .hk-glow{display:none;} }
+  /* ===== HUD SKIN: dialogs, trait rows, Guidelines, event modal ===== */
+  .modal-backdrop .modal:not(.pm){position:relative;border:1px solid var(--cy);border-radius:18px;box-shadow:0 0 0 1px rgba(39,230,255,.14),0 0 38px rgba(39,230,255,.18),0 30px 80px rgba(0,0,0,.75);background:linear-gradient(rgba(39,230,255,.03) 1px,transparent 1px) 0 0/100% 22px,linear-gradient(90deg,rgba(39,230,255,.03) 1px,transparent 1px) 0 0/22px 100%,linear-gradient(180deg,#0b1a2e,#060f1c);}
+  .modal-backdrop .modal:not(.pm) .modal-header h2{font-family:var(--font-display);letter-spacing:.01em;}
+  .modal-backdrop .modal:not(.pm) .modal-close{color:var(--cy-2);border:1px solid var(--cy-line);background:var(--cy-faint);border-radius:11px;transition:border-color .25s,box-shadow .3s;} .modal-backdrop .modal:not(.pm) .modal-close:hover{border-color:var(--cy);box-shadow:0 0 14px var(--cy-glow);}
+  .modal-backdrop .modal:not(.pm) .modal-sub{color:var(--text-dim);}
+  .modal-backdrop .modal:not(.pm) .modal-actions{border-top:1px solid var(--cy-line);background:rgba(4,10,20,.55);}
+  .modal-backdrop .modal:not(.pm) input:focus,.modal-backdrop .modal:not(.pm) select:focus,.modal-backdrop .modal:not(.pm) textarea:focus{outline:none;border-color:var(--cy);box-shadow:0 0 0 3px rgba(39,230,255,.16),0 0 16px var(--cy-glow);}
+  .modal-backdrop .modal:not(.pm) .btn-primary{background:linear-gradient(135deg,var(--cy),#6aa8ff);color:#03131b;font-weight:700;border:0;box-shadow:0 0 18px var(--cy-glow);transition:box-shadow .3s,translate .3s var(--ease),filter .3s;} .modal-backdrop .modal:not(.pm) .btn-primary:hover{box-shadow:0 0 28px var(--cy-glow);translate:0 -1px;filter:brightness(1.08);}
+  .modal-backdrop .modal:not(.pm) .btn-flat{border:1px solid var(--cy-line);background:rgba(39,230,255,.04);}
+  /* trait rows — chamfered HUD list items */
+  .trait-list{gap:7px;}
+  .trait-cat-heading{display:flex;align-items:center;gap:10px;font-size:.62rem;letter-spacing:.28em;color:var(--cy);font-weight:700;margin:16px 0 4px;} .trait-cat-heading::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--cy-line),transparent);}
+  .trait-row{position:relative;overflow:hidden;align-items:center;padding:11px 12px 11px 14px;border-radius:0;border:1px solid var(--cy-line);background:linear-gradient(90deg,rgba(39,230,255,.05),rgba(10,20,36,.55) 40%);clip-path:polygon(9px 0,100% 0,100% calc(100% - 9px),calc(100% - 9px) 100%,0 100%,0 9px);transition:background .3s var(--ease),border-color .3s,translate .35s var(--ease),box-shadow .3s;}
+  .trait-row::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--cy);opacity:.25;transition:opacity .3s,box-shadow .3s;}
+  .trait-row::after{content:"";position:absolute;top:0;bottom:0;left:-40%;width:35%;background:linear-gradient(90deg,transparent,rgba(39,230,255,.14),transparent);transform:skewX(-18deg);opacity:0;pointer-events:none;}
+  .trait-row:hover{background:linear-gradient(90deg,rgba(39,230,255,.12),rgba(14,28,48,.7) 55%);border-color:var(--cy);translate:3px 0;}
+  .trait-row:hover::before{opacity:1;box-shadow:0 0 12px var(--cy);} .trait-row:hover::after{opacity:1;animation:trScan .8s var(--ease) 1;} @keyframes trScan{from{left:-40%}to{left:130%}}
+  .trait-row.selected{background:linear-gradient(90deg,rgba(39,230,255,.2),rgba(14,34,58,.75) 60%);border-color:var(--cy);box-shadow:inset 0 0 22px rgba(39,230,255,.12);} .trait-row.selected::before{opacity:1;box-shadow:0 0 12px var(--cy);}
+  .trait-row .trait-tier-dot{margin-top:0;flex:none;width:9px;height:9px;box-shadow:0 0 10px currentColor;}
+  .trait-row-title{font-size:.9rem;color:#eaf6ff;} .trait-row-short{font-size:.78rem;color:var(--text-dim);}
+  .trait-row .trait-match-badge{font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;border-radius:0;padding:4px 9px;border:1px solid var(--cy-line);background:rgba(39,230,255,.04);color:var(--text-faint);clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px);}
+  .trait-row .trait-match-badge.has-matches{color:#04141c;background:linear-gradient(135deg,var(--cy),#7fb6ff);border-color:transparent;font-weight:800;box-shadow:0 0 14px var(--cy-glow);}
+  .trait-cat-chip{border:1px solid var(--cy-line);background:rgba(39,230,255,.04);color:var(--text-dim);transition:all .3s var(--ease);} .trait-cat-chip:hover{border-color:var(--cy);color:var(--cy-2);} .trait-cat-chip.active{background:linear-gradient(135deg,var(--cy),#6aa8ff);color:#03131b;box-shadow:0 0 16px var(--cy-glow);}
+  #traitHighlightBackdrop .trait-disclaimer{border:1px solid var(--cy-line);background:var(--cy-faint);border-radius:12px;} #traitHighlightBackdrop input[type=text]{border-radius:11px;border:1px solid var(--cy-line);background:rgba(4,10,20,.7);}
+  /* Record-an-event modal */
+  .ev-modal .modal-header{align-items:center;gap:12px;padding-left:20px;} .ev-ico{flex:none;width:44px;height:44px;display:grid;place-items:center;color:var(--cy-2);background:linear-gradient(135deg,rgba(39,230,255,.16),rgba(39,230,255,.03));border:1px solid var(--cy);clip-path:polygon(9px 0,100% 0,100% calc(100% - 9px),calc(100% - 9px) 100%,0 100%,0 9px);box-shadow:inset 0 0 14px rgba(39,230,255,.2);} .ev-ico svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+  .ev-eyebrow{font-size:.58rem;letter-spacing:.3em;color:var(--cy);font-weight:700;} .ev-modal h2{margin:2px 0 2px;}
+  .ev-kinds{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;} .ev-kinds button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:64px;padding:8px 6px;border:1px solid var(--cy-line);background:rgba(4,10,20,.6);color:var(--text-dim);font:inherit;font-size:.78rem;cursor:pointer;clip-path:polygon(9px 0,100% 0,100% calc(100% - 9px),calc(100% - 9px) 100%,0 100%,0 9px);transition:background .3s var(--ease),border-color .3s,color .3s,box-shadow .35s;}
+  .ev-kinds svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;transition:transform .45s var(--spring);} .ev-kinds button:hover{border-color:var(--cy);color:var(--cy-2);} .ev-kinds button:hover svg{transform:translateY(-2px) scale(1.1);}
+  .ev-kinds button.on{color:#eaffff;border-color:var(--cy);background:linear-gradient(180deg,rgba(39,230,255,.22),rgba(39,230,255,.06));box-shadow:inset 0 0 20px rgba(39,230,255,.2),0 0 16px rgba(39,230,255,.2);} .ev-kinds button.on svg{color:var(--cy-2);filter:drop-shadow(0 0 6px var(--cy));}
+  .ev-kinds button:focus-visible{outline:2px solid #fff;outline-offset:2px;}
+  /* Guidelines */
+  .gl-head{margin-bottom:22px;} .gl-eyebrow{font-size:.62rem;letter-spacing:.3em;color:var(--cy);font-weight:700;margin-bottom:2px;} .gl-eyebrow b{color:var(--cy-2);font-variant-numeric:tabular-nums;} .gl-head .section-title{margin:2px 0 4px;} .gl-sub{margin:0 0 16px;color:var(--text-dim);font-size:.9rem;}
+  .gl-tools{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+  .gl-search{position:relative;flex:1 1 260px;max-width:420px;display:block;} .gl-search svg{position:absolute;left:13px;top:50%;translate:0 -50%;width:18px;height:18px;fill:none;stroke:var(--cy);stroke-width:1.8;stroke-linecap:round;pointer-events:none;} .gl-search input{width:100%;min-height:46px;padding:0 14px 0 40px;border-radius:12px;border:1px solid var(--cy-line);background:rgba(4,10,20,.7);color:var(--text);font:inherit;font-size:16px;transition:border-color .3s,box-shadow .3s;} .gl-search input:focus{outline:none;border-color:var(--cy);box-shadow:0 0 0 3px rgba(39,230,255,.16),0 0 18px var(--cy-glow);}
+  .gl-cats{display:flex;gap:8px;flex-wrap:wrap;} .gl-chip{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border:1px solid var(--cy-line);background:rgba(39,230,255,.04);color:var(--text-dim);font:inherit;font-size:.82rem;cursor:pointer;border-radius:999px;transition:all .3s var(--ease);} .gl-chip i{font-style:normal;font-size:.68rem;min-width:20px;text-align:center;padding:2px 6px;border-radius:999px;background:rgba(39,230,255,.12);color:var(--cy-2);} .gl-chip:hover{border-color:var(--cy);color:var(--cy-2);} .gl-chip.active{background:linear-gradient(135deg,var(--cy),#6aa8ff);color:#03131b;font-weight:700;border-color:transparent;box-shadow:0 0 18px var(--cy-glow);} .gl-chip.active i{background:rgba(3,19,27,.2);color:#03131b;}
+  #guideGrid{display:block;} .gl-group{margin-bottom:26px;} .gl-grp{display:flex;align-items:center;gap:12px;margin:0 0 12px;font-size:.66rem;letter-spacing:.3em;color:var(--cy);font-weight:700;} .gl-grp::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--cy-line),transparent);}
+  .gl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;}
+  .guide-card{position:relative;overflow:hidden;border:1px solid var(--cy-line);border-radius:0;padding:18px 16px 16px;background:linear-gradient(160deg,rgba(39,230,255,.07),rgba(10,20,36,.7) 45%),linear-gradient(rgba(39,230,255,.025) 1px,transparent 1px) 0 0/100% 18px;clip-path:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);transition:border-color .35s,translate .45s var(--ease),box-shadow .4s,background .4s;}
+  .guide-card::before{content:"";position:absolute;left:0;top:0;width:100%;height:2px;background:linear-gradient(90deg,var(--cy),transparent 70%);transform:scaleX(.25);transform-origin:left;opacity:.5;transition:transform .6s var(--ease),opacity .4s;}
+  .guide-card:hover{border-color:var(--cy);translate:0 -4px;box-shadow:0 16px 36px rgba(0,0,0,.45),0 0 24px rgba(39,230,255,.14);} .guide-card:hover::before{transform:scaleX(1);opacity:1;}
+  .gl-no{position:absolute;right:14px;top:12px;font-size:.62rem;letter-spacing:.2em;color:var(--text-faint);font-variant-numeric:tabular-nums;}
+  .gl-ico{width:46px;height:46px;display:grid;place-items:center;margin-bottom:12px;color:var(--cy-2);border:1px solid var(--cy-line);background:linear-gradient(135deg,rgba(39,230,255,.16),rgba(39,230,255,.03));clip-path:polygon(9px 0,100% 0,100% calc(100% - 9px),calc(100% - 9px) 100%,0 100%,0 9px);transition:border-color .3s,box-shadow .4s,color .3s;}
+  .gl-ico svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;transition:transform .5s var(--spring);} .guide-card:hover .gl-ico{border-color:var(--cy);box-shadow:inset 0 0 16px rgba(39,230,255,.25);} .guide-card:hover .gl-ico svg{transform:scale(1.14) rotate(-4deg);filter:drop-shadow(0 0 6px var(--cy));}
+  .guide-card .g-title{font-family:var(--font-display);font-size:1.02rem;margin-bottom:6px;color:#f0faff;} .guide-card .g-desc{font-size:.84rem;line-height:1.55;}
+  .gl-empty{padding:40px 12px;text-align:center;color:var(--text-dim);border:1px dashed var(--cy-line);border-radius:14px;}
+  html[data-motion="off"] .trait-row,html[data-motion="off"] .guide-card,html[data-motion="off"] .ev-kinds button{transition-duration:.01s !important;} html[data-motion="off"] .trait-row::after{display:none;}
+  @media (max-width:560px){ .gl-grid{grid-template-columns:1fr;} .gl-search{max-width:none;} .gl-cats{overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;} .gl-chip{flex:none;} }
 </style>
 </head>
 <body>
@@ -2038,7 +2086,15 @@
       <div class="view-panel" id="viewGuidelines">
         <div class="view-scroll">
           <button type="button" class="hx-back" data-goto="settings">← Me</button>
-          <h2 class="section-title">Guidelines</h2>
+          <div class="gl-head">
+            <div class="gl-eyebrow">KNOWLEDGE BASE · <b id="glCount">14</b> GUIDES</div>
+            <h2 class="section-title">Guidelines</h2>
+            <p class="gl-sub">Everything you can do with your tree, at a glance.</p>
+            <div class="gl-tools">
+              <label class="gl-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg><input id="glSearch" type="search" placeholder="Search guidelines…" aria-label="Search guidelines" autocomplete="off"></label>
+              <div class="gl-cats" id="glCats" role="group" aria-label="Guideline categories"></div>
+            </div>
+          </div>
           <div class="guide-grid" id="guideGrid"></div>
         </div>
       </div>
@@ -2401,15 +2457,22 @@
 
 <!-- ============ EVENT MODAL (timeline: add / edit / delete a recorded event) ============ -->
 <div class="modal-backdrop" id="eventModalBackdrop">
-  <div class="modal has-header" role="dialog" aria-modal="true" aria-labelledby="eventModalTitle" style="max-width:440px;">
+  <div class="modal has-header pm ev-modal" role="dialog" aria-modal="true" aria-labelledby="eventModalTitle" style="max-width:460px;">
+    <div class="pm-scan" aria-hidden="true"></div>
     <div class="modal-header">
-      <div class="modal-header-text"><h2 id="eventModalTitle">Record an event</h2>
+      <span class="ev-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><circle cx="12" cy="15" r="1.6" fill="currentColor" stroke="none"/></svg></span>
+      <div class="modal-header-text"><div class="ev-eyebrow">TIMELINE · LOG ENTRY</div><h2 id="eventModalTitle">Record an event</h2>
         <div class="modal-sub">Births and deaths come from profiles automatically. Add anything else here.</div></div>
       <button type="button" class="modal-close" id="eventCloseBtn" aria-label="Close">✕</button>
     </div>
     <div class="modal-body">
       <div class="field"><label for="evKind">Type</label>
-        <select id="evKind"><option value="milestone">Milestone</option><option value="marriage">Marriage</option><option value="other">Other</option></select></div>
+        <div class="ev-kinds" id="evKinds" role="radiogroup" aria-label="Event type">
+          <button type="button" role="radio" data-k="milestone"><svg viewBox="0 0 24 24"><path d="M5 21V4M5 5h12l-2.5 4L17 13H5"/></svg>Milestone</button>
+          <button type="button" role="radio" data-k="marriage"><svg viewBox="0 0 24 24"><circle cx="9" cy="14" r="5"/><circle cx="15.5" cy="14" r="5"/><path d="M9 4l1.5 2.5L9 8 7.5 6.5z"/></svg>Marriage</button>
+          <button type="button" role="radio" data-k="other"><svg viewBox="0 0 24 24"><path d="M12 3l2.4 5.6 6 .6-4.5 4 1.4 5.9L12 15l-5.3 3.1 1.4-5.9-4.5-4 6-.6z"/></svg>Other</button>
+        </div>
+        <select id="evKind" class="pm-sr" tabindex="-1" aria-hidden="true"><option value="milestone">Milestone</option><option value="marriage">Marriage</option><option value="other">Other</option></select></div>
       <div class="field"><label for="evTitle">Title</label><input id="evTitle" maxlength="120" placeholder="e.g. Moved to a new home"></div>
       <div class="field"><label for="evDate">Date</label><input type="date" id="evDate"></div>
       <div class="field"><label for="evPerson">Person (optional)</label><select id="evPerson"></select></div>
@@ -6301,6 +6364,11 @@
   $('eventCancelBtn').onclick = closeEventModal;
   $('eventModalBackdrop').addEventListener('click', e=>{ if(e.target===$('eventModalBackdrop')) closeEventModal(); });
   document.addEventListener('keydown', e=>{ if(e.key==='Escape' && $('eventModalBackdrop').style.display==='flex') closeEventModal(); });
+  function evKindSync(){ const v=$('evKind').value; document.querySelectorAll('#evKinds [data-k]').forEach(b=>{ const on=b.dataset.k===v; b.classList.toggle('on',on); b.setAttribute('aria-checked',on); b.tabIndex=on?0:-1; }); const t=document.querySelector('#eventModalBackdrop .ev-eyebrow'); }
+  $('evKinds').addEventListener('click',e=>{ const b=e.target.closest('[data-k]'); if(!b) return; $('evKind').value=b.dataset.k; $('evKind').dispatchEvent(new Event('change')); });
+  $('evKinds').addEventListener('keydown',e=>{ if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft') return; const ks=[...document.querySelectorAll('#evKinds [data-k]')]; const i=ks.findIndex(b=>b.classList.contains('on')); const nb=ks[(i+(e.key==='ArrowRight'?1:-1)+ks.length)%ks.length]; e.preventDefault(); nb.click(); nb.focus(); });
+  new MutationObserver(evKindSync).observe($('eventModalBackdrop'),{attributes:true,attributeFilter:['style','class']});
+  $('evKind').addEventListener('change', evKindSync); evKindSync();
   $('evKind').addEventListener('change', ()=>{ $('evWithField').style.display = $('evKind').value==='marriage' ? 'block' : 'none'; });
   $('eventSaveBtn').onclick = async ()=>{
     const title = $('evTitle').value.trim(), date = $('evDate').value;
@@ -7115,24 +7183,38 @@
   }
 
   // ---------- guidelines ----------
+  const GL_IC={tree:'<circle cx="12" cy="5" r="2.2"/><circle cx="5.5" cy="18" r="2.2"/><circle cx="18.5" cy="18" r="2.2"/><path d="M12 7.2v4.3M12 11.5H5.5v4.3M12 11.5h6.5v4.3"/>',child:'<path d="M12 5v14M5 12h14"/>',parent:'<path d="M12 20V5M6 11l6-6 6 6"/>',sibling:'<path d="M4 12h16M8 8l-4 4 4 4M16 8l4 4-4 4"/>',spouse:'<circle cx="9" cy="14" r="5"/><circle cx="15.5" cy="14" r="5"/>',link:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3A4 4 0 0 0 11 18.7l1-1"/>',unlink:'<path d="M6 6l12 12M18 6L6 18"/>',pin:'<path d="M9 4h6l-1 6 3 3H7l3-3zM12 13v8"/>',edit:'<path d="M4 20l4-1 11-11a2.1 2.1 0 0 0-3-3L5 16z"/>',trash:'<path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/>',search:'<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/>',target:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',zoom:'<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4M11 8v6M8 11h6"/>',save:'<path d="M5 4h11l3 3v13H5zM8 4v5h7V4M8 20v-6h8v6"/>'};
+  const GL_ITEMS=[
+    ['around','tree','Family Tree','View and organize your family members visually, connected by generation.'],
+    ['around','search','Search','Find a family member by name. Matches are highlighted and centered.'],
+    ['around','target','Center / Reset','Centers the tree on screen, or resets zoom and position.'],
+    ['around','zoom','Zoom','Zoom in or out using the buttons, your scroll wheel, or pinch on mobile.'],
+    ['around','save','Save','Saves your latest changes. The app also autosaves shortly after each change.'],
+    ['build','child','Add Child','Adds a child under the selected member. If they have more than one spouse/partner, you choose who the other parent is (or none).'],
+    ['build','parent','Add Parent','Adds a parent above the selected member. Each person can have up to two parents. They are not assumed to be a couple unless you link them as spouses too.'],
+    ['build','sibling','Add Sibling','Adds a full sibling beside the selected member, sharing the same parents. For a half-sibling who only shares one parent, use "Add Child" on that shared parent instead.'],
+    ['build','spouse','Add Spouse/Partner','Connects a spouse or partner. A person can have more than one over time; remarriages and blended families are fully supported.'],
+    ['build','link','Link existing person','Every "Add" button also lets you link someone already in this tree instead of creating a duplicate. Useful whenever a relative already exists elsewhere in the family.'],
+    ['manage','unlink','Unlink','Each parent, spouse, and child listed on a member\'s panel has a small ✕ to remove just that link, without deleting the person. Mistakes can be undone from the confirmation toast.'],
+    ['manage','pin','Pin','Saves an important family member to your Pinned list for quick access.'],
+    ['manage','edit','Edit Member',"Change a family member's information, including their photo."],
+    ['manage','trash','Delete','Removes a family member entirely from the tree and cleans up their connections.']
+  ];
+  const GL_CATS=[['around','Get around'],['build','Build the tree'],['manage','Manage people']];
+  const GLS={q:'',cat:'all',bound:false};
   function renderGuidelines(){
-    const items = [
-      ['🌳 Family Tree','View and organize your family members visually, connected by generation.'],
-      ['➕ Add Child','Adds a child under the selected member. If they have more than one spouse/partner, you choose who the other parent is (or none).'],
-      ['⬆️ Add Parent','Adds a parent above the selected member. Each person can have up to two parents. They are not assumed to be a couple unless you link them as spouses too.'],
-      ['↔️ Add Sibling','Adds a full sibling beside the selected member, sharing the same parents. For a half-sibling who only shares one parent, use "Add Child" on that shared parent instead.'],
-      ['💍 Add Spouse/Partner','Connects a spouse or partner. A person can have more than one over time; remarriages and blended families are fully supported.'],
-      ['🔗 Link existing person','Every "Add" button also lets you link someone already in this tree instead of creating a duplicate. Useful whenever a relative already exists elsewhere in the family.'],
-      ['✕ Unlink','Each parent, spouse, and child listed on a member\'s panel has a small ✕ to remove just that link, without deleting the person. Mistakes can be undone from the confirmation toast.'],
-      ['📌 Pin','Saves an important family member to your Pinned list for quick access.'],
-      ['✏️ Edit Member',"Change a family member's information, including their photo."],
-      ['🗑️ Delete','Removes a family member entirely from the tree and cleans up their connections.'],
-      ['🔍 Search','Find a family member by name. Matches are highlighted and centered.'],
-      ['🎯 Center / Reset','Centers the tree on screen, or resets zoom and position.'],
-      ['🔎 Zoom','Zoom in or out using the buttons, your scroll wheel, or pinch on mobile.'],
-      ['💾 Save','Saves your latest changes. The app also autosaves shortly after each change.']
-    ];
-    $('guideGrid').innerHTML = items.map(([t,d])=>`<div class="guide-card"><div class="g-title">${t}</div><div class="g-desc">${d}</div></div>`).join('');
+    const q=GLS.q.trim().toLowerCase();
+    const shown=GL_ITEMS.filter(it=>(GLS.cat==='all'||it[0]===GLS.cat) && (!q || (it[2]+' '+it[3]).toLowerCase().includes(q)));
+    $('glCount').textContent=shown.length;
+    $('glCats').innerHTML=[['all','All']].concat(GL_CATS).map(([k,l])=>`<button type="button" class="gl-chip${GLS.cat===k?' active':''}" data-gc="${k}" aria-pressed="${GLS.cat===k}">${l}<i>${k==='all'?GL_ITEMS.length:GL_ITEMS.filter(i=>i[0]===k).length}</i></button>`).join('');
+    let n=0;
+    const html=GL_CATS.map(([k,l])=>{ const its=shown.filter(i=>i[0]===k); if(!its.length) return '';
+      return `<section class="gl-group" aria-label="${l}"><h3 class="gl-grp"><span>${l.toUpperCase()}</span></h3><div class="gl-grid">`+its.map(([,ic,t,d])=>{ n++; return `<div class="guide-card" style="--k2:${n-1}"><span class="gl-no">${String(n).padStart(2,'0')}</span><div class="gl-ico" aria-hidden="true"><svg viewBox="0 0 24 24">${GL_IC[ic]}</svg></div><div class="g-title">${t}</div><div class="g-desc">${d}</div></div>`; }).join('')+`</div></section>`; }).join('');
+    $('guideGrid').innerHTML = html || `<div class="gl-empty">No guides match “${escapeHtml(GLS.q)}”.</div>`;
+    if(!GLS.bound){ GLS.bound=true;
+      $('glSearch').addEventListener('input',e=>{ GLS.q=e.target.value; renderGuidelines(); });
+      $('glCats').addEventListener('click',e=>{ const b=e.target.closest('[data-gc]'); if(!b) return; GLS.cat=b.dataset.gc; renderGuidelines(); });
+    }
   }
 
   // ---------- settings ----------
