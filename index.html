@@ -813,10 +813,11 @@
     /* Horizontal strip along the bottom-left (above the dock, left of the music
        button) so it doesn't cover the canvas the way a tall column would. */
     #treeFab{flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between;left:12px;right:auto;
-      width:min(236px, calc(100vw - 126px));bottom:calc(var(--dock-h) + env(safe-area-inset-bottom) + 14px);}
+      width:min(272px, calc(100vw - 106px));bottom:calc(var(--dock-h) + env(safe-area-inset-bottom) + 14px);}
     #treeFab > button{flex:1 1 0;min-width:44px;}
-    .fab-gen{flex:1 0 100%;flex-direction:row;justify-content:space-between;border-top:1px solid var(--border);border-left:none;padding:4px 0 0 0;margin:2px 0 0 0;}
-    #fabGenLabel{padding:0 4px;font-size:0.7rem;}
+    .fab-gen{flex:1 1 auto;flex-direction:row;justify-content:space-between;align-items:center;border-top:none;border-left:1px solid var(--border);padding:0 0 0 4px;margin:0;}
+    .fab-gen button{width:36px !important;min-width:36px !important;flex:none !important;}
+    #fabGenLabel{padding:0 2px;font-size:0.66rem;}
   }
   @media (prefers-reduced-motion: reduce){ #treeFab button{transition:none;} }
 
@@ -1288,6 +1289,282 @@
     .ar,.em-p,.em-n circle,.auth-scan,.lb-scan{animation:none !important;} .em-p{stroke-dashoffset:0;} .em-n circle{opacity:1;} .auth-panel.shake{animation:none;}
     #lockScreen.granted .ar{animation:none !important;opacity:0;} #lockScreen.dissolve,#lockScreen.dissolve .auth-panel{transition:none;}
   }
+
+  /* ================= HOLO KIT (shared by Home, Login, Tree, Timeline, Insights; mirrors the Persona card system) ================= */
+  :root{ --hk-c:18px; --hk-edge-out:rgba(39,230,255,.28); --hk-glow-idle:.35; --hk-glow-active:1; --hk-gap:12px; --hk-r:12px; }
+  .hf{position:relative;--c:var(--hk-c);isolation:isolate;}
+  .hf-compact{--c:12px;} .hf-hero{--c:24px;} .hf-standard{--c:18px;}
+  .hf>.hf-e1,.hf>.hf-e2,.hf>.hf-body,.hf>.hf-grid,.hf>.hf-glare{position:absolute;pointer-events:none;
+    clip-path:polygon(var(--c) 0,calc(100% - var(--c)) 0,100% var(--c),100% calc(100% - var(--c)),calc(100% - var(--c)) 100%,var(--c) 100%,0 calc(100% - var(--c)),0 var(--c));}
+  .hf>.hf-e1{inset:0;background:var(--hk-edge-out);z-index:-4;}
+  .hf>.hf-e2{inset:3px;background:linear-gradient(115deg,#27e6ff,#7fb6ff 35%,#27e6ff 60%,#9ffcff);opacity:calc(.35 + .65 * var(--hk-glow-idle));z-index:-3;}
+  .hf-active>.hf-e2{opacity:1;} .hf-active{filter:drop-shadow(0 0 14px rgba(39,230,255,.22));}
+  .hf-idle>.hf-e2{opacity:.55;}
+  .hf>.hf-body{inset:4px;background:linear-gradient(160deg,rgba(14,30,52,.97),rgba(5,12,24,.985));z-index:-2;}
+  .hf>.hf-grid{inset:4px;opacity:.5;z-index:-1;background-image:linear-gradient(rgba(39,230,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(39,230,255,.07) 1px,transparent 1px);background-size:22px 22px;}
+  .hf>.hf-glare{inset:4px;overflow:hidden;z-index:-1;opacity:0;} .hf-glow>.hf-glare{opacity:1;}
+  .hf>.hf-glare::after{content:"";position:absolute;top:-20%;bottom:-20%;left:-40%;width:30%;transform:skewX(-20deg);background:linear-gradient(90deg,transparent,rgba(160,250,255,.14),transparent);animation:hkGlare 9s ease-in-out 1.6s infinite;}
+  @keyframes hkGlare{0%,70%{transform:translateX(0) skewX(-20deg);}100%{transform:translateX(560%) skewX(-20deg);}}
+  .hf>.hf-n{position:absolute;width:7px;height:7px;border-radius:50%;background:var(--cy);box-shadow:0 0 8px var(--cy);pointer-events:none;opacity:.6;z-index:3;}
+  .hf-active>.hf-n{opacity:1;animation:hkPulse 2.8s ease-in-out infinite;} .hf-compact>.hf-n{width:5px;height:5px;}
+  .hf>.hf-n.n1{left:4px;top:4px;} .hf>.hf-n.n2{right:4px;top:4px;} .hf>.hf-n.n3{left:4px;bottom:4px;} .hf>.hf-n.n4{right:4px;bottom:4px;}
+  @keyframes hkPulse{0%,100%{opacity:.55;transform:scale(1);}50%{opacity:1;transform:scale(1.35);}}
+  .hf>.hf-tick{position:absolute;left:24px;right:24px;height:5px;pointer-events:none;opacity:.5;background:repeating-linear-gradient(90deg,var(--cy) 0 1px,transparent 1px 9px);z-index:2;} .hf>.hf-tick.t{top:7px;} .hf>.hf-tick.b{bottom:7px;}
+  .hf>.hf-in{position:relative;z-index:3;padding:16px 18px;}
+  .hf-compact>.hf-in{padding:10px 12px;}
+  .hf>.hf-idx{position:absolute;left:18px;top:8px;font-size:.58rem;letter-spacing:.22em;color:var(--cy);text-transform:uppercase;z-index:4;pointer-events:none;}
+  .hf-ghost{opacity:.62;} .hf-ghost>.hf-e2{opacity:.35;} .hf-ghost>.hf-body{background:rgba(8,16,30,.8);} .hf-ghost>.hf-e1{background:rgba(39,230,255,.2);}
+  .hf-tap{cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform var(--dur-1);} .hf-tap:active{transform:scale(.97);} .hf-tap:focus-visible{outline:2px solid var(--cy);outline-offset:3px;}
+  /* HoloPlatform */
+  .hp{position:relative;width:100%;pointer-events:none;} .hp-S{height:64px;max-width:260px;} .hp-M{height:96px;max-width:380px;} .hp-L{height:140px;max-width:520px;}
+  .hp{margin:0 auto;}
+  .hp .hp-r{position:absolute;left:50%;top:50%;border-radius:50%;border:1.5px solid var(--cy-line);transform:translate(-50%,-50%) rotateX(72deg);}
+  .hp .hp-r.r1{width:100%;aspect-ratio:1;border-color:rgba(39,230,255,.55);box-shadow:0 0 18px var(--cy-glow),inset 0 0 18px rgba(39,230,255,.15);animation:pzSpinA 24s linear infinite;}
+  .hp .hp-r.r2{width:74%;aspect-ratio:1;border-style:dashed;border-color:rgba(143,245,255,.5);animation:pzSpinB 18s linear infinite;}
+  .hp .hp-r.r3{width:48%;aspect-ratio:1;border-color:rgba(39,230,255,.7);box-shadow:0 0 14px var(--cy-glow);animation:pzSpinA 12s linear infinite;}
+  .hp .hp-beam{position:absolute;left:50%;bottom:40%;width:56%;height:180%;transform:translateX(-50%);background:linear-gradient(180deg,transparent,rgba(39,230,255,.09) 60%,rgba(39,230,255,.2));clip-path:polygon(25% 0,75% 0,100% 100%,0 100%);filter:blur(2px);opacity:.75;}
+  .hp-idle .hp-r{animation-duration:60s !important;opacity:.7;}
+  /* HoloRing (progress) */
+  .hr{display:inline-flex;flex-direction:column;align-items:center;gap:4px;text-align:center;min-width:0;}
+  .hr svg{display:block;overflow:visible;} .hr .hr-tr{fill:none;stroke:rgba(39,230,255,.14);stroke-width:5;} .hr .hr-tk{fill:none;stroke:rgba(39,230,255,.4);stroke-width:2.5;stroke-dasharray:1 5.4;}
+  .hr .hr-ar{fill:none;stroke:var(--cy);stroke-width:5;stroke-linecap:round;filter:drop-shadow(0 0 5px var(--cy));transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset 1.1s var(--ease);}
+  .hr .hr-n{font-family:var(--font-display);fill:#fff;font-weight:600;text-anchor:middle;dominant-baseline:central;} .hr .hr-u{fill:var(--cy-2);text-anchor:middle;}
+  .hr-l{font-size:.68rem;color:var(--text-dim);letter-spacing:.04em;line-height:1.25;max-width:12ch;}
+  /* HoloButton */
+  .hb{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 16px;border-radius:12px;font:inherit;font-size:.86rem;font-weight:600;cursor:pointer;border:1px solid var(--cy-line);background:var(--cy-faint);color:var(--cy-2);transition:transform var(--dur-1),box-shadow var(--dur-2),border-color var(--dur-2);-webkit-tap-highlight-color:transparent;}
+  .hb svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;}
+  .hb:hover{border-color:var(--cy);box-shadow:0 0 14px var(--cy-glow);} .hb:active{transform:scale(.96);} .hb:focus-visible{outline:2px solid var(--cy);outline-offset:2px;}
+  .hb-primary{background:linear-gradient(135deg,var(--cy),#7fb6ff);color:#04141c;border-color:var(--cy);box-shadow:0 0 18px var(--cy-glow);}
+  .hb-ghost{background:transparent;border-color:transparent;color:var(--text-dim);} .hb-ghost:hover{color:var(--cy-2);box-shadow:none;border-color:var(--cy-line);}
+  .hb:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;}
+  /* HoloChip (full text, wraps) */
+  .hc{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:5px 11px;border-radius:999px;font-size:.76rem;line-height:1.25;color:var(--cy-2);border:1px solid var(--cy-line);background:var(--cy-faint);max-width:100%;overflow-wrap:anywhere;text-align:left;font-family:inherit;}
+  button.hc{cursor:pointer;min-height:44px;} button.hc:hover{border-color:var(--cy);} button.hc[aria-pressed="true"]{background:rgba(39,230,255,.2);border-color:var(--cy);box-shadow:0 0 10px var(--cy-glow);}
+  .hc-row{display:flex;flex-wrap:wrap;gap:6px;}
+  /* HoloEmpty */
+  .he{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:18px 14px;}
+  .he .he-seed{position:relative;width:100%;max-width:240px;height:84px;} .he .he-seed .hp{position:absolute;inset:auto 0 0 0;height:64px;}
+  .he .he-node{position:absolute;left:50%;top:6px;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:radial-gradient(circle,#fff,var(--cy) 55%,transparent 72%);box-shadow:0 0 22px var(--cy),0 0 44px var(--cy-glow);animation:hkPulse 2.4s ease-in-out infinite;}
+  .he h3{margin:0;font-family:var(--font-display);font-size:1.15rem;} .he p{margin:0;max-width:42ch;color:var(--text-dim);font-size:.86rem;line-height:1.5;}
+  /* ScanReveal */
+  .sr{position:relative;} .sr.sr-run{animation:hkMat .7s var(--ease) backwards;} .sr>.sr-line{position:absolute;left:6px;right:6px;top:0;height:2px;pointer-events:none;opacity:0;z-index:8;background:linear-gradient(90deg,transparent,var(--cy-2),transparent);box-shadow:0 0 12px var(--cy);}
+  .sr.sr-run>.sr-line{animation:hkScanLine .7s ease-in-out;}
+  @keyframes hkMat{0%{opacity:0;transform:translateY(14px);}35%{opacity:.9;}45%{opacity:.4;}60%{opacity:1;}100%{transform:none;}}
+  @keyframes hkScanLine{0%{opacity:0;top:0;}15%{opacity:1;}85%{opacity:1;}100%{opacity:0;top:100%;}}
+  .sr-pre{opacity:0;}
+  /* Constellation bg */
+  .hk-const{position:absolute;inset:0;width:100%;height:100%;opacity:.22;pointer-events:none;-webkit-mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,#000 35%,transparent 100%);mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,#000 35%,transparent 100%);}
+  .hk-const g{animation:pzDrift 46s ease-in-out infinite alternate;transform-origin:50% 50%;} .hk-const line{stroke:var(--cy);stroke-width:.18;opacity:.7;}
+  #treeViewport>.hk-const line{vector-effect:non-scaling-stroke;stroke-width:1px;opacity:.5;} .hk-const circle{fill:var(--cy-2);}
+  /* Section heading + helpers */
+  .hk-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 0 4px 0;} .hk-h h3{margin:0;font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--cy);font-weight:700;font-family:var(--font-body);}
+  .hk-sub{margin:0 0 10px 0;font-size:.78rem;color:var(--text-dim);line-height:1.45;}
+  /* ambient animations pause when the tab is hidden or the user prefers less motion */
+  html.hk-paused .hf *,html.hk-paused .hf,html.hk-paused .hp *,html.hk-paused .hk-const *,html.hk-paused .hh-orbit *{animation-play-state:paused !important;}
+  @media (prefers-reduced-motion:reduce){
+    .hf>.hf-glare::after,.hf>.hf-n,.hp .hp-r,.hk-const g,.sr.sr-run,.sr.sr-run>.sr-line,.he .he-node{animation:none !important;} .sr-pre{opacity:1;} .hr .hr-ar{transition:none;}
+  }
+
+  /* HoloDeck (reusable swipe deck: 3D tilt, spring, flip, loop, dots, arrows) */
+  .hd{position:relative;}
+  .hd-stage{position:relative;perspective:1100px;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab;outline:none;overflow:visible;}
+  .hd-stage.dragging{cursor:grabbing;} .hd-stage:focus-visible{outline:2px solid var(--cy);outline-offset:4px;border-radius:12px;}
+  .hd-slot{position:absolute;left:50%;top:0;will-change:transform,opacity;transform-style:flat;}
+  .hd-flip{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .6s var(--ease);}
+  .hd-slot.flipped .hd-flip{transform:rotateY(180deg);}
+  .hd-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;} .hd-back{transform:rotateY(180deg);}
+  .hd-face>.hf{height:100%;} .hd-face>.hf>.hf-in{height:100%;display:flex;flex-direction:column;overflow:hidden;}
+  .hd-slot:not(.hd-act) .hf{filter:saturate(.7);} .hd-slot.hd-act .hf>.hf-n{opacity:1;animation:hkPulse 2.8s ease-in-out infinite;} .hd-slot.hd-act .hf>.hf-e2{opacity:1;} .hd-slot.hd-act .hf>.hf-glare{opacity:1;}
+  .hd-hit{position:absolute;inset:0;z-index:20;cursor:pointer;background:transparent;border:0;padding:0;} .hd-slot.hd-act .hd-hit{display:none;}
+  .hd-nav{display:flex;align-items:center;justify-content:center;gap:12px;padding-top:10px;}
+  .hd-arrow{flex:0 0 48px;width:48px;height:48px;border-radius:50%;border:1px solid var(--cy-line);background:var(--glass);color:var(--cy-2);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px rgba(39,230,255,.12);}
+  .hd-arrow svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;} .hd-arrow:hover{border-color:var(--cy);box-shadow:0 0 16px var(--cy-glow);} .hd-arrow:active{transform:scale(.93);} .hd-arrow:focus-visible{outline:2px solid var(--cy);outline-offset:2px;} .hd-arrow[disabled]{opacity:.4;cursor:default;}
+  .hd-prog{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0;flex:0 1 200px;} .hd-dots{display:flex;gap:2px;flex-wrap:wrap;justify-content:center;max-width:200px;}
+  .hd-dot{width:20px;height:20px;border:none;background:none;cursor:pointer;position:relative;padding:0;} .hd-dot::before{content:"";position:absolute;left:50%;top:50%;width:7px;height:7px;border-radius:50%;transform:translate(-50%,-50%);background:rgba(39,230,255,.25);transition:var(--dur-1);} .hd-dot.on::before{background:var(--cy);box-shadow:0 0 10px var(--cy);transform:translate(-50%,-50%) scale(1.25);}
+  .hd-count{font-size:.66rem;letter-spacing:.14em;color:var(--text-dim);}
+  .hd-live{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  .hd-rm .hd-flip{transition:none;transform:none !important;} .hd-rm .hd-back{transform:none;opacity:0;pointer-events:none;} .hd-rm .hd-slot.flipped .hd-back{opacity:1;pointer-events:auto;} .hd-rm .hd-slot.flipped .hd-front{opacity:0;pointer-events:none;}
+  .hd-rm .hd-slot{transition:opacity .2s linear;}
+
+  /* ================= HOME: Family Core ================= */
+  .hh{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;max-width:1280px;margin:0 auto;} .hh-col{display:flex;flex-direction:column;gap:14px;min-width:0;}
+  @media (min-width:1000px){ .hh{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px;} }
+  .hh-greet{padding:2px 2px 0 2px;} .hh-greet .hx-sub{margin:4px 0 0 0;}
+  .hh .hf-in{padding:16px 16px;} .hh-core .hf-in{padding:18px 16px 14px 16px;}
+  .hh-stage{position:relative;height:310px;touch-action:pan-y;border-radius:10px;overflow:hidden;cursor:grab;} .hh-cv{position:absolute;inset:0;display:block;}
+  .hh-more{position:absolute;right:6px;bottom:6px;pointer-events:none;background:rgba(5,12,24,.85);}
+  .hh-label{position:absolute;z-index:6;max-width:calc(100% - 12px);padding:10px 12px;border-radius:12px;background:rgba(5,12,24,.94);border:1px solid var(--cy);box-shadow:0 0 18px var(--cy-glow);} .hh-label[hidden]{display:none;} .hh-label b{display:block;font-family:var(--font-display);font-size:1rem;margin-bottom:8px;overflow-wrap:anywhere;}
+  .hh-lb-row{display:flex;gap:6px;flex-wrap:wrap;} .hh-lb-row .hb{min-height:44px;padding:0 12px;font-size:.78rem;}
+  .hh-plat{margin:-34px 0 0 0;position:relative;z-index:0;pointer-events:none;height:92px;overflow:hidden;} .hh-plat .hp{height:92px;}
+  .hh-rings{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:6px;} .hh-ring-side{display:flex;gap:8px;align-items:flex-start;justify-content:center;flex-wrap:wrap;} .hh-ring-side .hr-l{max-width:10ch;font-size:.64rem;}
+  .hh-next{display:flex;flex-direction:column;gap:8px;} .hh-next-row{display:flex;align-items:center;gap:12px;} .hh-next-row p{margin:0;flex:1;font-size:.86rem;line-height:1.45;} @media(max-width:520px){ .hh-next-row{flex-direction:column;align-items:stretch;} .hh-next-row .hb{width:100%;} }
+  .hh-spot #hhDeck{padding:4px 0 0 0;}
+  .hh-av{width:76px;height:76px;border-radius:50%;margin:8px auto 10px;border:2px solid var(--cy);box-shadow:0 0 18px var(--cy-glow),inset 0 0 14px rgba(39,230,255,.18);display:flex;align-items:center;justify-content:center;overflow:hidden;background:#0a1626;flex:none;} .hh-av img{width:100%;height:100%;object-fit:cover;} .hh-av span{font-family:var(--font-display);font-size:1.5rem;color:var(--cy-2);}
+  .hh-sp-front{display:flex;flex-direction:column;align-items:center;text-align:center;justify-content:center;flex:1;gap:2px;padding-top:10px;} .hh-sp-name{font-family:var(--font-display);font-size:1.2rem;font-weight:600;overflow-wrap:anywhere;line-height:1.2;} .hh-sp-sub{font-size:.76rem;color:var(--text-dim);margin-top:2px;} .hh-sp-hint{margin-top:auto;font-size:.6rem;letter-spacing:.18em;color:var(--text-faint);text-transform:uppercase;padding-top:10px;}
+  .hh-sp-ghost{justify-content:center;} .hh-plus{font-size:2.6rem;color:var(--cy);text-shadow:0 0 18px var(--cy-glow);line-height:1;margin-bottom:6px;}
+  .hh-sp-back{display:flex;flex-direction:column;flex:1;min-height:0;padding-top:10px;} .hh-sp-bn{font-family:var(--font-display);font-size:1rem;margin-bottom:6px;overflow-wrap:anywhere;} .hh-sp-scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;} .hh-sp-l{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--cy);margin:8px 0 4px;} .hh-sp-none{font-size:.78rem;color:var(--text-faint);}
+  .hh-sp-act{display:flex;gap:6px;margin-top:8px;} .hh-sp-act .hb{flex:1;padding:0 8px;font-size:.76rem;}
+  .hh-qa-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;} @media(min-width:520px){ .hh-qa-row{grid-template-columns:repeat(4,minmax(0,1fr));} }
+  .hh-log-l{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;} .hh-log-l li{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+  .hh .hx-stats-4 .hx-stat{background:linear-gradient(160deg,rgba(14,30,52,.9),rgba(5,12,24,.95));}
+  .hh .sr.sr-pre{opacity:0;}
+
+  /* ================= LOGIN DECK (card on a platform; Persona-style) ================= */
+  .auth-wrap{max-width:460px;gap:6px;justify-content:flex-start;padding-top:calc(14px + env(safe-area-inset-top));}
+  .auth-brand{margin-bottom:0;} .auth-emblem{width:72px;height:72px;margin-bottom:2px;} .auth-name{font-size:1.5rem;}
+  .auth-stagewrap{position:relative;margin:2px -8px 0 -8px;} .auth-stagewrap[hidden]{display:none;}
+  .auth-plat{position:absolute;left:0;right:0;bottom:6px;z-index:0;height:96px;max-width:none;} .auth-plat .hp-r.r1{width:min(430px,100%);}
+  .auth-stagewrap .hd{position:relative;z-index:1;}
+  .auth-card .hf-in{padding:26px 20px 16px 20px;} .auth-card .auth-eyebrow{position:absolute;left:22px;top:11px;margin:0;font-size:.6rem;}
+  #authDeck .ac-title{font-family:var(--font-display);font-size:1.45rem;margin:2px 0 4px 0;} #authDeck p.sub{margin:0 0 14px 0;font-size:.82rem;color:var(--text-dim);line-height:1.45;}
+  #authDeck .hd-face>.hf>.hf-in{overflow:visible;} #authDeck .auth-secondary{margin-top:auto;padding-top:10px;} 
+  #authDeck .af input,.auth-newpw .af input{width:100%;min-height:54px;padding:22px 46px 8px 44px;font-size:16px;color:var(--text);background:rgba(0,0,0,.34);border:1px solid rgba(39,230,255,.28);border-radius:12px;margin:0;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;}
+  #authDeck .af input:focus,.auth-newpw .af input:focus{outline:none;border-color:var(--cy);box-shadow:0 0 0 3px rgba(39,230,255,.12),0 0 18px var(--cy-glow);}
+  #authDeck .lock-btn,.auth-newpw .lock-btn{position:relative;overflow:hidden;width:100%;min-height:52px;margin-top:2px;border-radius:12px;border:1px solid var(--cy);color:#04141c;font-size:1rem;font-weight:700;letter-spacing:.02em;background:linear-gradient(135deg,var(--cy),#7fb6ff);box-shadow:0 0 22px var(--cy-glow);cursor:pointer;}
+  .auth-newpw{margin-top:8px;} .auth-newpw .hf-in{padding:22px 20px 18px;} .auth-newpw .ac-title{font-family:var(--font-display);font-size:1.45rem;margin:2px 0 8px;}
+  .hf.hf-error>.hf-e1,.hf.hf-error>.hf-e2{background:#ff7a85;opacity:1;} .hf.hf-error{filter:drop-shadow(0 0 14px rgba(255,122,133,.4));}
+  .hf.hf-shake{animation:authShake .42s ease;}
+  .ag{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:10px;text-align:center;} .ag-ck{width:84px;height:84px;fill:none;stroke:var(--cy);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 12px var(--cy));animation:hkPulse 1s ease-in-out infinite;} .ag-ck path{stroke:var(--cy-2);stroke-width:3;}
+  .ag-t{font-family:var(--font-display);font-size:1.3rem;letter-spacing:.18em;color:var(--cy-2);text-shadow:0 0 22px var(--cy);} .ag-s{font-size:.8rem;color:var(--text-dim);}
+  #lockScreen.granted .auth-plat .hp-r{animation:arOut .9s ease-out forwards;} #lockScreen.dissolve .auth-stagewrap{transform:scale(1.05);filter:blur(6px);transition:transform .35s,filter .35s;}
+  /* developer credential badge: in flow below the platform, never fixed */
+  .auth-dev{margin:14px auto 0;width:100%;max-width:340px;text-align:center;padding-bottom:calc(10px + env(safe-area-inset-bottom));}
+  .ad-rule{display:flex;align-items:center;gap:6px;height:12px;} .ad-line{position:relative;flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(39,230,255,.7));} .ad-line.r{background:linear-gradient(270deg,transparent,rgba(39,230,255,.7));}
+  .ad-line.l{transform-origin:100% 50%;} .ad-line.r{transform-origin:0 50%;} .ad-line i{position:absolute;top:-3px;width:7px;height:7px;border-radius:50%;background:var(--cy);box-shadow:0 0 8px var(--cy);} .ad-line.l i{left:0;} .ad-line.r i{right:0;}
+  .ad-dia{width:8px;height:8px;background:var(--cy);transform:rotate(45deg);box-shadow:0 0 10px var(--cy);flex:none;}
+  .ad-lab{margin-top:6px;font-size:.58rem;letter-spacing:.42em;color:var(--cy);padding-left:.42em;} .ad-name{position:relative;display:inline-block;margin-top:2px;font-family:var(--font-display);font-size:1.15rem;color:#e8fdff;text-shadow:0 0 14px rgba(39,230,255,.45);white-space:nowrap;}
+  .ad-name .adc{display:inline-block;} .ad-shim{position:absolute;inset:0;pointer-events:none;background:linear-gradient(100deg,transparent 35%,rgba(255,255,255,.65) 50%,transparent 65%);background-size:250% 100%;background-position:150% 0;mix-blend-mode:overlay;opacity:0;}
+  /* load sequence: grid → platform rings → emblem → card → signature (~1.5s). Everything is visible by default; .seq-play animates it in. */
+  #lockScreen.seq-play #authCanvas{animation:seqFade .35s ease-out backwards;}
+  #lockScreen.seq-play .auth-plat{animation:seqFade .4s ease-out .2s backwards;} #lockScreen.seq-play .auth-rings{animation:seqFade .4s ease-out .2s backwards;}
+  #lockScreen.seq-play .auth-emblem .em-p{animation:emDraw .8s var(--ease) .3s forwards;} 
+  #lockScreen.seq-play .auth-name,#lockScreen.seq-play .auth-tag{animation:seqFade .4s ease-out .7s backwards;}
+  #lockScreen.seq-play #authDeck .hd{animation:seqUp .55s var(--ease) .65s backwards;}
+  #lockScreen.seq-play .ad-line.l,#lockScreen.seq-play .ad-line.r{animation:adDraw .35s ease-out 1s backwards;} #lockScreen.seq-play .ad-lab,#lockScreen.seq-play .ad-dia{animation:seqFade .25s ease-out 1.05s backwards;}
+  #lockScreen.seq-play .ad-name .adc{animation:adChar .12s ease-out backwards;animation-delay:calc(1.1s + var(--i) * 22ms);} #lockScreen.seq-play .ad-shim{animation:adShim .6s ease-out 1.5s 1 both;}
+  #lockScreen.seq-skip *{animation:none !important;} #lockScreen.seq-skip .em-p{stroke-dashoffset:0;} #lockScreen.seq-skip .em-n circle{opacity:1;}
+  @keyframes seqFade{from{opacity:0;}to{opacity:1;}} @keyframes seqUp{0%{opacity:0;transform:translateY(34px);}40%{opacity:.8;}50%{opacity:.4;}70%{opacity:1;}100%{transform:none;}}
+  @keyframes adDraw{from{transform:scaleX(0);}to{transform:scaleX(1);}} @keyframes adChar{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}} @keyframes adShim{0%{opacity:1;background-position:150% 0;}100%{opacity:0;background-position:-50% 0;}}
+  #lockScreen.kb-open .auth-dev{display:block;} #lockScreen.kb-open .auth-plat{display:none;} #lockScreen.kb-open .auth-stagewrap{margin-top:0;}
+  @media (prefers-reduced-motion:reduce){ #lockScreen.seq-play *,.hf.hf-shake{animation:none !important;} .ad-shim{display:none;} .ag-ck{animation:none;} }
+  /* About badge in the Me tab */
+  .dev-badge{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:.78rem;color:var(--text-dim);} .dev-badge b{font-family:var(--font-display);font-size:1rem;color:#e8fdff;text-shadow:0 0 12px rgba(39,230,255,.4);font-weight:600;} .dev-badge .db-l{font-size:.58rem;letter-spacing:.34em;color:var(--cy);}
+
+  /* ================= TREE: holographic network ================= */
+  #treeViewport{background:radial-gradient(ellipse at 50% 30%,rgba(10,26,46,.55),transparent 70%);}
+  .tree-floor{position:absolute;left:-10%;right:-10%;bottom:0;height:46%;pointer-events:none;z-index:0;opacity:.5;
+    background-image:linear-gradient(rgba(39,230,255,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(39,230,255,.12) 1px,transparent 1px);background-size:56px 56px;
+    transform:perspective(520px) rotateX(62deg);transform-origin:50% 100%;-webkit-mask-image:linear-gradient(to top,#000 10%,transparent 90%);mask-image:linear-gradient(to top,#000 10%,transparent 90%);}
+  #treeViewport>.hk-const{opacity:.16;z-index:0;}
+  #treeInner{z-index:1;}
+  .gen-band{position:absolute;left:0;pointer-events:none;border-top:1px solid rgba(39,230,255,.10);border-bottom:1px solid rgba(39,230,255,.05);background:linear-gradient(90deg,rgba(39,230,255,.07),rgba(39,230,255,.015) 55%,transparent);}
+  .gen-band::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(180deg,transparent,var(--cy),transparent);box-shadow:0 0 10px var(--cy-glow);}
+  .gen-band span{position:absolute;left:10px;top:50%;transform:translateY(-50%) rotate(-90deg);transform-origin:left center;margin-top:18px;font-size:.62rem;letter-spacing:.3em;color:var(--cy);opacity:.85;white-space:nowrap;}
+  /* chamfered member cards (HoloFrame language, restrained when idle) */
+  .person-node{border:0;border-radius:0;--c:11px;overflow:visible;
+    clip-path:polygon(var(--c) 0,calc(100% - var(--c)) 0,100% var(--c),100% calc(100% - var(--c)),calc(100% - var(--c)) 100%,var(--c) 100%,0 calc(100% - var(--c)),0 var(--c));
+    background:linear-gradient(160deg,rgba(16,32,54,.96),rgba(6,13,26,.98));box-shadow:none;}
+  .person-node::before{content:"";position:absolute;inset:0;pointer-events:none;
+    background:
+      linear-gradient(135deg,transparent 45%,rgba(39,230,255,.55) 46% 54%,transparent 55%) 0 0/12px 12px no-repeat,
+      linear-gradient(225deg,transparent 45%,rgba(39,230,255,.55) 46% 54%,transparent 55%) 100% 0/12px 12px no-repeat,
+      linear-gradient(45deg,transparent 45%,rgba(39,230,255,.55) 46% 54%,transparent 55%) 0 100%/12px 12px no-repeat,
+      linear-gradient(315deg,transparent 45%,rgba(39,230,255,.55) 46% 54%,transparent 55%) 100% 100%/12px 12px no-repeat,
+      linear-gradient(rgba(39,230,255,.34),rgba(39,230,255,.34)) 12px 0/calc(100% - 24px) 1px no-repeat,
+      linear-gradient(rgba(39,230,255,.34),rgba(39,230,255,.34)) 12px 100%/calc(100% - 24px) 1px no-repeat,
+      linear-gradient(rgba(39,230,255,.34),rgba(39,230,255,.34)) 0 12px/1px calc(100% - 24px) no-repeat,
+      linear-gradient(rgba(39,230,255,.34),rgba(39,230,255,.34)) 100% 12px/1px calc(100% - 24px) no-repeat;}
+  .person-node::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;
+    background:
+      radial-gradient(circle,var(--cy) 0 1.8px,transparent 2.6px) 3px 3px/6px 6px no-repeat,radial-gradient(circle,var(--cy) 0 1.8px,transparent 2.6px) calc(100% - 3px) 3px/6px 6px no-repeat,
+      radial-gradient(circle,var(--cy) 0 1.8px,transparent 2.6px) 3px calc(100% - 3px)/6px 6px no-repeat,radial-gradient(circle,var(--cy) 0 1.8px,transparent 2.6px) calc(100% - 3px) calc(100% - 3px)/6px 6px no-repeat;}
+  .person-node:hover::before,.person-node.kin::before,.person-node.highlight::before{filter:brightness(1.5);}
+  .person-node.selected{box-shadow:none;filter:drop-shadow(0 0 10px rgba(39,230,255,.55));} .person-node.selected::before{filter:brightness(2);} .person-node.selected::after{opacity:1;}
+  .person-node.kin{box-shadow:none;} .person-node.pinned{box-shadow:none;} .person-node.pinned::before{filter:hue-rotate(-140deg) brightness(1.4);}
+  .person-node:hover{box-shadow:none;} .person-node:focus-visible{box-shadow:none;outline:2px solid var(--cy);outline-offset:2px;}
+  .person-node.highlight{box-shadow:none;filter:drop-shadow(0 0 8px var(--cy-glow));}
+  .sel-plat{position:absolute;left:50%;bottom:-17px;width:150%;height:34px;margin-left:-75%;pointer-events:none;z-index:-1;}
+  .sel-plat i{position:absolute;left:50%;top:50%;border-radius:50%;border:1.5px solid var(--cy);transform:translate(-50%,-50%) rotateX(72deg);box-shadow:0 0 14px var(--cy-glow);}
+  .sel-plat .a{width:60%;aspect-ratio:1;animation:selExpand .9s var(--ease) 1 both,pzSpinA 14s linear 1s infinite;} .sel-plat .b{width:38%;aspect-ratio:1;border-style:dashed;opacity:.7;animation:selExpand .9s var(--ease) .1s 1 both;}
+  @keyframes selExpand{from{opacity:0;width:8%;}to{opacity:1;}}
+  .person-node.selected{overflow:visible;}
+  /* clip-path would cut the platform ring, so selected cards render it on a wrapper via filter instead */
+  .person-node .sel-plat{clip-path:none;}
+  /* conduit pulse */
+  .flow-line{stroke-linecap:round;}
+  /* controls dock */
+  #treeFab{border-radius:0;clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 12px,100% calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,0 calc(100% - 12px),0 12px);box-shadow:none;border:0;background:linear-gradient(160deg,rgba(14,30,52,.94),rgba(5,12,24,.96));padding:8px;}
+  #treeFab::before{content:"";position:absolute;inset:0;pointer-events:none;border:1px solid var(--cy-line);clip-path:inherit;}
+  /* minimap */
+  #treeMini{position:absolute;left:12px;top:12px;z-index:5;width:120px;height:84px;padding:5px;background:linear-gradient(160deg,rgba(14,30,52,.9),rgba(5,12,24,.94));border:1px solid var(--cy-line);border-radius:8px;box-shadow:0 0 14px rgba(39,230,255,.12);}
+  #treeMini[hidden]{display:none;} #treeMiniCv{display:block;width:100%;height:100%;cursor:pointer;touch-action:none;}
+  @media (min-width:821px){ #treeMini{width:168px;height:112px;left:auto;right:14px;top:14px;} }
+  #traitHighlightBar.show ~ #treeMini{display:none;}
+  /* trait banner as a HoloFrame-styled bar */
+  #traitHighlightBar{border-radius:0;--c:14px;clip-path:polygon(var(--c) 0,calc(100% - var(--c)) 0,100% var(--c),100% calc(100% - var(--c)),calc(100% - var(--c)) 100%,var(--c) 100%,0 calc(100% - var(--c)),0 var(--c));border:0;background:linear-gradient(160deg,rgba(14,30,52,.97),rgba(5,12,24,.98));box-shadow:inset 0 0 0 1px var(--cy-line),inset 0 0 0 3px rgba(39,230,255,.08);}
+  /* search sheet list */
+  .ts-list{display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto;overscroll-behavior:contain;} .ts-row{display:flex;align-items:center;gap:10px;min-height:48px;padding:6px 10px;border-radius:12px;border:1px solid var(--cy-line);background:var(--cy-faint);color:var(--text);font:inherit;cursor:pointer;text-align:left;} .ts-row:hover,.ts-row:focus-visible{border-color:var(--cy);box-shadow:0 0 12px var(--cy-glow);outline:none;} .ts-row .ts-sub{display:block;font-size:.72rem;color:var(--text-dim);} .ts-empty{padding:14px;text-align:center;color:var(--text-dim);font-size:.86rem;}
+  @media (prefers-reduced-motion:reduce){ .sel-plat i{animation:none !important;} }
+
+  /* ================= TIMELINE: holographic time stream ================= */
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  .hc.on{background:rgba(39,230,255,.2);border-color:var(--cy);box-shadow:0 0 10px var(--cy-glow);} #timelineRoot .hc-row button.hc{min-height:40px;}
+  .tl-controls{display:flex;flex-direction:column;gap:10px;margin:0 0 16px;}
+  .tl-member select{min-height:44px;width:100%;max-width:320px;padding:0 12px;border-radius:12px;border:1px solid var(--cy-line);background:var(--glass);color:var(--text);font:inherit;font-size:.86rem;}
+  .tl-scrub{display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid var(--cy-line);border-radius:12px;background:var(--glass);} .tl-sc-l{font-size:.68rem;color:var(--text-dim);} .tl-scrub b{font-family:var(--font-display);color:var(--cy-2);min-width:3.2em;text-align:right;}
+  .tl-scrub input[type=range]{flex:1;min-width:0;height:28px;accent-color:var(--cy);background:transparent;}
+  .tl-stream{position:relative;padding:4px 0 8px 30px;}
+  .tl-spine{position:absolute;left:11px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,rgba(39,230,255,.12),rgba(39,230,255,.12));border-radius:2px;}
+  .tl-charge{position:absolute;left:-1px;top:0;width:4px;height:var(--chg,0%);background:linear-gradient(180deg,rgba(39,230,255,.15),var(--cy));box-shadow:0 0 14px var(--cy),0 0 4px var(--cy-2);border-radius:3px;transition:height .15s linear;}
+  .tl-charge::after{content:"";position:absolute;left:-4px;bottom:-5px;width:12px;height:12px;border-radius:50%;background:radial-gradient(circle,#fff,var(--cy) 55%,transparent 70%);}
+  ol.tl{list-style:none;margin:0;padding:0;} ol.tl::before{display:none;} .tl-year{margin:16px 0 8px;font-family:var(--font-display);font-size:1.05rem;color:var(--cy-2);letter-spacing:.1em;position:relative;} .tl-year span{background:var(--bg);padding:2px 10px 2px 0;border-right:0;}
+  .tl-year::before{content:"";position:absolute;left:-23px;top:50%;width:16px;height:2px;background:var(--cy);box-shadow:0 0 8px var(--cy);}
+  .tl-item{position:relative;margin:0 0 10px;}
+  .tl-dot{position:absolute;left:-26px;top:22px;width:11px;height:11px;border-radius:50%;background:var(--bg);border:2px solid var(--cy);box-shadow:0 0 8px var(--cy-glow);z-index:2;}
+  .tl-link{position:absolute;left:-15px;top:27px;width:15px;height:1px;background:linear-gradient(90deg,var(--cy),var(--cy-line));}
+  .tl-death .tl-dot{border-color:var(--text-faint);box-shadow:none;} .tl-marriage .tl-dot{border-color:var(--warm);box-shadow:0 0 10px var(--warm-glow);}
+  .tl-item .hf-in{padding:6px 10px;} .tl-head{width:100%;display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:8px 4px;min-height:48px;background:none;border:0;color:var(--text);font:inherit;text-align:left;cursor:pointer;}
+  .tl-head:focus-visible{outline:2px solid var(--cy);outline-offset:1px;border-radius:8px;}
+  .tl-ico{width:34px;height:34px;border-radius:50%;border:1px solid var(--cy-line);display:flex;align-items:center;justify-content:center;background:var(--cy-faint);} .tl-ico svg{width:18px;height:18px;fill:none;stroke:var(--cy-2);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+  .tl-death .tl-ico svg{stroke:var(--text-dim);} .tl-marriage .tl-ico svg{stroke:var(--warm-2);}
+  .tl-main{display:flex;flex-direction:column;gap:2px;min-width:0;} .tl-kind{font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--cy);border:0;padding:0;} .tl-death .tl-kind{color:var(--text-dim);} .tl-marriage .tl-kind{color:var(--warm);}
+  .tl-title{overflow-wrap:anywhere;font-size:.92rem;} .tl-date{color:var(--text-dim);font-size:.72rem;white-space:nowrap;}
+  .tl-people{padding:2px 4px 6px 4px;} .tl-item .tl-detail{padding:0 4px 8px;}
+  .tl-undated{margin-top:22px;}
+  @media (min-width:1100px){
+    .tl-stream{overflow-x:auto;overflow-y:hidden;padding:60px 40px 40px;white-space:nowrap;scroll-snap-type:x proximity;}
+    .tl-spine{left:0;right:0;top:50%;bottom:auto;height:2px;width:auto;} .tl-charge{width:var(--chg,0%);height:4px;top:-1px;left:0;background:linear-gradient(90deg,rgba(39,230,255,.15),var(--cy));}
+    .tl-charge::after{left:auto;right:-5px;bottom:-4px;} ol.tl{display:flex;align-items:center;gap:22px;min-width:max-content;position:relative;height:420px;}
+    .tl-year{margin:0;align-self:center;white-space:nowrap;scroll-snap-align:start;} .tl-year::before{display:none;} .tl-year span{background:none;}
+    .tl-item{width:290px;margin:0;white-space:normal;align-self:flex-start;margin-bottom:96px;} .tl-item.tl-alt{align-self:flex-end;margin-bottom:0;margin-top:96px;}
+    .tl-dot{left:50%;top:auto;bottom:-16px;margin-left:-6px;} .tl-item.tl-alt .tl-dot{top:-16px;bottom:auto;} .tl-link{left:50%;width:1px;height:12px;top:auto;bottom:-12px;background:var(--cy-line);} .tl-item.tl-alt .tl-link{top:-12px;bottom:auto;}
+  }
+  /* event editor as a HoloSheet: bottom sheet above the nav on phones */
+  #eventModalBackdrop{z-index:var(--z-sheet);}
+  @media (max-width:820px){ #eventModalBackdrop{align-items:flex-end !important;padding:0 !important;} #eventModalBackdrop .modal{width:100% !important;max-width:none !important;border-radius:18px 18px 0 0 !important;max-height:calc(var(--vvh,100dvh) - 24px);display:flex;flex-direction:column;} #eventModalBackdrop .modal-body{overflow-y:auto;overscroll-behavior:contain;} }
+  #eventModalBackdrop .modal{border:1px solid var(--cy);box-shadow:0 0 28px var(--cy-glow);}
+  @media (prefers-reduced-motion:reduce){ .tl-charge{transition:none;} }
+
+  /* ================= INSIGHTS: holographic analytics ================= */
+  .ins-sec{margin:0 0 18px;} .ins-rings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 8px;justify-items:center;} @media(min-width:620px){ .ins-rings{grid-template-columns:repeat(4,minmax(0,1fr));} }
+  .ins-cols{display:grid;grid-template-columns:repeat(var(--cols,1),minmax(36px,1fr));gap:10px;align-items:end;height:190px;position:relative;padding:4px 4px 0;
+    background:repeating-linear-gradient(0deg,transparent 0 38px,rgba(39,230,255,.08) 38px 39px);border-bottom:1px solid var(--cy-line);}
+  .ins-col{position:relative;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;background:none;border:0;color:var(--text);font:inherit;cursor:pointer;min-width:44px;}
+  .ins-col-n{font-family:var(--font-display);font-size:1.05rem;color:var(--cy-2);} .ins-col-bar{display:block;width:70%;max-width:56px;height:calc((100% - 44px) * var(--h) / 100%);min-height:3px;background:linear-gradient(0deg,rgba(39,230,255,.25),var(--cy));border-radius:6px 6px 0 0;box-shadow:0 0 14px var(--cy-glow);transform-origin:bottom;animation:insRise .9s var(--ease) both;}
+  .ins-col.sel .ins-col-bar{background:linear-gradient(0deg,rgba(143,245,255,.4),#fff);} .ins-col-l{font-size:.64rem;color:var(--text-dim);letter-spacing:.06em;padding-bottom:2px;} .ins-col:focus-visible{outline:2px solid var(--cy);outline-offset:2px;border-radius:8px;}
+  @keyframes insRise{from{transform:scaleY(0);}to{transform:scaleY(1);}}
+  .ins-tip{margin-top:10px;font-size:.8rem;color:var(--text-dim);min-height:1.2em;}
+  .ins-tbars{display:flex;flex-direction:column;gap:10px;} .ins-tb{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;} .ins-tb-l{grid-column:1/-1;font-size:.86rem;overflow-wrap:anywhere;} .ins-tb .ins-bar-t{height:10px;} .ins-tb .ins-bar-t span{animation:insGrow .9s var(--ease) both;transform-origin:left;} .ins-tb-a{grid-column:1/-1;display:flex;gap:8px;} .ins-tb-a .hb{flex:1;min-height:44px;font-size:.78rem;}
+  @keyframes insGrow{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+  .ins-dq{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;} .ins-dq li{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:.86rem;} .ins-ok{margin:0;color:var(--success);font-size:.86rem;}
+  @media (prefers-reduced-motion:reduce){ .ins-col-bar,.ins-tb .ins-bar-t span{animation:none;} }
+
+  /* tab switch: quick holographic fade + one scanline (<250ms) */
+  @keyframes hkViewIn{from{opacity:0;}to{opacity:1;}}
+  @keyframes hkViewScan{0%{opacity:0;transform:translateY(0);}15%{opacity:1;}100%{opacity:0;transform:translateY(var(--vh-h,760px));}}
+  .shell .view-panel.active{animation:hkViewIn .2s ease-out;}
+  .shell .view-panel.active::after{content:"";position:absolute;left:0;right:0;top:0;height:2px;pointer-events:none;z-index:30;background:linear-gradient(90deg,transparent,var(--cy-2),transparent);box-shadow:0 0 12px var(--cy);animation:hkViewScan .22s ease-out 1 both;}
+  @media (prefers-reduced-motion:reduce){ .shell .view-panel.active::after{display:none;} .shell .view-panel.active{animation:hkViewIn .12s linear;} }
 </style>
 </head>
 <body>
@@ -1309,49 +1586,27 @@
       <div class="auth-name">Family Tree</div>
       <div class="auth-tag">Your family's story, mapped in light.</div>
     </header>
-    <div class="auth-panel" id="authPanel">
-      <i class="an an1"></i><i class="an an2"></i><i class="an an3"></i><i class="an an4"></i><div class="auth-scan" aria-hidden="true"></div>
-      <div class="lock-card">
-        <div class="auth-eyebrow" id="authEyebrow">SECURE ACCESS</div>
-        <h1 id="authTitle">Welcome back</h1>
-        <p class="sub" id="authSub">Sign in to access your family trees, synced across your devices.</p>
-
-        <form id="authForm" autocomplete="on" novalidate>
-          <div class="af"><svg viewBox="0 0 24 24" aria-hidden="true" class="af-ico"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><input type="email" id="authEmail" name="email" autocomplete="email" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder=" " required><label for="authEmail">Email</label></div>
-          <div class="af"><svg viewBox="0 0 24 24" aria-hidden="true" class="af-ico"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input type="password" id="authPassword" name="password" autocomplete="current-password" placeholder=" " minlength="6" required><label for="authPassword">Password</label><button type="button" class="af-eye" id="authEye" aria-label="Show password" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" class="eye-open"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" class="eye-off"><path d="M3 3l18 18M10.6 5.2A9.8 9.8 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.5 6.6C3.9 8.4 2 12 2 12s3.6 7 10 7c1.6 0 3-.4 4.3-1M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button></div>
-          <div class="pw-meter" id="pwMeter" hidden><div class="pw-bar"><span id="pwBar"></span></div><em id="pwLabel"></em></div>
-          <p class="auth-note" id="authSignupNote" hidden>If email confirmation is turned on for this app, we'll ask you to confirm your address by email before you can sign in.</p>
-          <div class="lock-error" id="authError" role="alert" aria-live="assertive"></div>
-          <div class="lock-success" id="authSuccess" role="status" aria-live="polite"></div>
-          <button class="lock-btn" type="submit" id="authSubmitBtn"><span class="lb-t">Sign In</span><i class="lb-scan" aria-hidden="true"></i></button>
-        </form>
-
-        <div class="auth-secondary" id="authSecondary">
-          <a href="#" id="authToggleModeLink" role="button" class="auth-sec-btn">Need an account? Sign up</a>
-          <a href="#" id="authForgotLink" role="button" class="auth-sec-btn">Forgot password?</a>
-        </div>
-
-        <!-- Forgot-password: email only -->
-        <form id="authResetRequestForm" style="display:none;" autocomplete="on" novalidate>
-          <p class="sub" style="margin-bottom:14px;">Enter your email and we'll send you a link to reset your password.</p>
-          <div class="af"><svg viewBox="0 0 24 24" aria-hidden="true" class="af-ico"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><input type="email" id="authResetEmail" name="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" placeholder=" " required><label for="authResetEmail">Email</label></div>
-          <div class="lock-error" id="authResetError" role="alert" aria-live="assertive"></div>
-          <div class="lock-success" id="authResetSuccess" role="status" aria-live="polite"></div>
-          <button class="lock-btn" type="submit" id="authResetSubmitBtn"><span class="lb-t">Send reset link</span><i class="lb-scan" aria-hidden="true"></i></button>
-          <div class="auth-secondary"><a href="#" id="authResetBackLink" role="button" class="auth-sec-btn">← Back to sign in</a></div>
-        </form>
-
-        <!-- Reached via the password-reset email link: set a new password -->
-        <form id="authNewPasswordForm" style="display:none;" autocomplete="on" novalidate>
+    <div class="auth-stagewrap" id="authStage">
+      <div class="hp hp-M auth-plat" aria-hidden="true"><i class="hp-beam"></i><i class="hp-r r1"></i><i class="hp-r r2"></i><i class="hp-r r3"></i></div>
+      <div id="authDeck"></div>
+    </div>
+    <div class="auth-newpw" id="authNewPwWrap" hidden>
+      <div class="hf hf-hero hf-active"><i class="hf-e1"></i><i class="hf-e2"></i><i class="hf-body"></i><i class="hf-grid"></i><b class="hf-n n1"></b><b class="hf-n n2"></b><b class="hf-n n3"></b><b class="hf-n n4"></b>
+        <div class="hf-in"><div class="auth-eyebrow">ACCOUNT RECOVERY</div><h1 class="ac-title">Set a new password</h1>
+        <form id="authNewPasswordForm" autocomplete="on" novalidate>
           <p class="sub" style="margin-bottom:14px;">Choose a new password for your account.</p>
           <div class="af"><svg viewBox="0 0 24 24" aria-hidden="true" class="af-ico"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input type="password" id="authNewPassword" name="new-password" autocomplete="new-password" placeholder=" " minlength="6" required><label for="authNewPassword">New password</label></div>
           <div class="af"><svg viewBox="0 0 24 24" aria-hidden="true" class="af-ico"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input type="password" id="authNewPasswordConfirm" name="confirm-password" autocomplete="new-password" placeholder=" " minlength="6" required><label for="authNewPasswordConfirm">Confirm new password</label></div>
           <div class="lock-error" id="authNewPasswordError" role="alert" aria-live="assertive"></div>
           <div class="lock-success" id="authNewPasswordSuccess" role="status" aria-live="polite"></div>
           <button class="lock-btn" type="submit" id="authNewPasswordSubmitBtn"><span class="lb-t">Set new password</span><i class="lb-scan" aria-hidden="true"></i></button>
-        </form>
-      </div>
+        </form></div></div>
     </div>
+    <footer class="auth-dev" id="authDev" role="group" aria-label="Developer: Ryan James Lim">
+      <div class="ad-rule" aria-hidden="true"><span class="ad-line l"><i></i></span><span class="ad-dia"></span><span class="ad-line r"><i></i></span></div>
+      <div class="ad-lab" aria-hidden="true">DEVELOPER</div>
+      <div class="ad-name" aria-hidden="true" id="authDevName">Ryan James Lim</div>
+    </footer>
   </div>
 </div>
 
@@ -1458,11 +1713,14 @@
           </div>
           <button type="button" class="thb-clear" id="thbClearBtn">Clear Highlight</button>
         </div>
+        <div id="treeMini" role="img" aria-label="Minimap of the whole tree. Tap to jump." hidden><canvas id="treeMiniCv"></canvas></div>
         <div id="treeFab" role="toolbar" aria-label="Tree controls" style="display:none;">
+          <button type="button" id="fabSearch" title="Search members" aria-label="Search members"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.2-4.2"/></svg></button>
           <button type="button" id="fabZoomIn" title="Zoom in" aria-label="Zoom in"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
           <button type="button" id="fabZoomOut" title="Zoom out" aria-label="Zoom out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
           <button type="button" id="fabFit" title="Fit to screen" aria-label="Fit to screen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
           <button type="button" id="fabCenter" title="Center on selected member" aria-label="Center on selected member"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg></button>
+          <button type="button" id="fabReset" title="Reset view and clear highlights" aria-label="Reset view and clear highlights"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.5-5.8M4 4v4.5h4.5"/></svg></button>
           <div class="fab-gen" role="group" aria-label="Generation navigation">
             <button type="button" id="fabGenUp" title="Previous generation (older)" aria-label="Previous generation, older"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 14 6-6 6 6"/></svg></button>
             <span id="fabGenLabel" aria-live="polite">Gen 1</span>
@@ -1525,6 +1783,12 @@
           <div class="settings-block">
             <h3>Help</h3>
             <button type="button" class="hx-btn" data-goto="guidelines">📖 How the app works (Guidelines)</button>
+          </div>
+
+          <div class="settings-block" id="aboutBlock">
+            <h3>About</h3>
+            <p style="margin:0;font-size:.82rem;color:var(--text-dim);">Family Tree — a private place to map your family's story.</p>
+            <div class="dev-badge" role="group" aria-label="Developer: Ryan James Lim"><span class="db-l" aria-hidden="true">DEVELOPER</span><span aria-hidden="true">·</span><b aria-hidden="true">Ryan James Lim</b></div>
           </div>
 
           <div class="settings-block">
@@ -1695,6 +1959,16 @@
     <div id="datesList" class="dt-list"></div>
     <div class="obs-error" id="datesError" role="alert" aria-live="assertive"></div>
     <div class="obs-foot-row" style="margin-top:10px;"><button type="button" class="btn-flat" id="datesCancelBtn">Cancel</button><button type="button" class="pf-primary" id="datesSaveBtn">Save dates</button></div>
+  </div>
+</div>
+
+<!-- Tree search (HoloSheet): choose a member and the camera flies to them -->
+<div class="sheet-backdrop" id="tsBackdrop">
+  <div class="sheet" id="tsSheet" role="dialog" aria-modal="true" aria-labelledby="tsTitle">
+    <div class="sheet-grab" aria-hidden="true"></div>
+    <div class="sheet-head"><h3 id="tsTitle">Find a family member</h3><button type="button" class="sheet-x" id="tsCloseBtn" aria-label="Close">✕</button></div>
+    <div class="af" style="margin:4px 0 10px;"><svg viewBox="0 0 24 24" aria-hidden="true" class="af-ico"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.2-4.2"/></svg><input type="search" id="tsInput" placeholder=" " autocomplete="off" autocapitalize="none" spellcheck="false" aria-controls="tsList"><label for="tsInput">Search by name or nickname</label></div>
+    <div id="tsList" class="ts-list" role="listbox" aria-label="Matching members"></div>
   </div>
 </div>
 
@@ -1952,6 +2226,109 @@
   let saveTimer = null, lastSavedAt = null;
 
   const $ = id => document.getElementById(id);
+
+  /* ================= HOLO KIT (JS) ================= */
+  const HK = (function(){
+    const rm = ()=> window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const esc = t => String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    // HoloFrame: opts {variant:'hero'|'standard'|'compact'|'ghost', intensity:'active'|'idle', index, tick, glare, cls, attrs}
+    function frame(inner, o){
+      o=o||{}; const v=o.variant||'standard'; const inten=o.intensity||'idle';
+      return `<div class="hf hf-${v==='ghost'?'standard hf-ghost':v} hf-${inten}${o.glare?' hf-glow':''}${o.cls?' '+o.cls:''}"${o.attrs?' '+o.attrs:''}>`+
+        `<i class="hf-e1"></i><i class="hf-e2"></i><i class="hf-body"></i><i class="hf-grid"></i><i class="hf-glare"></i>`+
+        `<b class="hf-n n1"></b><b class="hf-n n2"></b><b class="hf-n n3"></b><b class="hf-n n4"></b>`+
+        (o.tick?'<i class="hf-tick t"></i><i class="hf-tick b"></i>':'')+(o.index?`<span class="hf-idx">${esc(o.index)}</span>`:'')+
+        `<div class="hf-in">${inner}</div></div>`;
+    }
+    function platform(size, idle){ return `<div class="hp hp-${size||'M'}${idle?' hp-idle':''}" aria-hidden="true"><i class="hp-beam"></i><i class="hp-r r1"></i><i class="hp-r r2"></i><i class="hp-r r3"></i></div>`; }
+    // HoloRing: {value 0-100, label, size px, unit '%' | '' , text (override center)}
+    function ring(o){
+      const size=o.size||84, r=size/2-8, c=2*Math.PI*r, v=Math.max(0,Math.min(100,o.value||0));
+      const txt = o.text!=null?o.text:Math.round(v); const fs=Math.round(size*(String(txt).length>3?0.22:0.3));
+      return `<div class="hr" role="img" aria-label="${esc(o.label)}: ${esc(txt)}${o.unit==null?'%':esc(o.unit)}"><svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true">`+
+        `<circle class="hr-tr" cx="${size/2}" cy="${size/2}" r="${r}"/><circle class="hr-tk" cx="${size/2}" cy="${size/2}" r="${r+7}" style="stroke-dasharray:1 ${(2*Math.PI*(r+7)/60-1).toFixed(2)}"/>`+
+        `<circle class="hr-ar" cx="${size/2}" cy="${size/2}" r="${r}" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${c.toFixed(1)}" data-target="${(c*(1-v/100)).toFixed(1)}"/>`+
+        `<text class="hr-n" x="${size/2}" y="${size/2}" font-size="${fs}">${esc(txt)}${(o.unit==null?'%':o.unit)?`<tspan class="hr-u" font-size="${Math.round(fs*0.5)}" dx="1">${esc(o.unit==null?'%':o.unit)}</tspan>`:''}</text></svg><span class="hr-l">${esc(o.label)}</span></div>`;
+    }
+    function fillRings(root){ (root||document).querySelectorAll('.hr-ar[data-target]').forEach(a=>{ const t=a.getAttribute('data-target'); if(rm()||!a.isConnected){a.style.strokeDashoffset=t;return;} requestAnimationFrame(()=>requestAnimationFrame(()=>{a.style.strokeDashoffset=t;})); }); }
+    function btn(label, o){ o=o||{}; return `<button type="button" class="hb hb-${o.kind||'secondary'}${o.cls?' '+o.cls:''}"${o.id?` id="${o.id}"`:''}${o.attrs?' '+o.attrs:''}>${o.icon||''}<span>${esc(label)}</span></button>`; }
+    function chip(label, o){ o=o||{}; return o.button?`<button type="button" class="hc"${o.attrs?' '+o.attrs:''}>${esc(label)}</button>`:`<span class="hc">${esc(label)}</span>`; }
+    function empty(title, text, actionHtml){ return `<div class="he"><div class="he-seed"><i class="he-node"></i>${platform('S',true)}</div><h3>${esc(title)}</h3><p>${esc(text)}</p>${actionHtml||''}</div>`; }
+    function constellation(n, seed, rad){ let x=seed||7; const rnd=()=>{x=(x*16807)%2147483647;return x/2147483647;}; const pts=[]; for(let i=0;i<(n||16);i++) pts.push([6+rnd()*88,6+rnd()*88]); let l='';
+      pts.forEach((p,i)=>{ const q=pts[(i+3)%pts.length]; l+=`<line x1="${p[0].toFixed(1)}" y1="${p[1].toFixed(1)}" x2="${q[0].toFixed(1)}" y2="${q[1].toFixed(1)}"/>`; });
+      return `<svg class="hk-const" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g>${l}${pts.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${rad||.7}"/>`).join('')}</g></svg>`; }
+    // ScanReveal: call on a container; children with .sr get revealed in sequence
+    function scanReveal(root, stagger){
+      const els=[...(root||document).querySelectorAll('.sr')]; if(!els.length) return;
+      if(rm()){ els.forEach(e=>e.classList.remove('sr-pre')); return; }
+      els.forEach((e,i)=>{ if(!e.querySelector(':scope>.sr-line')){ const l=document.createElement('i'); l.className='sr-line'; e.appendChild(l); }
+        setTimeout(()=>{ e.classList.remove('sr-pre'); e.classList.add('sr-run'); setTimeout(()=>e.classList.remove('sr-run'),800); }, i*(stagger||90)); });
+    }
+    function visibilityWatch(){ const f=()=>document.documentElement.classList.toggle('hk-paused',document.hidden); document.addEventListener('visibilitychange',f); f(); }
+    visibilityWatch();
+    return {frame,platform,ring,fillRings,btn,chip,empty,constellation,scanReveal,esc,rm};
+  })();
+
+  /* HoloDeck: reusable. items:[{front:html, back?:html, key?}] */
+  HK.deck = function(root, o){
+    let items=(o.items||[]).slice(), pos=o.start||0, target=pos, vel=0, raf=0, dragging=false, cw=300; const ch=o.ch||360, n0=()=>items.length;
+    const rmode=()=>HK.rm();
+    root.classList.add('hd'); root.classList.toggle('hd-rm', rmode());
+    root.innerHTML=`<div class="hd-stage" tabindex="0" role="group" aria-roledescription="carousel" aria-label="${HK.esc(o.label||'Cards')}"></div>`+
+      `<div class="hd-nav"><button type="button" class="hd-arrow" data-d="-1" aria-label="Previous card"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><div class="hd-prog"><div class="hd-dots" role="tablist" aria-label="Choose card"></div><span class="hd-count"></span></div><button type="button" class="hd-arrow" data-d="1" aria-label="Next card"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button></div><div class="hd-live" aria-live="polite"></div>`;
+    const stage=root.querySelector('.hd-stage'), dotsEl=root.querySelector('.hd-dots'), cnt=root.querySelector('.hd-count'), live=root.querySelector('.hd-live');
+    let slots=[];
+    function build(){
+      stage.innerHTML=''; slots=items.map((it,i)=>{ const s=document.createElement('div'); s.className='hd-slot'; s.dataset.i=i;
+        s.innerHTML=`<div class="hd-flip"><div class="hd-face hd-front">${it.front}</div>${it.back?`<div class="hd-face hd-back">${it.back}</div>`:''}</div><button type="button" class="hd-hit" tabindex="-1" aria-label="Show card ${i+1}"></button>`;
+        s.querySelector('.hd-hit').addEventListener('click',()=>go(i)); stage.appendChild(s); return s; });
+      dotsEl.innerHTML = items.length<=12 ? items.map((_,i)=>`<button type="button" class="hd-dot" role="tab" aria-label="Card ${i+1} of ${items.length}" data-i="${i}"></button>`).join('') : '';
+      dotsEl.querySelectorAll('.hd-dot').forEach(d=>d.onclick=()=>go(+d.dataset.i));
+      stage.style.height=(ch+8)+'px'; if(o.onBuilt) o.onBuilt(root,slots); layout();
+    }
+    const wrap=d=>{ const n=n0(); return ((d%n)+n+n/2)%n-n/2; };
+    function layout(){
+      const W=stage.clientWidth||320; cw=Math.min(o.cw||320,Math.max(220,W-72)); const rm=rmode(); const n=n0();
+      slots.forEach((s,i)=>{ let d=i-pos; if(o.loop&&n>2) d=wrap(d); const ad=Math.abs(d);
+        if(ad>2.2){ s.style.display='none'; return; } s.style.display='';
+        const tx=rm?0:d*cw*0.66, ry=rm?0:-d*26, sc=rm?1:1-Math.min(ad,2)*0.1;
+        s.style.width=cw+'px'; s.style.height=ch+'px'; s.style.marginLeft=(-cw/2)+'px';
+        s.style.transform=`translateX(${tx}px) translateZ(${rm?0:-Math.min(ad,2)*80}px) rotateY(${ry}deg) scale(${sc})`;
+        s.style.opacity=Math.max(0,rm?1-ad*1.6:1-ad*0.5).toFixed(3); s.style.zIndex=100-Math.round(ad*10);
+        const act=ad<0.5; s.classList.toggle('hd-act',act); s.setAttribute('aria-hidden',act?'false':'true'); try{ s.inert=!act; }catch(_){}
+      });
+    }
+    function idx(){ const n=n0(); let i=Math.round(pos); if(o.loop) i=((i%n)+n)%n; return Math.max(0,Math.min(n-1,i)); }
+    let lastIdx=-1;
+    function settleUI(){ const i=idx(); dotsEl.querySelectorAll('.hd-dot').forEach((d,k)=>{ d.classList.toggle('on',k===i); d.setAttribute('aria-selected',k===i); });
+      cnt.textContent=`${String(i+1).padStart(2,'0')} / ${String(n0()).padStart(2,'0')}`;
+      root.querySelectorAll('.hd-arrow').forEach(a=>{ a.disabled = !o.loop && ((+a.dataset.d<0&&i<=0)||(+a.dataset.d>0&&i>=n0()-1)); });
+      if(i!==lastIdx){ lastIdx=i; const it=items[i]; if(it&&it.label) live.textContent=`${it.label}, card ${i+1} of ${n0()}`; if(o.onChange) o.onChange(i); } }
+    function step(now){ const dt=Math.min(.032,(now-(step.t||now))/1000); step.t=now; const K=280,C=30;
+      if(!dragging){ vel+=((target-pos)*K-vel*C)*dt; pos+=vel*dt; if(Math.abs(target-pos)<.0008&&Math.abs(vel)<.01){ pos=target; vel=0; layout(); settleUI(); raf=0; step.t=0; return; } }
+      layout(); settleUI(); raf=requestAnimationFrame(step); }
+    function kick(){ if(rmode()){ pos=target; layout(); settleUI(); return; } if(!raf) raf=requestAnimationFrame(step); }
+    function go(i){ const n=n0(); if(!n) return; if(o.loop){ const cur=Math.round(pos); let d=(i-(((cur%n)+n)%n)); d=wrap(d); target=cur+d; } else target=Math.max(0,Math.min(n-1,i)); kick(); }
+    root.querySelectorAll('.hd-arrow').forEach(a=>a.onclick=()=>go(Math.round(target)+(+a.dataset.d)));
+    stage.addEventListener('keydown',e=>{ if(e.key==='ArrowLeft'){ e.preventDefault(); go(Math.round(target)-1); } else if(e.key==='ArrowRight'){ e.preventDefault(); go(Math.round(target)+1); } else if((e.key==='Enter'||e.key===' ')&&e.target===stage){ e.preventDefault(); flip(); } });
+    function flip(i){ const s=slots[i==null?idx():i]; if(s&&s.querySelector('.hd-back')){ s.classList.toggle('flipped'); if(o.onFlip) o.onFlip(i==null?idx():i,s.classList.contains('flipped')); } }
+    // drag with axis lock; never starts on form fields / buttons / links
+    let sx=0,sy=0,lx=0,lt=0,lv=0,axis=null,moved=false,pid=null;
+    stage.addEventListener('pointerdown',e=>{ if(e.button>0||n0()<2&&!o.flipOnTap) return; if(e.target.closest('input,select,textarea,a,button,[data-nodrag]')) return;
+      sx=lx=e.clientX; sy=e.clientY; lt=performance.now(); lv=0; axis=null; moved=false; pid=e.pointerId; });
+    stage.addEventListener('pointermove',e=>{ if(pid!==e.pointerId) return; const dx=e.clientX-sx, dy=e.clientY-sy;
+      if(!axis){ if(Math.abs(dx)<6&&Math.abs(dy)<6) return; axis=Math.abs(dx)>Math.abs(dy)?'x':'y'; if(axis==='x'){ dragging=true; vel=0; stage.classList.add('dragging'); try{stage.setPointerCapture(pid);}catch(_){} } }
+      if(axis!=='x') return; moved=true; const now=performance.now(), dtm=Math.max(1,now-lt); const dcards=-(e.clientX-lx)/(cw*0.66);
+      lv=0.8*lv+0.2*(dcards/dtm*1000); lx=e.clientX; lt=now; pos+=dcards; if(!o.loop){ const n=n0(); if(pos<-0.35) pos=-0.35; if(pos>n-0.65) pos=n-0.65; }
+      layout(); settleUI(); });
+    function end(e){ if(pid!==e.pointerId) return; pid=null; if(dragging){ dragging=false; stage.classList.remove('dragging'); const n=n0(); let t=Math.round(pos+lv*0.12); if(!o.loop) t=Math.max(0,Math.min(n-1,t)); else { const c=Math.round(pos); t=Math.max(c-1,Math.min(c+1,t)); } target=t; vel=lv*0.4; kick(); }
+      else if(!moved&&o.flipOnTap&&e.type==='pointerup'&&e.target.closest('.hd-slot.hd-act')) flip(); axis=null; }
+    stage.addEventListener('pointerup',end); stage.addEventListener('pointercancel',end);
+    stage.addEventListener('lostpointercapture',e=>{ if(e.target===stage&&dragging) end(e); });
+    const ro = window.ResizeObserver ? new ResizeObserver(()=>layout()) : null; if(ro) ro.observe(stage);
+    build(); target=pos; layout(); settleUI();
+    return { go, flip, index:idx, count:n0, slots:()=>slots, setItems(it,keep){ items=it.slice(); if(!keep) pos=target=0; else { pos=Math.min(pos,items.length-1); target=Math.round(pos); } lastIdx=-1; build(); settleUI(); }, relayout:layout, destroy(){ cancelAnimationFrame(raf); if(ro) ro.disconnect(); root.innerHTML=''; } };
+  };
   const NA = 'N/A';
   const disp = v => (v && String(v).trim()) ? v : NA;
   const escapeHtml = s => String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -2571,96 +2948,121 @@
   }, 30000);
 
   // ---------- auth screen ----------
-  let authMode = 'signin'; // 'signin' | 'signup'
-  let authSubmitting = false;   // true while a sign-in form submission is in flight (drives the "Access granted" sequence)
+  let authSubmitting = false;   // true while a sign-in/sign-up submission is in flight (drives the "Access granted" sequence)
   const authRM = ()=> window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function setAuthBtn(btn, label, busy){
     btn.disabled = !!busy; btn.classList.toggle('busy', !!busy);
     btn.querySelector('.lb-t').textContent = label;
   }
+  const AIC = { mail:'<svg viewBox="0 0 24 24" aria-hidden="true" class="af-ico"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
+    lock:'<svg viewBox="0 0 24 24" aria-hidden="true" class="af-ico"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>' };
+  const EYE = id=>`<button type="button" class="af-eye" data-eye="${id}" aria-label="Show password" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" class="eye-open"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" class="eye-off"><path d="M3 3l18 18M10.6 5.1A10.6 10.6 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4M6.5 6.6A16.6 16.6 0 0 0 2 12s3.6 7 10 7a10 10 0 0 0 4.2-.9M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button>`;
+  const emailField = (id,label)=>`<div class="af">${AIC.mail}<input type="email" id="${id}" name="email" autocomplete="email" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder=" " required><label for="${id}">${label||'Email'}</label></div>`;
+  const pwField = (id,label,auto)=>`<div class="af">${AIC.lock}<input type="password" id="${id}" name="password" autocomplete="${auto}" placeholder=" " minlength="6" required><label for="${id}">${label||'Password'}</label>${EYE(id)}</div>`;
+  const BTN = (id,t)=>`<button class="lock-btn" type="submit" id="${id}"><span class="lb-t">${t}</span><i class="lb-scan" aria-hidden="true"></i></button>`;
+  const MSG = id=>`<div class="lock-error" id="${id}Error" role="alert" aria-live="assertive"></div><div class="lock-success" id="${id}Success" role="status" aria-live="polite"></div>`;
+  const AUTH_CARDS = [
+    { idx:'SECURE ACCESS · 01/03', label:'Sign in', html:`<h1 class="ac-title">Welcome back</h1><p class="sub">Sign in to access your family trees, synced across your devices.</p>
+      <form id="authForm" autocomplete="on" novalidate>${emailField('authEmail')}${pwField('authPassword','Password','current-password')}${MSG('auth')}${BTN('authSubmitBtn','Sign In')}</form>
+      <div class="auth-secondary"><a href="#" data-auth-go="1" role="button" class="auth-sec-btn">Create account</a><a href="#" data-auth-go="2" role="button" class="auth-sec-btn">Forgot password?</a></div>` },
+    { idx:'NEW ACCOUNT · 02/03', label:'Create account', html:`<h1 class="ac-title">Create your account</h1><p class="sub">Your family trees will be saved to this account and kept in sync across your devices.</p>
+      <form id="suForm" autocomplete="on" novalidate>${emailField('suEmail')}${pwField('suPassword','Password','new-password')}
+      <div class="pw-meter" id="pwMeter" data-score="0"><div class="pw-bar"><span id="pwBar"></span></div><em id="pwLabel">Use 8+ characters, mixed case and a number</em></div>
+      <p class="auth-note">If email confirmation is turned on for this app, we'll ask you to confirm your address by email before you can sign in.</p>${MSG('su')}${BTN('suSubmitBtn','Create account')}</form>
+      <div class="auth-secondary"><a href="#" data-auth-go="0" role="button" class="auth-sec-btn">Already have an account? Sign in</a></div>` },
+    { idx:'ACCOUNT RECOVERY · 03/03', label:'Reset password', html:`<h1 class="ac-title">Reset your password</h1><p class="sub">Enter your email and we'll send you a link to reset your password.</p>
+      <form id="authResetRequestForm" autocomplete="on" novalidate>${emailField('authResetEmail')}<div class="lock-error" id="authResetError" role="alert" aria-live="assertive"></div><div class="lock-success" id="authResetSuccess" role="status" aria-live="polite"></div>${BTN('authResetSubmitBtn','Send reset link')}</form>
+      <div class="auth-secondary"><a href="#" data-auth-go="0" role="button" class="auth-sec-btn">← Back to sign in</a></div>` }
+  ];
+  const AUTH_HASH = ['login','signup','reset'];
+  const grantedBack = HK.frame(`<div class="ag"><svg viewBox="0 0 48 48" class="ag-ck" aria-hidden="true"><circle cx="24" cy="24" r="20"/><path d="M14 25l7 7 13-15"/></svg><div class="ag-t">ACCESS GRANTED</div><div class="ag-s">Opening your family core…</div></div>`,{variant:'standard',intensity:'active',tick:true});
+  let authDeckReady = false;
+  const authDeck = HK.deck($('authDeck'), { label:'Account access', ch:470, cw:392, loop:false, flipOnTap:false,
+    items: AUTH_CARDS.map(c=>({ label:c.label, front: HK.frame(`<div class="auth-eyebrow">${c.idx}</div>${c.html}`,{variant:'standard',intensity:'active',tick:true,glare:true,cls:'auth-card'}), back:grantedBack })),
+    onChange(i){ authCardChanged(i); } });
+  function authLockVisible(){ const ls=$('lockScreen'); return ls.style.display!=='none' && !ls.classList.contains('dissolve'); }
+  function authCardChanged(i){
+    if(!authDeckReady) return;
+    $('lockScreen').classList.toggle('on-signup', i===1);
+    try{ if(authLockVisible() && !(history.state && history.state.authCard===i)) history.pushState({authCard:i},'',location.pathname+location.search+'#'+AUTH_HASH[i]); }catch(_){}
+  }
+  window.addEventListener('popstate', e=>{
+    if(!authLockVisible()) return;
+    const k = e.state && e.state.authCard!=null ? e.state.authCard : Math.max(0, AUTH_HASH.indexOf(location.hash.replace('#','')));
+    authDeck.go(k);
+  });
+  $('authDeck').addEventListener('click', e=>{ const l=e.target.closest('[data-auth-go]'); if(!l) return; e.preventDefault(); authDeck.go(+l.dataset.authGo);
+    if(l.dataset.authGo==='2' && $('authEmail').value && !$('authResetEmail').value) $('authResetEmail').value=$('authEmail').value; });
+  $('authDeck').addEventListener('click', e=>{ const eye=e.target.closest('[data-eye]'); if(!eye) return; const inp=$(eye.dataset.eye); const on=inp.type==='password'; inp.type=on?'text':'password'; eye.setAttribute('aria-pressed',String(on)); eye.setAttribute('aria-label',on?'Hide password':'Show password'); eye.classList.toggle('on',on); inp.focus(); });
+  function authActiveFrame(){ return document.querySelector('#authDeck .hd-slot.hd-act .hd-front .hf') || $('authNewPwWrap').querySelector('.hf'); }
   function authFail(msgEl, text){
     msgEl.textContent = text;
-    const panel = $('authPanel'); panel.classList.remove('shake'); panel.classList.add('error');
-    if(!authRM()){ void panel.offsetWidth; panel.classList.add('shake'); }
-    clearTimeout(authFail._t); authFail._t = setTimeout(()=>panel.classList.remove('error','shake'), 2600);
-  }
-  function renderAuthMode(){
-    $('authError').textContent=''; $('authSuccess').textContent='';
-    const su = authMode==='signup';
-    $('authEyebrow').textContent = 'SECURE ACCESS';
-    $('authTitle').textContent = su ? 'Create your account' : 'Welcome back';
-    $('authSub').textContent = su ? 'Your family trees will be saved to this account and kept in sync across your devices.' : 'Sign in to access your family trees, synced across your devices.';
-    $('authSubmitBtn').querySelector('.lb-t').textContent = su ? 'Create account' : 'Sign In';
-    $('authPassword').setAttribute('autocomplete', su ? 'new-password' : 'current-password');
-    $('authToggleModeLink').textContent = su ? 'Already have an account? Sign in' : 'Need an account? Sign up';
-    $('authForgotLink').style.display = su ? 'none' : '';
-    $('pwMeter').hidden = !su; $('authSignupNote').hidden = !su;
-    updatePwMeter();
+    const panel = authActiveFrame(); if(!panel) return; panel.classList.remove('hf-shake'); panel.classList.add('hf-error');
+    if(!authRM()){ void panel.offsetWidth; panel.classList.add('hf-shake'); }
+    clearTimeout(authFail._t); authFail._t = setTimeout(()=>panel.classList.remove('hf-error','hf-shake'), 2600);
   }
   function updatePwMeter(){
-    const v = $('authPassword').value; let sc = 0;
+    const v = $('suPassword').value; let sc = 0;
     if(v.length>=8) sc++; if(/[a-z]/.test(v)&&/[A-Z]/.test(v)) sc++; if(/\d/.test(v)) sc++; if(/[^A-Za-z0-9]/.test(v)||v.length>=14) sc++;
     if(!v) sc = 0;
     $('pwBar').style.width = (sc*25)+'%'; $('pwMeter').dataset.score = String(sc);
     $('pwLabel').textContent = !v ? 'Use 8+ characters, mixed case and a number' : ['Too weak','Weak','Fair','Good','Strong'][sc];
   }
+  $('suPassword').addEventListener('input', updatePwMeter);
+  // Load sequence (<1.5s, once per visit, skippable by tapping)
+  function authSeqPlay(){
+    const ls=$('lockScreen'); let played=false; try{ played = sessionStorage.getItem('ftSeq')==='1'; }catch(_){}
+    ls.classList.remove('seq-play','seq-skip','seq-done');
+    if(played || authRM()){ ls.classList.add('seq-done'); authDevName(true); return; }
+    try{ sessionStorage.setItem('ftSeq','1'); }catch(_){}
+    void ls.offsetWidth; ls.classList.add('seq-play'); authDevName(false);
+    const skip=()=>{ ls.classList.add('seq-skip','seq-done'); authDevName(true); ls.removeEventListener('pointerdown',skip); };
+    ls.addEventListener('pointerdown',skip,{once:true});
+    setTimeout(()=>{ ls.classList.add('seq-done'); ls.removeEventListener('pointerdown',skip); },1700);
+  }
+  function authDevName(instant){
+    const el=$('authDevName'); const txt='Ryan James Lim';
+    el.innerHTML = [...txt].map((c,i)=>`<span class="adc" style="--i:${i}">${c===' '?'&nbsp;':c}</span>`).join('') + '<i class="ad-shim"></i>';
+    el.classList.toggle('instant', !!instant);
+  }
   function showAuthScreen(){
     silenceMusicPlayer();
     $('app').style.display='none';
-    $('lockScreen').classList.remove('checking','granted','dissolve');
-    $('lockScreen').style.display='flex';
-    $('authForm').style.display='block'; $('authSecondary').style.display='';
-    $('authResetRequestForm').style.display='none';
-    $('authNewPasswordForm').style.display='none';
-    authMode='signin'; authSubmitting=false; homeBooted=false;
-    renderAuthMode();
-    $('authEmail').value=''; $('authPassword').value=''; setPwVisible(false);
-    setAuthBtn($('authSubmitBtn'), 'Sign In', false);
-    authSceneStart();
+    const ls=$('lockScreen');
+    ls.classList.remove('checking','granted','dissolve','kb-open');
+    ls.style.display='flex';
+    $('authNewPwWrap').hidden=true; $('authStage').hidden=false;
+    authSubmitting=false; homeBooted=false;
+    // unflip every card and reset to Sign In
+    authDeck.slots().forEach(s=>s.classList.remove('flipped'));
+    authDeckReady=false; authDeck.go(0); authDeckReady=true;
+    ['authEmail','authPassword','suEmail','suPassword','authResetEmail'].forEach(id=>{ $(id).value=''; if($(id).type==='text' && /Password/.test(id)) $(id).type='password'; });
+    ['authError','authSuccess','suError','suSuccess','authResetError','authResetSuccess'].forEach(id=>$(id).textContent='');
+    updatePwMeter();
+    ['authSubmitBtn','suSubmitBtn'].forEach(id=>setAuthBtn($(id), id==='suSubmitBtn'?'Create account':'Sign In', false));
+    try{ history.replaceState({authCard:0},'',location.pathname+location.search+'#login'); }catch(_){}
+    authSceneStart(); authSeqPlay();
   }
-  function setPwVisible(on){
-    $('authPassword').type = on ? 'text' : 'password';
-    $('authEye').setAttribute('aria-pressed', String(on)); $('authEye').setAttribute('aria-label', on?'Hide password':'Show password');
-    $('authEye').classList.toggle('on', on);
-  }
-  $('authEye').onclick = ()=>{ setPwVisible($('authPassword').type==='password'); $('authPassword').focus(); };
-  $('authPassword').addEventListener('input', updatePwMeter);
-  $('authToggleModeLink').onclick = (e)=>{ e.preventDefault(); authMode = authMode==='signin' ? 'signup' : 'signin'; renderAuthMode(); };
-  $('authForgotLink').onclick = (e)=>{
+  async function authSubmitCred(kind, e){
     e.preventDefault();
-    $('authForm').style.display='none'; $('authSecondary').style.display='none';
-    $('authResetRequestForm').style.display='block';
-    $('authEyebrow').textContent='ACCOUNT RECOVERY'; $('authTitle').textContent='Reset your password'; $('authSub').textContent='';
-    $('authResetEmail').value = $('authEmail').value;
-    $('authResetError').textContent=''; $('authResetSuccess').textContent='';
-  };
-  $('authResetBackLink').onclick = (e)=>{
-    e.preventDefault();
-    $('authResetRequestForm').style.display='none';
-    $('authForm').style.display='block'; $('authSecondary').style.display='';
-    renderAuthMode();
-  };
-  $('authForm').addEventListener('submit', async (e)=>{
-    e.preventDefault();
-    const email = $('authEmail').value.trim();
-    const password = $('authPassword').value;
-    $('authError').textContent=''; $('authSuccess').textContent='';
-    if(!email || !password){ authFail($('authError'), !email && !password ? 'Enter your email and password.' : (!email ? 'Enter your email.' : 'Enter your password.')); (!email?$('authEmail'):$('authPassword')).focus(); return; }
-    if(password.length<6){ authFail($('authError'), 'Password must be at least 6 characters.'); return; }
-    const btn = $('authSubmitBtn'); setAuthBtn(btn, authMode==='signup' ? 'Creating account…' : 'Authenticating…', true);
+    const p = kind==='su' ? 'su' : 'auth';
+    const email = $(p+'Email').value.trim(), password = $(p+'Password').value;
+    $(p+'Error').textContent=''; $(p+'Success').textContent='';
+    if(!email || !password){ authFail($(p+'Error'), !email && !password ? 'Enter your email and password.' : (!email ? 'Enter your email.' : 'Enter your password.')); (!email?$(p+'Email'):$(p+'Password')).focus(); return; }
+    if(password.length<6){ authFail($(p+'Error'), 'Password must be at least 6 characters.'); return; }
+    const btn = $(p+'SubmitBtn'); setAuthBtn(btn, kind==='su' ? 'Creating account…' : 'Authenticating…', true);
     let ok = false;
     try{
-      if(authMode==='signup'){
+      authSubmitting = true;
+      if(kind==='su'){
         const { data, error } = await sb.auth.signUp({ email, password });
         if(error) throw error;
         if(!data.session){
-          // Email confirmation is required for this project before a session is issued.
-          $('authSuccess').textContent = 'Account created! Check your email to confirm it, then sign in.';
-          authMode='signin'; renderAuthMode();
-          $('authSuccess').textContent = 'Account created! Check your email to confirm it, then sign in.';
-        }
+          authSubmitting = false;
+          $('suSuccess').textContent = 'Account created! Check your email to confirm it, then sign in.';
+          $('authEmail').value = email;
+        } else ok = true;
       } else {
-        authSubmitting = true;
         const { error } = await sb.auth.signInWithPassword({ email, password });
         if(error) throw error;
         ok = true;
@@ -2669,12 +3071,14 @@
     }catch(err){
       authSubmitting = false;
       const raw = humanizeAuthError(err);
-      authFail($('authError'), authMode==='signin' && /incorrect email or password/i.test(raw) ? 'Email or password is incorrect.' : raw);
-      if(authMode==='signin') { $('authPassword').value=''; updatePwMeter(); }
+      authFail($(p+'Error'), kind==='signin' && /incorrect email or password/i.test(raw) ? 'Email or password is incorrect.' : raw);
+      if(kind==='signin'){ $('authPassword').value=''; }
     }finally{
-      if(!ok) setAuthBtn(btn, authMode==='signup' ? 'Create account' : 'Sign In', false);
+      if(!ok) setAuthBtn(btn, kind==='su' ? 'Create account' : 'Sign In', false);
     }
-  });
+  }
+  $('authForm').addEventListener('submit', e=>authSubmitCred('signin', e));
+  $('suForm').addEventListener('submit', e=>authSubmitCred('su', e));
   $('authResetRequestForm').addEventListener('submit', async (e)=>{
     e.preventDefault();
     const email = $('authResetEmail').value.trim();
@@ -2703,7 +3107,7 @@
       const { error } = await sb.auth.updateUser({ password: p1 });
       if(error) throw error;
       $('authNewPasswordSuccess').textContent = 'Password updated! Signing you in…';
-      setTimeout(()=>{ $('authNewPasswordForm').style.display='none'; $('authForm').style.display='block'; $('authSecondary').style.display=''; renderAuthMode(); }, 900);
+      setTimeout(()=>{ $('authNewPwWrap').hidden=true; $('authStage').hidden=false; authDeck.go(0); }, 900);
     }catch(err){
       authFail($('authNewPasswordError'), humanizeAuthError(err));
     }finally{
@@ -2721,6 +3125,7 @@
   async function playAccessGranted(){
     const ls = $('lockScreen');
     ls.classList.add('granted');
+    try{ authDeck.flip(); }catch(_){}
     await new Promise(r=>setTimeout(r, authRM() ? 200 : 750));
     ls.classList.add('dissolve');
     await new Promise(r=>setTimeout(r, authRM() ? 0 : 350));
@@ -2854,6 +3259,7 @@
     // no sign anything happened.
     if(authSubmitting){ authSubmitting=false; try{ await playAccessGranted(); }catch(_){} }
     $('lockScreen').style.display='none'; AuthScene.running=false; cancelAnimationFrame(AuthScene.raf);
+    try{ if(/^#(login|signup|reset)$/.test(location.hash)) history.replaceState(null,'',location.pathname+location.search); }catch(_){}
     const migration = await checkMigration();
     if(migration.show) openMigrationModal(migration);
     else await finishEnteringApp();
@@ -2888,11 +3294,8 @@
     else showAuthScreen();
     sb.auth.onAuthStateChange(async (event, session)=>{
       if(event==='PASSWORD_RECOVERY'){
-        $('authForm').style.display='none';
-        $('authResetRequestForm').style.display='none';
-        $('authNewPasswordForm').style.display='block'; $('authSecondary').style.display='none';
-        $('authEyebrow').textContent='ACCOUNT RECOVERY'; $('authTitle').textContent='Set a new password'; $('authSub').textContent='';
-        $('lockScreen').classList.remove('checking'); $('lockScreen').style.display='flex'; authSceneStart();
+        $('authStage').hidden=true; $('authNewPwWrap').hidden=false;
+        $('lockScreen').classList.remove('checking'); $('lockScreen').style.display='flex'; authSceneStart(); authSeqPlay();
         $('app').style.display='none';
         return;
       }
@@ -3410,6 +3813,13 @@
     const pos = {};
     Object.keys(layout.positions).forEach(id=>{ pos[id] = { x: layout.positions[id].x+pad, y: layout.positions[id].y+pad }; });
 
+    // holographic backdrop (once) + generation bands with a HUD rail on the left edge
+    const vpEl = $('treeViewport');
+    if(!vpEl.querySelector('.tree-floor')){ vpEl.insertAdjacentHTML('afterbegin','<div class="tree-floor" aria-hidden="true"></div>'+HK.constellation(14,11,.28)); }
+    const genY = {};
+    Object.keys(layout.positions).forEach(id=>{ const g=layout.genCache[id]; if(genY[g]===undefined) genY[g]=pos[id].y; });
+    Object.keys(genY).sort((a,b)=>a-b).forEach(g=>{ const band=document.createElement('div'); band.className='gen-band'; band.style.top=(genY[g]-CARD_H/2-16)+'px'; band.style.height=(CARD_H+32)+'px'; band.style.width=w+'px'; band.innerHTML='<span>GEN '+(+g+1)+'</span>'; cardsLayer.appendChild(band); });
+
     const svgNS='http://www.w3.org/2000/svg';
     // Two visually distinct line languages, so relationships read at a glance
     // instead of every connection looking like every other one:
@@ -3627,6 +4037,7 @@
       node.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openPanel(p.id); } });
       const hasMore = !!((p.notes && p.notes.trim()) || normalizeTraits(p.traits).length);
       node.innerHTML = `${p.pinned?'<div class="node-pin">📌</div>':''}${hasMore?'<span class="node-flag" title="Has notes or observations"></span>':''}${photoHtml}<div class="node-info"><div class="node-name">${escapeHtml(nameFull)}</div><div class="node-dates">${bYear} – ${dYear}</div></div>`;
+      if(p.id===selectedId) node.insertAdjacentHTML('beforeend','<span class="sel-plat" aria-hidden="true"><i class="a"></i><i class="b"></i></span>');
       node.addEventListener('click', (e)=>{ e.stopPropagation(); openPanel(p.id); });
 
       // Hover (desktop) / long-press (mobile) quick-info popup
@@ -3715,6 +4126,7 @@
   function applyTransform(){
     $('treeInner').style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`;
     $('zoomLabel').textContent = Math.round(zoom*100)+'%';
+    if(typeof scheduleMini==='function') scheduleMini();
   }
   function centerTree(){
     const vp = $('treeViewport'); const inner = $('treeInner');
@@ -3734,6 +4146,55 @@
     panY = vh/2 - (p0.y+80)*zoom;
     applyTransform();
   }
+  // smooth camera flight (rAF ease); instant under reduced motion
+  let flyRaf=0;
+  function flyTo(tx,ty,tz){
+    cancelAnimationFrame(flyRaf);
+    if(isRM()){ panX=tx; panY=ty; zoom=tz; applyTransform(); return; }
+    const x0=panX,y0=panY,z0=zoom,t0=performance.now(),D=520;
+    const step=now=>{ const k=Math.min(1,(now-t0)/D), e=1-Math.pow(1-k,3); panX=x0+(tx-x0)*e; panY=y0+(ty-y0)*e; zoom=z0+(tz-z0)*e; applyTransform(); if(k<1) flyRaf=requestAnimationFrame(step); };
+    flyRaf=requestAnimationFrame(step);
+  }
+  function flyToPerson(id){
+    const layout=computeLayout(); const p0=layout.positions[id]; if(!p0) return;
+    const vp=$('treeViewport'); const vw=vp.clientWidth||window.innerWidth, vh=vp.clientHeight||(window.innerHeight-56);
+    const z=Math.max(zoom,0.9);
+    flyTo(vw/2-(p0.x+80+ (CARD_W/2 - 80))*z, vh/2-(p0.y+80)*z, z);
+  }
+  function openTreeSearch(){
+    const b=$('tsBackdrop'); b.classList.add('open'); $('tsInput').value=''; renderTreeSearch(); setTimeout(()=>{ try{$('tsInput').focus({preventScroll:true});}catch(_){} },80);
+  }
+  function closeTreeSearch(){ $('tsBackdrop').classList.remove('open'); }
+  function renderTreeSearch(){
+    const q=$('tsInput').value.trim().toLowerCase();
+    const L=peopleArr().filter(p=>!q || fullName(p).toLowerCase().includes(q) || (p.nickname||'').toLowerCase().includes(q)).sort((a,b)=>fullName(a).localeCompare(fullName(b))).slice(0,40);
+    $('tsList').innerHTML = L.length ? L.map(p=>`<button type="button" class="ts-row" role="option" data-ts="${p.id}"><span class="rel-av" aria-hidden="true">${escapeHtml(initialsOf(p))}</span><span><b>${escapeHtml(fullName(p))}</b><span class="ts-sub">${escapeHtml(lifeText(p))}</span></span></button>`).join('') : `<div class="ts-empty">No one matches “${escapeHtml($('tsInput').value)}”.</div>`;
+    $('tsList').querySelectorAll('[data-ts]').forEach(b=>b.onclick=()=>{ const id=b.dataset.ts; closeTreeSearch(); selectedId=id; renderTree(); afterLayout(()=>flyToPerson(id)); });
+  }
+  $('fabSearch').onclick = openTreeSearch; $('tsCloseBtn').onclick = closeTreeSearch;
+  $('tsBackdrop').addEventListener('click',e=>{ if(e.target.id==='tsBackdrop') closeTreeSearch(); });
+  $('tsInput').addEventListener('input', renderTreeSearch);
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape' && $('tsBackdrop').classList.contains('open')) closeTreeSearch(); });
+  $('fabReset').onclick = ()=>{ selectedId=null; activeTraitHighlight=null; $('searchInput').value=''; closePanel(); renderTree(); fitToScreen(); };
+  // minimap (large trees only): every member as a dot, the visible area as a glowing rectangle; tap/drag to jump
+  let miniRaf=0;
+  function drawMini(){
+    miniRaf=0; const box=$('treeMini'); if(!box) return; const people=peopleArr();
+    if(people.length<12 || currentView!=='tree'){ box.hidden=true; return; } box.hidden=false;
+    const cv=$('treeMiniCv'), r=box.getBoundingClientRect(); const dpr=Math.min(2,window.devicePixelRatio||1); const W=r.width-10,H=r.height-10; if(!(W>0)) return;
+    if(cv.width!==Math.round(W*dpr)){ cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr); }
+    const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,W,H);
+    const inner=$('treeInner'); const iw=parseFloat(inner.style.width)||1, ih=parseFloat(inner.style.height)||1; const k=Math.min(W/iw,H/ih); const ox=(W-iw*k)/2, oy=(H-ih*k)/2;
+    const layout=computeLayout(); ctx.fillStyle='rgba(143,245,255,.85)';
+    Object.keys(layout.positions).forEach(id=>{ const p=layout.positions[id]; ctx.fillRect(ox+(p.x+80)*k-1.5, oy+(p.y+80)*k-1, 3, 2.2); });
+    const vp=$('treeViewport'); const vx=-panX/zoom, vy=-panY/zoom, vw=vp.clientWidth/zoom, vh=vp.clientHeight/zoom;
+    ctx.strokeStyle='#27e6ff'; ctx.lineWidth=1.4; ctx.shadowColor='#27e6ff'; ctx.shadowBlur=6; ctx.strokeRect(ox+vx*k, oy+vy*k, vw*k, vh*k); ctx.shadowBlur=0;
+    cv._m={k,ox,oy};
+  }
+  function scheduleMini(){ if(!miniRaf) miniRaf=requestAnimationFrame(drawMini); }
+  (function(){ const cv=$('treeMiniCv'); let down=false;
+    const jump=e=>{ const m=cv._m; if(!m) return; const r=cv.getBoundingClientRect(); const x=(e.clientX-r.left-m.ox)/m.k, y=(e.clientY-r.top-m.oy)/m.k; const vp=$('treeViewport'); panX=vp.clientWidth/2-x*zoom; panY=vp.clientHeight/2-y*zoom; applyTransform(); };
+    cv.addEventListener('pointerdown',e=>{ down=true; try{cv.setPointerCapture(e.pointerId);}catch(_){} jump(e); }); cv.addEventListener('pointermove',e=>{ if(down) jump(e); }); cv.addEventListener('pointerup',()=>down=false); cv.addEventListener('pointercancel',()=>down=false); })();
   function afterLayout(fn){
     // waits for the browser to actually finish laying out the view (more reliable
     // than a fixed setTimeout, especially in embedded/in-app browsers)
@@ -4889,17 +5350,71 @@
     const tick=now=>{ const k=Math.min(1,(now-t0)/ms); el.textContent = Math.round(to*(1-Math.pow(1-k,3))); if(k<1) requestAnimationFrame(tick); };
     requestAnimationFrame(tick);
   }
+  // ---- Family Core hologram: real members as glowing nodes on generation layers, pseudo-3D on a 2D canvas ----
+  let homeCleanup = null;
+  function holoCore(host, nodes, edges, cb){
+    const cv = document.createElement('canvas'); cv.className='hh-cv'; host.appendChild(cv);
+    const ctx = cv.getContext && cv.getContext('2d'); if(!ctx){ return { destroy(){}, static:true }; }
+    const maxGen = Math.max(0,...nodes.map(n=>n.gen)); const byId = {}; nodes.forEach(n=>byId[n.id]=n);
+    let W=300,H=300,DPR=Math.min(2,window.devicePixelRatio||1), rot=0, vrot=0, auto=!HK.rm(), idleAt=0, sel=null, running=false, raf=0, drag=false, bootT0=performance.now(), booted=false, proj=[];
+    const TILT=0.30, F=520;
+    function size(){ const r=host.getBoundingClientRect(); W=Math.max(220,r.width); H=Math.max(240,r.height); cv.width=W*DPR; cv.height=H*DPR; cv.style.width=W+'px'; cv.style.height=H+'px'; ctx.setTransform(DPR,0,0,DPR,0,0); }
+    function draw(now){
+      ctx.clearRect(0,0,W,H); const cx=W/2, cy=H*0.5, R=Math.min(W*0.36,138), LY=Math.min(54,(H*0.62)/Math.max(1,maxGen+1)), bt=booted?1:Math.min(1,(now-bootT0)/900); if(bt>=1) booted=true;
+      const cosT=Math.cos(TILT), sinT=Math.sin(TILT); proj=[];
+      nodes.forEach((n,i)=>{ const a=n.a+rot, x=R*Math.cos(a), z=R*Math.sin(a), y=(n.gen-maxGen/2)*LY; const y1=y*cosT - z*sinT, z1=y*sinT + z*cosT; const k=F/(F+z1);
+        const vis = booted?1:Math.max(0,Math.min(1,(bt*nodes.length - i)*1.2)); proj.push({n, sx:cx+x*k, sy:cy+y1*k, k, z:z1, vis}); });
+      const P={}; proj.forEach(p=>P[p.n.id]=p);
+      // generation discs (faint ellipses) for readable structure
+      for(let g=0; g<=maxGen; g++){ const y=(g-maxGen/2)*LY; ctx.beginPath(); for(let t=0;t<=64;t++){ const a=t/64*Math.PI*2, x=R*Math.cos(a), z=R*Math.sin(a); const y1=y*cosT - z*sinT, z1=y*sinT + z*cosT, k=F/(F+z1); const px=cx+x*k, py=cy+y1*k; t?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+        ctx.strokeStyle='rgba(39,230,255,'+(bt*0.16)+')'; ctx.lineWidth=1; ctx.stroke();
+        ctx.fillStyle='rgba(143,245,255,'+(bt*0.55)+')'; ctx.font='600 9px Inter,system-ui,sans-serif'; ctx.textAlign='left'; ctx.fillText('GEN '+(g+1), cx-R-4 > 4 ? 6 : 6, cy+(y*cosT)-4); }
+      // edges
+      edges.forEach(e=>{ const A=P[e.a], B=P[e.b]; if(!A||!B) return; const v=Math.min(A.vis,B.vis); if(v<=0) return; const depth=Math.max(0.25,Math.min(1,0.65+(A.k+B.k-2)*2.2)); const hot = sel && (e.a===sel||e.b===sel);
+        ctx.beginPath(); ctx.moveTo(A.sx,A.sy); ctx.lineTo(A.sx+(B.sx-A.sx)*v,A.sy+(B.sy-A.sy)*v); ctx.strokeStyle = e.spouse?('rgba(240,197,133,'+(0.55*depth)+')'):(hot?'rgba(143,245,255,.95)':'rgba(39,230,255,'+(0.5*depth)+')'); ctx.lineWidth = hot?2:1.2; if(e.spouse) ctx.setLineDash([4,4]); ctx.stroke(); ctx.setLineDash([]); });
+      // nodes back to front
+      proj.slice().sort((a,b)=>b.z-a.z).forEach(p=>{ if(p.vis<=0) return; const n=p.n, r=Math.max(10,17*p.k), a=Math.max(0.35,Math.min(1,0.55+(p.k-1)*2.4))*Math.min(1,p.vis*1.5), isSel=sel===n.id;
+        const g=ctx.createRadialGradient(p.sx,p.sy,0,p.sx,p.sy,r*(isSel?3.2:2.2)); g.addColorStop(0,'rgba(39,230,255,'+(isSel?0.55:0.28*a)+')'); g.addColorStop(1,'rgba(39,230,255,0)'); ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.sx,p.sy,r*(isSel?3.2:2.2),0,6.283); ctx.fill();
+        ctx.beginPath(); ctx.arc(p.sx,p.sy,r,0,6.283); ctx.fillStyle='rgba(6,16,30,.92)'; ctx.fill(); ctx.lineWidth=isSel?2.6:1.6; ctx.strokeStyle=isSel?'#ffffff':'rgba(39,230,255,'+a+')'; ctx.stroke();
+        ctx.fillStyle=isSel?'#fff':'rgba(215,250,255,'+Math.max(.7,a)+')'; ctx.font='600 '+Math.round(Math.max(9,r*0.72))+'px Fraunces,Georgia,serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(n.ini,p.sx,p.sy+1); ctx.textBaseline='alphabetic'; });
+    }
+    function visible(){ return host.isConnected && host.offsetParent!==null && !document.hidden; }
+    function loop(now){ raf=0; if(!visible()){ running=false; return; }
+      const dt=Math.min(.05,(now-(loop.t||now))/1000); loop.t=now;
+      if(!drag){ if(Math.abs(vrot)>0.0004 && !HK.rm()){ rot+=vrot*dt*60; vrot*=0.94; } else vrot=0; if(auto && now>idleAt && !HK.rm()) rot+=0.12*dt; }
+      draw(now); if(!HK.rm() || !booted || drag){ raf=requestAnimationFrame(loop); running=true; } else running=false; }
+    function kick(){ if(!raf){ loop.t=0; raf=requestAnimationFrame(loop); } }
+    // pointer: drag rotates (horizontal only; vertical gestures still scroll the page), tap selects
+    let sx=0,sy=0,lx=0,axis=null,moved=false,pid=null;
+    cv.addEventListener('pointerdown',e=>{ sx=lx=e.clientX; sy=e.clientY; axis=null; moved=false; pid=e.pointerId; });
+    cv.addEventListener('pointermove',e=>{ if(e.pointerId!==pid) return; const dx=e.clientX-sx, dy=e.clientY-sy; if(!axis){ if(Math.abs(dx)<6&&Math.abs(dy)<6) return; axis=Math.abs(dx)>Math.abs(dy)?'x':'y'; if(axis==='x'){ drag=true; try{cv.setPointerCapture(pid);}catch(_){} kick(); } }
+      if(axis!=='x') return; moved=true; const d=(e.clientX-lx)*0.012; rot+=d; vrot=d; lx=e.clientX; });
+    function up(e){ if(e.pointerId!==pid) return; pid=null; const wasDrag=drag; drag=false; idleAt=performance.now()+1600;
+      if(!wasDrag && !moved && e.type==='pointerup'){ const r=cv.getBoundingClientRect(); const x=e.clientX-r.left, y=e.clientY-r.top; let best=null,bd=1e9; proj.forEach(p=>{ const d=Math.hypot(p.sx-x,p.sy-y); const rad=Math.max(22,17*p.k+10); if(d<rad && (d<bd||(best&&p.z<best.z&&Math.abs(d-bd)<6))){ best=p; bd=d; } });
+        sel = best ? best.n.id : null; if(HK.rm()) draw(performance.now()); else kick(); cb.select(best?{n:best.n,x:best.sx,y:best.sy,W,H}:null); }
+      axis=null; }
+    cv.addEventListener('pointerup',up); cv.addEventListener('pointercancel',up);
+    const ro = window.ResizeObserver ? new ResizeObserver(()=>{ size(); draw(performance.now()); }) : null; if(ro) ro.observe(host);
+    const io = window.IntersectionObserver ? new IntersectionObserver(es=>{ es.forEach(en=>{ if(en.isIntersecting) kick(); }); }) : null; if(io) io.observe(host);
+    const vis=()=>{ if(!document.hidden) kick(); }; document.addEventListener('visibilitychange',vis);
+    size(); kick();
+    host._holo = { proj:()=>proj.map(p=>({id:p.n.id,name:p.n.name,x:p.sx,y:p.sy,z:p.z})), rot:()=>rot };
+    return { destroy(){ cancelAnimationFrame(raf); raf=0; if(ro) ro.disconnect(); if(io) io.disconnect(); document.removeEventListener('visibilitychange',vis); },
+      select(id){ sel=id; kick(); }, redraw(){ draw(performance.now()); } };
+  }
+  function lifeText(p){
+    const by=yearOf(p.birthDate), dy=yearOf(p.deathDate);
+    return p.living!==false && !p.deathDate ? (by?`${by} – Living`:'Living') : (by&&dy?`${by} – ${dy}`:by?`Born ${by}`:dy?`Died ${dy}`:'Dates not recorded');
+  }
   function renderHome(){
     const root = $('homeRoot'); const t = tree(); if(!t) return;
+    if(homeCleanup){ try{ homeCleanup(); }catch(_){} homeCleanup=null; }
     const people = peopleArr();
+    const dateLine = new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
     if(!people.length){
-      root.innerHTML = `
-        <div class="hx-hero hx-empty">
-          <div class="hx-eyebrow">FAMILY TREE · ${escapeHtml(t.name)}</div>
-          <h2 class="hx-title">Start your family tree</h2>
-          <p class="hx-sub">Nothing is recorded yet. Add the first person — yourself, a parent, a grandparent — and the rest of your family network builds outward from there.</p>
-          <button type="button" class="hx-btn hx-btn-primary" id="homeStartBtn">+ Add the first family member</button>
-        </div>`;
+      root.className='';
+      root.innerHTML = `<div class="hh">${HK.frame(`<div class="hh-greet2"><div class="hx-eyebrow">FAMILY TREE · ${escapeHtml(t.name)}</div></div>`+
+        HK.empty('Start your family tree','Nothing is recorded yet. Add the first person — yourself, a parent, a grandparent — and your family hologram builds outward from there.',`<button type="button" class="hb hb-primary" id="homeStartBtn">${HX_ICON.plus}<span>Add your first family member</span></button>`),{variant:'hero',intensity:'active',glare:true,tick:true})}</div>`;
       $('homeStartBtn').onclick = ()=>{ switchView('tree'); $('createFirstPersonBtn').click(); };
       return;
     }
@@ -4907,103 +5422,108 @@
     const n = people.length, gens = layout.maxGen+1;
     const withBirth = people.filter(p=>p.birthDate && String(p.birthDate).trim()).length;
     const missingBirth = n - withBirth;
+    const withPhoto = people.filter(p=>p.photo).length, noPhoto = n-withPhoto;
     const withObs = people.filter(p=> normalizeTraits(p.traits).some(e=>traitEntryMeta(e))).length;
-    const pinned = people.filter(p=>p.pinned).length;
     const comp = treeCompleteness(people);
-    const events = collectTimelineEvents();
     const customEvents = (t.events||[]).length;
-    const recent = people.filter(p=>p.createdAt).slice().sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt)).slice(0,4);
-    const upcoming = upcomingDates(people);
+    const eventCount = collectTimelineEvents().length;
     const name = userDisplayName();
-    // 1–3 suggestions, only for things that are genuinely missing
-    const steps = [];
-    if(missingBirth>0) steps.push({ k:'dates', text:`${withBirth} of ${n} member${n===1?' has':'s have'} a birth date. Add the rest to build your Timeline.`, btn:'Add birth dates' });
-    if(withObs<n) steps.push({ k:'obs', text: withObs===0 ? 'No personality observations yet. Record your first one in Persona.' : `Only ${withObs} of ${n} member${n===1?' has':'s have'} personality observations.`, btn:'Add observation' });
-    if(!customEvents) steps.push({ k:'event', text:'No life events recorded yet. Marriages, moves and milestones show up on your Timeline.', btn:'Record an event' });
+    const pct = k => Math.round(k/n*100);
+    // ---- real next steps (max 3, only what is truly missing) ----
+    const steps=[];
+    if(missingBirth>0) steps.push({k:'dates', text:`${withBirth} of ${n} member${n===1?' has':'s have'} a birth date — add the rest to fill in your Timeline.`, btn:'Add birth dates'});
+    if(withObs<n) steps.push({k:'obs', text: withObs===0?'No personality observations yet. Record your first one in Persona.':`Only ${withObs} of ${n} member${n===1?' has':'s have'} personality observations.`, btn:'Add observation'});
+    if(noPhoto>0) steps.push({k:'photo', text:`${noPhoto} member${noPhoto===1?' has':'s have'} no photo yet.`, btn:'Add a photo'});
+    if(!customEvents) steps.push({k:'event', text:'No life events recorded yet. Marriages, moves and milestones appear on your Timeline.', btn:'Record an event'});
     const nextSteps = steps.slice(0,3);
-    const R=44, C=2*Math.PI*R;
-    const stat = (id,icon,num,label,goto)=>`<button type="button" class="hx-stat hx-stat-btn" data-stat="${id}" aria-label="${label}: ${num}. ${goto}">
-        <span class="hx-stat-ico">${HX_ICON[icon]}</span><span class="hx-stat-n" data-count="${num}">${num}</span><span class="hx-stat-l">${label}</span></button>`;
+    // ---- hologram data: cap visible nodes, keep the most connected ----
+    const CAP=24; const links = p=> (p.parents||[]).length+(p.children||[]).length+(p.spouseIds||[]).length;
+    const ranked = people.slice().sort((a,b)=>links(b)-links(a)||fullName(a).localeCompare(fullName(b))).slice(0,CAP); const keep=new Set(ranked.map(p=>p.id));
+    const xs = ranked.map(p=>layout.positions[p.id].x); const minX=Math.min(...xs), maxX=Math.max(...xs); const span=(maxX-minX)||1;
+    const perGen={}; ranked.forEach(p=>{ const g=layout.genCache[p.id]||0; (perGen[g]=perGen[g]||[]).push(p); });
+    const angOf={}; Object.keys(perGen).forEach(g=>{ const L=perGen[g].sort((a,b)=>layout.positions[a.id].x-layout.positions[b.id].x); L.forEach((p,i)=>{ angOf[p.id]=((i+0.5)/L.length)*Math.PI*2 + (+g)*0.55 + 0.4; }); });
+    const nodes = ranked.map(p=>({ id:p.id, ini:initialsOf(p), name:fullName(p), gen:layout.genCache[p.id]||0, a:angOf[p.id] }));
+    const edges=[]; ranked.forEach(p=>{ (p.parents||[]).forEach(pid=>{ if(keep.has(pid)) edges.push({a:pid,b:p.id}); }); (p.spouseIds||[]).forEach(sid=>{ if(sid>p.id && keep.has(sid)) edges.push({a:p.id,b:sid,spouse:true}); }); });
+    const hidden = n-ranked.length;
+    // ---- spotlight deck ----
+    const order = people.slice().sort((a,b)=> (new Date(b.updatedAt||b.createdAt||0)-new Date(a.updatedAt||a.createdAt||0)) || fullName(a).localeCompare(fullName(b))).slice(0,12);
+    const rels = p=>{ const L=[]; const add=(ids,l)=>(ids||[]).map(personById).filter(Boolean).forEach(x=>L.push({x,l})); add(p.parents,'Parent'); add(p.spouseIds,'Spouse'); add(p.children,'Child'); return L; };
+    const spItems = order.map(p=>{
+      const traitTitles = normalizeTraits(p.traits).map(traitEntryMeta).filter(Boolean).map(m=>m.title);
+      const av = p.photo?`<span class="hh-av"><img src="${escapeHtml(p.photo)}" alt=""></span>`:`<span class="hh-av"><span>${escapeHtml(initialsOf(p))}</span></span>`;
+      const front = HK.frame(`<div class="hh-sp-front">${av}<div class="hh-sp-name">${escapeHtml(fullName(p))}</div><div class="hh-sp-sub">${escapeHtml(lifeText(p))} · Generation ${(layout.genCache[p.id]||0)+1}</div><div class="hh-sp-hint">Tap to flip</div></div>`,{variant:'standard',intensity:'idle',index:'MEMBER',tick:true});
+      const rl = rels(p);
+      const back = HK.frame(`<div class="hh-sp-back"><div class="hh-sp-bn">${escapeHtml(fullName(p))}</div><div class="hh-sp-scroll" data-nodrag>`+
+        `<div class="hh-sp-l">Relatives</div>${rl.length?`<div class="hc-row">${rl.slice(0,6).map(r=>`<button type="button" class="hc" data-open-person="${r.x.id}">${escapeHtml(r.l)}: ${escapeHtml(fullName(r.x))}</button>`).join('')}${rl.length>6?`<span class="hc">+${rl.length-6} more</span>`:''}</div>`:'<div class="hh-sp-none">None recorded</div>'}`+
+        `<div class="hh-sp-l">Traits</div>${traitTitles.length?`<div class="hc-row">${traitTitles.slice(0,3).map(x=>`<span class="hc">${escapeHtml(x)}</span>`).join('')}${traitTitles.length>3?`<span class="hc">+${traitTitles.length-3} more</span>`:''}</div>`:'<div class="hh-sp-none">None recorded</div>'}`+
+        `</div><div class="hh-sp-act"><button type="button" class="hb hb-primary" data-open-person="${p.id}"><span>Open profile</span></button><button type="button" class="hb" data-show-tree="${p.id}"><span>Show in tree</span></button></div></div>`,{variant:'standard',intensity:'idle',index:'DETAILS'});
+      return { front, back, label:fullName(p) };
+    });
+    spItems.push({ front: HK.frame(`<div class="hh-sp-front hh-sp-ghost"><span class="hh-plus">+</span><div class="hh-sp-name">Add member</div><div class="hh-sp-sub">Grow your family network</div></div>`,{variant:'ghost',intensity:'idle',tick:true}), label:'Add member' });
+    const stat=(id,icon,num,label,hint)=>`<button type="button" class="hx-stat hx-stat-btn hf-tap" data-stat="${id}" aria-label="${label}: ${num}. ${hint}">${HX_ICON[icon]?`<span class="hx-stat-ico">${HX_ICON[icon]}</span>`:''}<span class="hx-stat-n" data-count="${num}">${num}</span><span class="hx-stat-l">${label}</span></button>`;
+    const recentLog = people.filter(p=>p.createdAt||p.updatedAt).map(p=>({p, at:new Date(p.updatedAt||p.createdAt), created: !p.updatedAt || p.updatedAt===p.createdAt})).sort((a,b)=>b.at-a.at).slice(0,4);
     const boot = !homeBooted && !isRM();
     root.className = boot ? 'hx-boot' : '';
-    root.innerHTML = `
-      <section class="hx-hero hx-hero-d" aria-labelledby="hxGreet">
-        <div class="hx-eyebrow">FAMILY TREE · ${escapeHtml(t.name)}</div>
-        <div class="hx-hero-row">
-          <div class="hx-hero-text">
-            <h2 class="hx-title" id="hxGreet">${escapeHtml(greetingText())}${name?', '+escapeHtml(name):''}</h2>
-            <p class="hx-sub" style="margin-bottom:0;">Your family tree has <b>${n}</b> member${n===1?'':'s'} across <b>${gens}</b> generation${gens===1?'':'s'}.</p>
-          </div>
-          <div class="hx-ring" role="img" aria-label="Tree completeness ${comp.pct} percent">
-            <svg viewBox="0 0 110 110" aria-hidden="true"><circle cx="55" cy="55" r="${R}" class="hx-ring-bg"/><circle cx="55" cy="55" r="${R}" class="hx-ring-fg" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C*(1-comp.pct/100)).toFixed(1)}" transform="rotate(-90 55 55)"/></svg>
-            <div class="hx-ring-n"><b data-count="${comp.pct}">${comp.pct}</b><span>%</span></div>
-          </div>
-        </div>
-        <p class="hx-ring-note">Tree completeness: how many names, birth dates, family links and photos are filled in across all ${n} member${n===1?'':'s'} (${comp.parts.name} names · ${comp.parts.birth} birth dates · ${comp.parts.link} linked · ${comp.parts.photo} photos).</p>
-      </section>
-      ${nextSteps.length ? `<section class="hx-panel hx-next" aria-labelledby="hxNextT">
-        <div class="hx-panel-head"><h3 id="hxNextT">Next steps</h3></div>
-        <div class="hx-next-list">${nextSteps.map(x=>`<div class="hx-next-row"><p>${escapeHtml(x.text)}</p><button type="button" class="hx-btn hx-btn-primary" data-next="${x.k}">${escapeHtml(x.btn)}</button></div>`).join('')}</div>
-      </section>` : ''}
-      <div class="hx-stats hx-stats-4">
-        ${stat('members','users',n,n===1?'Member':'Members','Opens the tree')}
-        ${stat('gens','gens',gens,gens===1?'Generation':'Generations','Opens the tree')}
-        ${stat('birth','cal',withBirth,'Birth dates', missingBirth?'Lists members missing a date':'Opens the Timeline')}
-        ${stat('obs','brain',withObs,'With observations','Opens Persona')}
+    const sr = boot ? 'sr sr-pre' : 'sr';
+    root.innerHTML = `<div class="hh">
+      <div class="hh-col hh-left">
+        <section class="hh-greet ${sr}" aria-labelledby="hxGreet">
+          <div class="hx-eyebrow">FAMILY TREE · ${escapeHtml(t.name)} · ${escapeHtml(dateLine)}</div>
+          <h2 class="hx-title" id="hxGreet">${escapeHtml(greetingText())}${name?', '+escapeHtml(name):''}</h2>
+          <p class="hx-sub">Your family has <b>${n}</b> member${n===1?'':'s'} across <b>${gens}</b> generation${gens===1?'':'s'}.</p>
+        </section>
+        <section class="hh-core ${sr}" aria-labelledby="hhCoreT">
+          ${HK.frame(`<div class="hk-h"><h3 id="hhCoreT">Your family, live</h3></div><p class="hk-sub">Every glowing node is a real family member. Drag to rotate, tap a node to see who it is.</p>
+            <div class="hh-stage" id="hhStage" data-node-count="${nodes.length}" role="group" aria-label="Rotating hologram of your family. Use the Spotlight cards below for a keyboard-friendly list."><div class="hh-label" id="hhLabel" hidden></div>${hidden?`<span class="hc hh-more">+${hidden} more</span>`:''}</div>
+            <div class="hh-plat">${HK.platform('L')}</div>
+            <div class="hh-rings"><div class="hh-ring-main">${HK.ring({value:comp.pct,label:'Tree completeness',size:112})}</div>
+              <div class="hh-ring-side">${HK.ring({value:pct(withBirth),label:'Birth dates recorded',size:64})}${HK.ring({value:pct(withPhoto),label:'Photos added',size:64})}${HK.ring({value:pct(withObs),label:'With observations',size:64})}</div></div>
+            <p class="hk-sub" style="margin:8px 0 0;">Rings show how much of your tree is filled in: names, birth dates, family links and photos (${comp.parts.name} names · ${comp.parts.birth} dates · ${comp.parts.link} linked · ${comp.parts.photo} photos across ${n} member${n===1?'':'s'}).</p>`,{variant:'hero',intensity:'active',glare:true,tick:true})}
+        </section>
+        <section class="hh-stats ${sr}" aria-label="Key numbers"><div class="hx-stats hx-stats-4">
+          ${stat('members','users',n,n===1?'Member':'Members','Opens the tree')}${stat('gens','gens',gens,gens===1?'Generation':'Generations','Opens the tree')}${stat('events','cal',eventCount,eventCount===1?'Event':'Events','Opens the Timeline')}${stat('obs','brain',withObs,'Observations','Opens Persona')}
+        </div></section>
       </div>
-      <div class="hx-grid">
-        <section class="hx-panel hx-span2" aria-labelledby="hxPreviewT">
-          <div class="hx-panel-head"><h3 id="hxPreviewT">Family network</h3>
-            <button type="button" class="hx-btn" data-goto="tree">Open full tree →</button></div>
-          <div class="hx-preview">${miniTreeSvg(layout)}</div>
-          <p class="hx-muted" style="margin:8px 2px 0;">Tap a person to open them in the tree.</p>
-        </section>
-        <section class="hx-panel hx-span2" aria-labelledby="hxActT">
-          <div class="hx-panel-head"><h3 id="hxActT">Quick actions</h3></div>
-          <div class="hx-qa">
-            <button type="button" class="hx-qa-b" id="homeAddBtn"><span>${HX_ICON.plus}</span>Add member</button>
-            <button type="button" class="hx-qa-b" id="homeObsBtn"><span>${HX_ICON.brain}</span>Add observation</button>
-            <button type="button" class="hx-qa-b" id="homeEventBtn"><span>${HX_ICON.event}</span>Add event</button>
-            <button type="button" class="hx-qa-b" data-goto="tree"><span>${HX_ICON.tree}</span>Open tree</button>
-          </div>
-        </section>
-        ${upcoming.length ? `<section class="hx-panel" aria-labelledby="hxUpT">
-          <div class="hx-panel-head"><h3 id="hxUpT">Coming up</h3></div>
-          <div class="hx-list">${upcoming.map(u=>`<div class="hx-row">${personLink(u.p)}<span class="hx-row-meta">${u.days===0?'Today':u.days===1?'Tomorrow':'in '+u.days+' days'} · ${u.age>0?'turns '+u.age:''}</span></div>`).join('')}</div>
-        </section>` : ''}
-        ${recent.length ? `<section class="hx-panel" aria-labelledby="hxRecT">
-          <div class="hx-panel-head"><h3 id="hxRecT">Recently added</h3></div>
-          <div class="hx-list">${recent.map(p=>`<div class="hx-row">${personLink(p)}<span class="hx-row-meta">${escapeHtml(fmtRelative(p.createdAt))}</span></div>`).join('')}</div>
-        </section>` : ''}
-      </div>`;
+      <div class="hh-col hh-right">
+        ${nextSteps.length?`<section class="hh-next ${sr}" aria-labelledby="hxNextT"><div class="hk-h"><h3 id="hxNextT">Next steps</h3></div>${nextSteps.map(x=>HK.frame(`<div class="hh-next-row"><p>${escapeHtml(x.text)}</p><button type="button" class="hb hb-primary" data-next="${x.k}"><span>${escapeHtml(x.btn)}</span></button></div>`,{variant:'compact',intensity:'idle'})).join('')}</section>`:''}
+        <section class="hh-spot ${sr}" aria-labelledby="hxSpotT"><div class="hk-h"><h3 id="hxSpotT">Family spotlight</h3></div><p class="hk-sub">Swipe through your members. Tap a card to flip it.</p><div id="hhDeck"></div></section>
+        <section class="hh-qa ${sr}" aria-labelledby="hxActT"><div class="hk-h"><h3 id="hxActT">Quick actions</h3></div>
+          <div class="hh-qa-row"><button type="button" class="hb" id="homeAddBtn">${HX_ICON.plus}<span>Add member</span></button><button type="button" class="hb" id="homeEventBtn">${HX_ICON.event}<span>Add event</span></button><button type="button" class="hb" id="homeObsBtn">${HX_ICON.brain}<span>Add observation</span></button><button type="button" class="hb" data-goto="tree">${HX_ICON.tree}<span>Open tree</span></button></div></section>
+        ${recentLog.length?`<section class="hh-log ${sr}" aria-labelledby="hxRecT"><div class="hk-h"><h3 id="hxRecT">Recent activity</h3></div>${HK.frame(`<ul class="hh-log-l">${recentLog.map(r=>`<li><button type="button" class="hx-person" data-open-person="${r.p.id}">${avatarMini(r.p)}<span>${escapeHtml(fullName(r.p))}</span></button><span class="hx-row-meta">${r.created?'Added':'Edited'} ${escapeHtml(fmtRelative(r.at.toISOString()))}</span></li>`).join('')}</ul>`,{variant:'compact',intensity:'idle'})}</section>`:''}
+      </div></div>`;
     bindViewActions(root);
-    root.querySelectorAll('[data-tree-node]').forEach(g=>{
-      const go = ()=>{ const id=g.dataset.treeNode; switchView('tree'); afterLayout(()=>centerOnPerson(id)); };
-      g.addEventListener('click', go); g.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); go(); } });
-    });
-    root.querySelectorAll('[data-stat]').forEach(b=> b.onclick = ()=>{
-      const k=b.dataset.stat;
-      if(k==='members'||k==='gens') switchView('tree');
-      else if(k==='birth'){ if(missingBirth) openDatesSheet(); else switchView('timeline'); }
-      else if(k==='obs') switchView('persona');
-    });
-    root.querySelectorAll('[data-next]').forEach(b=> b.onclick = ()=>{
-      const k=b.dataset.next;
+    const stage = $('hhStage'); const label=$('hhLabel');
+    const core = holoCore(stage, nodes, edges, { select(sel){
+      if(!sel){ label.hidden=true; return; }
+      label.hidden=false; label.innerHTML=`<b>${escapeHtml(sel.n.name)}</b><div class="hh-lb-row"><button type="button" class="hb hb-primary" data-lb-open="${sel.n.id}"><span>View profile</span></button><button type="button" class="hb" data-lb-tree="${sel.n.id}"><span>Show in tree</span></button></div>`;
+      const w=label.offsetWidth||200, h=label.offsetHeight||84; label.style.left=Math.max(6,Math.min(sel.W-w-6,sel.x-w/2))+'px'; label.style.top=Math.max(6,Math.min(sel.H-h-6, sel.y+26>sel.H-h-6? sel.y-h-26 : sel.y+26))+'px';
+      label.querySelector('[data-lb-open]').onclick=()=>openPanel(sel.n.id); label.querySelector('[data-lb-tree]').onclick=()=>{ switchView('tree'); afterLayout(()=>centerOnPerson(sel.n.id)); };
+    }});
+    stage.addEventListener('click',e=>{ if(e.target===stage) { label.hidden=true; core.select&&core.select(null); } });
+    const deck = HK.deck($('hhDeck'), { items:spItems, ch:300, cw:290, loop:false, flipOnTap:true, label:'Family spotlight', onBuilt(rootEl,slots){
+      rootEl.querySelectorAll('[data-open-person]').forEach(b=>b.addEventListener('click',e=>{ e.stopPropagation(); openPanel(b.dataset.openPerson); }));
+      rootEl.querySelectorAll('[data-show-tree]').forEach(b=>b.addEventListener('click',e=>{ e.stopPropagation(); switchView('tree'); afterLayout(()=>centerOnPerson(b.dataset.showTree)); }));
+      const last=slots[slots.length-1]; if(last){ last.querySelector('.hd-front').style.cursor='pointer'; last.querySelector('.hd-front').addEventListener('click',()=>{ if(last.classList.contains('hd-act')){ const sel = selectedId && personById(selectedId) ? selectedId : people[0].id; selectedId=sel; switchView('tree'); openPanel(sel); openAddRel(); } }); }
+    }});
+    homeCleanup = ()=>{ core.destroy(); deck.destroy(); };
+    root.querySelectorAll('[data-stat]').forEach(b=> b.onclick = ()=>{ const k=b.dataset.stat; if(k==='members'||k==='gens') switchView('tree'); else if(k==='events') switchView('timeline'); else if(k==='obs') switchView('persona'); });
+    root.querySelectorAll('[data-next]').forEach(b=> b.onclick = ()=>{ const k=b.dataset.next;
       if(k==='dates') openDatesSheet(); else if(k==='obs') obsOpen({mode:'add'}); else if(k==='event') openEventModal();
-    });
+      else if(k==='photo'){ const m=people.find(p=>!p.photo); if(m){ switchView('tree'); openPanel(m.id); } } });
     $('homeAddBtn').onclick = ()=>{ const sel = selectedId && personById(selectedId) ? selectedId : people[0].id; selectedId = sel; switchView('tree'); openPanel(sel); openAddRel(); };
     $('homeObsBtn').onclick = ()=> obsOpen({mode:'add'});
     $('homeEventBtn').onclick = ()=> openEventModal();
-    if(boot){ homeBooted = true; root.querySelectorAll('[data-count]').forEach(el=>countUp(el, +el.dataset.count, 800)); setTimeout(()=>root.classList.remove('hx-boot'), 1300); }
-    else homeBooted = true;
+    HK.fillRings(root);
+    if(boot){ homeBooted = true; HK.scanReveal(root, 95); root.querySelectorAll('[data-count]').forEach(el=>countUp(el, +el.dataset.count, 800)); setTimeout(()=>root.classList.remove('hx-boot'), 1200); }
+    else { homeBooted = true; HK.scanReveal(root, 0); }
   }
   // Quick list for adding missing birth dates (real members only; saved only after the write is confirmed).
-  function openDatesSheet(){
+  function openDatesSheet(focusId){
     const miss = peopleArr().filter(p=>!(p.birthDate && String(p.birthDate).trim()));
     const b = $('datesBackdrop');
     $('datesList').innerHTML = miss.length ? miss.map(p=>`<label class="dt-row"><span class="rel-av" aria-hidden="true">${escapeHtml(initialsOf(p))}</span><span class="dt-name">${escapeHtml(fullName(p))}</span><input type="date" data-dt="${p.id}" aria-label="Birth date for ${escapeHtml(fullName(p))}"></label>`).join('') : '<p class="hx-muted">Everyone has a birth date.</p>';
     $('datesError').textContent=''; $('datesSaveBtn').disabled=false; $('datesSaveBtn').textContent='Save dates';
-    b.classList.add('open'); setTimeout(()=>{ const f=b.querySelector('input'); if(f) try{f.focus({preventScroll:true});}catch(_){} },60);
+    b.classList.add('open'); setTimeout(()=>{ const f=(focusId && b.querySelector('input[data-dt="'+focusId+'"]')) || b.querySelector('input'); if(f) try{f.focus({preventScroll:true});}catch(_){} },60);
   }
   function closeDatesSheet(){ $('datesBackdrop').classList.remove('open'); }
   $('datesCloseBtn').onclick = closeDatesSheet; $('datesCancelBtn').onclick = closeDatesSheet;
@@ -5021,25 +5541,35 @@
   };
 
   // ---------- TIMELINE ----------
-  let timelineFilter = 'all';
+  let timelineFilter = 'all', timelineMember = 'all', tlCleanup = null;
   const KIND_LABEL = { birth:'Birth', death:'Death', marriage:'Marriage', milestone:'Milestone', other:'Other' };
+  const TL_ICON = {
+    birth:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.4 5 5.6.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.6-.8z"/></svg>',
+    death:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c-4 4-6 7-6 10a6 6 0 0 0 12 0c0-3-2-6-6-10z"/></svg>',
+    marriage:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="14" r="5"/><circle cx="15" cy="14" r="5"/><path d="M12 3v3"/></svg>',
+    milestone:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4M6 5h11l-2 4 2 4H6"/></svg>',
+    other:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="9"/></svg>' };
   function renderTimeline(){
     const root = $('timelineRoot'); const t = tree(); if(!t) return;
+    if(tlCleanup){ try{ tlCleanup(); }catch(_){} tlCleanup=null; }
     const all = collectTimelineEvents();
-    const shown = all.filter(e=> timelineFilter==='all' || e.kind===timelineFilter);
+    const peopleWith = [...new Set(all.flatMap(e=>e.personIds))].map(personById).filter(Boolean).sort((a,b)=>fullName(a).localeCompare(fullName(b)));
+    if(timelineMember!=='all' && !peopleWith.some(p=>p.id===timelineMember)) timelineMember='all';
+    const shown = all.filter(e=> (timelineFilter==='all' || e.kind===timelineFilter) && (timelineMember==='all' || e.personIds.includes(timelineMember)));
     const filters = ['all','birth','death','marriage','milestone','other'];
-    const chips = filters.map(f=>`<button type="button" class="hx-chip${f===timelineFilter?' active':''}" data-tl-filter="${f}">${f==='all'?'All':KIND_LABEL[f]+(f==='other'?'':'s')}</button>`).join('');
+    const chips = filters.map(f=>`<button type="button" class="hc${f===timelineFilter?' on':''}" aria-pressed="${f===timelineFilter}" data-tl-filter="${f}">${f==='all'?'All':KIND_LABEL[f]+(f==='other'?'':'s')}</button>`).join('');
+    const undated = peopleArr().filter(p=>!(p.birthDate && yearOf(p.birthDate)!==null));
+    const years = [...new Set(shown.map(e=>yearOf(e.date)))];
     let body;
     if(!all.length){
-      body = `<div class="hx-hero hx-empty"><p class="hx-sub">The timeline is built from dates you record: birth and death dates in each profile, plus any events you add. Nothing has been dated yet.</p>
-        <button type="button" class="hx-btn hx-btn-primary" id="tlEmptyAdd">+ Record an event</button></div>`;
+      body = HK.frame(HK.empty('No dates recorded yet','Add birth dates to build your family timeline, or record an event like a marriage or a move.',`<div class="hc-row" style="justify-content:center;"><button type="button" class="hb hb-primary" id="tlEmptyAdd"><span>Record an event</span></button>${undated.length?'<button type="button" class="hb" id="tlEmptyDates"><span>Add birth dates</span></button>':''}</div>`),{variant:'standard',intensity:'active',tick:true});
     } else if(!shown.length){
-      body = `<p class="hx-muted">No events match this filter.</p>`;
+      body = `<p class="hx-muted">No events match these filters.</p>`;
     } else {
       let lastYear = null, html = '<ol class="tl" aria-label="Family timeline">';
       shown.forEach((e,i)=>{
         const y = yearOf(e.date);
-        if(y!==lastYear){ html += `<li class="tl-year" aria-hidden="true"><span>${y}</span></li>`; lastYear=y; }
+        if(y!==lastYear){ html += `<li class="tl-year" data-year="${y}"><span>${y}</span></li>`; lastYear=y; }
         const people = e.personIds.map(personById).filter(Boolean);
         let detail = '';
         if(e.kind==='birth' && people[0]){
@@ -5053,36 +5583,54 @@
           if(age!==null) detail += `<p>Age at death: <b>${age}</b>.</p>`;
         }
         if(e.notes) detail += `<p>${escapeHtml(e.notes)}</p>`;
-        detail += people.length ? `<div class="tl-people">${people.map(personLink).join('')}</div>` : '';
-        if(e.custom) detail += `<button type="button" class="hx-btn" data-edit-event="${e.id}">Edit event</button>`;
+        if(e.custom) detail += `<button type="button" class="hb" data-edit-event="${e.id}"><span>Edit event</span></button>`;
         const id = 'tl-d-'+i;
-        html += `<li class="tl-item tl-${e.kind}">
-          <span class="tl-dot" aria-hidden="true"></span>
-          <div class="tl-card">
-            <button type="button" class="tl-head" aria-expanded="false" aria-controls="${id}" data-tl-toggle>
-              <span class="tl-kind">${KIND_LABEL[e.kind]||'Event'}</span>
-              <span class="tl-title">${escapeHtml(e.title)}</span>
-              <span class="tl-date">${escapeHtml(fmtDate(e.date))}</span>
-            </button>
-            <div class="tl-detail" id="${id}" hidden>${detail}</div>
-          </div></li>`;
+        const chipsHtml = people.length ? `<div class="hc-row tl-people">${people.map(p=>`<button type="button" class="hc" data-open-person="${p.id}">${escapeHtml(fullName(p))}</button>`).join('')}</div>` : '';
+        html += `<li class="tl-item tl-${e.kind}${i%2?' tl-alt':''} sr sr-pre" data-tl-i="${i}"><span class="tl-dot" aria-hidden="true"></span><span class="tl-link" aria-hidden="true"></span>
+          ${HK.frame(`<button type="button" class="tl-head" aria-expanded="false" aria-controls="${id}" data-tl-toggle><span class="tl-ico">${TL_ICON[e.kind]||TL_ICON.other}</span><span class="tl-main"><span class="tl-kind">${KIND_LABEL[e.kind]||'Event'}</span><span class="tl-title">${escapeHtml(e.title)}</span></span><span class="tl-date">${escapeHtml(fmtDate(e.date))}</span></button>${chipsHtml}<div class="tl-detail" id="${id}" hidden>${detail||'<p class="hx-muted">No extra details recorded.</p>'}</div>`,{variant:'compact',intensity:'idle'})}</li>`;
       });
-      body = html + '</ol>';
+      body = `<div class="tl-stream" id="tlStream"><div class="tl-spine" aria-hidden="true"><i class="tl-charge" id="tlCharge"></i></div>${html}</ol></div>`;
     }
+    const undatedHtml = (all.length || undated.length) && undated.length ? `<section class="tl-undated" aria-labelledby="tlUndT"><div class="hk-h"><h3 id="tlUndT">Undated</h3></div><p class="hk-sub">These members have no birth date, so they don't appear on the timeline yet.</p>
+      ${HK.frame(`<ul class="hh-log-l">${undated.slice(0,8).map(p=>`<li><button type="button" class="hx-person" data-open-person="${p.id}">${avatarMini(p)}<span>${escapeHtml(fullName(p))}</span></button><button type="button" class="hb" data-add-date="${p.id}"><span>Add date</span></button></li>`).join('')}</ul>${undated.length>8?`<p class="hx-muted" style="margin:6px 0 0;">+${undated.length-8} more — use “Add birth dates”.</p>`:''}`,{variant:'compact',intensity:'idle'})}</section>` : '';
     root.innerHTML = `
-      <div class="hx-pagehead"><div><div class="hx-eyebrow">FAMILY HISTORY</div><h2 class="hx-title">Timeline</h2></div>
-        <button type="button" class="hx-btn hx-btn-primary" id="tlAddBtn">+ Event</button></div>
-      <div class="hx-chips" role="group" aria-label="Filter events">${chips}</div>${body}`;
+      <div class="hx-pagehead"><div><div class="hx-eyebrow">FAMILY HISTORY</div><h2 class="hx-title">Timeline</h2><p class="hk-sub" style="margin:2px 0 0;">Every birth, death and event with a recorded date, in order.</p></div>
+        <button type="button" class="hb hb-primary" id="tlAddBtn">${HX_ICON.plus}<span>Add event</span></button></div>
+      ${all.length?`<div class="tl-controls"><div class="hc-row" role="group" aria-label="Filter by event type">${chips}</div>
+        <label class="tl-member"><span class="sr-only">Filter by member</span><select id="tlMember" aria-label="Filter by member"><option value="all">All members</option>${peopleWith.map(p=>`<option value="${p.id}"${p.id===timelineMember?' selected':''}>${escapeHtml(fullName(p))}</option>`).join('')}</select></label>
+        ${years.length>1?`<div class="tl-scrub"><span class="tl-sc-l">${years[0]}</span><input type="range" id="tlScrub" min="0" max="${years.length-1}" value="0" step="1" aria-label="Jump to year"><span class="tl-sc-l">${years[years.length-1]}</span><b id="tlScrubVal" aria-live="polite">${years[0]}</b></div>`:''}</div>`:''}
+      ${body}${undatedHtml}`;
     root.querySelectorAll('[data-tl-filter]').forEach(b=> b.onclick = ()=>{ timelineFilter=b.dataset.tlFilter; renderTimeline(); });
+    if($('tlMember')) $('tlMember').onchange = ()=>{ timelineMember=$('tlMember').value; renderTimeline(); };
     root.querySelectorAll('[data-tl-toggle]').forEach(b=> b.onclick = ()=>{
       const open = b.getAttribute('aria-expanded')==='true';
       b.setAttribute('aria-expanded', String(!open));
       $(b.getAttribute('aria-controls')).hidden = open;
     });
     root.querySelectorAll('[data-edit-event]').forEach(b=> b.onclick = ()=> openEventModal(b.dataset.editEvent));
+    root.querySelectorAll('[data-add-date]').forEach(b=> b.onclick = ()=> openDatesSheet(b.dataset.addDate));
     bindViewActions(root);
     $('tlAddBtn').onclick = ()=> openEventModal();
     if($('tlEmptyAdd')) $('tlEmptyAdd').onclick = ()=> openEventModal();
+    if($('tlEmptyDates')) $('tlEmptyDates').onclick = ()=> openDatesSheet();
+    // scroll-driven: items materialize as they enter, the spine charges up to the reading position, the scrubber follows
+    const stream = $('tlStream'); if(!stream) return;
+    const sc = root.closest('.view-scroll'); const wide = ()=> window.matchMedia('(min-width:1100px)').matches;
+    const items = [...stream.querySelectorAll('.sr')];
+    const reveal = el=>{ if(!el.classList.contains('sr-pre')) return; if(!el.querySelector(':scope>.sr-line')){ const l=document.createElement('i'); l.className='sr-line'; el.appendChild(l); } el.classList.remove('sr-pre'); if(!HK.rm()){ el.classList.add('sr-run'); setTimeout(()=>el.classList.remove('sr-run'),800); } };
+    let io=null; if(window.IntersectionObserver && !HK.rm()){ io=new IntersectionObserver(es=>es.forEach(en=>{ if(en.isIntersecting){ reveal(en.target); io.unobserve(en.target); } }),{root:wide()?stream:sc, threshold:.05}); items.forEach(i=>io.observe(i)); }
+    else items.forEach(reveal);
+    const yearEls = [...stream.querySelectorAll('.tl-year')];
+    const onScroll = ()=>{
+      const wideMode=wide(); const r=stream.getBoundingClientRect(); const cr=(wideMode?stream:sc).getBoundingClientRect();
+      const total = wideMode ? stream.scrollWidth : stream.offsetHeight; const pos = wideMode ? (stream.scrollLeft + stream.clientWidth*0.6) : (cr.top + cr.height*0.6 - r.top);
+      const chg=$('tlCharge'); if(chg) chg.style.setProperty('--chg', Math.max(0,Math.min(100,pos/total*100)).toFixed(1)+'%');
+      if($('tlScrub')){ let cur=0; yearEls.forEach((y,k)=>{ const yr=y.getBoundingClientRect(); if(wideMode? yr.left < cr.left+cr.width*0.5 : yr.top < cr.top+cr.height*0.5) cur=k; }); $('tlScrub').value=cur; $('tlScrubVal').textContent=yearEls[cur].dataset.year; }
+    };
+    const scroller = ()=> wide()?stream:sc;
+    scroller().addEventListener('scroll',onScroll,{passive:true}); window.addEventListener('resize',onScroll); onScroll();
+    if($('tlScrub')) $('tlScrub').oninput = ()=>{ const el=yearEls[+$('tlScrub').value]; if(el){ $('tlScrubVal').textContent=el.dataset.year; el.scrollIntoView({block:'start',inline:'start',behavior:HK.rm()?'auto':'smooth'}); } };
+    tlCleanup = ()=>{ if(io) io.disconnect(); try{ sc.removeEventListener('scroll',onScroll); stream.removeEventListener('scroll',onScroll);}catch(_){} window.removeEventListener('resize',onScroll); };
   }
 
   // ---------- event add/edit/delete (stored on the tree itself: tree.events) ----------
@@ -5123,13 +5671,23 @@
     const kind = $('evKind').value;
     const data = { kind, title, date, notes:$('evNotes').value.trim(),
       personId:$('evPerson').value||'', withPersonId: kind==='marriage' ? ($('evWith').value||'') : '' };
+    const before = JSON.stringify(t.events);   // snapshot so a failed save can be rolled back cleanly
     if(editingEventId){
       const e = t.events.find(x=>x.id===editingEventId); if(e) Object.assign(e, data);
     } else {
       t.events.push(Object.assign({ id:newId() }, data));
     }
-    touchTree(); await persistDb(); closeEventModal();
-    if(currentView==='timeline') renderTimeline(); if(currentView==='home') renderHome();
+    const btn=$('eventSaveBtn'); btn.disabled=true; btn.textContent='Saving…'; $('evError').textContent='';
+    touchTree(); clearTimeout(saveTimer);
+    const ok = await persistDb();
+    btn.disabled=false; btn.textContent='Save';
+    if(!ok){
+      t.events = JSON.parse(before); touchTree();
+      $('evError').textContent='Could not save — check your connection. Your event is still in the form; try again.';
+      return;
+    }
+    closeEventModal();
+    renderAll();
     toast('Event saved.');
   };
   $('eventDeleteBtn').onclick = async ()=>{
@@ -5144,28 +5702,40 @@
   let insightsCat = 'all', insightsQuery = '';
   // Family-wide statistics: every figure is counted from saved data.
   function insightsStatsHtml(){
-    const people = peopleArr();
-    if(!people.length) return '';
+    const people = peopleArr(); const n=people.length;
+    if(!n) return `<section class="ins-sec">${HK.frame(HK.empty('Nothing to analyse yet','Add family members and the charts here fill in from your real data.',`<button type="button" class="hb hb-primary" data-goto="tree"><span>Open tree</span></button>`),{variant:'standard',intensity:'active',tick:true})}</section>`;
     const layout = computeLayout(); const gens = layout.maxGen+1;
-    const perGen = Array.from({length:gens},()=>0);
-    people.forEach(p=>{ const g = layout.genCache[p.id]; if(perGen[g]!==undefined) perGen[g]++; });
+    const perGen = Array.from({length:gens},()=>[]);
+    people.forEach(p=>{ const g = layout.genCache[p.id]; if(perGen[g]) perGen[g].push(p); });
     const traitCounts = {};
     people.forEach(p=> normalizeTraits(p.traits).forEach(e=>{
       const m = traitEntryMeta(e); if(!m || (e.custom && !(e.title&&e.title.trim()))) return;
-      const key = e.custom ? 'c:'+customTraitKey(e.title) : e.id;
-      (traitCounts[key] = traitCounts[key] || { title:m.title, n:0 }).n++;
+      const key = traitKeyOf(e);
+      (traitCounts[key] = traitCounts[key] || { key, title:m.title, n:0 }).n++;
     }));
-    const top = Object.values(traitCounts).sort((a,b)=>b.n-a.n || a.title.localeCompare(b.title)).slice(0,6);
-    const maxG = Math.max(...perGen,1), maxT = Math.max(...top.map(t=>t.n),1);
-    const bar = (label,n,max)=>`<div class="ins-bar"><span class="ins-bar-l">${escapeHtml(label)}</span><span class="ins-bar-t"><span style="width:${(n/max*100).toFixed(1)}%"></span></span><span class="ins-bar-n">${n}</span></div>`;
-    const withObs = people.filter(p=>normalizeTraits(p.traits).length).length;
-    return `<div class="hx-grid ins-stats">
-      <section class="hx-panel" aria-labelledby="insGenT"><div class="hx-panel-head"><h3 id="insGenT">Members per generation</h3></div>
-        ${perGen.map((n,i)=>bar('Gen '+(i+1),n,maxG)).join('')}</section>
-      <section class="hx-panel" aria-labelledby="insTopT"><div class="hx-panel-head"><h3 id="insTopT">Most recorded traits</h3></div>
-        ${top.length ? top.map(t=>bar(t.title,t.n,maxT)).join('') : '<p class="hx-muted">No observations recorded yet.</p>'}
-        <p class="hx-muted" style="margin-top:10px;">${withObs} of ${people.length} members have recorded observations.</p></section>
-    </div>`;
+    const top = Object.values(traitCounts).sort((a,b)=>b.n-a.n || a.title.localeCompare(b.title)).slice(0,8);
+    const maxT = Math.max(...top.map(t=>t.n),1), maxG = Math.max(...perGen.map(g=>g.length),1);
+    const comp = treeCompleteness(people);
+    const withBirth = people.filter(p=>p.birthDate && String(p.birthDate).trim()).length, withPhoto = people.filter(p=>p.photo).length;
+    const withObs = people.filter(p=>normalizeTraits(p.traits).some(e=>traitEntryMeta(e))).length;
+    const pct = k=>Math.round(k/n*100);
+    const noLinks = people.filter(p=>!((p.parents||[]).length||(p.children||[]).length||(p.spouseIds||[]).length));
+    const issues = [];
+    if(n-withBirth>0) issues.push({txt:`${n-withBirth} member${n-withBirth===1?' has':'s have'} no birth date`, act:'dates'});
+    if(n-withPhoto>0) issues.push({txt:`${n-withPhoto} member${n-withPhoto===1?' has':'s have'} no photo`, act:'photo'});
+    if(noLinks.length>0 && n>1) issues.push({txt:`${noLinks.length} member${noLinks.length===1?' is':'s are'} not linked to anyone`, act:'link', id:noLinks[0].id});
+    if(n-withObs>0) issues.push({txt:`${n-withObs} member${n-withObs===1?' has':'s have'} no recorded observations`, act:'obs'});
+    const cols = perGen.map((g,i)=>`<button type="button" class="ins-col" data-gen-tip="Generation ${i+1}: ${g.length} member${g.length===1?'':'s'}${g.length?' — '+g.slice(0,4).map(fullName).join(', ')+(g.length>4?', …':''):''}" aria-label="Generation ${i+1}: ${g.length} member${g.length===1?'':'s'}"><span class="ins-col-n">${g.length}</span><span class="ins-col-bar" style="--h:${(g.length/maxG*100).toFixed(1)}%"></span><span class="ins-col-l">Gen ${i+1}</span></button>`).join('');
+    return `
+    <section class="ins-sec" aria-labelledby="insOvT"><div class="hk-h"><h3 id="insOvT">How complete is your tree?</h3></div><p class="hk-sub">Each ring shows how much of your tree is filled in.</p>
+      ${HK.frame(`<div class="ins-rings">${HK.ring({value:comp.pct,label:'Tree completeness',size:86})}${HK.ring({value:pct(withBirth),label:'Birth dates recorded',size:86})}${HK.ring({value:pct(withPhoto),label:'Photos added',size:86})}${HK.ring({value:pct(withObs),label:'Observations recorded',size:86})}</div>`,{variant:'standard',intensity:'active',glare:true,tick:true})}</section>
+    <section class="ins-sec" aria-labelledby="insGenT"><div class="hk-h"><h3 id="insGenT">Members per generation</h3></div><p class="hk-sub">How many people sit in each generation of your tree. Tap a bar for names.</p>
+      ${HK.frame(`<div class="ins-cols" id="insCols" style="--cols:${gens}">${cols}</div><div class="ins-tip" id="insTip" role="status" aria-live="polite">Tap a bar to see who is in it.</div>`,{variant:'standard',intensity:'idle'})}</section>
+    <section class="ins-sec" aria-labelledby="insTopT"><div class="hk-h"><h3 id="insTopT">Most recorded traits</h3></div><p class="hk-sub">The observations you've recorded most often. Tap one to see it on the tree or in Persona.</p>
+      ${top.length ? HK.frame(`<div class="ins-tbars">${top.map(t=>`<div class="ins-tb"><span class="ins-tb-l">${escapeHtml(t.title)}</span><span class="ins-bar-t"><span style="width:${(t.n/maxT*100).toFixed(1)}%"></span></span><span class="ins-bar-n">${t.n}</span><span class="ins-tb-a"><button type="button" class="hb" data-ins-tree="${escapeHtml(t.key)}" aria-label="Show ${escapeHtml(t.title)} on the tree"><span>Tree</span></button><button type="button" class="hb" data-ins-persona="${escapeHtml(t.key)}" aria-label="Open ${escapeHtml(t.title)} in Persona"><span>Persona</span></button></span></div>`).join('')}</div>`,{variant:'standard',intensity:'idle'})
+        : HK.frame(HK.empty('No observations yet','Record what you notice about a family member in Persona and the most common patterns appear here.',`<button type="button" class="hb hb-primary" data-goto="persona"><span>Open Persona</span></button>`),{variant:'standard',intensity:'idle'})}</section>
+    <section class="ins-sec" aria-labelledby="insDqT"><div class="hk-h"><h3 id="insDqT">What's missing</h3></div><p class="hk-sub">Gaps in your tree, with a quick way to fix each one.</p>
+      ${HK.frame(issues.length ? `<ul class="ins-dq">${issues.map(x=>`<li><span>${escapeHtml(x.txt)}</span><button type="button" class="hb" data-dq="${x.act}"${x.id?` data-dq-id="${x.id}"`:''}><span>Fix</span></button></li>`).join('')}</ul>` : `<p class="ins-ok">Nothing is missing. Every member has a birth date, a photo, a link and an observation.</p>`,{variant:'compact',intensity:'idle'})}</section>`;
   }
   function renderInsights(){
     const root = $('insightsRoot'); const t = tree(); if(!t) return;
@@ -5194,6 +5764,14 @@
       return `<div class="hx-row">${personLink(p)}<span class="hx-row-meta">${entries.length} ${entries.length===1?'trait':'traits'}${notes?` · 📝 ${notes}`:''}</span></div>`;
     }).join('') : `<p class="hx-muted">No observations recorded yet. Open a member and use “Add / Edit Traits”.</p>`;
     bindViewActions(root);
+    root.querySelectorAll('.ins-col').forEach(c=>c.onclick=()=>{ const tp=$('insTip'); if(tp) tp.textContent=c.dataset.genTip; root.querySelectorAll('.ins-col').forEach(x=>x.classList.toggle('sel',x===c)); });
+    root.querySelectorAll('[data-ins-tree]').forEach(b=>b.onclick=()=>{ activeTraitHighlight=b.dataset.insTree; $('searchInput').value=''; switchView('tree'); });
+    root.querySelectorAll('[data-ins-persona]').forEach(b=>b.onclick=()=>{ PZ.mode='trait'; PZ.items=[]; PZ.index=0; PZ.focusKey='t:'+b.dataset.insPersona; switchView('persona'); });
+    root.querySelectorAll('[data-dq]').forEach(b=>b.onclick=()=>{ const k=b.dataset.dq; const ppl=peopleArr();
+      if(k==='dates') openDatesSheet(); else if(k==='obs') obsOpen({mode:'add'});
+      else if(k==='photo'){ const m=ppl.find(p=>!p.photo); if(m){ switchView('tree'); openPanel(m.id); } }
+      else if(k==='link'){ const m=personById(b.dataset.dqId); if(m){ switchView('tree'); openPanel(m.id); } } });
+    if(window.__insAnim!==false) HK.fillRings(root);
   }
   function renderInsightsList(){
     const el = $('insList'); const people = peopleArr();
