@@ -629,18 +629,20 @@
   /* One nav config drives both. Dock = mobile/tablet (<=820px), rail = desktop. */
   #bottomNav{display:none;position:fixed;left:0;right:0;bottom:0;
     height:calc(var(--dock-h) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);
-    grid-template-columns:repeat(5,1fr);align-items:stretch;
+    grid-template-columns:repeat(6,1fr);align-items:stretch;
     background:linear-gradient(180deg,rgba(8,18,32,0.80),rgba(4,9,18,0.95));
     backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
     border-top:1px solid var(--cy-line);box-shadow:0 -6px 26px rgba(39,230,255,0.07);z-index:90;}
-  .dock-indicator{position:absolute;top:-1px;left:0;width:20%;height:2px;pointer-events:none;
+  .dock-indicator{position:absolute;top:-1px;left:0;width:calc(100% / 6);height:2px;pointer-events:none;
     transform:translateX(calc(var(--i,0) * 100%));transition:transform var(--dur-2) var(--ease);}
   .dock-indicator::before{content:"";position:absolute;left:22%;right:22%;top:0;height:2px;border-radius:2px;
     background:var(--cy);box-shadow:0 0 10px var(--cy),0 0 22px var(--cy-glow);}
   .dock-btn{position:relative;background:none;border:none;color:var(--nav-muted);cursor:pointer;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
-    min-height:44px;padding:6px 2px;font-size:0.66rem;letter-spacing:.04em;font-weight:500;
+    min-height:44px;padding:6px 0;font-size:0.64rem;letter-spacing:.02em;font-weight:500;min-width:0;
     transition:color var(--dur-1),transform var(--dur-1);}
+  .dock-btn .label{max-width:100%;overflow:hidden;text-overflow:clip;white-space:nowrap;}
+  @media (max-width:360px){ .dock-btn{font-size:0.58rem;} }
   .dock-btn .nav-icon{width:24px;height:24px;display:block;}
   .dock-btn .nav-icon svg{width:24px;height:24px;display:block;}
   .dock-btn:active{transform:scale(0.94);}
@@ -834,6 +836,161 @@
     #searchInput{max-width:150px;}
     #treeNameInput{width:130px;}
   }
+
+  /* ============ PERSONA DECK (holographic flashcards) ============ */
+  #viewPersona{overflow:hidden;}
+  .pz-wrap{position:absolute;inset:0;display:flex;flex-direction:column;padding:12px 16px 14px 16px;overflow:hidden;}
+  .pz-top{flex:none;position:relative;z-index:5;}
+  .pz-top-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .pz-modes{display:inline-flex;border:1px solid var(--cy-line);border-radius:12px;overflow:hidden;background:var(--glass);}
+  .pz-mode{padding:10px 14px;min-height:44px;background:none;border:none;color:var(--text-dim);font-size:0.8rem;cursor:pointer;letter-spacing:.03em;}
+  .pz-mode.active{color:#031018;background:linear-gradient(135deg,var(--cy),#19a8e6);font-weight:700;box-shadow:0 0 16px var(--cy-glow);}
+  .pz-tog{padding:10px 14px;min-height:44px;border-radius:12px;border:1px solid var(--border-2);background:var(--glass);color:var(--text-dim);font-size:0.78rem;cursor:pointer;}
+  .pz-tog[aria-pressed="true"],.pz-tog[aria-expanded="true"]{color:var(--cy-2);border-color:var(--cy);box-shadow:0 0 12px var(--cy-glow);}
+  .pz-filters{margin-top:8px;} .pz-filters input{width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--border-2);background:rgba(0,0,0,0.3);color:var(--text);font-size:0.88rem;margin-bottom:8px;}
+  .pz-filters input:focus{outline:none;border-color:var(--cy);box-shadow:0 0 0 3px var(--cy-faint);}
+  .pz-note-line{margin-top:6px;font-size:0.68rem;color:var(--text-faint);line-height:1.4;}
+  .pz-modes button:focus-visible,.pz-tog:focus-visible,.pz-arrow:focus-visible,.pz-dot:focus-visible,.pz-act:focus-visible,.pz-card:focus-visible,.pz-back-scroll:focus-visible{outline:2px solid var(--cy);outline-offset:2px;}
+
+  .pz-stage{position:relative;flex:1 1 auto;min-height:330px;margin-top:6px;overflow:hidden;--cw:300px;--ch:380px;}
+  .pz-const{position:absolute;inset:0;width:100%;height:100%;opacity:.22;pointer-events:none;}
+  .pz-const g{animation:pzDrift 46s ease-in-out infinite alternate;transform-origin:50% 50%;}
+  .pz-const line{stroke:var(--cy);stroke-width:.18;opacity:.7;} .pz-const circle{fill:var(--cy-2);}
+  @keyframes pzDrift{from{transform:translate(-1.2px,.6px) scale(1);}to{transform:translate(1.2px,-.6px) scale(1.03);}}
+  .pz-deck{position:absolute;left:0;right:0;top:0;height:calc(var(--ch) + 6px);perspective:1100px;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab;z-index:3;}
+  .pz-deck.dragging{cursor:grabbing;}
+  .pz-slot{position:absolute;left:50%;top:0;width:var(--cw);height:var(--ch);margin-left:calc(var(--cw) / -2);will-change:transform,opacity;transform-style:flat;}
+
+  /* projection platform */
+  .pz-platform{position:absolute;left:50%;bottom:6px;width:min(420px,86%);height:96px;transform:translateX(-50%);z-index:1;pointer-events:none;}
+  .pz-ring{position:absolute;left:50%;top:50%;border-radius:50%;border:1.5px solid var(--cy-line);transform:translate(-50%,-50%) rotateX(72deg);}
+  .pz-ring.r1{width:100%;aspect-ratio:1;border-color:rgba(39,230,255,.55);box-shadow:0 0 18px var(--cy-glow),inset 0 0 18px rgba(39,230,255,.15);border-style:solid;animation:pzSpinA 24s linear infinite;}
+  .pz-ring.r2{width:74%;aspect-ratio:1;border-style:dashed;border-color:rgba(143,245,255,.5);animation:pzSpinB 18s linear infinite;}
+  .pz-ring.r3{width:48%;aspect-ratio:1;border-color:rgba(39,230,255,.7);box-shadow:0 0 14px var(--cy-glow);animation:pzSpinA 12s linear infinite;}
+  @keyframes pzSpinA{to{transform:translate(-50%,-50%) rotateX(72deg) rotateZ(360deg);}}
+  @keyframes pzSpinB{to{transform:translate(-50%,-50%) rotateX(72deg) rotateZ(-360deg);}}
+  .pz-beam{position:absolute;left:50%;bottom:44px;width:60%;height:200px;transform:translateX(-50%);
+    background:linear-gradient(180deg,transparent,rgba(39,230,255,.10) 60%,rgba(39,230,255,.22));
+    clip-path:polygon(25% 0,75% 0,100% 100%,0 100%);filter:blur(2px);opacity:.8;}
+
+  /* chamfered double-line holographic card */
+  .pz-card{position:absolute;inset:0;outline:none;--c:20px;}
+  .pz-glow{position:absolute;inset:6px;border-radius:10px;pointer-events:none;
+    box-shadow:calc(var(--dir,1) * 16px * var(--lead,0)) 0 30px -4px rgba(39,230,255,calc(.18 + .55 * var(--lead,0))),0 0 34px -6px rgba(39,230,255,calc(.28 * var(--near,0)));}
+  .pz-flip{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .6s var(--ease);}
+  .pz-card.flipped .pz-flip{transform:rotateY(180deg);}
+  .pz-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+    clip-path:polygon(var(--c) 0,calc(100% - var(--c)) 0,100% var(--c),100% calc(100% - var(--c)),calc(100% - var(--c)) 100%,var(--c) 100%,0 calc(100% - var(--c)),0 var(--c));}
+  .pz-back-face{transform:rotateY(180deg);}
+  .pz-edge1,.pz-edge2,.pz-body,.pz-grid,.pz-glare{position:absolute;pointer-events:none;
+    clip-path:polygon(var(--c) 0,calc(100% - var(--c)) 0,100% var(--c),100% calc(100% - var(--c)),calc(100% - var(--c)) 100%,var(--c) 100%,0 calc(100% - var(--c)),0 var(--c));}
+  .pz-edge1{inset:0;background:rgba(39,230,255,.28);}                                   /* faint outer line */
+  .pz-edge2{inset:3px;background:linear-gradient(115deg,#27e6ff,#7fb6ff 35%,#27e6ff 60%,#9ffcff);background-size:220% 100%;background-position:calc(50% + var(--sh,0) * 45%) 0;}  /* bright inner line + drag shimmer */
+  .pz-body{inset:4px;background:linear-gradient(160deg,rgba(14,30,52,.97),rgba(5,12,24,.98));}
+  .pz-grid{inset:4px;opacity:.5;background-image:linear-gradient(rgba(39,230,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(39,230,255,.07) 1px,transparent 1px);background-size:22px 22px;}
+  .pz-glare{inset:4px;overflow:hidden;opacity:0;}
+  .pz-glare::after{content:"";position:absolute;top:-20%;bottom:-20%;left:-40%;width:30%;transform:translateX(0) skewX(-20deg);background:linear-gradient(90deg,transparent,rgba(160,250,255,.16),transparent);}
+  .pz-active .pz-glare{opacity:1;} .pz-active .pz-glare::after{animation:pzGlare 8s ease-in-out 1.6s infinite;}
+  @keyframes pzGlare{0%,70%{transform:translateX(0) skewX(-20deg);}100%{transform:translateX(560%) skewX(-20deg);}}
+  .pz-tick{position:absolute;left:26px;right:26px;height:5px;pointer-events:none;opacity:.55;background:repeating-linear-gradient(90deg,var(--cy) 0 1px,transparent 1px 9px);}
+  .pz-tick-t{top:7px;} .pz-tick-b{bottom:7px;}
+  .pz-node{position:absolute;width:7px;height:7px;border-radius:50%;background:var(--cy);box-shadow:0 0 8px var(--cy);z-index:4;pointer-events:none;opacity:.55;}
+  .pz-n1{left:4px;top:4px;} .pz-n2{right:4px;top:4px;} .pz-n3{left:4px;bottom:4px;} .pz-n4{right:4px;bottom:4px;}
+  .pz-active .pz-node{animation:pzPulse 2.6s ease-in-out infinite;}
+  .pz-activated .pz-n1{animation:pzLight .5s ease-out 0s 1, pzPulse 2.6s ease-in-out .6s infinite;}
+  .pz-activated .pz-n2{animation:pzLight .5s ease-out .12s 1, pzPulse 2.6s ease-in-out .7s infinite;}
+  .pz-activated .pz-n4{animation:pzLight .5s ease-out .24s 1, pzPulse 2.6s ease-in-out .8s infinite;}
+  .pz-activated .pz-n3{animation:pzLight .5s ease-out .36s 1, pzPulse 2.6s ease-in-out .9s infinite;}
+  @keyframes pzPulse{0%,100%{opacity:.55;transform:scale(1);}50%{opacity:1;transform:scale(1.35);}}
+  @keyframes pzLight{from{opacity:0;transform:scale(.2);}to{opacity:1;transform:scale(1.3);}}
+  .pz-spark{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--cy-2);box-shadow:0 0 6px var(--cy);pointer-events:none;z-index:5;opacity:0;animation:pzSpark .8s ease-out forwards;}
+  .pz-spark.n1{left:7px;top:7px;--dx:-14px;--dy:-14px;} .pz-spark.n2{right:7px;top:7px;--dx:14px;--dy:-14px;} .pz-spark.n3{left:7px;bottom:7px;--dx:-14px;--dy:14px;} .pz-spark.n4{right:7px;bottom:7px;--dx:14px;--dy:14px;}
+  @keyframes pzSpark{0%{opacity:1;transform:translate(0,0);}100%{opacity:0;transform:translate(var(--dx),var(--dy));}}
+  .pz-scan{position:absolute;left:8px;right:8px;top:0;height:2px;opacity:0;pointer-events:none;z-index:6;background:linear-gradient(90deg,transparent,var(--cy-2),transparent);box-shadow:0 0 12px var(--cy);}
+  .pz-card.scanning .pz-scan{animation:pzScan .6s ease-in-out;}
+  @keyframes pzScan{0%{opacity:0;transform:translateY(0);}15%{opacity:1;}85%{opacity:1;}100%{opacity:0;transform:translateY(calc(var(--ch) - 4px));}}
+  .pz-slot:not(.pz-active) .pz-card{filter:saturate(.7);}
+
+  /* card content: text always sits above every effect layer */
+  .pz-content{position:absolute;inset:4px;z-index:3;display:flex;flex-direction:column;padding:20px 20px 14px 20px;min-height:0;}
+  .pz-hud{display:flex;justify-content:space-between;gap:8px;font-size:0.6rem;letter-spacing:.2em;color:var(--cy);margin:0 6px 8px 6px;text-transform:uppercase;}
+  .pz-hud span:last-child{max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .pz-front{align-items:center;text-align:center;}
+  .pz-avatar{width:84px;height:84px;border-radius:50%;margin:6px 0 10px 0;border:2px solid var(--cy);box-shadow:0 0 18px var(--cy-glow),inset 0 0 14px rgba(39,230,255,.18);display:flex;align-items:center;justify-content:center;overflow:hidden;background:#0a1626;flex:none;}
+  .pz-avatar img{width:100%;height:100%;object-fit:cover;} .pz-avatar span{font-family:var(--font-display);font-size:1.6rem;color:var(--cy-2);}
+  .pz-name{font-family:var(--font-display);font-size:1.25rem;font-weight:600;margin:0 0 4px 0;line-height:1.2;color:#fff;overflow-wrap:anywhere;}
+  .pz-trait-name{font-size:1.45rem;margin-top:18px;display:flex;align-items:center;gap:8px;justify-content:center;}
+  .pz-sub{font-size:0.76rem;color:var(--text-dim);margin-bottom:12px;}
+  .pz-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:10px;max-height:96px;overflow:hidden;}
+  .pz-chip{padding:5px 10px;border-radius:999px;font-size:0.72rem;color:var(--cy-2);border:1px solid var(--cy-line);background:var(--cy-faint);box-shadow:0 0 10px rgba(39,230,255,.12);}
+  .pz-chip-more{color:var(--text-dim);box-shadow:none;}
+  .pz-count{margin-top:auto;font-size:0.8rem;color:var(--text-dim);} .pz-count b{font-size:1.5rem;color:var(--cy-2);font-family:var(--font-display);margin-right:4px;}
+  .pz-cat{font-size:0.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);border:1px solid var(--border-2);border-radius:6px;padding:3px 8px;margin-top:10px;}
+  .pz-expl{font-size:0.9rem;line-height:1.55;color:#d6e2f2;margin:10px 0 0 0;max-width:30ch;}
+  .pz-bigcount{margin-top:auto;display:flex;flex-direction:column;align-items:center;} .pz-bigcount b{font-family:var(--font-display);font-size:2.6rem;line-height:1;color:var(--cy-2);text-shadow:0 0 18px var(--cy-glow);} .pz-bigcount span{font-size:0.78rem;color:var(--text-dim);margin-top:2px;}
+  .pz-status{display:flex;align-items:center;gap:8px;margin-top:12px;width:100%;font-size:0.56rem;letter-spacing:.16em;color:var(--text-faint);} .pz-status-line{flex:1;height:1px;background:linear-gradient(90deg,var(--cy),transparent);} .pz-status span:last-child{white-space:nowrap;}
+  .pz-backc{padding-bottom:12px;}
+  .pz-back-scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;padding:2px 6px 6px 6px;}
+  .pz-trait{padding:8px 0;border-bottom:1px solid rgba(39,230,255,.12);} .pz-trait:last-child{border-bottom:none;}
+  .pz-trait-t{font-size:0.86rem;font-weight:600;color:#fff;display:flex;align-items:center;gap:6px;} .pz-trait-t em{font-style:normal;font-size:.6rem;color:var(--text-dim);border:1px solid var(--border-2);border-radius:5px;padding:1px 5px;letter-spacing:.1em;}
+  .pz-trait-d{font-size:0.76rem;color:#c3d1e6;line-height:1.5;margin-top:2px;}
+  .pz-note{font-size:0.76rem;color:#e6eef9;line-height:1.5;margin-top:5px;padding:6px 8px;border-left:2px solid var(--cy);background:rgba(39,230,255,.06);border-radius:0 6px 6px 0;} .pz-note b{display:block;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--cy);margin-bottom:2px;}
+  .pz-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;} .pz-act{flex:1 1 auto;min-height:44px;padding:8px 10px;border-radius:10px;border:1px solid var(--cy-line);background:var(--cy-faint);color:var(--cy-2);font-size:0.74rem;cursor:pointer;}
+  .pz-act:hover{border-color:var(--cy);box-shadow:0 0 12px var(--cy-glow);}
+  .pz-back-scroll .hx-person{min-height:40px;}
+
+  /* nav under the stage */
+  .pz-nav{flex:none;display:flex;align-items:center;justify-content:center;gap:12px;padding-top:8px;position:relative;z-index:5;}
+  .pz-arrow{flex:0 0 48px;width:48px;height:48px;border-radius:50%;border:1px solid var(--cy-line);background:var(--glass);color:var(--cy-2);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px rgba(39,230,255,.12);transition:var(--dur-1);}
+  .pz-arrow svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;} .pz-arrow:hover{border-color:var(--cy);box-shadow:0 0 16px var(--cy-glow);} .pz-arrow:active{transform:scale(.93);} .pz-arrow.pz-dim{opacity:.45;}
+  .pz-progress{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;flex:0 1 220px;}
+  .pz-dots{display:flex;gap:2px;flex-wrap:wrap;justify-content:center;max-width:220px;} .pz-dot{width:20px;height:20px;border:none;background:none;cursor:pointer;position:relative;padding:0;}
+  .pz-dot::before{content:"";position:absolute;left:50%;top:50%;width:7px;height:7px;border-radius:50%;transform:translate(-50%,-50%);background:rgba(39,230,255,.25);transition:var(--dur-1);} .pz-dot.on::before{background:var(--cy);box-shadow:0 0 10px var(--cy);transform:translate(-50%,-50%) scale(1.25);}
+  .pz-bar{width:180px;height:4px;border-radius:4px;background:rgba(39,230,255,.15);overflow:hidden;} .pz-bar span{display:block;height:100%;background:var(--cy);box-shadow:0 0 8px var(--cy);}
+  .pz-count-label{font-size:0.66rem;letter-spacing:.14em;color:var(--text-dim);}
+  .pz-live{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  .pz-edgepulse{position:absolute;top:10%;bottom:20%;width:70px;pointer-events:none;opacity:0;z-index:2;}
+  .pz-edgepulse.l{left:0;background:linear-gradient(90deg,rgba(39,230,255,.35),transparent);} .pz-edgepulse.r{right:0;background:linear-gradient(270deg,rgba(39,230,255,.35),transparent);}
+  .pz-edgepulse.go{animation:pzEdge .55s ease-out;} @keyframes pzEdge{0%{opacity:0;}30%{opacity:1;}100%{opacity:0;}}
+  .pz-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;gap:10px;z-index:4;}
+  .pz-empty h3{margin:0;font-family:var(--font-display);font-size:1.4rem;} .pz-empty p{margin:0;max-width:44ch;color:var(--text-dim);font-size:0.88rem;line-height:1.55;}
+  .pz-empty-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;} .pz-empty select{min-height:44px;padding:8px 12px;border-radius:10px;border:1px solid var(--border-2);background:rgba(0,0,0,.3);color:var(--text);}
+  .pz-empty[hidden]{display:none;}
+
+  /* enter animation: rings first, then cards materialize, then side cards slide out (JS tweens the spread) */
+  .pz-entering .pz-ring{animation-name:pzRingIn,var(--spin,none);animation-duration:.5s;animation-fill-mode:backwards;}
+  .pz-entering .pz-ring.r1{animation:pzRingIn .5s ease-out backwards,pzSpinA 24s linear infinite;} .pz-entering .pz-ring.r2{animation:pzRingIn .5s ease-out .1s backwards,pzSpinB 18s linear infinite;} .pz-entering .pz-ring.r3{animation:pzRingIn .5s ease-out .2s backwards,pzSpinA 12s linear infinite;}
+  @keyframes pzRingIn{from{opacity:0;}to{opacity:1;}}
+  .pz-entering .pz-slot{animation:pzMaterialize .55s ease-out .35s backwards;}
+  @keyframes pzMaterialize{0%{opacity:0;margin-top:46px;}35%{opacity:.9;}45%{opacity:.35;}60%{opacity:1;}100%{margin-top:0;}}
+  .pz-entering .pz-beam{animation:pzRingIn .6s ease-out .15s backwards;}
+  .pz-paused *,.pz-paused *::before,.pz-paused *::after{animation-play-state:paused !important;}
+
+  /* reduced motion: crossfades only — no tilt, flip, sweeps, particles or rotating rings */
+  .pz-rm .pz-flip{transition:none;transform:none !important;}
+  .pz-rm .pz-back-face{transform:none;opacity:0;pointer-events:none;} .pz-rm .pz-card.flipped .pz-back-face{opacity:1;pointer-events:auto;} .pz-rm .pz-card.flipped .pz-front-face{opacity:0;pointer-events:none;}
+  .pz-rm .pz-ring,.pz-rm .pz-const g,.pz-rm .pz-glare::after,.pz-rm .pz-node,.pz-rm .pz-spark,.pz-rm .pz-scan{animation:none !important;}
+  .pz-rm .pz-slot{transition:opacity .2s linear;}
+  @media (prefers-reduced-motion: reduce){
+    .pz-ring,.pz-const g,.pz-glare::after,.pz-node,.pz-spark,.pz-scan,.pz-entering .pz-slot,.pz-entering .pz-beam{animation:none !important;}
+    .pz-flip{transition:none;}
+  }
+  @media (max-width:820px){
+    .pz-wrap{padding:8px 12px calc(var(--dock-h) + env(safe-area-inset-bottom) + 6px) 12px;}
+    .pz-note-line{font-size:0.62rem;line-height:1.35;}
+    .pz-stage{min-height:300px;}
+    .pz-nav{gap:10px;padding-top:4px;flex-wrap:wrap;justify-content:flex-start;}   /* arrows sit left, clear of the music button */
+    .pz-chips{flex-wrap:nowrap;max-height:34px;} .pz-chip{min-width:0;max-width:62%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:0 1 auto;} .pz-chip-more{flex:none;}
+    .pz-progress{order:-1;flex:1 0 100%;} .pz-dot{flex:0 0 auto;width:18px;} .pz-arrow{flex:0 0 44px;width:44px;height:44px;}
+    .pz-name{font-size:1.1rem;} .pz-avatar{width:68px;height:68px;margin:2px 0 8px 0;}
+  }
+  @media (max-height:640px){ .pz-avatar{display:none;} }
+
+  .ins-stats{margin-bottom:6px;}
+  .ins-bar{display:grid;grid-template-columns:minmax(64px,34%) 1fr 28px;gap:10px;align-items:center;padding:5px 0;font-size:0.8rem;}
+  .ins-bar-l{color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .ins-bar-t{height:8px;border-radius:6px;background:rgba(39,230,255,0.10);overflow:hidden;} .ins-bar-t span{display:block;height:100%;background:linear-gradient(90deg,rgba(39,230,255,.5),var(--cy));border-radius:6px;}
+  .ins-bar-n{text-align:right;color:var(--cy-2);font-weight:600;}
 </style>
 </head>
 <body>
@@ -1008,6 +1165,10 @@
         <div class="view-scroll"><div id="timelineRoot"></div></div>
       </div>
 
+      <div class="view-panel" id="viewPersona">
+        <div id="personaRoot"></div>
+      </div>
+
       <div class="view-panel" id="viewInsights">
         <div class="view-scroll"><div id="insightsRoot"></div></div>
       </div>
@@ -1068,7 +1229,9 @@
               <label>Volume</label>
               <input type="range" id="musicVolume" min="0" max="1" step="0.05" value="0.15">
             </div>
-            <p style="font-size:0.72rem;color:var(--text-faint);margin:6px 0 0 0;">Gently generated in-browser, not licensed music.</p>
+            <div class="toggle-row"><span class="label">🧠 Persona deck swipe &amp; flip sounds</span>
+              <label class="switch"><input type="checkbox" id="togglePersonaSound"><span class="slider"></span></label></div>
+            <p style="font-size:0.72rem;color:var(--text-faint);margin:6px 0 0 0;">Gently generated in-browser, not licensed music. Persona sounds are off by default and never touch the music player.</p>
           </div>
 
           <div class="settings-block">
@@ -1682,8 +1845,8 @@
   // ---------- audio (synthesized, subtle) ----------
   let actx = null;
   function getCtx(){ if(!actx){ try{ actx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } return actx; }
-  function playTone(freq, dur, vol, type){
-    if(!db.settings.sound) return;
+  function playTone(freq, dur, vol, type, force){
+    if(!force && !db.settings.sound) return;
     const ctx = getCtx(); if(!ctx) return;
     try{
       const osc = ctx.createOscillator(); const gain = ctx.createGain();
@@ -1973,7 +2136,7 @@
     });
     return data;
   }
-  const DEFAULT_SETTINGS = { sound:true, particles:true, animations:true, music:false, musicVolume:0.15,
+  const DEFAULT_SETTINGS = { personaSound:false, personaLoop:false, sound:true, particles:true, animations:true, music:false, musicVolume:0.15,
     musicMuted:false, musicPlayerEnabled:true, spotifyLink:'', builtinTrack:'ambient-generated' };
   async function loadDb(){
     try{
@@ -2221,6 +2384,7 @@
     // music player) for accounts whose saved settings predate them.
     Object.keys(DEFAULT_SETTINGS).forEach(k=>{ if(db.settings[k]===undefined) db.settings[k]=DEFAULT_SETTINGS[k]; });
     $('toggleSound').checked = db.settings.sound;
+    $('togglePersonaSound').checked = !!db.settings.personaSound;
     $('toggleParticles').checked = db.settings.particles;
     $('toggleAnimations').checked = db.settings.animations;
     $('toggleMusic').checked = db.settings.music;
@@ -2470,7 +2634,8 @@
     home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 11 12 3.8 20.5 11"/><path d="M5.5 9.8V20h13V9.8"/><path d="M10 20v-5.2h4V20"/><circle cx="12" cy="9.2" r=".9" fill="currentColor" stroke="none"/></svg>',
     tree:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4.6" r="2.1"/><circle cx="5.2" cy="19.2" r="2.1"/><circle cx="12" cy="19.2" r="2.1"/><circle cx="18.8" cy="19.2" r="2.1"/><path d="M12 6.7v4.6M5.2 17.1v-3.4h13.6v3.4M12 11.3v5.8"/></svg>',
     timeline:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v17"/><circle cx="12" cy="7" r="1.9" fill="currentColor" fill-opacity=".25"/><circle cx="12" cy="15.5" r="1.9" fill="currentColor" fill-opacity=".25"/><path d="M14.2 7H20M3.8 15.5h6"/></svg>',
-    insights:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.4a6.2 6.2 0 0 0-3.6 11.2c.7.6 1.1 1.3 1.1 2.1v.6h5v-.6c0-.8.4-1.5 1.1-2.1A6.2 6.2 0 0 0 12 3.4Z"/><path d="M9.8 20.2h4.4M10.5 8.6c.4-.8 1.1-1.2 2-1.2"/></svg>',
+    insights:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16"/><rect x="5.2" y="11.5" width="3" height="6.5" rx=".6"/><rect x="10.5" y="6.5" width="3" height="11.5" rx=".6"/><rect x="15.8" y="9.2" width="3" height="8.8" rx=".6"/></svg>',
+    persona:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.2 4.4A3.1 3.1 0 0 0 6.1 7.5v.3A3.1 3.1 0 0 0 4.6 11a3.2 3.2 0 0 0 1.4 2.6A3.1 3.1 0 0 0 9.2 19.6h.6V4.5a3 3 0 0 0-.6-.1Z"/><path d="M14.8 4.4a3.1 3.1 0 0 1 3.1 3.1v.3A3.1 3.1 0 0 1 19.4 11a3.2 3.2 0 0 1-1.4 2.6 3.1 3.1 0 0 1-3.2 6h-.6V4.5a3 3 0 0 1 .6-.1Z"/><path d="M12 6.5v11M9.8 9.5H8.3M15.7 14.5h-1.5"/></svg>',
     me:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.2" r="3.6"/><path d="M4.6 20c.9-3.7 3.9-5.6 7.4-5.6s6.5 1.9 7.4 5.6"/></svg>'
   };
   const NAV = [
@@ -2478,9 +2643,10 @@
     { id:'tree',     label:'Tree',     view:'tree',     views:['tree'] },
     { id:'timeline', label:'Timeline', view:'timeline', views:['timeline'] },
     { id:'insights', label:'Insights', view:'insights', views:['insights'] },
+    { id:'persona',  label:'Persona',  view:'persona',  views:['persona'] },
     { id:'me',       label:'Me',       view:'settings', views:['settings','guidelines'] }
   ];
-  const VIEW_PANEL = { home:'viewHome', tree:'viewTree', timeline:'viewTimeline', insights:'viewInsights',
+  const VIEW_PANEL = { home:'viewHome', tree:'viewTree', timeline:'viewTimeline', insights:'viewInsights', persona:'viewPersona',
     members:'viewMembers', pinned:'viewPinned', guidelines:'viewGuidelines', settings:'viewSettings' };
   function navIndexForView(view){ return Math.max(0, NAV.findIndex(n=>n.views.includes(view))); }
   function renderNav(){
@@ -2548,6 +2714,7 @@
     if(view==='pinned') renderPinned();
     if(view==='timeline') renderTimeline();
     if(view==='insights') renderInsights();
+    if(view==='persona') renderPersona(); else pzPause();
     if(view==='settings'){ $('settingsTreeName').value=tree()?tree().name:''; $('settingsTreeDesc').value=tree()?(tree().description||''):''; }
     if(view==='tree'){
       renderTree();
@@ -4280,6 +4447,31 @@
 
   // ---------- INSIGHTS (Psychology & Personality) ----------
   let insightsCat = 'all', insightsQuery = '';
+  // Family-wide statistics: every figure is counted from saved data.
+  function insightsStatsHtml(){
+    const people = peopleArr();
+    if(!people.length) return '';
+    const layout = computeLayout(); const gens = layout.maxGen+1;
+    const perGen = Array.from({length:gens},()=>0);
+    people.forEach(p=>{ const g = layout.genCache[p.id]; if(perGen[g]!==undefined) perGen[g]++; });
+    const traitCounts = {};
+    people.forEach(p=> normalizeTraits(p.traits).forEach(e=>{
+      const m = traitEntryMeta(e); if(!m || (e.custom && !(e.title&&e.title.trim()))) return;
+      const key = e.custom ? 'c:'+customTraitKey(e.title) : e.id;
+      (traitCounts[key] = traitCounts[key] || { title:m.title, n:0 }).n++;
+    }));
+    const top = Object.values(traitCounts).sort((a,b)=>b.n-a.n || a.title.localeCompare(b.title)).slice(0,6);
+    const maxG = Math.max(...perGen,1), maxT = Math.max(...top.map(t=>t.n),1);
+    const bar = (label,n,max)=>`<div class="ins-bar"><span class="ins-bar-l">${escapeHtml(label)}</span><span class="ins-bar-t"><span style="width:${(n/max*100).toFixed(1)}%"></span></span><span class="ins-bar-n">${n}</span></div>`;
+    const withObs = people.filter(p=>normalizeTraits(p.traits).length).length;
+    return `<div class="hx-grid ins-stats">
+      <section class="hx-panel" aria-labelledby="insGenT"><div class="hx-panel-head"><h3 id="insGenT">Members per generation</h3></div>
+        ${perGen.map((n,i)=>bar('Gen '+(i+1),n,maxG)).join('')}</section>
+      <section class="hx-panel" aria-labelledby="insTopT"><div class="hx-panel-head"><h3 id="insTopT">Most recorded traits</h3></div>
+        ${top.length ? top.map(t=>bar(t.title,t.n,maxT)).join('') : '<p class="hx-muted">No observations recorded yet.</p>'}
+        <p class="hx-muted" style="margin-top:10px;">${withObs} of ${people.length} members have recorded observations.</p></section>
+    </div>`;
+  }
   function renderInsights(){
     const root = $('insightsRoot'); const t = tree(); if(!t) return;
     const people = peopleArr();
@@ -4288,6 +4480,8 @@
       <div class="hx-pagehead"><div><div class="hx-eyebrow">PSYCHOLOGY &amp; PERSONALITY</div><h2 class="hx-title">Insights</h2></div></div>
       <div class="trait-disclaimer"><span class="ico">ℹ️</span><span>These are personal observations recorded by you, not a clinical diagnosis of anyone in this tree. Nothing here is inferred automatically.</span></div>
       <p class="hx-sub" id="insSummary"></p>
+      ${insightsStatsHtml()}
+      <h3 class="hx-h3">Highlight a trait on the tree</h3>
       <div class="hx-search"><input type="search" id="insSearch" placeholder="Search traits and patterns…" aria-label="Search traits" value="${escapeHtml(insightsQuery)}"></div>
       <div class="trait-cat-filter" id="insCats" role="group" aria-label="Trait categories"></div>
       <div class="ins-list" id="insList"></div>
@@ -4325,6 +4519,441 @@
       $('searchInput').value = '';
       switchView('tree');   // highlight persists on the tree until “Clear Highlight”
     });
+  }
+
+  // =====================================================================
+  // PERSONA — holographic personality flashcard deck.
+  // Real saved observations only; nothing is inferred or invented.
+  // Only transform/opacity are animated. Five slot elements are reused
+  // (active + 2 neighbours each side); the rest of the deck is virtual.
+  // =====================================================================
+  const PZ = { mode:'member', cat:'all', query:'', filtersOpen:null, items:[], index:0, p:0, spread:1,
+    raf:0, drag:null, pending:false, els:null, built:false, suppressClick:false, wheelAcc:0, busy:false,
+    stageW:0, stageH:0, cw:300, ch:380, stepX:260, keepKey:null, lastLive:'' };
+  const rmQuery = (window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches:false, addEventListener(){} });
+  const isRM = ()=> !!rmQuery.matches;
+  const pzLoop = ()=> !!(db.settings && db.settings.personaLoop) && PZ.items.length>=3;
+  const pzWrap = i => { const n = PZ.items.length; return ((i % n) + n) % n; };
+  function pzCanMove(dir){
+    const n = PZ.items.length; if(n<2) return false;
+    if(pzLoop()) return true;
+    const t = PZ.index + dir; return t>=0 && t<n;
+  }
+  function pzVibrate(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){} }
+  function pzTone(freq, dur, vol){ if(db.settings && db.settings.personaSound) playTone(freq, dur, vol||0.035, 'sine', true); }
+  function pzPause(){ const r=$('personaRoot'); if(r) r.classList.add('pz-paused'); }
+  document.addEventListener('visibilitychange', ()=>{ const r=$('personaRoot'); if(r) r.classList.toggle('pz-paused', document.hidden || currentView!=='persona'); });
+
+  function pzBuildItems(){
+    const people = peopleArr(); const layout = computeLayout(); const q = PZ.query.trim().toLowerCase();
+    if(PZ.mode==='member'){
+      return people.map(p=>({ p, entries: normalizeTraits(p.traits).map(entry=>({entry, meta:traitEntryMeta(entry)})).filter(x=>x.meta) }))
+        .filter(x=>x.entries.length)
+        .filter(x=> PZ.cat==='all' || x.entries.some(e=>!e.meta.isCustom && e.meta.category===PZ.cat))
+        .filter(x=> !q || fullName(x.p).toLowerCase().includes(q) || x.entries.some(e=>e.meta.title.toLowerCase().includes(q)))
+        .map(x=>({ key:'m:'+x.p.id, kind:'member', person:x.p, entries:x.entries, gen:layout.genCache[x.p.id] }));
+    }
+    const byKey = {};
+    people.forEach(p=> normalizeTraits(p.traits).forEach(entry=>{
+      const meta = traitEntryMeta(entry); if(!meta) return;
+      if(entry.custom && !(entry.title && entry.title.trim())) return;
+      const key = entry.custom ? customTraitKey(entry.title) : entry.id;
+      if(!byKey[key]) byKey[key] = { key:'t:'+key, kind:'trait', traitKey:key, rows:[],
+        meta: entry.custom ? { id:key, title:entry.title.trim(), category:'other', tier:'neutral', short:'A personal observation added by you.', full:'A personal observation added by you.', isCustom:true } : meta };
+      byKey[key].rows.push({ person:p, note:entry.note||'' });
+    }));
+    return Object.values(byKey)
+      .filter(t=> PZ.cat==='all' || (!t.meta.isCustom && t.meta.category===PZ.cat))
+      .filter(t=> !q || t.meta.title.toLowerCase().includes(q) || t.meta.short.toLowerCase().includes(q))
+      .sort((a,b)=> b.rows.length-a.rows.length || a.meta.title.localeCompare(b.meta.title));
+  }
+  function pzHasAnyObservations(){ return peopleArr().some(p=> normalizeTraits(p.traits).some(e=>traitEntryMeta(e))); }
+
+  function pzCardHtml(item, idx, n){
+    const tag = `${String(idx+1).padStart(2,'0')} / ${String(n).padStart(2,'0')}`;
+    const frame = (inner, extra)=>`<div class="pz-edge1"></div><div class="pz-edge2"></div><div class="pz-body"></div><div class="pz-grid"></div><div class="pz-glare"></div>
+      <i class="pz-tick pz-tick-t"></i><i class="pz-tick pz-tick-b"></i>${inner}`;
+    let front, back;
+    if(item.kind==='member'){
+      const p = item.person; const total = item.entries.length;
+      const yrs = `${yearOf(p.birthDate)||'?'} – ${p.living ? 'Living' : (yearOf(p.deathDate)||'N/A')}`;
+      const maxChips = window.innerWidth<=820 ? 2 : 4;
+      const chips = item.entries.slice(0,maxChips).map(e=>`<span class="pz-chip pz-tier-${e.meta.tier}">${escapeHtml(e.meta.title)}</span>`).join('') + (total>maxChips?`<span class="pz-chip pz-chip-more">+${total-maxChips}</span>`:'');
+      front = frame(`<div class="pz-content pz-front">
+        <div class="pz-hud"><span>${tag}</span><span>MEMBER</span></div>
+        <div class="pz-avatar">${p.photo ? `<img src="${escapeHtml(p.photo)}" alt="">` : `<span>${escapeHtml(initialsOf(p))}</span>`}</div>
+        <h3 class="pz-name">${escapeHtml(fullName(p))}</h3>
+        <div class="pz-sub">${escapeHtml(yrs)} · Generation ${(item.gen||0)+1}</div>
+        <div class="pz-chips">${chips}</div>
+        <div class="pz-count"><b>${total}</b> ${total===1?'observation':'observations'}</div>
+        <div class="pz-status"><span class="pz-status-line"></span><span>PRIVATE RECORD · TAP TO FLIP</span></div></div>`);
+      const rowsHtml = item.entries.map(({entry,meta})=>`<div class="pz-trait">
+          <div class="pz-trait-t"><span class="trait-tier-dot trait-tier-${meta.tier}"></span>${escapeHtml(meta.title)}${meta.isCustom?' <em>Other</em>':''}</div>
+          ${meta.isCustom?'':`<div class="pz-trait-d">${escapeHtml(meta.short)}</div>`}
+          ${entry.note&&entry.note.trim()?`<div class="pz-note"><b>Notes</b> ${escapeHtml(entry.note)}</div>`:''}</div>`).join('');
+      back = frame(`<div class="pz-content pz-backc">
+        <div class="pz-hud"><span>${tag}</span><span>${escapeHtml(fullName(p))}</span></div>
+        <div class="pz-back-scroll" tabindex="0" aria-label="Observations for ${escapeHtml(fullName(p))}">${rowsHtml}</div>
+        <div class="pz-actions">
+          <button type="button" class="pz-act" data-pz-act="edit">Edit observations</button>
+          <button type="button" class="pz-act" data-pz-act="highlight">Highlight in Tree</button>
+          <button type="button" class="pz-act" data-pz-act="profile">Open profile</button></div></div>`);
+    } else {
+      const m = item.meta; const catLabel = m.isCustom ? 'Other' : TRAIT_CATEGORY_BY_ID[m.category].label; const c = item.rows.length;
+      front = frame(`<div class="pz-content pz-front">
+        <div class="pz-hud"><span>${tag}</span><span>TRAIT</span></div>
+        <div class="pz-cat">${escapeHtml(catLabel)}</div>
+        <h3 class="pz-name pz-trait-name"><span class="trait-tier-dot trait-tier-${m.tier}"></span>${escapeHtml(m.title)}</h3>
+        <p class="pz-expl">${escapeHtml(m.short)}</p>
+        <div class="pz-bigcount"><b>${c}</b><span>${c===1?'family member':'family members'}</span></div>
+        <div class="pz-status"><span class="pz-status-line"></span><span>PERSONAL OBSERVATION · TAP TO FLIP</span></div></div>`);
+      const rowsHtml = item.rows.map(r=>`<div class="pz-trait"><button type="button" class="hx-person" data-pz-person="${r.person.id}">${avatarMini(r.person)}<span>${escapeHtml(fullName(r.person))}</span></button>
+          ${r.note&&r.note.trim()?`<div class="pz-note"><b>Notes</b> ${escapeHtml(r.note)}</div>`:''}</div>`).join('');
+      back = frame(`<div class="pz-content pz-backc">
+        <div class="pz-hud"><span>${tag}</span><span>${escapeHtml(m.title)}</span></div>
+        <div class="pz-back-scroll" tabindex="0" aria-label="Members with ${escapeHtml(m.title)}">
+          ${m.isCustom?'':`<div class="pz-trait-d" style="margin-bottom:8px;">${escapeHtml(m.full)}</div>`}${rowsHtml}</div>
+        <div class="pz-actions"><button type="button" class="pz-act" data-pz-act="highlight">Highlight in Tree</button></div></div>`);
+    }
+    return `<div class="pz-card" data-k="${escapeHtml(item.key)}"><div class="pz-glow"></div>
+      <div class="pz-flip"><div class="pz-face pz-front-face">${front}</div><div class="pz-face pz-back-face">${back}</div></div>
+      <i class="pz-node pz-n1"></i><i class="pz-node pz-n2"></i><i class="pz-node pz-n3"></i><i class="pz-node pz-n4"></i><div class="pz-scan"></div></div>`;
+  }
+  function pzCardLabel(item, idx, n){
+    return `Card ${idx+1} of ${n}: ${item.kind==='member' ? fullName(item.person) : item.meta.title}`;
+  }
+
+  // ---- constellation: the real family drawn as faint dots and lines ----
+  function pzConstellation(){
+    const layout = computeLayout(); const ids = Object.keys(layout.positions);
+    if(!ids.length) return '';
+    let minX=1e9,minY=1e9,maxX=-1e9,maxY=-1e9;
+    ids.forEach(id=>{ const q=layout.positions[id]; minX=Math.min(minX,q.x); maxX=Math.max(maxX,q.x); minY=Math.min(minY,q.y); maxY=Math.max(maxY,q.y); });
+    const w=Math.max(1,maxX-minX), h=Math.max(1,maxY-minY);
+    const X = id=> 6 + (layout.positions[id].x-minX)/w*88, Y = id=> 8 + (layout.positions[id].y-minY)/h*84;
+    let lines='', dots='';
+    peopleArr().forEach(p=>{
+      if(!layout.positions[p.id]) return;
+      (p.parents||[]).forEach(pid=>{ if(layout.positions[pid]) lines += `<line x1="${X(pid)}" y1="${Y(pid)}" x2="${X(p.id)}" y2="${Y(p.id)}"/>`; });
+      dots += `<circle cx="${X(p.id)}" cy="${Y(p.id)}" r="0.9"/>`;
+    });
+    return `<svg class="pz-const" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g>${lines}${dots}</g></svg>`;
+  }
+
+  function renderPersona(keepPlace){
+    const root = $('personaRoot'); if(!root || !tree()) return;
+    const prevKey = PZ.items[PZ.index] ? PZ.items[PZ.index].key : null;   // remember the card across tab switches / filters
+    cancelAnimationFrame(PZ.raf); PZ.raf = 0; PZ.drag = null; PZ.p = 0;
+    PZ.items = pzBuildItems();
+    const n = PZ.items.length;
+    const found = prevKey ? PZ.items.findIndex(i=>i.key===prevKey) : -1;
+    PZ.index = found>=0 ? found : Math.min(PZ.index, Math.max(0, n-1));
+    if(found<0) PZ.index = 0;
+    if(PZ.filtersOpen===null) PZ.filtersOpen = window.innerWidth>820;
+    root.className = 'pz-wrap' + (isRM()?' pz-rm':'');
+    const any = pzHasAnyObservations();
+    root.innerHTML = `
+      <div class="pz-top">
+        <div class="pz-top-row">
+          <div class="pz-modes" role="group" aria-label="Deck mode">
+            <button type="button" class="pz-mode${PZ.mode==='member'?' active':''}" data-pz-mode="member" aria-pressed="${PZ.mode==='member'}">By Member</button>
+            <button type="button" class="pz-mode${PZ.mode==='trait'?' active':''}" data-pz-mode="trait" aria-pressed="${PZ.mode==='trait'}">By Trait</button>
+          </div>
+          <button type="button" class="pz-tog" id="pzLoopBtn" aria-pressed="${!!db.settings.personaLoop}" title="Loop the deck endlessly">∞ Loop</button>
+          <button type="button" class="pz-tog" id="pzFilterBtn" aria-expanded="${PZ.filtersOpen}" aria-controls="pzFilters">Filters</button>
+        </div>
+        <div class="pz-filters" id="pzFilters"${PZ.filtersOpen?'':' hidden'}>
+          <input type="search" id="pzSearch" placeholder="Search members or traits…" aria-label="Search the deck" value="${escapeHtml(PZ.query)}">
+          <div class="trait-cat-filter" id="pzCats" role="group" aria-label="Trait categories"></div>
+        </div>
+        <div class="pz-note-line">Personal reflections recorded by you — not medical or psychological diagnoses. Private by default.</div>
+      </div>
+      <div class="pz-stage" id="pzStage" role="region" aria-roledescription="carousel" aria-label="Personality card deck">
+        ${pzConstellation()}
+        <div class="pz-platform" aria-hidden="true"><div class="pz-beam"></div><i class="pz-ring r1"></i><i class="pz-ring r2"></i><i class="pz-ring r3"></i></div>
+        <div class="pz-deck" id="pzDeck"></div>
+        <div class="pz-empty" id="pzEmpty" hidden></div>
+        <div class="pz-edgepulse" aria-hidden="true"></div>
+      </div>
+      <div class="pz-nav">
+        <button type="button" class="pz-arrow" id="pzPrev" aria-label="Previous card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
+        <div class="pz-progress" id="pzProgress"></div>
+        <button type="button" class="pz-arrow" id="pzNext" aria-label="Next card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+      </div>
+      <div class="pz-live" id="pzLive" aria-live="polite" role="status"></div>`;
+    renderTraitCatFilter('pzCats', PZ.cat, cat=>{ PZ.cat=cat; renderPersona(true); });
+    // slot elements (5): active + two neighbours either side
+    const deck = $('pzDeck'); PZ.els = [];
+    for(let s=-2;s<=2;s++){ const el=document.createElement('div'); el.className='pz-slot'; el.dataset.s=s; deck.appendChild(el); PZ.els.push(el); }
+    bindPersonaControls(root);
+    PZ.built = true;
+    if(!n){ pzShowEmpty(any); pzUpdateNav(); return; }
+    $('pzEmpty').hidden = true;
+    pzSizeStage(); pzRebind(true);
+    if(!keepPlace) pzEnter();
+    root.classList.remove('pz-paused');
+  }
+  function pzShowEmpty(any){
+    const el = $('pzEmpty'); el.hidden = false; $('pzDeck').style.display='none';
+    const people = peopleArr();
+    if(!any){
+      el.innerHTML = people.length ? `<h3>No observations recorded yet</h3>
+        <p>Choose a family member to record their first personal observation. Nothing is ever added automatically.</p>
+        <div class="pz-empty-row"><select id="pzEmptyPick" aria-label="Family member">${people.map(p=>`<option value="${p.id}">${escapeHtml(fullName(p))}</option>`).join('')}</select>
+        <button type="button" class="hx-btn hx-btn-primary" id="pzEmptyBtn">Add the first observation</button></div>`
+        : `<h3>No family members yet</h3><p>Add a family member first, then record observations in their profile.</p><button type="button" class="hx-btn hx-btn-primary" id="pzEmptyTree">Go to the tree</button>`;
+      if($('pzEmptyBtn')) $('pzEmptyBtn').onclick = ()=>{ const id=$('pzEmptyPick').value; selectedId=id; pendingRelation=null; openPersonModal(id); $('openTraitPickerBtn').click(); };
+      if($('pzEmptyTree')) $('pzEmptyTree').onclick = ()=> switchView('tree');
+    } else {
+      el.innerHTML = `<h3>No cards match</h3><p>Nothing in the deck matches your search or category.</p><button type="button" class="hx-btn" id="pzClearFilters">Clear filters</button>`;
+      $('pzClearFilters').onclick = ()=>{ PZ.query=''; PZ.cat='all'; renderPersona(); };
+    }
+  }
+
+  function pzSizeStage(){
+    const st = $('pzStage'); if(!st) return;
+    const W = st.clientWidth || window.innerWidth, H = st.clientHeight || 420;
+    PZ.stageW = W; PZ.stageH = H;
+    const phone = W < 700;
+    PZ.cw = phone ? Math.max(210, Math.min(340, W - 100)) : Math.min(360, Math.max(280, W*0.30));
+    PZ.ch = Math.max(300, Math.min(500, H - 84));
+    const sideScale = 0.82;
+    PZ.stepX = phone ? (W/2 + PZ.cw*sideScale/2 - 38) : PZ.cw*0.82;
+    st.style.setProperty('--cw', PZ.cw+'px'); st.style.setProperty('--ch', PZ.ch+'px');
+    pzLayout();
+  }
+  if(window.ResizeObserver){
+    const ro = new ResizeObserver(()=>{ if(currentView==='persona' && PZ.built && $('pzStage')) pzSizeStage(); });
+    const hook = ()=>{ const w=$('viewPersona'); if(w) ro.observe(w); };
+    if(document.readyState!=='loading') hook(); else document.addEventListener('DOMContentLoaded', hook);
+  }
+  window.addEventListener('resize', ()=>{ if(currentView==='persona' && PZ.built && $('pzStage')) pzSizeStage(); });
+
+  // One layout function for every slot: identical maths for left and right.
+  function pzLayout(){
+    if(!PZ.els) return;
+    const rm = isRM(); const p = PZ.p;
+    for(let s=-2;s<=2;s++){
+      const el = PZ.els[s+2]; if(!el) continue;
+      const e = s + p, ae = Math.abs(e);
+      const x = e * PZ.stepX * PZ.spread;
+      const scale = rm ? 1 : Math.max(0.6, 1 - 0.18*Math.min(ae,1.4));
+      const rotY = rm ? 0 : Math.max(-38, Math.min(38, -e*28));
+      const rotZ = rm ? 0 : p*4*(1-Math.min(ae,1));
+      let op = ae<=1 ? 1 - 0.5*ae : Math.max(0, 0.5 - (ae-1)*0.9);
+      if(rm) op = ae<0.5 ? 1 : (ae<=1.05 ? 0.5 : 0);
+      el.style.transform = `translate3d(${x.toFixed(1)}px,0,${(-ae*60).toFixed(0)}px) rotateY(${rotY.toFixed(2)}deg) rotateZ(${rotZ.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+      el.style.opacity = op.toFixed(3);
+      el.style.zIndex = String(10 - Math.round(ae*3));
+      el.style.visibility = (ae>1.6 || !el.firstChild) ? 'hidden' : 'visible';
+      const near = 1 - Math.min(ae,1);
+      el.style.setProperty('--near', near.toFixed(3));
+      el.style.setProperty('--lead', (s===0 ? Math.min(1,Math.abs(p)) : 0).toFixed(3));
+      el.style.setProperty('--dir', p<0 ? '-1' : '1');
+      el.style.setProperty('--sh', Math.max(-1,Math.min(1,p)).toFixed(3));
+      el.style.setProperty('--trail', (4*Math.abs(p)*(1-Math.min(1,Math.abs(p)))*(s===0?1:0)).toFixed(3));
+    }
+  }
+  function pzSchedule(){ if(PZ.pending) return; PZ.pending = true; requestAnimationFrame(()=>{ PZ.pending=false; pzLayout(); }); }
+
+  function pzRebind(activate){
+    const n = PZ.items.length;
+    PZ.els.forEach((el,i)=>{
+      const s = i-2; const raw = PZ.index + s;
+      const valid = n>0 && (pzLoop() ? true : (raw>=0 && raw<n));
+      if(!valid){ el.innerHTML=''; el.removeAttribute('aria-label'); return; }
+      const idx = pzLoop() ? pzWrap(raw) : raw;
+      el.innerHTML = pzCardHtml(PZ.items[idx], idx, n);
+      const card = el.firstElementChild;
+      card.setAttribute('role','group'); card.setAttribute('aria-roledescription','slide');
+      card.setAttribute('aria-label', pzCardLabel(PZ.items[idx], idx, n));
+      card.dataset.s = s;
+      if(s===0){ card.tabIndex = 0; card.removeAttribute('aria-hidden'); } else { card.tabIndex = -1; card.setAttribute('aria-hidden','true'); card.querySelectorAll('button,[tabindex]').forEach(b=>b.tabIndex=-1); }
+    });
+    pzLayout(); pzUpdateNav();
+    if(activate) pzActivate();
+  }
+  function pzActivate(){
+    const card = PZ.els && PZ.els[2] && PZ.els[2].firstElementChild; if(!card) return;
+    PZ.els.forEach(el=> el.classList.remove('pz-active'));
+    PZ.els[2].classList.add('pz-active');
+    if(isRM()) return;
+    PZ.els[2].classList.remove('pz-activated'); void PZ.els[2].offsetWidth; PZ.els[2].classList.add('pz-activated');
+    // a few small sparks at the corner nodes (kept minimal)
+    ['n1','n2','n3','n4'].forEach((c,i)=>{
+      const sp = document.createElement('b'); sp.className='pz-spark '+c; sp.style.animationDelay=(i*70)+'ms'; card.appendChild(sp);
+      setTimeout(()=>sp.remove(), 900);
+    });
+  }
+  function pzUpdateNav(){
+    const n = PZ.items.length; const prev=$('pzPrev'), next=$('pzNext'); if(!prev) return;
+    prev.disabled = !pzCanMove(-1) && !(n>1); next.disabled = !pzCanMove(1) && !(n>1);
+    prev.classList.toggle('pz-dim', !pzCanMove(-1)); next.classList.toggle('pz-dim', !pzCanMove(1));
+    const prog = $('pzProgress'); if(!prog) return;
+    if(!n){ prog.innerHTML=''; return; }
+    if(n<=14){
+      prog.innerHTML = `<div class="pz-dots" role="group" aria-label="Card position">` + PZ.items.map((it,i)=>`<button type="button" class="pz-dot${i===PZ.index?' on':''}" data-pz-dot="${i}" aria-label="Go to card ${i+1} of ${n}"${i===PZ.index?' aria-current="true"':''}></button>`).join('') + `</div><div class="pz-count-label">${PZ.index+1} / ${n}</div>`;
+    } else {
+      prog.innerHTML = `<div class="pz-bar" role="progressbar" aria-valuemin="1" aria-valuemax="${n}" aria-valuenow="${PZ.index+1}" aria-label="Deck position"><span style="width:${((PZ.index+1)/n*100).toFixed(1)}%"></span></div><div class="pz-count-label">${PZ.index+1} / ${n}</div>`;
+    }
+    const it = PZ.items[PZ.index]; const live = pzCardLabel(it, PZ.index, n);
+    if(live!==PZ.lastLive){ PZ.lastLive = live; $('pzLive').textContent = live; }
+  }
+
+  // ---- motion ----
+  function pzSpringTo(target, v0, done){
+    cancelAnimationFrame(PZ.raf);
+    if(isRM()){ PZ.p = target; pzLayout(); PZ.raf=0; if(done) done(); return; }
+    let x = PZ.p, v = v0||0, last = performance.now();
+    const K = 220, C = 26;                 // same spring for both directions
+    const step = now=>{
+      const dt = Math.min(0.032, (now-last)/1000); last = now;
+      v += (-K*(x-target) - C*v) * dt; x += v*dt; PZ.p = x; pzLayout();
+      if(Math.abs(x-target)<0.002 && Math.abs(v)<0.02){ PZ.p = target; pzLayout(); PZ.raf=0; if(done) done(); return; }
+      PZ.raf = requestAnimationFrame(step);
+    };
+    PZ.raf = requestAnimationFrame(step);
+  }
+  function pzUnflip(){ PZ.els.forEach(el=>{ const c=el.firstElementChild; if(c) c.classList.remove('flipped'); }); }
+  function pzCommit(dir, v0){
+    const n = PZ.items.length; if(!pzCanMove(dir)) return pzEdgeBump(dir);
+    pzUnflip(); pzVibrate(8); pzTone(dir>0?520:520, 0.07);
+    PZ.busyMove = true;
+    pzSpringTo(-dir, v0, ()=>{
+      PZ.index = pzLoop() ? pzWrap(PZ.index+dir) : PZ.index+dir;
+      PZ.p = 0; PZ.busyMove = false; pzRebind(true);
+    });
+  }
+  function pzGo(dir){ if(PZ.busyMove) return; pzCommit(dir, 0); }
+  function pzEdgeBump(dir){
+    pzPulseEdge(dir);
+    if(isRM()) return;
+    const kick = -dir*0.12; PZ.p = kick; pzLayout(); pzSpringTo(0, 0);
+  }
+  function pzPulseEdge(dir){
+    const ep = document.querySelector('#pzStage .pz-edgepulse'); if(!ep) return;
+    ep.classList.remove('l','r','go'); ep.classList.add(dir>0?'r':'l'); void ep.offsetWidth; ep.classList.add('go');
+  }
+  function pzJump(i){
+    if(i===PZ.index || PZ.busyMove) return;
+    if(Math.abs(i-PZ.index)===1) return pzGo(i>PZ.index?1:-1);
+    pzUnflip(); PZ.index = i; PZ.p = 0; pzRebind(true); pzVibrate(8);
+  }
+  function pzFlip(){
+    const card = PZ.els[2] && PZ.els[2].firstElementChild; if(!card) return;
+    card.classList.toggle('flipped');
+    pzVibrate(10); pzTone(card.classList.contains('flipped')?660:440, 0.09);
+    if(!isRM()){ card.classList.remove('scanning'); void card.offsetWidth; card.classList.add('scanning'); setTimeout(()=>card.classList.remove('scanning'), 700); }
+    const flipped = card.classList.contains('flipped');
+    card.querySelectorAll('.pz-front-face button').forEach(b=>b.tabIndex = flipped?-1:0);
+    const sc = card.querySelector('.pz-back-scroll'); if(sc && flipped) sc.scrollTop = 0;
+  }
+  function pzEnter(){
+    if(isRM()){ PZ.spread = 1; pzLayout(); return; }
+    const root = $('personaRoot'); root.classList.remove('pz-entering'); void root.offsetWidth; root.classList.add('pz-entering');
+    PZ.spread = 0; pzLayout();
+    const t0 = performance.now(), delay = 520, dur = 520;
+    const tick = now=>{
+      const t = Math.max(0, Math.min(1, (now - t0 - delay)/dur)); const eased = 1-Math.pow(1-t,3);
+      PZ.spread = eased; pzLayout();
+      if(t<1 && currentView==='persona') requestAnimationFrame(tick); else { PZ.spread = 1; pzLayout(); }
+    };
+    requestAnimationFrame(tick);
+    setTimeout(()=> root.classList.remove('pz-entering'), 1400);
+  }
+
+  // ---- input: pointer drag (touch / mouse / pen), wheel, keyboard, buttons ----
+  function bindPersonaControls(root){
+    root.querySelectorAll('[data-pz-mode]').forEach(b=> b.onclick = ()=>{ if(PZ.mode===b.dataset.pzMode) return; PZ.mode=b.dataset.pzMode; PZ.items=[]; PZ.index=0; renderPersona(); });
+    $('pzLoopBtn').onclick = ()=>{ db.settings.personaLoop = !db.settings.personaLoop; scheduleSave(); $('pzLoopBtn').setAttribute('aria-pressed', String(!!db.settings.personaLoop)); if(PZ.items.length){ pzRebind(false); } };
+    $('pzFilterBtn').onclick = ()=>{ PZ.filtersOpen = !PZ.filtersOpen; $('pzFilters').hidden = !PZ.filtersOpen; $('pzFilterBtn').setAttribute('aria-expanded', String(PZ.filtersOpen)); setTimeout(()=>{ pzSizeStage(); },30); };
+    $('pzSearch').addEventListener('input', e=>{ PZ.query = e.target.value; renderPersonaKeepFocus(); });
+    $('pzPrev').onclick = ()=> pzGo(-1);
+    $('pzNext').onclick = ()=> pzGo(1);
+    $('pzProgress').addEventListener('click', e=>{ const b=e.target.closest('[data-pz-dot]'); if(b) pzJump(parseInt(b.dataset.pzDot,10)); });
+    const deck = $('pzDeck');
+    deck.addEventListener('pointerdown', e=>{
+      if(PZ.drag || (e.pointerType==='mouse' && e.button!==0) || !PZ.items.length) return;
+      if(e.target.closest('button,a,input,select,textarea')) return;
+      if(PZ.busyMove){ return; }
+      cancelAnimationFrame(PZ.raf); PZ.raf=0;
+      PZ.drag = { id:e.pointerId, sx:e.clientX, sy:e.clientY, lx:e.clientX, lt:performance.now(), vx:0, locked:null, baseP:PZ.p, rawDx:0 };
+    });
+    deck.addEventListener('pointermove', e=>{
+      const d = PZ.drag; if(!d || e.pointerId!==d.id) return;
+      const dx = e.clientX-d.sx, dy = e.clientY-d.sy;
+      if(d.locked===null){
+        if(Math.abs(dx)<8 && Math.abs(dy)<8) return;
+        d.locked = (Math.abs(dx) > Math.abs(dy)*1.2) ? 'h' : 'v';
+        if(d.locked==='v'){ PZ.drag = null; return; }       // vertical = let the card back scroll
+        try{ deck.setPointerCapture(e.pointerId); }catch(_){}
+        deck.classList.add('dragging'); d.sx = e.clientX; d.lx = e.clientX; d.lt = performance.now();
+        return;
+      }
+      const raw = e.clientX - d.sx; d.rawDx = raw;
+      const dirDrag = raw<0 ? 1 : -1;
+      const movable = pzCanMove(dirDrag);
+      const eff = movable ? raw : raw*0.3;                  // rubber band at the ends
+      PZ.p = Math.max(-1.15, Math.min(1.15, d.baseP + eff/PZ.stepX));
+      const now = performance.now(), dt = now-d.lt;
+      if(dt>0){ d.vx = 0.6*((e.clientX-d.lx)/dt) + 0.4*d.vx; d.lx = e.clientX; d.lt = now; }
+      if(!movable && Math.abs(raw)>24 && !d.edgeShown){ d.edgeShown = true; pzPulseEdge(dirDrag); }
+      pzSchedule();
+    });
+    const end = e=>{
+      const d = PZ.drag; if(!d || (e && e.pointerId!==d.id)) return;
+      PZ.drag = null; deck.classList.remove('dragging');
+      if(d.locked!=='h') return;
+      PZ.suppressClick = true; setTimeout(()=>PZ.suppressClick=false, 60);
+      const fast = Math.abs(d.vx) > 0.5;                    // px/ms: a quick flick
+      const far = Math.abs(d.rawDx) > 0.28*PZ.cw;           // ~28% of card width
+      const dir = fast ? (d.vx<0?1:-1) : (d.rawDx<0?1:-1);
+      const v0 = d.vx*1000/PZ.stepX;
+      if((fast||far) && pzCanMove(dir)) pzCommit(dir, v0);
+      else pzSpringTo(0, v0);
+    };
+    deck.addEventListener('pointerup', end); deck.addEventListener('pointercancel', end);
+    deck.addEventListener('lostpointercapture', e=>{ if(e.target===deck && PZ.drag && PZ.drag.locked==='h') end(e); });   // ignore bubbled loss of touch's implicit capture on a child
+    deck.addEventListener('click', e=>{
+      if(PZ.suppressClick) return;
+      const act = e.target.closest('[data-pz-act]');
+      if(act){ return pzAction(act.dataset.pzAct); }
+      const pp = e.target.closest('[data-pz-person]'); if(pp){ return openPanel(pp.dataset.pzPerson); }
+      if(e.target.closest('button,a,input,select,textarea')) return;
+      const card = e.target.closest('.pz-card'); if(!card) return;
+      const s = parseInt(card.dataset.s,10);
+      if(s===0) pzFlip(); else if(s===1||s===-1) pzGo(s);
+    });
+    deck.addEventListener('keydown', e=>{
+      const card = e.target.closest && e.target.closest('.pz-card');
+      if(card && card.dataset.s==='0' && (e.key==='Enter' || e.key===' ') && e.target===card){ e.preventDefault(); pzFlip(); }
+    });
+    deck.addEventListener('wheel', e=>{
+      if(Math.abs(e.deltaX) <= Math.abs(e.deltaY)*1.2 || Math.abs(e.deltaX)<4) return;
+      e.preventDefault();
+      PZ.wheelAcc += e.deltaX; clearTimeout(PZ.wheelT); PZ.wheelT = setTimeout(()=>PZ.wheelAcc=0, 160);
+      if(!PZ.busy && Math.abs(PZ.wheelAcc)>70){ const dir = PZ.wheelAcc>0?1:-1; PZ.wheelAcc=0; PZ.busy=true; setTimeout(()=>PZ.busy=false, 450); pzGo(dir); }
+    }, {passive:false});
+  }
+  function renderPersonaKeepFocus(){
+    const pos = $('pzSearch').selectionStart;
+    renderPersona(true); const s=$('pzSearch'); if(s){ s.focus(); try{ s.setSelectionRange(pos,pos); }catch(e){} }
+  }
+  document.addEventListener('keydown', e=>{
+    if(currentView!=='persona' || !PZ.built) return;
+    if(e.target.closest && e.target.closest('input,textarea,select,.modal-backdrop')) return;
+    if(['flex','block'].includes(getComputedStyle($('personModalBackdrop')).display)) return;
+    if(e.key==='ArrowRight'){ e.preventDefault(); pzGo(1); }
+    else if(e.key==='ArrowLeft'){ e.preventDefault(); pzGo(-1); }
+  });
+  function pzAction(kind){
+    const item = PZ.items[PZ.index]; if(!item) return;
+    if(kind==='edit' && item.kind==='member'){ selectedId=item.person.id; pendingRelation=null; openPersonModal(item.person.id); $('openTraitPickerBtn').click(); }
+    else if(kind==='profile' && item.kind==='member'){ openPanel(item.person.id); }
+    else if(kind==='highlight'){
+      if(item.kind==='member'){ selectedId = item.person.id; switchView('tree'); afterLayout(()=>centerOnPerson(item.person.id)); }
+      else { activeTraitHighlight = item.traitKey; $('searchInput').value=''; selectedId=null; switchView('tree'); }
+    }
   }
 
   // ---------- members / pinned ----------
@@ -4383,6 +5012,7 @@
 
   // ---------- settings ----------
   $('toggleSound').addEventListener('change', e=>{ db.settings.sound=e.target.checked; scheduleSave(); });
+  $('togglePersonaSound').addEventListener('change', e=>{ db.settings.personaSound=e.target.checked; scheduleSave(); });
   $('toggleParticles').addEventListener('change', e=>{ db.settings.particles=e.target.checked; scheduleSave(); });
   $('toggleAnimations').addEventListener('change', e=>{ db.settings.animations=e.target.checked; scheduleSave(); });
   $('toggleMusic').addEventListener('change', e=>{
@@ -4481,6 +5111,10 @@
     if(peopleArr().length) afterLayout(centerTree);
     if(currentView==='members') renderMembers();
     if(currentView==='pinned') renderPinned();
+    if(currentView==='home') renderHome();
+    if(currentView==='timeline') renderTimeline();
+    if(currentView==='insights') renderInsights();
+    if(currentView==='persona') renderPersona(true);
   }
 
   window.addEventListener('resize', ()=>{
