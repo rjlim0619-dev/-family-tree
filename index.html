@@ -173,66 +173,52 @@
   @keyframes lineFlow{to{stroke-dashoffset:-31;}}
   #cardsLayer{position:absolute;top:0;left:0;}
 
-  .person-node{position:absolute;width:84px;display:flex;flex-direction:column;align-items:center;
-    cursor:pointer;animation:nodeIn .3s ease;}
-  @keyframes nodeIn{from{opacity:0;transform:scale(0.6);}to{opacity:1;transform:scale(1);}}
-  .node-float{animation-name:floaty;animation-timing-function:ease-in-out;animation-iteration-count:infinite;}
-  @keyframes floaty{
-    0%{transform:translate(0px,-6px);}
-    25%{transform:translate(5px,0px);}
-    50%{transform:translate(0px,7px);}
-    75%{transform:translate(-5px,1px);}
-    100%{transform:translate(0px,-6px);}
-  }
-  .node-photo{width:72px;height:72px;border-radius:50%;object-fit:cover;display:block;
-    border:2px solid rgba(124,176,255,0.4);background:#1a2438;
-    box-shadow:0 0 0 5px rgba(76,141,255,0.10), 0 0 18px 3px rgba(76,141,255,0.22), 0 8px 20px rgba(0,0,0,0.5);
-    transition:border-color .18s ease, box-shadow .18s ease, transform .18s ease;
-    animation:nodeGlow 4.5s ease-in-out infinite;}
-  .node-photo-placeholder{width:72px;height:72px;border-radius:50%;background:#1a2438;
-    border:2px solid rgba(124,176,255,0.35);display:flex;align-items:center;justify-content:center;
-    font-size:1.5rem;color:var(--text-faint);
-    box-shadow:0 0 0 5px rgba(76,141,255,0.10), 0 0 18px 3px rgba(76,141,255,0.22), 0 8px 20px rgba(0,0,0,0.5);
-    transition:border-color .18s ease, box-shadow .18s ease, transform .18s ease;
-    animation:nodeGlow 4.5s ease-in-out infinite;}
-  @keyframes nodeGlow{
-    0%,100%{box-shadow:0 0 0 5px rgba(76,141,255,0.08), 0 0 14px 2px rgba(76,141,255,0.18), 0 8px 20px rgba(0,0,0,0.5);}
-    50%{box-shadow:0 0 0 6px rgba(76,141,255,0.16), 0 0 26px 6px rgba(76,141,255,0.32), 0 8px 20px rgba(0,0,0,0.5);}
-  }
-  .person-node:hover .node-photo, .person-node:hover .node-photo-placeholder{transform:scale(1.08);
-    border-color:rgba(76,141,255,0.7);}
-  .person-node.selected .node-photo, .person-node.selected .node-photo-placeholder{
-    border-color:var(--accent);box-shadow:0 0 0 5px var(--accent-glow), 0 8px 22px rgba(0,0,0,0.5);}
+  /* Hybrid member card: small circular photo on the left, name + dates
+     beside it in a compact rounded rectangle — reads as a structured card
+     in a chart rather than a floating token, while still keeping a photo
+     as the primary visual anchor. */
+  .person-node{position:absolute;width:184px;height:64px;box-sizing:border-box;
+    display:flex;align-items:center;gap:10px;padding:0 14px 0 8px;
+    background:linear-gradient(180deg, var(--card-hover), var(--card));
+    border:1px solid var(--border-2);border-radius:14px;
+    box-shadow:0 1px 0 rgba(255,255,255,0.04) inset, 0 8px 18px rgba(0,0,0,0.35);
+    cursor:pointer;animation:nodeIn .25s ease;
+    transition:border-color .15s ease, box-shadow .15s ease, transform .12s ease;}
+  @keyframes nodeIn{from{opacity:0;transform:scale(0.92);}to{opacity:1;transform:scale(1);}}
+  .person-node:hover{border-color:rgba(124,176,255,0.5);transform:translateY(-1px);
+    box-shadow:0 1px 0 rgba(255,255,255,0.05) inset, 0 12px 24px rgba(0,0,0,0.42);}
+  .person-node:active{transform:translateY(0) scale(0.98);}
+  .person-node.selected{border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-glow), 0 10px 22px rgba(0,0,0,0.4);}
   .person-node.dimmed{opacity:0.22;}
-  .person-node.highlight .node-photo, .person-node.highlight .node-photo-placeholder{
-    border-color:var(--accent-2);box-shadow:0 0 0 5px var(--accent-glow), 0 0 22px var(--accent-glow);}
+  .person-node.highlight{border-color:var(--accent-2);box-shadow:0 0 0 3px var(--accent-glow);}
   /* Selecting someone highlights their immediate family and quietly recedes
      everyone else, so the relationships around that person stand out. */
   .person-node.kin-dim{opacity:0.4;}
-  .person-node.kin .node-photo, .person-node.kin .node-photo-placeholder{
-    border-color:rgba(255,255,255,0.6);box-shadow:0 0 0 4px rgba(255,255,255,0.14), 0 8px 20px rgba(0,0,0,0.5);}
-  .person-node:active .node-photo, .person-node:active .node-photo-placeholder{transform:scale(0.94);}
+  .person-node.kin{border-color:rgba(255,255,255,0.5);box-shadow:0 0 0 2px rgba(255,255,255,0.12);}
   /* Pinned people get the warm "heirloom" treatment instead of the structural
      blue — a visual cue that this person has been marked as significant. */
-  .person-node.pinned .node-photo, .person-node.pinned .node-photo-placeholder{
-    border-color:rgba(240,197,133,0.75);
-    box-shadow:0 0 0 5px rgba(227,165,85,0.16), 0 0 20px 4px rgba(227,165,85,0.3), 0 8px 20px rgba(0,0,0,0.5);
-    animation:nodeGlowWarm 4.5s ease-in-out infinite;}
-  @keyframes nodeGlowWarm{
-    0%,100%{box-shadow:0 0 0 5px rgba(227,165,85,0.12), 0 0 14px 2px rgba(227,165,85,0.22), 0 8px 20px rgba(0,0,0,0.5);}
-    50%{box-shadow:0 0 0 6px rgba(227,165,85,0.22), 0 0 28px 6px rgba(227,165,85,0.4), 0 8px 20px rgba(0,0,0,0.5);}
-  }
-  .node-pin{position:absolute;top:-2px;right:6px;font-size:0.72rem;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.6));}
-  /* Name + dates sit on a small frosted pill rather than bare on the canvas —
-     keeps text legible over connector lines, particles, and other nodes. */
-  .node-label{margin-top:7px;padding:3px 9px 4px;border-radius:10px;background:rgba(5,7,13,0.6);
-    backdrop-filter:blur(3px);max-width:98px;}
-  .node-name{font-size:0.76rem;font-weight:600;text-align:center;line-height:1.2;
+  .person-node.pinned{border-color:rgba(240,197,133,0.65);box-shadow:0 0 0 2px rgba(227,165,85,0.18);}
+  .node-photo{width:42px;height:42px;flex:none;border-radius:50%;object-fit:cover;display:block;
+    border:2px solid rgba(124,176,255,0.4);background:#1a2438;}
+  .node-photo-placeholder{width:42px;height:42px;flex:none;border-radius:50%;background:#1a2438;
+    border:2px solid rgba(124,176,255,0.35);display:flex;align-items:center;justify-content:center;
+    font-size:0.8rem;font-weight:700;color:var(--text-dim);}
+  .person-node.pinned .node-photo, .person-node.pinned .node-photo-placeholder{border-color:rgba(240,197,133,0.75);}
+  .node-pin{position:absolute;top:-7px;right:-7px;width:18px;height:18px;border-radius:50%;
+    background:var(--panel);border:1px solid var(--border-2);display:flex;align-items:center;justify-content:center;
+    font-size:0.64rem;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.5));}
+  .node-info{min-width:0;flex:1;display:flex;flex-direction:column;justify-content:center;}
+  .node-name{font-size:0.86rem;font-weight:700;color:var(--text);line-height:1.25;
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .node-dates{font-size:0.64rem;color:var(--text-dim);margin-top:1px;text-align:center;}
+  .node-dates{font-size:0.7rem;color:var(--text-dim);margin-top:2px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   @media (max-width:820px){
-    .node-name{font-size:0.82rem;}
-    .node-dates{font-size:0.68rem;}
+    /* Font size only — the card's box stays the exact size the layout
+       engine measured (CARD_W/CARD_H), so connector lines stay centered
+       on it. Zoom/pinch is how a phone views a wide tree, not a smaller card. */
+    .node-name{font-size:0.88rem;}
+    .node-dates{font-size:0.72rem;}
   }
 
   #quickInfo{
@@ -258,8 +244,13 @@
     box-shadow:-20px 0 60px rgba(0,0,0,0.6);transform:translateX(100%);transition:transform .25s ease;z-index:80;
     display:flex;flex-direction:column;}
   #sidePanel.open{transform:translateX(0);}
-  .panel-header{padding:20px 20px 14px 20px;border-bottom:1px solid var(--border);position:relative;}
-  .panel-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text-dim);font-size:1.15rem;cursor:pointer;}
+  .panel-header{padding:calc(20px + env(safe-area-inset-top)) 20px 14px 20px;border-bottom:1px solid var(--border);position:relative;}
+  /* 44x44 touch target, and offset so it still lands visually where it used
+     to on a device with no notch/safe-area (env(...) resolves to 0 there). */
+  .panel-close{position:absolute;top:calc(10px + env(safe-area-inset-top));right:10px;width:44px;height:44px;
+    border-radius:10px;background:none;border:none;color:var(--text-dim);font-size:1.15rem;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;}
+  .panel-close:hover{color:var(--text);background:rgba(255,255,255,0.07);}
   .panel-photo{width:80px;height:80px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 10px auto;
     border:2px solid rgba(255,255,255,0.15);background:#1a2438;}
   .panel-photo-placeholder{width:80px;height:80px;border-radius:50%;margin:0 auto 10px auto;background:#1a2438;
@@ -373,15 +364,32 @@
   .guide-card .g-title{font-weight:700;font-size:0.9rem;margin-bottom:6px;}
   .guide-card .g-desc{font-size:0.8rem;color:var(--text-dim);line-height:1.45;}
 
-  /* Modal */
+  /* Modal — a fixed-height flex column (header / scrollable body / footer)
+     rather than one big scrolling block, so the title, close button, and
+     Save/Cancel stay reachable no matter how long the form is or how much
+     the mobile keyboard eats into the visible viewport. */
   .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(2px);
-    align-items:center;justify-content:center;z-index:350;padding:16px;} /* above #lockScreen (300) so a modal opened during/after auth is never buried invisibly behind it */
+    align-items:center;justify-content:center;z-index:350;
+    padding:16px calc(16px + env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));
+    padding-top:calc(16px + env(safe-area-inset-top));
+    box-sizing:border-box;} /* above #lockScreen (300) so a modal opened during/after auth is never buried invisibly behind it */
   .modal{background:linear-gradient(180deg, var(--panel-2), var(--panel));border:1px solid var(--border-2);
-    border-radius:16px;padding:24px;width:100%;max-width:440px;max-height:88vh;overflow-y:auto;
+    border-radius:16px;width:min(calc(100vw - 24px), 440px);
+    max-height:min(88dvh, 720px);
+    display:flex;flex-direction:column;overflow:hidden;
     box-shadow:0 30px 80px rgba(0,0,0,0.7);animation:modalIn .2s ease;}
   @keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(0.98);}to{opacity:1;transform:none;}}
+  .modal-header{flex:none;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+    padding:20px 16px 12px 24px;}
+  .modal-header-text{min-width:0;}
   .modal h2{margin:0 0 4px 0;font-size:1.3rem;font-family:var(--font-display);}
-  .modal .modal-sub{color:var(--text-dim);font-size:0.78rem;margin-bottom:16px;}
+  .modal .modal-sub{color:var(--text-dim);font-size:0.78rem;}
+  /* 44x44 touch target (common mobile a11y guidance), visually a smaller
+     glyph centered inside it so it doesn't look oversized on desktop. */
+  .modal-close{flex:none;width:44px;height:44px;border-radius:10px;border:none;background:none;
+    color:var(--text-dim);font-size:1.15rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .modal-close:hover{color:var(--text);background:rgba(255,255,255,0.07);}
+  .modal-body{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 24px;}
   .photo-row{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
   .photo-preview{width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.15);background:#1a2438;}
   .photo-preview-placeholder{width:60px;height:60px;border-radius:50%;background:#1a2438;
@@ -390,7 +398,8 @@
   .photo-actions{display:flex;flex-direction:column;gap:6px;}
   .photo-actions input[type=file]{font-size:0.74rem;color:var(--text-dim);max-width:210px;}
   .link-danger{background:none;border:none;color:var(--danger);cursor:pointer;font-size:0.8rem;padding:0;text-decoration:underline;}
-  .modal-actions{display:flex;justify-content:space-between;align-items:center;margin-top:16px;}
+  .modal-actions{flex:none;display:flex;justify-content:space-between;align-items:center;
+    padding:14px 24px calc(16px + env(safe-area-inset-bottom)) 24px;border-top:1px solid var(--border);}
   .modal-actions .right{display:flex;gap:8px;}
   .btn-flat{padding:9px 15px;border-radius:9px;border:1px solid var(--border-2);background:rgba(255,255,255,0.03);
     color:var(--text-dim);font-size:0.83rem;cursor:pointer;}
@@ -485,7 +494,6 @@
     #bottomNav{padding-bottom:env(safe-area-inset-bottom);height:calc(62px + env(safe-area-inset-bottom));}
     .view-scroll{padding:18px 16px calc(90px + env(safe-area-inset-bottom)) 16px;}
     #viewDashboard .view-scroll{padding-top:calc(18px + env(safe-area-inset-top));}
-    .modal{max-height:calc(88vh - env(safe-area-inset-bottom));}
     .music-fab{bottom:calc(62px + env(safe-area-inset-bottom) + 14px);right:16px;}
     .music-panel{bottom:calc(62px + env(safe-area-inset-bottom) + 76px);right:16px;left:16px;width:auto;}
   }
@@ -539,12 +547,18 @@
 
 <!-- ============ MIGRATION MODAL (one-time: import trees already on this device) ============ -->
 <div class="modal-backdrop" id="migrationModalBackdrop">
-  <div class="modal" style="max-width:440px;">
-    <h2>Family trees found on this device</h2>
-    <div class="modal-sub" id="migrationModalSub"></div>
-    <div class="migration-list" id="migrationTreeList"></div>
-    <div class="lock-error" id="migrationError"></div>
-    <div class="lock-success" id="migrationSuccess"></div>
+  <div class="modal has-header" style="max-width:440px;">
+    <div class="modal-header">
+      <div class="modal-header-text">
+        <h2>Family trees found on this device</h2>
+        <div class="modal-sub" id="migrationModalSub"></div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="migration-list" id="migrationTreeList"></div>
+      <div class="lock-error" id="migrationError"></div>
+      <div class="lock-success" id="migrationSuccess" style="padding-bottom:20px;"></div>
+    </div>
     <div class="modal-actions">
       <button class="btn-flat" id="migrationSkipBtn">Don't import</button>
       <div class="right"><button class="btn-primary" id="migrationImportBtn">Import into my account</button></div>
@@ -801,45 +815,52 @@
 
 <!-- ============ PERSON MODAL ============ -->
 <div class="modal-backdrop" id="personModalBackdrop">
-  <div class="modal">
-    <h2 id="modalTitle">Add Person</h2>
-    <div class="modal-sub" id="modalSub"></div>
-    <div class="photo-row">
-      <img id="photoPreviewImg" class="photo-preview" style="display:none;">
-      <div id="photoPreviewPlaceholder" class="photo-preview-placeholder">N/A</div>
-      <div class="photo-actions">
-        <input type="file" id="fPhoto" accept="image/*">
-        <button class="link-danger" id="removePhotoBtn" style="display:none;">Remove photo</button>
+  <div class="modal has-header">
+    <div class="modal-header">
+      <div class="modal-header-text">
+        <h2 id="modalTitle">Add Person</h2>
+        <div class="modal-sub" id="modalSub"></div>
       </div>
+      <button type="button" class="modal-close" id="personModalCloseBtn" aria-label="Close">✕</button>
     </div>
-    <div class="field-row">
-      <div class="field"><label>First name</label><input type="text" id="fFirstName" placeholder="Required"></div>
-      <div class="field"><label>Middle name</label><input type="text" id="fMiddleName" placeholder="Optional"></div>
-    </div>
-    <div class="field-row">
-      <div class="field"><label>Last name</label><input type="text" id="fLastName" placeholder="Optional"></div>
-      <div class="field"><label>Nickname</label><input type="text" id="fNickname" placeholder="Optional"></div>
-    </div>
-    <div class="field-row">
+    <div class="modal-body">
+      <div class="photo-row">
+        <img id="photoPreviewImg" class="photo-preview" style="display:none;">
+        <div id="photoPreviewPlaceholder" class="photo-preview-placeholder">N/A</div>
+        <div class="photo-actions">
+          <input type="file" id="fPhoto" accept="image/*">
+          <button class="link-danger" id="removePhotoBtn" style="display:none;">Remove photo</button>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>First name</label><input type="text" id="fFirstName" placeholder="Required"></div>
+        <div class="field"><label>Middle name</label><input type="text" id="fMiddleName" placeholder="Optional"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Last name</label><input type="text" id="fLastName" placeholder="Optional"></div>
+        <div class="field"><label>Nickname</label><input type="text" id="fNickname" placeholder="Optional"></div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Gender</label>
+          <select id="fGender">
+            <option value="">N/A</option>
+            <option value="Female">Female</option>
+            <option value="Male">Male</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="field"><label>Birth date</label><input type="date" id="fBirth"></div>
+      </div>
       <div class="field">
-        <label>Gender</label>
-        <select id="fGender">
-          <option value="">N/A</option>
-          <option value="Female">Female</option>
-          <option value="Male">Male</option>
-          <option value="Other">Other</option>
-        </select>
+        <label>Death date</label>
+        <div class="death-row">
+          <input type="date" id="fDeath">
+          <label class="chk"><input type="checkbox" id="fLiving"> Living / N/A</label>
+        </div>
       </div>
-      <div class="field"><label>Birth date</label><input type="date" id="fBirth"></div>
+      <div class="field" style="padding-bottom:20px;"><label>Notes</label><textarea id="fNotes" placeholder="Anything worth remembering"></textarea></div>
     </div>
-    <div class="field">
-      <label>Death date</label>
-      <div class="death-row">
-        <input type="date" id="fDeath">
-        <label class="chk"><input type="checkbox" id="fLiving"> Living / N/A</label>
-      </div>
-    </div>
-    <div class="field"><label>Notes</label><textarea id="fNotes" placeholder="Anything worth remembering"></textarea></div>
     <div class="modal-actions">
       <button class="btn-flat" id="modalCancelBtn">Cancel</button>
       <div class="right"><button class="btn-primary" id="modalSaveBtn">Save</button></div>
@@ -849,10 +870,15 @@
 
 <!-- ============ TREE (create/rename) MODAL ============ -->
 <div class="modal-backdrop" id="treeModalBackdrop">
-  <div class="modal" style="max-width:380px;">
-    <h2 id="treeModalTitle">Create Family Tree</h2>
-    <div class="field"><label>Name</label><input type="text" id="tName" placeholder="e.g. Mom's Family"></div>
-    <div class="field"><label>Description</label><input type="text" id="tDesc" placeholder="Optional"></div>
+  <div class="modal has-header" style="max-width:380px;">
+    <div class="modal-header">
+      <div class="modal-header-text"><h2 id="treeModalTitle">Create Family Tree</h2></div>
+      <button type="button" class="modal-close" id="treeModalCloseBtn" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Name</label><input type="text" id="tName" placeholder="e.g. Mom's Family"></div>
+      <div class="field" style="padding-bottom:20px;"><label>Description</label><input type="text" id="tDesc" placeholder="Optional"></div>
+    </div>
     <div class="modal-actions">
       <button class="btn-flat" id="treeModalCancelBtn">Cancel</button>
       <div class="right"><button class="btn-primary" id="treeModalSaveBtn">Save</button></div>
@@ -862,21 +888,28 @@
 
 <!-- ============ RELATION PICKER MODAL (new vs. existing person) ============ -->
 <div class="modal-backdrop" id="relationPickerBackdrop">
-  <div class="modal" style="max-width:420px;">
-    <h2 id="relationPickerTitle">Add Relative</h2>
-    <div class="modal-sub" id="relationPickerSub"></div>
-    <div class="field" id="coParentField" style="display:none;">
-      <label>Other parent (optional)</label>
-      <select id="coParentSelect"></select>
+  <div class="modal has-header" style="max-width:420px;">
+    <div class="modal-header">
+      <div class="modal-header-text">
+        <h2 id="relationPickerTitle">Add Relative</h2>
+        <div class="modal-sub" id="relationPickerSub"></div>
+      </div>
+      <button type="button" class="modal-close" id="relationPickerCloseBtn" aria-label="Close">✕</button>
     </div>
-    <div id="relationPickerChoice" style="display:flex;flex-direction:column;gap:10px;">
-      <button class="action-btn" type="button" id="relationNewBtn">🆕 Create a new person</button>
-      <button class="action-btn" type="button" id="relationExistingBtn">🔗 Link an existing person in this tree</button>
-    </div>
-    <div id="relationExistingPicker" style="display:none;">
-      <div class="field"><input type="text" id="relationSearchInput" placeholder="Search by name…"></div>
-      <div id="relationCandidateList" style="max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;"></div>
-      <button class="btn-flat" type="button" id="relationBackBtn" style="margin-top:10px;">← Back</button>
+    <div class="modal-body">
+      <div class="field" id="coParentField" style="display:none;">
+        <label>Other parent (optional)</label>
+        <select id="coParentSelect"></select>
+      </div>
+      <div id="relationPickerChoice" style="display:flex;flex-direction:column;gap:10px;padding-bottom:20px;">
+        <button class="action-btn" type="button" id="relationNewBtn">🆕 Create a new person</button>
+        <button class="action-btn" type="button" id="relationExistingBtn">🔗 Link an existing person in this tree</button>
+      </div>
+      <div id="relationExistingPicker" style="display:none;padding-bottom:20px;">
+        <div class="field"><input type="text" id="relationSearchInput" placeholder="Search by name…"></div>
+        <div id="relationCandidateList" style="max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;"></div>
+        <button class="btn-flat" type="button" id="relationBackBtn" style="margin-top:10px;">← Back</button>
+      </div>
     </div>
     <div class="modal-actions">
       <button class="btn-flat" type="button" id="relationPickerCancelBtn">Cancel</button>
@@ -891,7 +924,7 @@
 <script>
 (function(){
   const DATA_KEY = 'family-tree-data-v3'; // legacy localStorage key, read once during the one-time cloud migration
-  const CARD_W = 96, CARD_H = 116, H_GAP = 22, ROW_GAP = 76, NODE_R = 36;
+  const CARD_W = 184, CARD_H = 64, H_GAP = 28, ROW_GAP = 90;
   const MAX_DIM = 220;
 
   // ---------- Supabase ----------
@@ -1668,6 +1701,7 @@
   }
   let editingTreeId = null;
   $('treeModalCancelBtn').onclick = ()=>{ $('treeModalBackdrop').style.display='none'; };
+  $('treeModalCloseBtn').onclick = ()=> $('treeModalCancelBtn').click();
   $('treeModalBackdrop').addEventListener('click', e=>{ if(e.target.id==='treeModalBackdrop') $('treeModalBackdrop').style.display='none'; });
   $('treeModalSaveBtn').onclick = async ()=>{
     const name = $('tName').value.trim();
@@ -2026,9 +2060,6 @@
         svg.appendChild(flow);
       }
     }
-    // circle-center Y sits near the top of each node box (photo is top-aligned, label below)
-    const circleCenterY = id => pos[id].y - CARD_H/2 + NODE_R;
-
     // Parent → child connections are drawn once per family unit (the exact
     // set of recorded parents behind a shared set of children), as a single
     // clean orthogonal path, rather than one diagonal line per parent per
@@ -2120,7 +2151,13 @@
         drawnPairs.add(pairKey);
         const a=pos[p.id], b=pos[spId];
         if(Math.abs(a.y-b.y) < 5){
-          edgeLine(a.x, circleCenterY(p.id), b.x, circleCenterY(spId), NODE_R, NODE_R, 'spouse', touchesSelection(p.id, spId));
+          // Connect the cards' facing edges (not their centers) — these are
+          // wide rectangular cards now, so a center-to-center line would cut
+          // straight through both cards' text. An edge-to-edge line sits
+          // entirely in the gap between them.
+          const leftId = a.x<b.x ? p.id : spId, rightId = a.x<b.x ? spId : p.id;
+          const x1 = pos[leftId].x + CARD_W/2, x2 = pos[rightId].x - CARD_W/2, y = pos[leftId].y;
+          edgeLine(x1, y, x2, y, 0, 0, 'spouse', touchesSelection(p.id, spId));
         }
       });
     });
@@ -2145,10 +2182,13 @@
       }
       node.style.left=(p0.x-CARD_W/2)+'px';
       node.style.top=(p0.y-CARD_H/2)+'px';
-      const photoHtml = p.photo ? `<img class="node-photo" src="${p.photo}">` : `<div class="node-photo-placeholder">N/A</div>`;
+      const initials = (((p.firstName||'').trim()[0]||'')+((p.lastName||'').trim()[0]||'')).toUpperCase() || '?';
+      const photoHtml = p.photo ? `<img class="node-photo" src="${p.photo}">` : `<div class="node-photo-placeholder">${initials}</div>`;
       const bYear = p.birthDate ? new Date(p.birthDate).getFullYear() : '?';
       const dYear = p.living ? 'Living' : (p.deathDate ? new Date(p.deathDate).getFullYear() : 'N/A');
-      node.innerHTML = `<div style="position:relative;">${p.pinned?'<div class="node-pin">📌</div>':''}${photoHtml}</div><div class="node-label"><div class="node-name">${escapeHtml(fullName(p))}</div><div class="node-dates">${bYear} – ${dYear}</div></div>`;
+      const nameFull = fullName(p);
+      node.title = nameFull; // full name on hover/long-press when the single-line name is truncated
+      node.innerHTML = `${p.pinned?'<div class="node-pin">📌</div>':''}${photoHtml}<div class="node-info"><div class="node-name">${escapeHtml(nameFull)}</div><div class="node-dates">${bYear} – ${dYear}</div></div>`;
       node.addEventListener('click', (e)=>{ e.stopPropagation(); openPanel(p.id); });
 
       // Hover (desktop) / long-press (mobile) quick-info popup
@@ -2639,6 +2679,7 @@
     $('relationPickerChoice').style.display='flex';
   };
   $('relationPickerCancelBtn').onclick = ()=>{ $('relationPickerBackdrop').style.display='none'; pendingRelation=null; };
+  $('relationPickerCloseBtn').onclick = ()=> $('relationPickerCancelBtn').click();
   $('relationPickerBackdrop').addEventListener('click', e=>{ if(e.target.id==='relationPickerBackdrop'){ $('relationPickerBackdrop').style.display='none'; pendingRelation=null; } });
   $('relationSearchInput').addEventListener('input', renderRelationCandidates);
 
@@ -2677,6 +2718,7 @@
   }
   function closePersonModal(){ $('personModalBackdrop').style.display='none'; pendingRelation=null; }
   $('modalCancelBtn').onclick = closePersonModal;
+  $('personModalCloseBtn').onclick = closePersonModal;
   $('personModalBackdrop').addEventListener('click', e=>{ if(e.target.id==='personModalBackdrop') closePersonModal(); });
   $('createFirstPersonBtn').onclick = ()=>{ pendingRelation=null; editingId=null; openPersonModal(null); };
 
