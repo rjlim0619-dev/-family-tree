@@ -4600,8 +4600,13 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     updatePwMeter();
     ['authSubmitBtn','suSubmitBtn'].forEach(id=>setAuthBtn($(id), id==='suSubmitBtn'?'Create account':'Sign In', false));
     try{ history.replaceState({authCard:0},'',location.pathname+location.search+'#login'); }catch(_){}
-    authSceneStart(); authSeqPlay(); GATE.want=false; gateUpdate();
+    try{ authSceneStart(); authSeqPlay(); }catch(err){ console.error('auth intro failed, showing the form directly',err); authSeqFinish(); }
+    GATE.want=false; try{ gateUpdate(); }catch(err){ console.error(err); }
+    // safety net: the intro animation must never leave the Sign In card hidden (stuck timeline, throttled tab, slow device)
+    clearTimeout(showAuthScreen.wd); showAuthScreen.wd=setTimeout(()=>{ if(ls.style.display!=='none' && ls.classList.contains('seq-boot')) authSeqFinish(); },4500);
   }
+  function authSeqFinish(){ const ls=$('lockScreen'); try{ if(authTL){ authTL.cancel(); authTL=null; } }catch(_){}
+    ls.className = ls.className.replace(/\b(seq-[\w-]+|b-[\w-]+)\b/g,'').replace(/\s+/g,' ').trim(); ls.classList.remove('checking'); ls.classList.add('seq-done'); try{ authDevName(true); }catch(_){} }
   async function authSubmitCred(kind, e){
     e.preventDefault();
     const p = kind==='su' ? 'su' : 'auth';
