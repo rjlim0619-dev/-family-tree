@@ -1839,8 +1839,43 @@
   /* list items inside those views */
   #viewTimeline.active .tl-item,#viewMembers.active .member-tile,#viewTimeline.active .tl-row{animation:vRise .6s var(--ease) both;animation-delay:calc(min(var(--k2,0),14) * 38ms + 120ms);}
   /* family-tree nodes: spring in with a cascade */
-  .person-node{animation:nodeIn .55s var(--spring) both;transition:border-color .3s var(--ease),box-shadow .4s var(--ease),transform .35s var(--spring),opacity .3s var(--ease);}
+  .person-node{animation:none;transition:border-color .3s var(--ease),box-shadow .4s var(--ease),transform .35s var(--spring),opacity .3s var(--ease),rotate .35s var(--spring),scale .4s var(--spring),filter .4s var(--ease);}
   @keyframes nodeIn{from{opacity:0;transform:scale(.8) translateY(8px);}to{opacity:1;transform:none;}}
+  /* ===== Tree: cinematic layer ===== */
+  #cardsLayer{perspective:900px;}
+  .person-node.fx-in{animation:nodeMat .75s cubic-bezier(.2,.9,.25,1) var(--fd,0s) backwards;}
+  @keyframes nodeMat{0%{opacity:0;clip-path:inset(0 0 100% 0);scale:.9;}40%{opacity:1;}100%{clip-path:polygon(var(--c) 0,calc(100% - var(--c)) 0,100% var(--c),100% calc(100% - var(--c)),calc(100% - var(--c)) 100%,var(--c) 100%,0 calc(100% - var(--c)),0 var(--c));scale:1;}}
+  .person-node.fx-scan{animation:nodeMat .8s cubic-bezier(.2,.9,.25,1) backwards;}
+  .gen-band.fx-in{animation:bandIn .7s cubic-bezier(.2,.9,.25,1) var(--fd,0s) backwards;} @keyframes bandIn{from{opacity:0;translate:-60px 0;}to{opacity:1;translate:0 0;}}
+  .gen-band.fx-in::before{animation:railDraw .8s ease-out var(--fd,0s) backwards;transform-origin:50% 0;} @keyframes railDraw{from{transform:scaleY(0);}to{transform:scaleY(1);}}
+  /* the constellation sits behind everything: bands are opaque so no line ever crosses a band or a card */
+  .gen-band{background:linear-gradient(90deg,rgba(39,230,255,.07),rgba(39,230,255,.015) 55%,transparent),#050b16 !important;}
+  .node-dates.nd-none{color:var(--text-faint);font-style:italic;opacity:.75;}
+  /* conduits */
+  #linesFx{position:absolute;left:0;top:0;pointer-events:none;overflow:visible;}
+  #linesSvg.svg-intro>line,#linesSvg.svg-intro>circle{animation:cdFade .6s ease .9s backwards;}
+  .cd-draw{stroke-dasharray:1;animation:cdDraw .85s cubic-bezier(.4,0,.2,1) var(--cd,0s) backwards;} @keyframes cdDraw{from{stroke-dashoffset:1;}to{stroke-dashoffset:0;}}
+  .cd-ph{stroke:rgba(225,254,255,.95);stroke-width:2;stroke-dasharray:5 75;animation:cdFade .35s ease var(--cd-d,0s) backwards,cdFlow var(--cd-t,1.9s) linear var(--cd-d,0s) infinite;filter:drop-shadow(0 0 3px #27e6ff);}
+  .cd-ph.hot{stroke-width:2.6;stroke-dasharray:6 44;filter:drop-shadow(0 0 5px #7ff3ff);} @keyframes cdFlow{to{stroke-dashoffset:-80;}} @keyframes cdFade{from{opacity:0;}}
+  .cd-trace{stroke:#fff;stroke-width:3.2;stroke-dasharray:.16 1.6;stroke-dashoffset:.16;filter:drop-shadow(0 0 7px #27e6ff);opacity:0;animation:cdTrace .75s cubic-bezier(.4,0,.2,1) var(--cd-d,0s) both;}
+  .cd-trace.up{animation-name:cdTraceUp;} @keyframes cdTrace{0%{stroke-dashoffset:.16;opacity:1;}100%{stroke-dashoffset:-1;opacity:1;}} @keyframes cdTraceUp{0%{stroke-dashoffset:-1;opacity:1;}100%{stroke-dashoffset:.16;opacity:1;}}
+  .cd-junc{fill:none;stroke:#bff;stroke-width:1.5;transform-box:fill-box;transform-origin:center;animation:cdJunc 3.2s ease-in-out var(--cd-d,0s) infinite;filter:drop-shadow(0 0 4px #27e6ff);} @keyframes cdJunc{0%,100%{transform:scale(1);opacity:.55;}8%{transform:scale(2.4);opacity:1;}30%{transform:scale(1);opacity:.55;}}
+  html[data-fx="off"] .cd-ph,html[data-fx="off"] .cd-trace,html[data-fx="off"] .cd-junc{display:none;} html[data-fx="calm"] .cd-ph{animation-duration:.35s,4.4s;} html[data-fx="calm"] .cd-junc{animation:none;opacity:.7;}
+  html.hk-paused .cd-ph,html.hk-paused .cd-junc{animation-play-state:paused;}
+  /* card lasers, lock-on brackets, far-zoom orbs */
+  .person-node .node-laser{position:absolute;left:0;top:0;width:34px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#fff);box-shadow:0 0 10px var(--cy),0 0 20px var(--cy);offset-path:inset(0 round 0);offset-rotate:auto;offset-distance:0%;opacity:0;pointer-events:none;}
+  .person-node:hover .node-laser,.person-node:focus-visible .node-laser{animation:afLaser .7s cubic-bezier(.4,0,.2,1) forwards;}
+  .person-node .node-lock{position:absolute;inset:-7px;pointer-events:none;opacity:0;background:
+    linear-gradient(var(--cy),var(--cy)) 0 0/12px 2px no-repeat,linear-gradient(var(--cy),var(--cy)) 0 0/2px 12px no-repeat,linear-gradient(var(--cy),var(--cy)) 100% 0/12px 2px no-repeat,linear-gradient(var(--cy),var(--cy)) 100% 0/2px 12px no-repeat,
+    linear-gradient(var(--cy),var(--cy)) 0 100%/12px 2px no-repeat,linear-gradient(var(--cy),var(--cy)) 0 100%/2px 12px no-repeat,linear-gradient(var(--cy),var(--cy)) 100% 100%/12px 2px no-repeat,linear-gradient(var(--cy),var(--cy)) 100% 100%/2px 12px no-repeat;filter:drop-shadow(0 0 4px var(--cy));}
+  .person-node.highlight .node-lock{opacity:1;animation:nodeLock .5s cubic-bezier(.2,.9,.25,1);} @keyframes nodeLock{from{opacity:0;scale:1.35;}to{opacity:1;scale:1;}}
+  .person-node .node-orb{position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:radial-gradient(circle,#fff 0,#8ff5ff 35%,rgba(39,230,255,.2) 70%,transparent 72%);box-shadow:0 0 18px var(--cy),0 0 36px rgba(39,230,255,.5);opacity:0;scale:.3;transition:opacity .3s,scale .45s var(--spring);pointer-events:none;}
+  .zoom-far .person-node{background:transparent !important;filter:none;} .zoom-far .person-node::before,.zoom-far .person-node::after{opacity:0 !important;} .zoom-far .person-node>*:not(.node-orb){opacity:0 !important;transition:opacity .25s;} .zoom-far .person-node .node-orb{opacity:1;scale:1.25;}
+  .zoom-far .person-node.selected .node-orb{scale:1.8;} .zoom-far .gen-band span{opacity:.5;}
+  html[data-fx="ultra"] .person-node.kin-dim,html[data-fx="high"] .person-node.kin-dim{scale:.96;filter:blur(.7px);} .person-node.kin-dim{scale:.97;}
+  html[data-fx="off"] .person-node .node-laser,html[data-fx="off"] .person-node .node-lock{display:none;}
+  @media (prefers-reduced-motion:reduce){ .person-node.fx-in,.person-node.fx-scan,.gen-band.fx-in,.cd-draw,.cd-trace,.cd-ph,.cd-junc,.person-node .node-laser,.person-node.highlight .node-lock{animation:none !important;} .cd-trace,.cd-ph,.cd-junc{display:none;} }
+
   .person-node:hover{transform:translateY(-3px) scale(1.025);}
   .person-node:active{transform:scale(.97);}
   /* panels & dialogs */
@@ -3236,7 +3271,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
       const k=o.k||170, c=o.c||22, m=o.m||1; let x=o.from||0, v=o.vel||0, to=o.to!=null?o.to:x, un=null, done=false;
       function step(dt){ const n=Math.max(1,Math.ceil(dt/.008)), h=dt/n; for(let i=0;i<n;i++){ const a=(k*(to-x)-c*v)/m; v+=a*h; x+=v*h; }
         if(o.onUpdate) o.onUpdate(x,v); if(Math.abs(to-x)<(o.eps||.001)&&Math.abs(v)<(o.eps||.001)*8){ x=to; v=0; if(o.onUpdate) o.onUpdate(x,0); done=true; if(o.onDone) o.onDone(); return false; } }
-      const h = { get value(){return x;}, get velocity(){return v;}, get target(){return to;},
+      const h = { get value(){return x;}, get velocity(){return v;}, get target(){return to;}, get running(){return !done;},
         to(t){ to=t; if(done){ done=false; un=tick(step); } return h; }, set(nx,nv){ x=nx; v=nv||0; if(o.onUpdate) o.onUpdate(x,v); }, stop(){ if(un) un(); done=true; } };
       if(tier==='off'){ x=to; v=0; if(o.onUpdate) o.onUpdate(x,0); done=true; } else un=tick(step);
       return h;
@@ -4656,6 +4691,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     // fit is deferred to the first time the tree tab is actually visible
     // (the viewport has no size while another tab is showing).
     treeNeedsFit = true;
+    if(!view || view==='tree') treeIntro = true;
     switchView(view || 'tree', {noRoute});
   }
   $('backToTreesBtn').onclick = ()=>{ closePanel(); showDashboard(); };
@@ -4957,6 +4993,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
   function switchView(view, opts){
     opts = opts || {};
     if(!VIEW_PANEL[view]) view = 'tree';
+    const prevView = currentView;
     if($('sidePanel').classList.contains('open') && view!==currentView) closePanel();
     currentView = view;
     syncNavActive();
@@ -4976,6 +5013,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     if(view==='import'){ if(IMP.stage==='done'||IMP.stage==='error'){ if(!IMP.running) impReset(true); } renderImport(); }
     if(view==='settings'){ $('settingsTreeName').value=tree()?tree().name:''; $('settingsTreeDesc').value=tree()?(tree().description||''):''; renderMe(); }
     if(view==='tree'){
+      if(prevView!=='tree' || opts.intro) treeIntro = true;
       renderTree();
       if(treeNeedsFit){ treeNeedsFit=false; if(peopleArr().length) afterLayout(fitToScreen); }
     }
@@ -5205,6 +5243,9 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
       totalHeight: people.length ? (maxGen+1)*(CARD_H+ROW_GAP) - ROW_GAP : CARD_H };
   }
 
+  const treeFx = { tid:null, units:null, traceSel:null, hadTid:null, fresh:new Map() };
+  const FXburst = (x,y,n)=>{ try{ burstParticles(x,y,n); }catch(_){} };
+  let treeIntro = false;
   function renderTree(){
     const people = peopleArr();
     const hasPeople = people.length>0;
@@ -5216,6 +5257,8 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     maybeShowFirstRunTip(hasPeople);
     if(!hasPeople) return;
 
+    const intro = treeIntro && FX.level>=2 && peopleArr().length<=80; treeIntro=false;
+    if(treeFx.tid!==currentTreeId){ treeFx.tid=currentTreeId; treeFx.units=null; treeFx.traceSel=null; }
     const layout = computeLayout();
     const pad = 80;
     const w = layout.totalWidth + pad*2;
@@ -5225,7 +5268,9 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     const svg = $('linesSvg');
     svg.setAttribute('width', w); svg.setAttribute('height', h);
     svg.innerHTML='<defs><filter id="lineGlow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="3.2"/></filter></defs>';
+    svg.classList.toggle('svg-intro', !!intro);
     const cardsLayer = $('cardsLayer');
+    const prevN = new Map(); if(!intro && treeFx.hadTid===currentTreeId) cardsLayer.querySelectorAll('.person-node').forEach(n=>{ const r=n.getBoundingClientRect(); prevN.set(n.dataset.id,{x:parseFloat(n.style.left),y:parseFloat(n.style.top),cx:r.left+r.width/2,cy:r.top+r.height/2}); });
     cardsLayer.innerHTML='';
     cardsLayer.style.width=w+'px'; cardsLayer.style.height=h+'px';
 
@@ -5237,7 +5282,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     if(!vpEl.querySelector('.tree-floor')){ vpEl.insertAdjacentHTML('afterbegin','<div class="tree-floor" aria-hidden="true"></div>'+HK.constellation(14,11,.28)); }
     const genY = {};
     Object.keys(layout.positions).forEach(id=>{ const g=layout.genCache[id]; if(genY[g]===undefined) genY[g]=pos[id].y; });
-    Object.keys(genY).sort((a,b)=>a-b).forEach(g=>{ const band=document.createElement('div'); band.className='gen-band'; band.style.top=(genY[g]-CARD_H/2-16)+'px'; band.style.height=(CARD_H+32)+'px'; band.style.width=w+'px'; band.innerHTML='<span>GEN '+(+g+1)+'</span>'; cardsLayer.appendChild(band); });
+    Object.keys(genY).sort((a,b)=>a-b).forEach(g=>{ const band=document.createElement('div'); band.className='gen-band'+(intro?' fx-in':''); if(intro) band.style.setProperty('--fd',(+g*0.5).toFixed(2)+'s'); band.style.top=(genY[g]-CARD_H/2-16)+'px'; band.style.height=(CARD_H+32)+'px'; band.style.width=w+'px'; band.innerHTML='<span>GEN '+(+g+1)+'</span>'; cardsLayer.appendChild(band); if(intro){ const sp=band.firstChild; setTimeout(()=>{ if(sp.isConnected) FX.decode(sp,'GEN '+(+g+1),360); },+g*500+250); } });
 
     const svgNS='http://www.w3.org/2000/svg';
     // Two visually distinct line languages, so relationships read at a glance
@@ -5329,27 +5374,24 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     // trunk below their cards; the trunk drops to a horizontal bus that
     // fans out to each child. Geometry only ever comes from each child's
     // real p.parents list, so this can't invent or assume a relationship.
-    function drawFamilyPath(d, emph, dim){
-      const baseOp = emph?0.75:(dim?0.08:0.35);
-      const glow=document.createElementNS(svgNS,'path');
-      glow.setAttribute('d',d); glow.setAttribute('fill','none');
-      glow.setAttribute('stroke',`rgba(39,230,255,${baseOp*0.55})`); glow.setAttribute('stroke-width',emph?'7':'5');
-      glow.setAttribute('stroke-linecap','round'); glow.setAttribute('filter','url(#lineGlow)');
-      svg.appendChild(glow);
-      const l=document.createElementNS(svgNS,'path');
-      l.setAttribute('d',d); l.setAttribute('fill','none');
-      l.setAttribute('stroke',`rgba(143,235,255,${dim?0.18:Math.min(1,baseOp+0.25)})`); l.setAttribute('stroke-width',emph?'2':'1.1');
-      l.setAttribute('stroke-linecap','round');
-      svg.appendChild(l);
-      if(db.settings.animations && !dim){
-        const flow=document.createElementNS(svgNS,'path');
-        flow.setAttribute('d',d); flow.setAttribute('fill','none');
-        flow.setAttribute('stroke','rgba(210,252,255,0.9)'); flow.setAttribute('stroke-width',emph?'2.1':'1.6');
-        flow.setAttribute('stroke-dasharray','5 26'); flow.setAttribute('stroke-linecap','round');
-        flow.setAttribute('class','flow-line');
-        flow.style.animationDuration = (2.4 + Math.random()*1.4).toFixed(2)+'s';
-        flow.style.animationDelay = (-Math.random()*3).toFixed(2)+'s';
-        svg.appendChild(flow);
+    // Energy conduits: a glowing base line (drawn in once) plus photons that travel parent -> child on their own
+    // light overlay (so the blurred base layer never repaints). Brighter and faster for the selected lineage.
+    const fxSvg = (function(){ let f=$('linesFx'); if(!f){ f=document.createElementNS(svgNS,'svg'); f.id='linesFx'; f.setAttribute('aria-hidden','true'); svg.insertAdjacentElement('afterend',f); }
+      f.setAttribute('width',w); f.setAttribute('height',h); f.innerHTML=''; return f; })();
+    const mkPath = (host,d,attrs)=>{ const el=document.createElementNS(svgNS,'path'); el.setAttribute('d',d); el.setAttribute('fill','none'); for(const k in attrs) el.setAttribute(k,attrs[k]); host.appendChild(el); return el; };
+    let conduits = 0;
+    function drawFamilyPath(d, emph, dim, o){
+      o = o||{}; const baseOp = emph?0.75:(dim?0.08:0.35);
+      const gl = mkPath(svg,d,{stroke:`rgba(39,230,255,${baseOp*0.55})`,'stroke-width':emph?'7':'5','stroke-linecap':'round',filter:'url(#lineGlow)',pathLength:'1'});
+      if(o.draw){ gl.setAttribute('class','cd-draw'); gl.style.setProperty('--cd',(o.delay||0).toFixed(2)+'s'); }
+      const l = mkPath(svg,d,{stroke:`rgba(143,235,255,${dim?0.18:Math.min(1,baseOp+0.25)})`,'stroke-width':emph?'2':'1.1','stroke-linecap':'round',pathLength:'1'});
+      if(o.draw){ l.setAttribute('class','cd-draw'); l.style.setProperty('--cd',(o.delay||0).toFixed(2)+'s'); }
+      if(db.settings.animations && !dim && ++conduits<160){
+        const ph = mkPath(fxSvg,d,{'stroke-linecap':'round'}); ph.setAttribute('class','cd-ph'+(emph?' hot':''));
+        ph.style.setProperty('--cd-t',(emph?0.55:1.9).toFixed(2)+'s'); ph.style.setProperty('--cd-d',((o.delay||0)+(o.draw?0.75:0)).toFixed(2)+'s');
+      }
+      if(o.trace!=null && o.trace>=0 && db.settings.animations){
+        const tr = mkPath(fxSvg,d,{'stroke-linecap':'round',pathLength:'1'}); tr.setAttribute('class','cd-trace'+(o.up?' up':'')); tr.style.setProperty('--cd-d',(o.trace*0.16).toFixed(2)+'s');
       }
     }
     const familyUnits = {};
@@ -5360,9 +5402,20 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
       if(!familyUnits[key]) familyUnits[key] = { parentIds, childIds: [] };
       familyUnits[key].childIds.push(p.id);
     });
-    Object.values(familyUnits).forEach(fu=>{
+    // lineage hop counts from the selected person (ancestors go up, descendants go down)
+    const ancHop = {}, descHop = {};
+    if(selectedId && !searchQ && personById(selectedId)){
+      const walk=(map,next)=>{ map[selectedId]=0; const q=[selectedId]; while(q.length){ const x=q.shift(); (next(personById(x))||[]).forEach(y=>{ if(map[y]===undefined && personById(y)){ map[y]=map[x]+1; q.push(y); } }); } };
+      walk(ancHop,p=>p&&p.parents); walk(descHop,p=>p&&p.children);
+    }
+    const newUnitKeys = new Set(); const unitSeen = new Set();
+    Object.entries(familyUnits).forEach(([ukey,fu])=>{
       const parentIds = fu.parentIds, childIds = fu.childIds.filter(id=>pos[id]);
       if(!childIds.length) return;
+      const fkey = ukey+'>'+childIds.slice().sort().join(','); unitSeen.add(fkey);
+      const gen = (layout.genCache && layout.genCache[parentIds[0]]) || 0;
+      const isNew = !intro && treeFx.units && !treeFx.units.has(fkey);
+      const drawOpt = intro ? {draw:true, delay:0.55+gen*0.5} : (isNew ? {draw:true, delay:0.15} : {});
       const parentXs = parentIds.map(id=>pos[id].x);
       const parentStubY = Math.min(...parentIds.map(id=>pos[id].y)) + CARD_H/2;
       const childArriveY = Math.max(...childIds.map(id=>pos[id].y)) - CARD_H/2;
@@ -5371,20 +5424,22 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
       const distributeY = parentStubY + span*0.7;
       const collectX = parentXs.reduce((a,c)=>a+c,0)/parentXs.length;
       const childXs = childIds.map(id=>pos[id].x);
-      const busMinX = Math.min(collectX, ...childXs);
-      const busMaxX = Math.max(collectX, ...childXs);
 
       const trunkEmph = touchesSelection(...parentIds, ...childIds);
       const trunkDim = selectedId && !searchQ && !trunkEmph;
+      // every segment is written in the direction energy travels: parents -> couple bar -> trunk -> bus -> each child
       let trunkD = '';
       parentIds.forEach(id=>{ trunkD += `M${pos[id].x},${pos[id].y+CARD_H/2} L${pos[id].x},${collectY} `; });
-      if(parentIds.length>1){ trunkD += `M${Math.min(...parentXs)},${collectY} L${Math.max(...parentXs)},${collectY} `; }
+      if(parentIds.length>1) parentIds.forEach(id=>{ if(pos[id].x!==collectX) trunkD += `M${pos[id].x},${collectY} L${collectX},${collectY} `; });
       trunkD += `M${collectX},${collectY} L${collectX},${distributeY} `;
-      if(busMaxX>busMinX) trunkD += `M${busMinX},${distributeY} L${busMaxX},${distributeY} `;
-      drawFamilyPath(trunkD, trunkEmph, trunkDim);
+      childXs.forEach(x=>{ if(x!==collectX) trunkD += `M${collectX},${distributeY} L${x},${distributeY} `; });
+      let tr = {}; if(selectedId && !searchQ && treeFx.traceSel!==selectedId){
+        const upH = Math.min(...childIds.map(c=>ancHop[c]===undefined?1e9:ancHop[c])), dnH = Math.min(...parentIds.map(p=>descHop[p]===undefined?1e9:descHop[p]));
+        if(upH<1e9 || dnH<1e9) tr = {trace:Math.min(upH,dnH), up: upH<=dnH};
+      }
+      drawFamilyPath(trunkD, trunkEmph, trunkDim, {...drawOpt, ...tr});
 
-      // Small junction dot where two (or more) parents' lines merge into one
-      // trunk — an intentional, visible "this is where the family joins".
+      // junction: where two (or more) parents' lines merge — flashes when the energy arrives
       if(parentIds.length>1){
         const ring=document.createElementNS(svgNS,'circle');
         ring.setAttribute('cx',collectX); ring.setAttribute('cy',collectY); ring.setAttribute('r', trunkEmph?'4':'3');
@@ -5392,14 +5447,16 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
         ring.setAttribute('stroke',`rgba(143,235,255,${trunkDim?0.2:0.85})`);
         ring.setAttribute('stroke-width','1.4');
         svg.appendChild(ring);
+        if(!trunkDim && db.settings.animations){ const jn=document.createElementNS(svgNS,'circle'); jn.setAttribute('cx',collectX); jn.setAttribute('cy',collectY); jn.setAttribute('r','4'); jn.setAttribute('class','cd-junc'); jn.style.setProperty('--cd-d',((drawOpt.delay||0)+(drawOpt.draw?0.45:0)).toFixed(2)+'s'); fxSvg.appendChild(jn); }
       }
 
       childIds.forEach(cid=>{
         const emph = touchesSelection(cid, ...parentIds);
         const dim = selectedId && !searchQ && !emph;
-        drawFamilyPath(`M${pos[cid].x},${distributeY} L${pos[cid].x},${pos[cid].y-CARD_H/2}`, emph, dim);
+        drawFamilyPath(`M${pos[cid].x},${distributeY} L${pos[cid].x},${pos[cid].y-CARD_H/2}`, emph, dim, drawOpt.draw?{draw:true,delay:(drawOpt.delay||0)+0.5}:{});
       });
     });
+    treeFx.units = unitSeen; treeFx.traceSel = (selectedId && !searchQ) ? selectedId : null;
     // Draw one line per unique spouse pair — a person can have more than one
     // spouse/partner over time (remarriage, blended families), so this is no
     // longer limited to a single partner per person.
@@ -5423,10 +5480,16 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
       });
     });
 
+    const rowOrder = {}; if(intro){ people.slice().sort((a,b)=>pos[a.id].x-pos[b.id].x).forEach(p=>{ const g=layout.genCache?layout.genCache[p.id]||0:0; (rowOrder[g]=rowOrder[g]||[]).push(p.id); }); }
     people.forEach(p=>{
       const p0 = pos[p.id];
       const node = document.createElement('div');
-      node.className='person-node';
+      node.className='person-node'; node.dataset.id=p.id;
+      if(intro){ node.classList.add('fx-in'); const gI=layout.genCache?layout.genCache[p.id]||0:0, row=(rowOrder[gI]||[]).indexOf(p.id); node.style.setProperty('--fd',(0.3+gI*0.5+Math.abs(row-((rowOrder[gI]||[]).length-1)/2)*0.07).toFixed(2)+'s'); }
+      else {
+        if(prevN.size && !prevN.has(p.id) && !treeFx.fresh.has(p.id)) treeFx.fresh.set(p.id, performance.now());
+        const t0 = treeFx.fresh.get(p.id); if(t0!==undefined){ const age=performance.now()-t0; if(age<800){ node.classList.add('fx-scan'); node.style.animationDelay=(-age)+'ms'; } else treeFx.fresh.delete(p.id); }
+      }
       if(p.pinned) node.classList.add('pinned');
       // Cards used to idly drift (node-float) — nice on its own, but it
       // directly fights the point of a structured, aligned tree, so a card
@@ -5447,15 +5510,14 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
       node.style.top=(p0.y-CARD_H/2)+'px';
       const initials = (((p.firstName||'').trim()[0]||'')+((p.lastName||'').trim()[0]||'')).toUpperCase() || '?';
       const photoHtml = p.photo ? `<img class="node-photo" src="${p.photo}">` : `<div class="node-photo-placeholder">${initials}</div>`;
-      const bYear = p.birthDate ? new Date(p.birthDate).getFullYear() : '?';
-      const dYear = p.living ? 'Living' : (p.deathDate ? new Date(p.deathDate).getFullYear() : 'N/A');
+      const lifeTxt = lifeText(p), noDates = lifeTxt==='Dates not recorded';
       const nameFull = fullName(p);
       node.title = nameFull; // full name on hover/long-press when the single-line name is truncated
       node.tabIndex = 0; node.setAttribute('role','button');
-      node.setAttribute('aria-label', `${nameFull}, ${bYear} to ${dYear}. Open profile`);
+      node.setAttribute('aria-label', `${nameFull}, ${lifeTxt}. Open profile`);
       node.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openPanel(p.id); } });
       const hasMore = !!((p.notes && p.notes.trim()) || normalizeTraits(p.traits).length);
-      node.innerHTML = `${p.pinned?'<div class="node-pin">📌</div>':''}${hasMore?'<span class="node-flag" title="Has notes or observations"></span>':''}${photoHtml}<div class="node-info"><div class="node-name">${escapeHtml(nameFull)}</div><div class="node-dates">${bYear} – ${dYear}</div></div>`;
+      node.innerHTML = `${p.pinned?'<div class="node-pin">📌</div>':''}${hasMore?'<span class="node-flag" title="Has notes or observations"></span>':''}${photoHtml}<div class="node-info"><div class="node-name">${escapeHtml(nameFull)}</div><div class="node-dates${noDates?' nd-none':''}">${escapeHtml(lifeTxt)}</div></div><i class="node-laser" aria-hidden="true"></i><i class="node-lock" aria-hidden="true"></i><i class="node-orb" aria-hidden="true"></i>`;
       if(p.id===selectedId) node.insertAdjacentHTML('beforeend','<span class="sel-plat" aria-hidden="true"><i class="a"></i><i class="b"></i></span>');
       node.addEventListener('click', (e)=>{ e.stopPropagation(); openPanel(p.id); });
 
@@ -5502,6 +5564,13 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
 
       cardsLayer.appendChild(node);
     });
+    // layout changes (add / remove / move): neighbours glide to their new spot (FLIP), removed cards dissolve into particles
+    if(prevN.size && FX.level>=2){
+      cardsLayer.querySelectorAll('.person-node').forEach(n=>{ const o=prevN.get(n.dataset.id); if(!o) return; const dx=o.x-parseFloat(n.style.left), dy=o.y-parseFloat(n.style.top); if(Math.abs(dx)<1&&Math.abs(dy)<1) return;
+        try{ n.animate([{translate:`${dx}px ${dy}px`},{translate:'0 0'}],{duration:560,easing:'cubic-bezier(.2,.9,.25,1)'}); }catch(_){} });
+      const now=new Set(people.map(p=>p.id)); prevN.forEach((o,id)=>{ if(!now.has(id)) FXburst(o.cx,o.cy,26); });
+    }
+    treeFx.hadTid = currentTreeId;
 
     applyTransform();
   }
@@ -5545,8 +5614,17 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
   function applyTransform(){
     $('treeInner').style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`;
     $('zoomLabel').textContent = Math.round(zoom*100)+'%';
+    const far = zoom < (applyTransform.far ? 0.6 : 0.5); if(far!==applyTransform.far){ applyTransform.far = far; $('treeInner').classList.toggle('zoom-far', far); }
     if(typeof scheduleMini==='function') scheduleMini();
   }
+
+  // card tilt: 3D rotation toward the pointer (CSS `rotate` axis form, so it never fights hover transforms)
+  (function(){ const layer=$('cardsLayer'); let cur=null, raf=0, px=0, py=0;
+    const apply=()=>{ raf=0; if(!cur) return; const r=cur.getBoundingClientRect(); const nx=((px-r.left)/r.width-.5)*2, ny=((py-r.top)/r.height-.5)*2; const mag=Math.min(1,Math.hypot(nx,ny)); if(mag<.02){ cur.style.rotate=''; return; }
+      cur.style.rotate = `${(-ny).toFixed(3)} ${nx.toFixed(3)} 0 ${(mag*7).toFixed(1)}deg`; };
+    layer.addEventListener('pointermove',e=>{ if(e.pointerType==='touch'||FX.level<3||dragging) return; const n=e.target.closest&&e.target.closest('.person-node'); if(n!==cur){ if(cur) cur.style.rotate=''; cur=n; } if(!cur) return; px=e.clientX; py=e.clientY; if(!raf) raf=requestAnimationFrame(apply); });
+    layer.addEventListener('pointerleave',()=>{ if(cur) cur.style.rotate=''; cur=null; });
+    layer.addEventListener('pointerdown',()=>{ if(cur) cur.style.rotate=''; }); })();
   function centerTree(){
     const vp = $('treeViewport'); const inner = $('treeInner');
     const vw = vp.clientWidth || window.innerWidth;
@@ -5565,15 +5643,20 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     panY = vh/2 - (p0.y+80)*zoom;
     applyTransform();
   }
-  // smooth camera flight (rAF ease); instant under reduced motion
-  let flyRaf=0;
+  // camera: three springs (x, y, zoom). A new flight retargets the live springs, so it continues from the
+  // current position AND velocity (fully interruptible). Instant under reduced motion / Off.
+  let camSp=null;
+  function flyStop(){ if(camSp){ camSp.forEach(sp=>sp.stop()); camSp=null; } }
   function flyTo(tx,ty,tz){
-    cancelAnimationFrame(flyRaf);
-    if(isRM()){ panX=tx; panY=ty; zoom=tz; applyTransform(); return; }
-    const x0=panX,y0=panY,z0=zoom,t0=performance.now();
-    const dist=Math.hypot(tx-x0,ty-y0)+Math.abs(tz-z0)*400, D=Math.min(820,Math.max(420,300+dist*0.35))*(document.documentElement.dataset.motion==='calm'?1.35:1);
-    const step=now=>{ const k=Math.min(1,(now-t0)/D), e=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2; panX=x0+(tx-x0)*e; panY=y0+(ty-y0)*e; zoom=z0+(tz-z0)*e; applyTransform(); if(k<1) flyRaf=requestAnimationFrame(step); };
-    flyRaf=requestAnimationFrame(step);
+    if(isRM() || FX.level<1){ flyStop(); panX=tx; panY=ty; zoom=tz; applyTransform(); return; }
+    const calm = FX.level<=1, k = calm?80:150, c = calm?18:21;
+    if(camSp){ camSp[0].to(tx); camSp[1].to(ty); camSp[2].to(tz); camSp[0].k=k; return; }
+    const fin=()=>{ if(camSp && camSp.every(sp=>!sp.running)) camSp=null; };
+    camSp = [
+      FX.spring({from:panX,to:tx,k,c,eps:.05,onUpdate:v=>{ panX=v; },onDone:fin}),
+      FX.spring({from:panY,to:ty,k,c,eps:.05,onUpdate:v=>{ panY=v; },onDone:fin}),
+      FX.spring({from:zoom,to:tz,k:k*1.2,c:c*1.08,eps:.0006,onUpdate:v=>{ zoom=Math.max(.3,Math.min(2.3,v)); applyTransform(); },onDone:fin})
+    ];
   }
   function flyToPerson(id){
     const layout=computeLayout(); const p0=layout.positions[id]; if(!p0) return;
@@ -5630,8 +5713,9 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
   }
   function zoomBy(factor,cx,cy){
     const vp=$('treeViewport'); const r=vp.getBoundingClientRect(); if(cx==null){ cx=r.width/2; cy=r.height/2; }
-    const tz=Math.min(2,Math.max(0.4,zoom*factor)); const k=tz/zoom;
-    flyTo(cx-(cx-panX)*k, cy-(cy-panY)*k, tz);
+    const z0=camSp?camSp[2].target:zoom, x0=camSp?camSp[0].target:panX, y0=camSp?camSp[1].target:panY; // chain from where the camera is heading
+    const tz=Math.min(2,Math.max(0.3,z0*factor)); const k=tz/z0;
+    flyTo(cx-(cx-x0)*k, cy-(cy-y0)*k, tz);
   }
   function fitToScreen(){
     const vp = $('treeViewport'); const inner = $('treeInner');
@@ -5823,7 +5907,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
   viewport.addEventListener('mousedown', (e)=>{
     if(e.target.closest('.person-node')) return;
     dismissFirstRunTip();
-    cancelAnimationFrame(flyRaf); cancelAnimationFrame(inertiaRaf); vel={x:0,y:0,t:0};
+    flyStop(); cancelAnimationFrame(inertiaRaf); vel={x:0,y:0,t:0};
     dragging=true; viewport.classList.add('dragging');
     dragStart={x:e.clientX,y:e.clientY}; panStart={x:panX,y:panY};
   });
@@ -5846,7 +5930,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
   // wheel / trackpad zoom: proportional, anchored under the cursor, eased toward a target
   let wzTarget=0, wzRaf=0, wzAx=0, wzAy=0;
   viewport.addEventListener('wheel', (e)=>{
-    e.preventDefault(); cancelAnimationFrame(flyRaf); cancelAnimationFrame(inertiaRaf);
+    e.preventDefault(); flyStop(); cancelAnimationFrame(inertiaRaf);
     const r=viewport.getBoundingClientRect(); wzAx=e.clientX-r.left; wzAy=e.clientY-r.top;
     const dy=e.deltaMode===1?e.deltaY*16:e.deltaY; const f=Math.exp(-Math.max(-120,Math.min(120,dy))*(e.ctrlKey?0.012:0.0022));
     wzTarget=Math.min(2,Math.max(0.4,(wzRaf?wzTarget:zoom)*f));
@@ -5860,7 +5944,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
   viewport.addEventListener('touchstart', (e)=>{
     if(e.target.closest('.person-node')) return;
     dismissFirstRunTip();
-    cancelAnimationFrame(flyRaf); cancelAnimationFrame(inertiaRaf);
+    flyStop(); cancelAnimationFrame(inertiaRaf);
     if(e.touches.length===1){
       vel={x:0,y:0,t:0}; dragging=true; dragStart={x:e.touches[0].clientX,y:e.touches[0].clientY}; panStart={x:panX,y:panY};
     } else if(e.touches.length===2){
