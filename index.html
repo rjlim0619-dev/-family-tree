@@ -1487,6 +1487,9 @@
   html[data-fx="ultra"] #authDeck .hd-slot:not(.hd-act) .hd-flip,html[data-fx="high"] #authDeck .hd-slot:not(.hd-act) .hd-flip{filter:blur(1.4px);}
 
   .acc-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--cy-line);} .acc-e{flex:1 1 180px;min-width:0;overflow-wrap:anywhere;font-size:.85rem;} .acc-s{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);} .acc-row[data-st="pending"] .acc-s{color:#ffb454;} .acc-row[data-st="approved"] .acc-s{color:var(--cy);} .acc-b{display:flex;gap:6px;} .acc-b .pz-mini{min-height:36px;}
+  #accessGate{position:absolute;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px;-webkit-backdrop-filter:blur(18px) brightness(.55);backdrop-filter:blur(18px) brightness(.55);background:rgba(3,8,16,.35);transition:opacity .75s ease,backdrop-filter .75s ease,-webkit-backdrop-filter .75s ease;overflow-y:auto;}
+  #accessGate[hidden]{display:none;} #accessGate.pass{opacity:0;-webkit-backdrop-filter:blur(0) brightness(1);backdrop-filter:blur(0) brightness(1);pointer-events:none;}
+  #accessGate .ag-box{width:100%;max-width:400px;margin:auto;} #accessGate .gate-card{--c:20px;} #accessGate .lock-success{color:#9ff5c6;}
   /* ---- Sign In: field life, authenticating, grant, failure ---- */
   .af::after{content:"";position:absolute;left:0;top:0;width:36px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#fff);box-shadow:0 0 10px var(--cy),0 0 22px var(--cy);offset-path:inset(0 round 12px);offset-rotate:auto;offset-distance:0%;opacity:0;pointer-events:none;z-index:3;}
   .af:focus-within::after{animation:afLaser .62s cubic-bezier(.4,0,.2,1) forwards;} @keyframes afLaser{0%{opacity:1;offset-distance:0%;}88%{opacity:1;}100%{opacity:0;offset-distance:100%;}}
@@ -4111,6 +4114,27 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
   const authDeck = HK.deck($('authDeck'), { label:'Account access', ch:470, fit:true, cw:392, loop:false, flipOnTap:false,
     items: AUTH_CARDS.map(c=>({ label:c.label, front: HK.frame(`<div class="auth-eyebrow">${c.idx}</div>${c.html}`,{variant:'standard',intensity:'active',tick:true,glare:true,cls:'auth-card'}), back:grantedBack })),
     onChange(i){ authCardChanged(i); } });
+  // ---- access gate: the whole sign-in screen stays blurred until this visitor's email is approved ----
+  const gate = document.createElement('div'); gate.id='accessGate'; gate.setAttribute('role','dialog'); gate.setAttribute('aria-modal','true'); gate.setAttribute('aria-label','Private app: access required');
+  gate.innerHTML = `<div class="ag-box auth-newpw">${HK.frame(`<div class="auth-eyebrow">PRIVATE · ACCESS REQUIRED</div><h1 class="ac-title">Private family tree</h1><p class="sub">Enter your email to check your access. If you are new, your request goes to the owner for approval.</p>
+    <form id="gateForm" autocomplete="on" novalidate>${emailField('gateEmail')}${MSG('gate')}${BTN('gateBtn','Check access')}</form>`,{variant:'standard',intensity:'active',tick:true,glare:true,cls:'auth-card gate-card'})}</div>`;
+  $('lockScreen').appendChild(gate);
+  const gateHas = ()=>{ try{ return localStorage.getItem('ftAccess')==='1'; }catch(_){ return false; } };
+  function gateUpdate(){ const show=!gateHas(); gate.classList.remove('pass','gone'); gate.hidden=!show; const w=document.querySelector('#lockScreen .auth-wrap'); if(w){ try{ w.inert=show; }catch(_){} } if(show) setTimeout(()=>{ try{ $('gateEmail').focus({preventScroll:true}); }catch(_){} },400); }
+  function gatePass(email){ try{ localStorage.setItem('ftAccess','1'); }catch(_){} if(email){ ['authEmail','suEmail'].forEach(id=>{ if(!$(id).value) $(id).value=email; }); }
+    const w=document.querySelector('#lockScreen .auth-wrap'); if(w){ try{ w.inert=false; }catch(_){} }
+    if(authRM()||FX.level<2){ gate.hidden=true; return; } gate.classList.add('pass'); setTimeout(()=>{ gate.hidden=true; gate.classList.remove('pass'); },800); }
+  $('gateForm').addEventListener('submit', async e=>{ e.preventDefault(); const email=$('gateEmail').value.trim().toLowerCase(); $('gateError').textContent=''; $('gateSuccess').textContent='';
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ $('gateError').textContent='Enter a valid email address.'; authWarn(['gateEmail']); return; }
+    const btn=$('gateBtn'); setAuthBtn(btn,'Checking…',true);
+    try{ let r=await sb.rpc('check_access',{p_email:email}); if(r.error) throw r.error; let st=r.data;
+      if(st==='none'){ const q=await sb.rpc('request_access',{p_email:email}); if(q.error) throw q.error; st='requested'; }
+      if(st==='approved'){ $('gateSuccess').textContent='Access approved. Unlocking…'; setTimeout(()=>gatePass(email),450); }
+      else if(st==='requested') $('gateSuccess').textContent='Request sent to the owner. Come back once it is approved and enter this email again.';
+      else if(st==='pending') $('gateSuccess').textContent='Your request is still waiting for approval.';
+      else $('gateError').textContent='This request was not approved.';
+    }catch(err){ $('gateError').textContent='Could not check access. Check your connection and try again.'; }
+    finally{ setAuthBtn(btn,'Check access',false); } });
   function authLockVisible(){ const ls=$('lockScreen'); return ls.style.display!=='none' && !ls.classList.contains('dissolve'); }
   function authCardChanged(i){
     if(!authDeckReady) return;
@@ -4196,7 +4220,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     updatePwMeter();
     ['authSubmitBtn','suSubmitBtn'].forEach(id=>setAuthBtn($(id), id==='suSubmitBtn'?'Create account':'Sign In', false));
     try{ history.replaceState({authCard:0},'',location.pathname+location.search+'#login'); }catch(_){}
-    authSceneStart(); authSeqPlay();
+    authSceneStart(); authSeqPlay(); gateUpdate();
   }
   async function authSubmitCred(kind, e){
     e.preventDefault();
@@ -4493,7 +4517,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     sb.auth.onAuthStateChange(async (event, session)=>{
       if(event==='PASSWORD_RECOVERY'){
         $('authStage').hidden=true; $('authNewPwWrap').hidden=false;
-        $('lockScreen').classList.remove('checking'); $('lockScreen').style.display='flex'; authSceneStart(); authSeqPlay();
+        $('lockScreen').classList.remove('checking'); $('lockScreen').style.display='flex'; authSceneStart(); authSeqPlay(); gatePass();
         $('app').style.display='none';
         return;
       }
@@ -8778,9 +8802,8 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
   if(sdkLoadFailed){
     // The Supabase library itself never loaded — show this plainly instead of
     // a sign-in form that looks normal but can never actually submit.
-    $('authForm').style.display='none';
-    $('authTitle').textContent = 'Could not load';
-    $('authSub').textContent = '';
+    $('authForm').style.display='none'; try{ gate.hidden=true; }catch(_){}
+    $('lockScreen').classList.remove('checking','seq-boot');
     $('authError').textContent = "Couldn't load a required library. Check your internet connection and reload this page. If it keeps happening, try disabling any ad blocker or content blocker for this site.";
   } else {
     boot();
