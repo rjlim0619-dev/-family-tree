@@ -2,7 +2,8 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 
 // =====================  GATE CONFIG  (the ONE place to change gate timings; the app follows these)  =====================
 const CONFIG = {
-  // The ONLY place a code is ever sent. It lives in the Supabase secret DEVELOPER_EMAIL (never in the repo, never in the page).
+  // The ONLY place a code is ever sent. It lives on the server: the secret DEVELOPER_EMAIL, or (if that is not set) the private
+  // table gate_settings (no policies, service role only). Never in the repo, never in the page.
   DEVELOPER_EMAIL: (Deno.env.get('DEVELOPER_EMAIL') || '').trim().toLowerCase(),
   SHOW_FULL_DEVELOPER_EMAIL: Deno.env.get('SHOW_FULL_DEVELOPER_EMAIL') === 'true', // false = the page shows "rj•••••@gmail.com"
   ASK_NAME: Deno.env.get('ASK_NAME') !== 'false',   // optional "Your name" field (secret ASK_NAME=false turns it off)
@@ -56,6 +57,10 @@ Deno.serve(async (req) => {
   const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
   const ip = (req.headers.get('cf-connecting-ip') || req.headers.get('x-forwarded-for') || 'unknown').split(',')[0].trim();
   const now = Date.now(); // all expiry decisions use SERVER time, never the visitor's clock
+  if (!CONFIG.DEVELOPER_EMAIL && (body.action === 'info' || body.action === 'owner' || body.action === 'request')) {
+    const { data: st } = await db.from('gate_settings').select('value').eq('key', 'DEVELOPER_EMAIL').maybeSingle();
+    CONFIG.DEVELOPER_EMAIL = String(st?.value || '').trim().toLowerCase();
+  }
 
   // ---- gate token actions (no email needed) ----
   if (body.action === 'heartbeat' || body.action === 'validate') {

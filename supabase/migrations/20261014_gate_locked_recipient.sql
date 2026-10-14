@@ -19,3 +19,8 @@ begin
   if n = 1 then return '{}'::jsonb; end if;
   return jsonb_build_object('error', jsonb_build_object('message','The access gate is closed. Request a new access code.','http_code',403));
 end $function$;
+
+-- Private server-side settings (no policies: only the edge function's service role can read it).
+-- The developer address is inserted by hand, never committed:  insert into public.gate_settings values ('DEVELOPER_EMAIL','<address>');
+create table if not exists public.gate_settings (key text primary key, value text not null);
+alter table public.gate_settings enable row level security;
