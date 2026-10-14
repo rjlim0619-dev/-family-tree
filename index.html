@@ -1486,6 +1486,7 @@
   /* depth of field: side cards sit slightly out of focus (decorative, inert) */
   html[data-fx="ultra"] #authDeck .hd-slot:not(.hd-act) .hd-flip,html[data-fx="high"] #authDeck .hd-slot:not(.hd-act) .hd-flip{filter:blur(1.4px);}
 
+  .acc-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--cy-line);} .acc-e{flex:1 1 180px;min-width:0;overflow-wrap:anywhere;font-size:.85rem;} .acc-s{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);} .acc-row[data-st="pending"] .acc-s{color:#ffb454;} .acc-row[data-st="approved"] .acc-s{color:var(--cy);} .acc-b{display:flex;gap:6px;} .acc-b .pz-mini{min-height:36px;}
   /* ---- Sign In: field life, authenticating, grant, failure ---- */
   .af::after{content:"";position:absolute;left:0;top:0;width:36px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#fff);box-shadow:0 0 10px var(--cy),0 0 22px var(--cy);offset-path:inset(0 round 12px);offset-rotate:auto;offset-distance:0%;opacity:0;pointer-events:none;z-index:3;}
   .af:focus-within::after{animation:afLaser .62s cubic-bezier(.4,0,.2,1) forwards;} @keyframes afLaser{0%{opacity:1;offset-distance:0%;}88%{opacity:1;}100%{opacity:0;offset-distance:100%;}}
@@ -2346,6 +2347,11 @@
             <button class="link-danger me-signout" id="signOutBtn" style="margin-top:16px;">Sign out</button>
           </div>
 
+          <div class="settings-block" id="meSecAccess" data-ico="import" data-eyebrow="OWNER ONLY" hidden>
+            <h3>Access requests</h3>
+            <p class="me-note" style="margin-top:0;">People who asked to use this app. Only approved emails can create an account.</p>
+            <div id="accessList" class="acc-list" aria-live="polite"></div>
+          </div>
           <div class="settings-block" id="meSecImport" data-ico="import" data-eyebrow="IMPORT">
             <h3>Import from Word</h3>
             <p class="me-note" style="margin-top:0;">Add many family members at once from a .docx document. You review everything before it is saved, and every import can be undone.</p>
@@ -4084,19 +4090,22 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
   const BTN = (id,t)=>`<button class="lock-btn" type="submit" id="${id}"><span class="lb-t">${t}</span><i class="lb-scan" aria-hidden="true"></i></button>`;
   const MSG = id=>`<div class="lock-error" id="${id}Error" role="alert" aria-live="assertive"></div><div class="lock-success" id="${id}Success" role="status" aria-live="polite"></div>`;
   const AUTH_CARDS = [
-    { idx:'SECURE ACCESS · 01/03', label:'Sign in', html:`<h1 class="ac-title">Welcome back</h1><p class="sub">Sign in to access your family trees, synced across your devices.</p>
+    { idx:'SECURE ACCESS · 01/04', label:'Sign in', html:`<h1 class="ac-title">Welcome back</h1><p class="sub">Sign in to access your family trees, synced across your devices.</p>
       <form id="authForm" autocomplete="on" novalidate>${emailField('authEmail')}${pwField('authPassword','Password','current-password')}${MSG('auth')}${BTN('authSubmitBtn','Sign In')}</form>
-      <div class="auth-secondary"><a href="#" data-auth-go="1" role="button" class="auth-sec-btn">Create account</a><a href="#" data-auth-go="2" role="button" class="auth-sec-btn">Forgot password?</a></div>` },
-    { idx:'NEW ACCOUNT · 02/03', label:'Create account', html:`<h1 class="ac-title">Create your account</h1><p class="sub">Your family trees will be saved to this account and kept in sync across your devices.</p>
+      <div class="auth-secondary"><a href="#" data-auth-go="1" role="button" class="auth-sec-btn">Create account</a><a href="#" data-auth-go="2" role="button" class="auth-sec-btn">Forgot password?</a><a href="#" data-auth-go="3" role="button" class="auth-sec-btn">Request access</a></div>` },
+    { idx:'NEW ACCOUNT · 02/04', label:'Create account', html:`<h1 class="ac-title">Create your account</h1><p class="sub">Your family trees will be saved to this account and kept in sync across your devices.</p>
       <form id="suForm" autocomplete="on" novalidate>${emailField('suEmail')}${pwField('suPassword','Password','new-password')}
       <div class="pw-meter" id="pwMeter" data-score="0"><div class="pw-bar"><span id="pwBar"></span></div><em id="pwLabel">Use 8+ characters, mixed case and a number</em></div>
       <p class="auth-note">If email confirmation is turned on for this app, we'll ask you to confirm your address by email before you can sign in.</p>${MSG('su')}${BTN('suSubmitBtn','Create account')}</form>
       <div class="auth-secondary"><a href="#" data-auth-go="0" role="button" class="auth-sec-btn">Already have an account? Sign in</a></div>` },
-    { idx:'ACCOUNT RECOVERY · 03/03', label:'Reset password', html:`<h1 class="ac-title">Reset your password</h1><p class="sub">Enter your email and we'll send you a link to reset your password.</p>
+    { idx:'ACCOUNT RECOVERY · 03/04', label:'Reset password', html:`<h1 class="ac-title">Reset your password</h1><p class="sub">Enter your email and we'll send you a link to reset your password.</p>
       <form id="authResetRequestForm" autocomplete="on" novalidate>${emailField('authResetEmail')}<div class="lock-error" id="authResetError" role="alert" aria-live="assertive"></div><div class="lock-success" id="authResetSuccess" role="status" aria-live="polite"></div>${BTN('authResetSubmitBtn','Send reset link')}</form>
-      <div class="auth-secondary"><a href="#" data-auth-go="0" role="button" class="auth-sec-btn">← Back to sign in</a></div>` }
+      <div class="auth-secondary"><a href="#" data-auth-go="0" role="button" class="auth-sec-btn">← Back to sign in</a></div>` },
+    { idx:'PRIVATE APP · 04/04', label:'Request access', html:`<h1 class="ac-title">Request access</h1><p class="sub">This family tree is private. Enter your email and the owner will review your request. Once approved, you can create your account.</p>
+      <form id="reqForm" autocomplete="on" novalidate>${emailField('reqEmail')}${MSG('req')}${BTN('reqSubmitBtn','Send request')}</form>
+      <div class="auth-secondary"><a href="#" data-auth-go="1" role="button" class="auth-sec-btn">Already approved? Create account</a><a href="#" data-auth-go="0" role="button" class="auth-sec-btn">← Back to sign in</a></div>` }
   ];
-  const AUTH_HASH = ['login','signup','reset'];
+  const AUTH_HASH = ['login','signup','reset','request'];
   const grantedBack = HK.frame(`<div class="ag"><svg viewBox="0 0 48 48" class="ag-ck" aria-hidden="true"><circle cx="24" cy="24" r="20"/><path d="M14 25l7 7 13-15"/></svg><div class="ag-t">ACCESS GRANTED</div><div class="ag-s">Opening your family core…</div></div>`,{variant:'standard',intensity:'active',tick:true});
   let authDeckReady = false;
   const authDeck = HK.deck($('authDeck'), { label:'Account access', ch:470, fit:true, cw:392, loop:false, flipOnTap:false,
@@ -4198,6 +4207,8 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     if(password.length<6){ authFail($(p+'Error'), 'Password must be at least 6 characters.'); authWarn([p+'Password']); return; }
     const btn = $(p+'SubmitBtn'); setAuthBtn(btn, kind==='su' ? 'Creating account…' : 'Authenticating…', true); authBusy(true);
     let ok = false;
+    if(kind==='su'){ let st='none'; try{ const r=await sb.rpc('check_access',{p_email:email}); st=r&&r.data||'none'; }catch(_){}
+      if(st!=='approved'){ authSubmitting=false; setAuthBtn(btn,'Create account',false); authBusy(false); authFail($('suError'), st==='pending' ? 'Your access request is still waiting for approval.' : st==='denied' ? 'Your access request was not approved.' : 'This email has not been approved yet. Request access first.'); if(st==='none'){ setTimeout(()=>{ $('reqEmail').value=email; authDeck.go(3); },900); } return; } }
     try{
       authSubmitting = true;
       if(kind==='su'){
@@ -4225,6 +4236,17 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
   }
   let authPulseT=0;
   document.addEventListener('input', e=>{ const f=e.target && e.target.closest && e.target.closest('#lockScreen .af'); if(!f || FX.level<3) return; const n=performance.now(); if(n-authPulseT<340) return; authPulseT=n; f.classList.remove('af-pulse'); void f.offsetWidth; f.classList.add('af-pulse'); });
+  $('reqForm').addEventListener('submit', async e=>{
+    e.preventDefault(); const email=$('reqEmail').value.trim().toLowerCase(); $('reqError').textContent=''; $('reqSuccess').textContent='';
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ authFail($('reqError'),'Enter a valid email address.'); authWarn(['reqEmail']); return; }
+    const btn=$('reqSubmitBtn'); setAuthBtn(btn,'Sending…',true); authBusy(true);
+    try{ const { data, error } = await sb.rpc('request_access',{p_email:email}); if(error) throw error;
+      authBusy(false);
+      $('reqSuccess').textContent = data==='approved' ? 'You are already approved. Create your account to continue.' : data==='denied' ? 'This request was not approved.' : 'Request sent. You can create your account once the owner approves it.';
+      if(data==='approved'){ $('suEmail').value=email; setTimeout(()=>authDeck.go(1),1200); }
+    }catch(err){ authFail($('reqError'),'Could not send the request. Check your connection and try again.'); }
+    finally{ setAuthBtn(btn,'Send request',false); authBusy(false); }
+  });
   $('authForm').addEventListener('submit', e=>authSubmitCred('signin', e));
   $('suForm').addEventListener('submit', e=>authSubmitCred('su', e));
   $('authResetRequestForm').addEventListener('submit', async (e)=>{
@@ -5091,8 +5113,17 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     };
   }
   let meSyncVol = null;
+  const OWNER_EMAIL = 'rjlim060719@gmail.com';
+  async function renderAccess(){
+    const blk=$('meSecAccess'); if(!blk) return; const owner=!!(currentUser&&currentUser.email&&currentUser.email.toLowerCase()===OWNER_EMAIL); blk.hidden=!owner; if(!owner) return;
+    const box=$('accessList'); let rows=[]; try{ const r=await sb.from('access_requests').select('email,status,created_at').order('created_at',{ascending:false}); if(r.error) throw r.error; rows=r.data||[]; }catch(e){ box.innerHTML='<p class="me-note">Could not load requests.</p>'; return; }
+    const order={pending:0,denied:1,approved:2}; rows.sort((a,b)=>order[a.status]-order[b.status]);
+    box.innerHTML = rows.length ? rows.map(r=>`<div class="acc-row" data-st="${r.status}"><span class="acc-e">${escapeHtml(r.email)}</span><span class="acc-s">${r.status}</span><span class="acc-b">${r.status!=='approved'?`<button type="button" class="pz-mini" data-acc="approved" data-e="${escapeHtml(r.email)}">Approve</button>`:''}${r.status==='pending'?`<button type="button" class="pz-mini pz-mini-d" data-acc="denied" data-e="${escapeHtml(r.email)}">Deny</button>`:''}${r.email!==OWNER_EMAIL?`<button type="button" class="pz-mini pz-mini-d" data-acc="remove" data-e="${escapeHtml(r.email)}" aria-label="Remove ${escapeHtml(r.email)}">Remove</button>`:''}</span></div>`).join('') : '<p class="me-note">No requests yet.</p>';
+    box.querySelectorAll('[data-acc]').forEach(b=>b.onclick=async()=>{ b.disabled=true; const e=b.dataset.e, a=b.dataset.acc; try{ const q=sb.from('access_requests'); const r = a==='remove' ? await q.delete().eq('email',e) : await q.update({status:a,decided_at:new Date().toISOString()}).eq('email',e); if(r.error) throw r.error; toast(a==='approved'?'Approved '+e:a==='denied'?'Denied '+e:'Removed '+e); }catch(err){ toast('Could not update that request.'); } renderAccess(); });
+    const pend=rows.filter(r=>r.status==='pending').length; if(pend && !renderAccess.told){ renderAccess.told=true; toast(pend+' access request'+(pend>1?'s':'')+' waiting in Me.'); }
+  }
   function renderMe(){
-    initMe(); const t = tree(); if(!t) return; const root=$('meHero'); $('settingsDisplayName').value = (db.settings&&db.settings.displayName)||'';
+    initMe(); renderAccess(); const t = tree(); if(!t) return; const root=$('meHero'); $('settingsDisplayName').value = (db.settings&&db.settings.displayName)||'';
     const people=peopleArr(); const email=(currentUser&&currentUser.email)||''; const nm=userDisplayName()||email.split('@')[0]||'You';
     const ini=(nm.replace(/[^A-Za-z]/g,'').slice(0,2)||'Y').toUpperCase();
     const comp=treeCompleteness(people); const evs=collectTimelineEvents().length;
