@@ -1011,6 +1011,31 @@
   .pz-card.pz-materialize{animation:pzMat 1s var(--ease);}
   @keyframes pzMat{0%{opacity:0;transform:translateY(70px) scale(.55);}60%{opacity:1;}100%{opacity:1;transform:none;}}
   .pz-rm .pz-card.pz-materialize{animation:pzMatRM .4s linear;} @keyframes pzMatRM{from{opacity:0;}to{opacity:1;}}
+  /* ===== Persona: cinematic layer ===== */
+  /* the background constellation stays out from behind the deck (no lines cross cards) and keeps to the outer halo */
+  .pz-const{-webkit-mask-image:linear-gradient(90deg,#000 0,rgba(0,0,0,.8) 14%,transparent 30%,transparent 70%,rgba(0,0,0,.8) 86%,#000 100%),radial-gradient(ellipse 80% 80% at 50% 50%,#000 30%,transparent 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,#000 0,rgba(0,0,0,.8) 14%,transparent 30%,transparent 70%,rgba(0,0,0,.8) 86%,#000 100%),radial-gradient(ellipse 80% 80% at 50% 50%,#000 30%,transparent 100%);mask-composite:intersect;opacity:.2;}
+  .pz-edgepulse{display:none;} .pz-edgepulse.go{display:block;}
+  /* signal waveform + family presence fill the card with real data */
+  .pz-sig,.pz-pres{width:100%;margin:auto 0 0;padding:0 4px;text-align:left;flex:0 0 auto;}
+  .pz-sig-h{display:flex;justify-content:space-between;font-size:.58rem;letter-spacing:.2em;color:var(--cy);margin-bottom:4px;opacity:.9;} .pz-sig-h span:last-child{color:var(--text-dim);letter-spacing:.1em;}
+  .pz-sig svg{display:block;width:100%;height:58px;overflow:visible;} .pz-sig-base{stroke:rgba(39,230,255,.22);stroke-width:1;stroke-dasharray:2 4;vector-effect:non-scaling-stroke;}
+  .pz-sig-line{fill:none;stroke:var(--cy-2);stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 4px var(--cy));stroke-dasharray:1;}
+  .pz-sig-scan{fill:url(#none);fill:rgba(143,245,255,.22);opacity:0;} .pz-sig-t{margin-top:4px;font-size:.7rem;color:var(--text-dim);letter-spacing:.04em;}
+  .pz-sig-go .pz-sig-line{animation:pzSigDraw .9s cubic-bezier(.4,0,.2,1) var(--sd,0s) backwards;} .pz-sig-go .pz-sig-scan{animation:pzSigScan 1.1s ease-in-out var(--sd,0s) both;}
+  @keyframes pzSigDraw{from{stroke-dashoffset:1;}to{stroke-dashoffset:0;}} @keyframes pzSigScan{0%{opacity:0;transform:translateX(0);}15%{opacity:1;}85%{opacity:1;}100%{opacity:0;transform:translateX(206px);}}
+  .pz-pres-bar{position:relative;height:10px;border-radius:6px;background:rgba(39,230,255,.1);border:1px solid var(--cy-line);overflow:hidden;} .pz-pres-bar i{position:absolute;left:0;top:0;bottom:0;width:var(--w,0%);background:linear-gradient(90deg,rgba(39,230,255,.5),var(--cy-2));box-shadow:0 0 12px var(--cy);border-radius:6px;transform-origin:0 50%;}
+  .pz-sig-go .pz-pres-bar i{animation:pzBarIn .9s cubic-bezier(.2,.9,.25,1) var(--sd,0s) backwards;} @keyframes pzBarIn{from{transform:scaleX(0);}}
+  .pz-chip-in{animation:pzChipIn .45s cubic-bezier(.2,1.3,.3,1) var(--ci,0s) backwards;} @keyframes pzChipIn{from{opacity:0;scale:.6;translate:0 8px;}}
+  .pz-av-spin{animation:pzAvSpin .8s cubic-bezier(.3,1.1,.3,1) backwards;} @keyframes pzAvSpin{from{rotate:-220deg;opacity:.3;}}
+  /* holographic foil: a sheen that slides with the pointer / device tilt (CSS fallback; no WebGL needed) */
+  .pz-foil{position:absolute;inset:4px;z-index:2;pointer-events:none;opacity:0;mix-blend-mode:screen;transition:opacity .35s;
+    background:linear-gradient(115deg,transparent 18%,rgba(255,110,220,.22) 32%,rgba(110,255,240,.3) 46%,rgba(255,225,120,.22) 60%,rgba(130,140,255,.2) 72%,transparent 86%);background-size:260% 100%;background-position:calc(var(--fx,.5)*100%) 0;
+    clip-path:polygon(var(--c,20px) 0,calc(100% - var(--c,20px)) 0,100% var(--c,20px),100% calc(100% - var(--c,20px)),calc(100% - var(--c,20px)) 100%,var(--c,20px) 100%,0 calc(100% - var(--c,20px)),0 var(--c,20px));}
+  .pz-active .pz-foil{opacity:var(--foil,.0);} html[data-fx="off"] .pz-foil,html[data-fx="calm"] .pz-foil{display:none;}
+  .pz-stage.pz-hot{--foil:.9;} .pz-active .pz-card{rotate:var(--rx-ax,0 1 0) var(--rx-deg,0deg);transition:rotate .25s ease-out;}
+  @media (prefers-reduced-motion:reduce){ .pz-sig-go *,.pz-chip-in,.pz-av-spin{animation:none !important;} .pz-foil{display:none;} }
+  .tb-btn.save{background:linear-gradient(135deg,var(--cy),#7fb6ff);color:#04141c;border:1px solid var(--cy);font-weight:700;box-shadow:0 0 14px var(--cy-glow);}
+  .tb-btn.save:hover{color:#04141c;background:linear-gradient(135deg,var(--cy-2),#9cc7ff);box-shadow:0 0 20px var(--cy-glow);} .tb-btn.save:focus-visible{outline:2px solid var(--cy-2);outline-offset:2px;}
   /* observation sheet */
   .obs-sheet{width:min(100%,560px);height:min(92dvh,760px);max-height:92dvh;display:flex;flex-direction:column;overflow:hidden;padding-bottom:0;}
   .obs-privacy{margin:0 0 8px 0;font-size:0.74rem;color:var(--text-faint);}
@@ -3311,9 +3336,9 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     compute();
     return { tick, spring, decode, timeline, flip, roll, refresh:compute,
       get tier(){ return tier; }, get level(){ return LV[tier]; }, get fps(){ return fpsNow; }, get on(){ return LV[tier]>=2; }, get log(){ return downLog.slice(); },
-      get coarse(){ return coarse; }, forceCap(t){ cap=t; compute(); }, settle(ms){ settleUntil=performance.now()+(ms||1500); } };
+      get coarse(){ return coarse; }, get subs(){ return subs.size; }, get looping(){ return !!raf; }, forceCap(t){ cap=t; compute(); }, settle(ms){ settleUntil=performance.now()+(ms||1500); } };
   })();
-  window.FTFX = { get tier(){return FX.tier;}, get fps(){return FX.fps;}, get log(){return FX.log;}, forceCap:t=>FX.forceCap(t) }; // read-only probe for diagnostics
+  window.FTFX = { get tier(){return FX.tier;}, get fps(){return FX.fps;}, get log(){return FX.log;}, get subs(){return FX.subs;}, get looping(){return FX.looping;}, forceCap:t=>FX.forceCap(t) }; // read-only probe for diagnostics
 
   /* ================= HOLO KIT (JS) ================= */
   const HK = (function(){
@@ -7892,9 +7917,26 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
   }
   function pzHasAnyObservations(){ return peopleArr().some(p=> normalizeTraits(p.traits).some(e=>traitEntryMeta(e))); }
 
+  // Trait signal: one real bump per recorded observation (strengths rise, cautions dip), with a live tier tally underneath.
+  function pzSignal(entries){
+    const tiers = {strength:0,neutral:0,caution:0,concerning:0}; entries.forEach(e=>{ tiers[e.meta.tier]=(tiers[e.meta.tier]||0)+1; });
+    const n = Math.min(entries.length, 12), W = 220, H = 46, mid = H/2; let d = `M0 ${mid}`;
+    for(let i=0;i<n;i++){ const t = entries[i].meta.tier, amp = t==='strength' ? -17 : t==='neutral' ? -5 : t==='caution' ? 12 : 17; const x0 = 10 + i*(W-20)/n, x1 = 10 + (i+1)*(W-20)/n, xm = (x0+x1)/2;
+      d += ` L${x0.toFixed(1)} ${mid} C${(x0+(xm-x0)*.8).toFixed(1)} ${mid} ${(xm-(xm-x0)*.5).toFixed(1)} ${mid+amp} ${xm.toFixed(1)} ${mid+amp} S${(x1-(x1-xm)*.8).toFixed(1)} ${mid} ${x1.toFixed(1)} ${mid}`; }
+    d += ` L${W} ${mid}`;
+    const bits = []; if(tiers.strength) bits.push(`${tiers.strength} strength${tiers.strength>1?'s':''}`); if(tiers.neutral) bits.push(`${tiers.neutral} neutral`); const care=(tiers.caution||0)+(tiers.concerning||0); if(care) bits.push(`${care} to watch`);
+    return `<div class="pz-sig" role="img" aria-label="Trait signal: ${escapeHtml(bits.join(', '))}"><div class="pz-sig-h"><span>TRAIT SIGNAL</span><span>${entries.length} recorded</span></div>
+      <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="${mid}" x2="${W}" y2="${mid}" class="pz-sig-base"/><path d="${d}" class="pz-sig-line" pathLength="1"/><rect class="pz-sig-scan" x="0" y="0" width="14" height="${H}"/></svg>
+      <div class="pz-sig-t">${escapeHtml(bits.join(' · '))}</div></div>`;
+  }
+  // Family presence: how many members share this trait, as a real fraction of the tree.
+  function pzPresence(c){
+    const total = Math.max(c, peopleArr().length), pct = Math.round(c/total*100);
+    return `<div class="pz-pres" role="img" aria-label="${c} of ${total} members, ${pct} percent of the family"><div class="pz-sig-h"><span>FAMILY PRESENCE</span><span>${pct}%</span></div><div class="pz-pres-bar"><i style="--w:${pct}%"></i></div><div class="pz-sig-t">${c} of ${total} members</div></div>`;
+  }
   function pzCardHtml(item, idx, n){
     const tag = `${String(idx+1).padStart(2,'0')} / ${String(n).padStart(2,'0')}`;
-    const frame = (inner, extra)=>`<div class="pz-edge1"></div><div class="pz-edge2"></div><div class="pz-body"></div><div class="pz-grid"></div><div class="pz-glare"></div>
+    const frame = (inner, extra)=>`<div class="pz-edge1"></div><div class="pz-edge2"></div><div class="pz-body"></div><div class="pz-grid"></div><div class="pz-glare"></div><div class="pz-foil"></div>
       <i class="pz-tick pz-tick-t"></i><i class="pz-tick pz-tick-b"></i>${inner}`;
     let front, back;
     if(item.kind==='ghost'){
@@ -7919,6 +7961,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
         <h3 class="pz-name">${escapeHtml(fullName(p))}</h3>
         <div class="pz-sub">${escapeHtml(yrs)} · Generation ${(item.gen||0)+1}</div>
         <div class="pz-chips">${chips}</div>
+        ${pzSignal(item.entries)}
         <div class="pz-count"><b>${total}</b> ${total===1?'observation':'observations'}</div>
         <div class="pz-status"><span class="pz-status-line"></span><span>PRIVATE RECORD · TAP TO FLIP</span></div></div>`);
       const rowsHtml = item.entries.map(({entry,meta})=>`<div class="pz-trait">
@@ -7943,6 +7986,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
         <p class="pz-expl pz-expl-l">${escapeHtml(m.isCustom?m.short:(m.full||m.short))}</p>
         <div class="pz-who" aria-label="Family members with this trait">${item.rows.slice(0,4).map(r=>`<span class="pz-who-av" title="${escapeHtml(fullName(r.person))}">${r.person.photo?`<img src="${escapeHtml(r.person.photo)}" alt="">`:`<span>${escapeHtml(initialsOf(r.person))}</span>`}</span>`).join('')}${c>4?`<span class="pz-who-av pz-who-more">+${c-4}</span>`:''}</div>
         <div class="pz-who-names">${escapeHtml(item.rows.slice(0,2).map(r=>fullName(r.person)).join(', '))}${c>2?` +${c-2} more`:''}</div>
+        ${pzPresence(c)}
         <div class="pz-bigcount"><b>${c}</b><span>${c===1?'family member':'family members'}</span></div>
         <div class="pz-status"><span class="pz-status-line"></span><span>PERSONAL OBSERVATION · TAP TO FLIP</span></div></div>`);
       const rowsHtml = item.rows.map(r=>`<div class="pz-trait"><div class="pz-trait-row"><button type="button" class="hx-person" data-pz-person="${r.person.id}">${avatarMini(r.person)}<span>${escapeHtml(fullName(r.person))}</span></button>
@@ -8035,7 +8079,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     PZ.built = true;
     if(!n){ $('pzDeck').style.display='none'; pzShowEmpty(any); pzUpdateNav(); return; }
     $('pzEmpty').hidden = true;
-    pzSizeStage(); pzRebind(true);
+    pzSizeStage(); if(!keepPlace) PZ.enterUntil = performance.now()+400; pzRebind(true);
     if(!keepPlace) pzEnter();
     if(materialize && !isRM()){ const c=PZ.els[2] && PZ.els[2].firstElementChild; if(c){ c.classList.add('pz-materialize'); setTimeout(()=>c.classList.remove('pz-materialize'),1100); } }
     root.classList.remove('pz-paused');
@@ -8127,11 +8171,27 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     PZ.els[2].classList.add('pz-active');
     if(isRM()) return;
     PZ.els[2].classList.remove('pz-activated'); void PZ.els[2].offsetWidth; PZ.els[2].classList.add('pz-activated');
+    pzScanContent(card);
     // a few small sparks at the corner nodes (kept minimal)
     ['n1','n2','n3','n4'].forEach((c,i)=>{
       const sp = document.createElement('b'); sp.className='pz-spark '+c; sp.style.animationDelay=(i*70)+'ms'; card.appendChild(sp);
       setTimeout(()=>sp.remove(), 900);
     });
+  }
+  // content scans in: name + subtitle decode, chips stagger, count rolls up, avatar ring spins and locks
+  (function(){ let raf=0, st=null;
+    const apply=(fx,fy)=>{ const stage=$('pzStage'); if(!stage) return; stage.style.setProperty('--fx',fx.toFixed(3)); stage.style.setProperty('--fy',fy.toFixed(3));
+      const act=stage.querySelector('.pz-active'); if(act){ act.style.setProperty('--fx',fx.toFixed(3)); const nx=(fx-.5)*2, ny=(fy-.5)*2, mag=Math.min(1,Math.hypot(nx,ny)); act.style.setProperty('--rx-ax',`${(-ny).toFixed(3)} ${nx.toFixed(3)} 0`); act.style.setProperty('--rx-deg',(mag*5).toFixed(2)+'deg'); } };
+    document.addEventListener('pointermove',e=>{ if(currentView!=='persona'||FX.level<3||e.pointerType==='touch') return; const stage=$('pzStage'); if(!stage) return; const r=stage.getBoundingClientRect(); if(e.clientY<r.top||e.clientY>r.bottom||e.clientX<r.left||e.clientX>r.right){ if(stage.classList.contains('pz-hot')){ stage.classList.remove('pz-hot'); apply(.5,.5);} return; }
+      stage.classList.add('pz-hot'); if(raf) return; const x=(e.clientX-r.left)/r.width, y=(e.clientY-r.top)/r.height; raf=requestAnimationFrame(()=>{ raf=0; apply(x,y); }); });
+    window.addEventListener('deviceorientation',e=>{ if(currentView!=='persona'||FX.level<3||e.gamma==null) return; const stage=$('pzStage'); if(!stage||raf) return; stage.classList.add('pz-hot'); const x=Math.max(0,Math.min(1,.5+e.gamma/60)), y=Math.max(0,Math.min(1,.5+(e.beta-45)/60)); raf=requestAnimationFrame(()=>{ raf=0; apply(x,y); }); },{passive:true}); })();
+  function pzScanContent(card){
+    if(FX.level<2) return; const base = (PZ.enterUntil && performance.now()<PZ.enterUntil) ? 800 : 0;
+    card.querySelectorAll('.pz-front .pz-name, .pz-front .pz-sub').forEach((el,i)=>{ if(el.children.length) return; FX.decode(el, el.textContent, 340, {delay:base+i*70}); });
+    card.querySelectorAll('.pz-front .pz-chip').forEach((c,i)=>{ c.style.setProperty('--ci',(base/1000+0.12+i*0.07).toFixed(2)+'s'); c.classList.remove('pz-chip-in'); void c.offsetWidth; c.classList.add('pz-chip-in'); });
+    const nb = card.querySelector('.pz-front .pz-count b, .pz-front .pz-bigcount b'); if(nb){ const to=+nb.textContent||0; nb.textContent='0'; setTimeout(()=>{ if(nb.isConnected) FX.roll(nb,to,520); }, base+200); }
+    const av = card.querySelector('.pz-front .pz-avatar'); if(av){ av.classList.remove('pz-av-spin'); void av.offsetWidth; av.classList.add('pz-av-spin'); }
+    const sg = card.querySelector('.pz-sig, .pz-pres'); if(sg){ sg.classList.remove('pz-sig-go'); void sg.offsetWidth; sg.style.setProperty('--sd',(base/1000+0.2)+'s'); sg.classList.add('pz-sig-go'); }
   }
   function pzUpdateNav(){
     const n = PZ.items.length; const prev=$('pzPrev'), next=$('pzNext'); if(!prev) return;
