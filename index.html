@@ -4887,7 +4887,13 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     applyRoute(); // honor a deep link such as #/t/<id>/timeline after sign-in
   }
   let appEntered = false;
+  // If something breaks at startup or sign-out, say so on screen (so it can be screenshotted) instead of leaving a blank scene.
+  function diag(m){ try{ let d=document.getElementById('ftDiag'); if(!d){ d=document.createElement('div'); d.id='ftDiag'; d.setAttribute('role','alert'); d.style.cssText='position:fixed;left:10px;bottom:10px;z-index:99999;max-width:min(92vw,520px);padding:10px 12px;border:1px solid #ffb347;border-radius:8px;background:rgba(20,10,0,.92);color:#ffd9a0;font:12px/1.4 ui-monospace,Menlo,monospace;white-space:pre-wrap;'; d.innerHTML='<b>Something went wrong</b> — please send a screenshot of this.<div id="ftDiagT"></div>'; document.body.appendChild(d); } const t=document.getElementById('ftDiagT'); if(t && t.textContent.length<900) t.textContent += '\n• '+String(m).slice(0,240); }catch(_){} }
+  window.addEventListener('error',e=>diag((e.message||'error')+(e.lineno?' (line '+e.lineno+')':'')));
+  window.addEventListener('unhandledrejection',e=>diag('promise: '+((e.reason&&e.reason.message)||e.reason)));
   async function boot(){
+    // startup watchdog: the lock screen starts hidden ("checking"); if nothing has revealed it or the app after 4s, force the Sign In screen
+    setTimeout(()=>{ const ls=$('lockScreen'); if(ls && !appEntered && ls.classList.contains('checking') && getComputedStyle(ls).display!=='none' && getComputedStyle($('app')).display==='none'){ diag('startup stalled — showing Sign In'); try{ appEntered=false; currentUser=null; showAuthScreen(); }catch(err){ diag('showAuthScreen: '+err.message); ls.classList.remove('checking'); } } },4000);
     const { data: { session } } = await sb.auth.getSession();
     if(session && session.user){ appEntered=true; await onAuthenticated(session.user); }
     else { showAuthScreen(); GS.restore().then(r=>{ if(r.ok){ $('lockScreen').style.display!=='none' && gatePass(r.email,1,true); } else if(r.had){ setBanner('away'); } }); }
@@ -4899,7 +4905,8 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
         return;
       }
       if(event==='SIGNED_OUT'){
-        AL.reset(); appEntered=false; currentUser=null; showAuthScreen();
+        try{ AL.reset(); }catch(err){ diag('auto-lock reset: '+err.message); } appEntered=false; currentUser=null;
+        try{ showAuthScreen(); }catch(err){ diag('sign-out screen: '+err.message); const ls=$('lockScreen'); ls.classList.remove('checking'); ls.style.display='flex'; authSeqFinish(); }
         return;
       }
       if(event==='SIGNED_IN' && session && session.user && !appEntered){
