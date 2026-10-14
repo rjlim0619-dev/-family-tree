@@ -1385,6 +1385,8 @@
   .hd-live{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
   .hd-rm .hd-flip{transition:none;transform:none !important;} .hd-rm .hd-back{transform:none;opacity:0;pointer-events:none;} .hd-rm .hd-slot.flipped .hd-back{opacity:1;pointer-events:auto;} .hd-rm .hd-slot.flipped .hd-front{opacity:0;pointer-events:none;}
   .hd-rm .hd-slot{transition:opacity .2s linear;}
+  /* fit decks: every card is exactly as tall as its own content (measured in .hd-measure) */
+  .hd-measure .hd-slot{height:auto !important;} .hd-measure .hd-flip,.hd-measure .hd-face{position:relative;inset:auto;} .hd-measure .hd-back{display:none;} .hd-measure .hd-face>.hf,.hd-measure .hd-face>.hf>.hf-in{height:auto;}
 
   /* ================= HOME: Family Core ================= */
   .hh{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;max-width:1280px;margin:0 auto;} .hh-col{display:flex;flex-direction:column;gap:14px;min-width:0;}
@@ -1417,7 +1419,7 @@
   .auth-stagewrap .hd{position:relative;z-index:1;}
   .auth-card .hf-in{padding:26px 20px 16px 20px;} .auth-card .auth-eyebrow{position:absolute;left:22px;top:11px;margin:0;font-size:.6rem;}
   #authDeck .ac-title{font-family:var(--font-display);font-size:1.45rem;margin:2px 0 4px 0;} #authDeck p.sub{margin:0 0 14px 0;font-size:.82rem;color:var(--text-dim);line-height:1.45;}
-  #authDeck .hd-face>.hf>.hf-in{overflow:visible;} #authDeck .auth-secondary{margin-top:auto;padding-top:10px;} 
+  #authDeck .hd-face>.hf>.hf-in{overflow:visible;} #authDeck .auth-secondary{margin-top:14px;padding-top:2px;} 
   #authDeck .af input,.auth-newpw .af input{width:100%;min-height:54px;padding:22px 46px 8px 44px;font-size:16px;color:var(--text);background:rgba(0,0,0,.34);border:1px solid rgba(39,230,255,.28);border-radius:12px;margin:0;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;}
   #authDeck .af input:focus,.auth-newpw .af input:focus{outline:none;border-color:var(--cy);box-shadow:0 0 0 3px rgba(39,230,255,.12),0 0 18px var(--cy-glow);}
   #authDeck .lock-btn,.auth-newpw .lock-btn{position:relative;overflow:hidden;width:100%;min-height:52px;margin-top:2px;border-radius:12px;border:1px solid var(--cy);color:#04141c;font-size:1rem;font-weight:700;letter-spacing:.02em;background:linear-gradient(135deg,var(--cy),#7fb6ff);box-shadow:0 0 22px var(--cy-glow);cursor:pointer;}
@@ -1435,18 +1437,49 @@
   .ad-lab{margin-top:6px;font-size:.58rem;letter-spacing:.42em;color:var(--cy);padding-left:.42em;} .ad-name{position:relative;display:inline-block;margin-top:2px;font-family:var(--font-display);font-size:1.15rem;color:#e8fdff;text-shadow:0 0 14px rgba(39,230,255,.45);white-space:nowrap;}
   .ad-name .adc{display:inline-block;} .ad-shim{position:absolute;inset:0;pointer-events:none;background:linear-gradient(100deg,transparent 35%,rgba(255,255,255,.65) 50%,transparent 65%);background-size:250% 100%;background-position:150% 0;mix-blend-mode:overlay;opacity:0;}
   /* load sequence: grid → platform rings → emblem → card → signature (~1.5s). Everything is visible by default; .seq-play animates it in. */
-  #lockScreen.seq-play #authCanvas{animation:seqFade .35s ease-out backwards;}
-  #lockScreen.seq-play .auth-plat{animation:seqFade .4s ease-out .2s backwards;} #lockScreen.seq-play .auth-rings{animation:seqFade .4s ease-out .2s backwards;}
-  #lockScreen.seq-play .auth-emblem .em-p{animation:emDraw .8s var(--ease) .3s forwards;} 
-  #lockScreen.seq-play .auth-name,#lockScreen.seq-play .auth-tag{animation:seqFade .4s ease-out .7s backwards;}
-  #lockScreen.seq-play #authDeck .hd{animation:seqUp .55s var(--ease) .65s backwards;}
-  #lockScreen.seq-play .ad-line.l,#lockScreen.seq-play .ad-line.r{animation:adDraw .35s ease-out 1s backwards;} #lockScreen.seq-play .ad-lab,#lockScreen.seq-play .ad-dia{animation:seqFade .25s ease-out 1.05s backwards;}
-  #lockScreen.seq-play .ad-name .adc{animation:adChar .12s ease-out backwards;animation-delay:calc(1.1s + var(--i) * 22ms);} #lockScreen.seq-play .ad-shim{animation:adShim .6s ease-out 1.5s 1 both;}
-  #lockScreen.seq-skip *{animation:none !important;} #lockScreen.seq-skip .em-p{stroke-dashoffset:0;} #lockScreen.seq-skip .em-n circle{opacity:1;}
+  #lockScreen.seq-boot .auth-rings{transition:opacity .5s ease-out,scale 1s cubic-bezier(.2,1.25,.3,1),rotate 1s cubic-bezier(.2,1.1,.3,1);}
+  #lockScreen.seq-boot:not(.b-rings) .auth-rings{opacity:0;scale:1.8;rotate:-60deg;}
+  #lockScreen.seq-boot .auth-plat .hp-r{transition:opacity .4s ease-out,scale .85s cubic-bezier(.2,1.25,.3,1);}
+  #lockScreen.seq-boot:not(.b-rings) .auth-plat .hp-r{opacity:0;scale:1.7;}
+  #lockScreen.seq-boot .auth-plat .hp-beam{transform-origin:50% 100%;transition:scale .6s cubic-bezier(.2,.9,.3,1),opacity .6s;}
+  #lockScreen.seq-boot:not(.b-beam) .auth-plat .hp-beam{scale:1 0;opacity:0;}
+  #lockScreen.seq-boot:not(.b-emblem) .em-p{animation:none;stroke-dashoffset:100;} #lockScreen.seq-boot:not(.b-emblem) .em-n circle{animation:none;opacity:0;}
+  #lockScreen.seq-boot.b-emblem .em-p{animation:emDraw .75s cubic-bezier(.3,.7,.2,1) forwards,emHot .95s ease-out forwards;} #lockScreen.seq-boot.b-emblem .em-ring{animation-duration:.9s,1s;}
+  #lockScreen.seq-boot.b-emblem .em-n circle{animation:emNode .35s ease-out .55s forwards;}
+  @keyframes emHot{0%{stroke:#fff;filter:drop-shadow(0 0 5px #fff);}100%{stroke:var(--cy);filter:none;}}
+  #lockScreen.seq-boot .auth-name,#lockScreen.seq-boot .auth-tag{transition:opacity .25s;} #lockScreen.seq-boot:not(.b-title) .auth-name,#lockScreen.seq-boot:not(.b-title) .auth-tag{opacity:0;}
+  #lockScreen.seq-boot #authDeck .hd-stage{transition:opacity .45s ease-out,translate .6s cubic-bezier(.2,.9,.25,1),scale .6s cubic-bezier(.2,.9,.25,1);transform-origin:50% 100%;}
+  #lockScreen.seq-boot:not(.b-frame) #authDeck .hd-stage{opacity:0;translate:0 26px;scale:.95;}
+  #lockScreen.seq-boot #authDeck .hd-act .hf>.hf-body,#lockScreen.seq-boot #authDeck .hd-act .hf>.hf-grid{transition:clip-path .5s cubic-bezier(.3,.8,.2,1);}
+  #lockScreen.seq-boot:not(.b-glass) #authDeck .hd-act .hf>.hf-body,#lockScreen.seq-boot:not(.b-glass) #authDeck .hd-act .hf>.hf-grid{clip-path:inset(100% 0 0 0);}
+  #lockScreen.seq-boot #authDeck .hd-act .hf-in,#lockScreen.seq-boot .hd-nav{transition:opacity .3s ease-out;} #lockScreen.seq-boot:not(.b-content) #authDeck .hd-act .hf-in,#lockScreen.seq-boot:not(.b-content) .hd-nav{opacity:0;}
+  #lockScreen.seq-boot #authDeck .hd-slot:not(.hd-act){transition:translate .8s cubic-bezier(.2,1.15,.3,1),opacity .55s ease-out;}
+  #lockScreen.seq-boot:not(.b-side) #authDeck .hd-slot:not(.hd-act){opacity:0 !important;} #lockScreen.seq-boot:not(.b-side) #authDeck .hd-slot[data-i="1"]{translate:-66% 0;} #lockScreen.seq-boot:not(.b-side) #authDeck .hd-slot[data-i="2"]{translate:-132% 0;}
+  #lockScreen.seq-boot .auth-dev{transition:opacity .2s;} #lockScreen.seq-boot:not(.b-dev) .auth-dev{opacity:0;}
+  #lockScreen.b-dev .ad-line.l,#lockScreen.b-dev .ad-line.r{animation:adDraw .35s ease-out backwards;} #lockScreen.b-dev .ad-lab,#lockScreen.b-dev .ad-dia{animation:seqFade .25s ease-out .05s backwards;}
+  #lockScreen.b-dev .ad-name .adc{animation:adChar .12s ease-out backwards;animation-delay:calc(.1s + var(--i) * 22ms);} #lockScreen.b-dev .ad-shim{animation:adShim .6s ease-out .5s 1 both;}
+  /* depth of field: side cards sit slightly out of focus (decorative, inert) */
+  html[data-fx="ultra"] #authDeck .hd-slot:not(.hd-act) .hd-flip,html[data-fx="high"] #authDeck .hd-slot:not(.hd-act) .hd-flip{filter:blur(1.4px);}
+
+  /* ---- Sign In: field life, authenticating, grant, failure ---- */
+  .af::after{content:"";position:absolute;left:0;top:0;width:36px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#fff);box-shadow:0 0 10px var(--cy),0 0 22px var(--cy);offset-path:inset(0 round 12px);offset-rotate:auto;offset-distance:0%;opacity:0;pointer-events:none;z-index:3;}
+  .af:focus-within::after{animation:afLaser .62s cubic-bezier(.4,0,.2,1) forwards;} @keyframes afLaser{0%{opacity:1;offset-distance:0%;}88%{opacity:1;}100%{opacity:0;offset-distance:100%;}}
+  .af.af-pulse input{animation:afPulse .38s ease-out;} @keyframes afPulse{0%{box-shadow:0 0 0 0 rgba(39,230,255,.4);}100%{box-shadow:0 0 0 7px rgba(39,230,255,0);}}
+  .af.af-warn input{border-color:#ffb454 !important;box-shadow:0 0 0 3px rgba(255,180,84,.14),0 0 16px rgba(255,180,84,.3) !important;}
+  .af.af-warn::before{content:"";position:absolute;left:6px;right:6px;top:0;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#ffc46b,transparent);box-shadow:0 0 12px #ffb454;animation:afScan .8s ease-in-out;pointer-events:none;z-index:3;} @keyframes afScan{0%{transform:translateY(0);opacity:0;}15%{opacity:1;}85%{opacity:1;}100%{transform:translateY(52px);opacity:0;}}
+  #lockScreen.authing .auth-plat .hp-beam{opacity:1;filter:blur(2px) brightness(1.7);} #lockScreen.authing .auth-rings{scale:1.04;transition:scale .5s var(--ease);}
+  #lockScreen.collapse .auth-stagewrap{transform-origin:50% 62%;animation:authCollapse .3s cubic-bezier(.6,0,.3,1) forwards;} @keyframes authCollapse{0%{transform:scale(1,1);opacity:1;}55%{transform:scale(1.02,.012);opacity:1;}100%{transform:scale(.01,.012);opacity:0;}}
+  #lockScreen.collapse .auth-brand{opacity:.0;transition:opacity .3s;} #lockScreen.collapse .auth-dev{opacity:0;transition:opacity .25s;}
+  #lockScreen.collapse.dissolve .auth-stagewrap{filter:none;} 
+  .hf.hf-glitch>.hf-e1{animation:hfGl1 .34s steps(2,end);} .hf.hf-glitch>.hf-e2{animation:hfGl2 .34s steps(2,end);}
+  @keyframes hfGl1{0%{transform:translateX(-3px);}25%{transform:translateX(3px) scaleY(1.01);}50%{transform:translateX(-2px);}75%{transform:translateX(2px);}100%{transform:none;}}
+  @keyframes hfGl2{0%{transform:translateX(3px);}25%{transform:translateX(-3px);}50%{transform:translateX(2px);}75%{transform:translateX(-2px);}100%{transform:none;}}
+  html[data-fx="off"] .af::after,html[data-fx="calm"] .af::after{display:none;} html[data-fx="off"] .af.af-pulse input{animation:none;}
+  @media (prefers-reduced-motion:reduce){ .af::after,.af.af-warn::before{display:none;} .af.af-pulse input,.hf.hf-glitch>*{animation:none !important;} #lockScreen.collapse .auth-stagewrap{animation:none;opacity:0;} }
   @keyframes seqFade{from{opacity:0;}to{opacity:1;}} @keyframes seqUp{0%{opacity:0;transform:translateY(34px);}40%{opacity:.8;}50%{opacity:.4;}70%{opacity:1;}100%{transform:none;}}
   @keyframes adDraw{from{transform:scaleX(0);}to{transform:scaleX(1);}} @keyframes adChar{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}} @keyframes adShim{0%{opacity:1;background-position:150% 0;}100%{opacity:0;background-position:-50% 0;}}
   #lockScreen.kb-open .auth-dev{display:block;} #lockScreen.kb-open .auth-plat{display:none;} #lockScreen.kb-open .auth-stagewrap{margin-top:0;}
-  @media (prefers-reduced-motion:reduce){ #lockScreen.seq-play *,.hf.hf-shake{animation:none !important;} .ad-shim{display:none;} .ag-ck{animation:none;} }
+  @media (prefers-reduced-motion:reduce){ #lockScreen.seq-boot *,#lockScreen.b-dev *,.hf.hf-shake{animation:none !important;} .ad-shim{display:none;} .ag-ck{animation:none;} }
   /* About badge in the Me tab */
   .dev-badge{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:.78rem;color:var(--text-dim);} .dev-badge b{font-family:var(--font-display);font-size:1rem;color:#e8fdff;text-shadow:0 0 12px rgba(39,230,255,.4);font-weight:600;} .dev-badge .db-l{font-size:.58rem;letter-spacing:.34em;color:var(--cy);}
 
@@ -1960,7 +1993,7 @@
 <canvas id="particleCanvas"></canvas>
 
 <!-- ============ AUTH SCREEN (sign in / sign up / forgot password / reset password) ============ -->
-<div id="lockScreen" class="checking">
+<div id="lockScreen" class="checking seq-boot">
   <canvas id="authCanvas" aria-hidden="true"></canvas>
   <div class="auth-rings" aria-hidden="true"><i class="ar r1"></i><i class="ar r2"></i><i class="ar r3"></i></div>
   <div class="auth-wrap">
@@ -3161,6 +3194,92 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
 
   const $ = id => document.getElementById(id);
 
+
+  /* ================= FX: cinematic motion engine =================
+     One shared rAF loop (runs only while something is animating, pauses in hidden tabs),
+     interruptible physics springs, a decode-text effect, FLIP, a skippable timeline and
+     quality tiers (ultra > high > balanced > calm > off) picked from the device and the
+     Motion setting, with a live FPS monitor that steps the tier down if frames drop. */
+  const FX = (function(){
+    const root = document.documentElement, LV = {off:0,calm:1,balanced:2,high:3,ultra:4}, NAMES = ['off','calm','balanced','high','ultra'];
+    const mq = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)') : {matches:false, addEventListener(){}};
+    const coarse = window.matchMedia ? matchMedia('(pointer:coarse)').matches : false;
+    function detect(){
+      const cores = navigator.hardwareConcurrency||4, mem = navigator.deviceMemory||4; let s=0;
+      s += cores>=8?2:cores>=4?1:0; s += mem>=8?2:mem>=4?1:0; if(coarse) s -= 1; if(Math.min(screen.width,screen.height)<420) s -= 1;
+      return s>=4?'ultra':s>=2?'high':'balanced';
+    }
+    let base = detect(), cap = 'ultra', tier = base, fpsNow = 60; const downLog = [];
+    function compute(){
+      const m = root.dataset.motion || 'full';
+      let t;
+      if(m==='off' || mq.matches) t='off'; else if(m==='calm') t='calm'; else t = LV[base] <= LV[cap] ? base : cap;
+      if(t!==tier || root.dataset.fx!==t){ tier=t; root.dataset.fx=t; }
+      return tier;
+    }
+    // ---- shared ticker ----
+    const subs = new Set(); let raf=0, lastT=0, winT=0, winN=0, lowWins=0, settleUntil=0;
+    function frame(now){
+      raf=0; if(document.hidden||!subs.size){ lastT=0; return; }
+      const dt = lastT ? Math.min(.05,(now-lastT)/1000) : .016; lastT=now;
+      // FPS monitor: 1s windows while something animates; two bad windows in a row => step down one tier
+      if(!winT) winT=now; winN++;
+      if(now-winT>=1000){ fpsNow = Math.round(winN*1000/(now-winT)); winT=now; winN=0;
+        if(now>settleUntil && tier!=='off' && tier!=='calm' && fpsNow<38){ if(++lowWins>=2){ lowWins=0; const nxt = NAMES[Math.max(1,LV[tier]-1)]; if(nxt!==tier){ downLog.push({fps:fpsNow,from:tier,to:nxt}); cap=nxt; compute(); } } } else lowWins=0; }
+      for(const f of [...subs]){ try{ if(f(dt,now)===false) subs.delete(f); }catch(e){ subs.delete(f); } }
+      if(subs.size) raf=requestAnimationFrame(frame); else lastT=0;
+    }
+    function tick(fn){ subs.add(fn); if(!raf && !document.hidden) raf=requestAnimationFrame(frame); return ()=>subs.delete(fn); }
+    document.addEventListener('visibilitychange',()=>{ lastT=0; winT=0; winN=0; lowWins=0; settleUntil=performance.now()+1500; if(!document.hidden && subs.size && !raf) raf=requestAnimationFrame(frame); });
+    // ---- interruptible spring: continues from current value AND velocity when retargeted ----
+    function spring(o){
+      const k=o.k||170, c=o.c||22, m=o.m||1; let x=o.from||0, v=o.vel||0, to=o.to!=null?o.to:x, un=null, done=false;
+      function step(dt){ const n=Math.max(1,Math.ceil(dt/.008)), h=dt/n; for(let i=0;i<n;i++){ const a=(k*(to-x)-c*v)/m; v+=a*h; x+=v*h; }
+        if(o.onUpdate) o.onUpdate(x,v); if(Math.abs(to-x)<(o.eps||.001)&&Math.abs(v)<(o.eps||.001)*8){ x=to; v=0; if(o.onUpdate) o.onUpdate(x,0); done=true; if(o.onDone) o.onDone(); return false; } }
+      const h = { get value(){return x;}, get velocity(){return v;}, get target(){return to;},
+        to(t){ to=t; if(done){ done=false; un=tick(step); } return h; }, set(nx,nv){ x=nx; v=nv||0; if(o.onUpdate) o.onUpdate(x,v); }, stop(){ if(un) un(); done=true; } };
+      if(tier==='off'){ x=to; v=0; if(o.onUpdate) o.onUpdate(x,0); done=true; } else un=tick(step);
+      return h;
+    }
+    // ---- decode text: scramble resolves left to right into the exact text ----
+    const LW='abcdefghijklmnopqrstuvwxyz', UP='ABCDEFGHIJKLMNOPQRSTUVWXYZ', DG='0123456789';
+    function decode(el, text, ms, opts){
+      opts=opts||{}; text=String(text==null?'':text); ms=ms||380;
+      if(el._fxUn){ el._fxUn(); el._fxUn=null; }
+      if(LV[tier]<2 || !text){ el.textContent=text; return Promise.resolve(); }
+      return new Promise(res=>{
+        el.setAttribute('aria-label',text); let t=-(opts.delay||0)/1000, last=-1; const chars=[...text];
+        if(opts.delay) el.textContent=opts.keep?el.textContent:'';
+        el._fxUn=tick(dt=>{ t+=dt; if(t<0) return; const p=Math.min(1,t/(ms/1000)); const n=Math.floor(p*chars.length*1.0); if(n===last&&p<1) return; last=n;
+          let out=''; for(let i=0;i<chars.length;i++){ const ch=chars[i]; out += (i<n||!/[A-Za-z0-9]/.test(ch)) ? ch : (/[a-z]/.test(ch)?LW:/[A-Z]/.test(ch)?UP:DG)[(Math.random()*(/[0-9]/.test(ch)?10:26))|0]; } el.textContent=out;
+          if(p>=1){ el.textContent=text; el.removeAttribute('aria-label'); el._fxUn=null; res(); return false; } });
+      });
+    }
+    // ---- skippable timeline (runs on the shared clock, so hidden tabs pause it) ----
+    function timeline(){ const steps=[]; let t=0, un=null, running=false, finished=false;
+      const api={ at(ms,fn){ steps.push({ms,fn,done:false}); return api; },
+        play(onEnd){ running=true; t=0; if(tier==='off'){ api.skip(); if(onEnd) onEnd(); return api; }
+          un=tick(dt=>{ t+=dt*1000; steps.forEach(s=>{ if(!s.done&&t>=s.ms){ s.done=true; try{s.fn(false);}catch(e){} } }); if(steps.every(s=>s.done)){ finished=true; running=false; if(onEnd) onEnd(); return false; } }); return api; },
+        skip(){ if(un) un(); steps.forEach(s=>{ if(!s.done){ s.done=true; try{s.fn(true);}catch(e){} } }); finished=true; running=false; return api; },
+        cancel(){ if(un) un(); running=false; return api; }, get running(){return running;}, get finished(){return finished;} };
+      return api; }
+    // ---- FLIP: animate elements from where they were to where mutate() puts them (transform only) ----
+    function flip(els, mutate, ms){
+      els=[...els]; const first=new Map(els.map(e=>[e,e.getBoundingClientRect()])); mutate();
+      if(LV[tier]<1) return;
+      els.forEach(e=>{ const a=first.get(e), b=e.getBoundingClientRect(); if(!a||!b) return; const dx=a.left-b.left, dy=a.top-b.top; if(!dx&&!dy) return;
+        e.animate([{transform:`translate(${dx}px,${dy}px)`},{transform:'none'}],{duration:ms||420,easing:'cubic-bezier(.2,.9,.25,1)'}); });
+    }
+    // ---- count/number roll ----
+    function roll(el, to, ms){ const from=parseFloat(el.textContent)||0; to=+to; if(LV[tier]<2||from===to){ el.textContent=to; return; } let t=0; const T=(ms||600)/1000; tick(dt=>{ t+=dt; const p=Math.min(1,t/T), e=1-Math.pow(1-p,3); el.textContent=Math.round(from+(to-from)*e); if(p>=1) return false; }); }
+    mq.addEventListener && mq.addEventListener('change',compute);
+    compute();
+    return { tick, spring, decode, timeline, flip, roll, refresh:compute,
+      get tier(){ return tier; }, get level(){ return LV[tier]; }, get fps(){ return fpsNow; }, get on(){ return LV[tier]>=2; }, get log(){ return downLog.slice(); },
+      get coarse(){ return coarse; }, forceCap(t){ cap=t; compute(); }, settle(ms){ settleUntil=performance.now()+(ms||1500); } };
+  })();
+  window.FTFX = { get tier(){return FX.tier;}, get fps(){return FX.fps;}, get log(){return FX.log;}, forceCap:t=>FX.forceCap(t) }; // read-only probe for diagnostics
+
   /* ================= HOLO KIT (JS) ================= */
   const HK = (function(){
     const rm = ()=> (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) || document.documentElement.dataset.motion==='off';
@@ -3205,7 +3324,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
 
   /* HoloDeck: reusable. items:[{front:html, back?:html, key?}] */
   HK.deck = function(root, o){
-    let items=(o.items||[]).slice(), pos=o.start||0, target=pos, vel=0, raf=0, dragging=false, cw=300; const ch=o.ch||360, n0=()=>items.length;
+    let items=(o.items||[]).slice(), pos=o.start||0, target=pos, vel=0, raf=0, dragging=false, cw=300, hs=[]; const ch=o.ch||360, n0=()=>items.length;
     const rmode=()=>HK.rm();
     root.classList.add('hd'); root.classList.toggle('hd-rm', rmode());
     root.innerHTML=`<div class="hd-stage" tabindex="0" role="group" aria-roledescription="carousel" aria-label="${HK.esc(o.label||'Cards')}"></div>`+
@@ -3220,17 +3339,24 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
       dotsEl.querySelectorAll('.hd-dot').forEach(d=>d.onclick=()=>go(+d.dataset.i));
       stage.style.height=(ch+8)+'px'; if(o.onBuilt) o.onBuilt(root,slots); layout();
     }
+    // fit mode: natural height of each card's content (measured once per change, never per frame)
+    const hOf=i=>(o.fit&&hs[i])?hs[i]:ch;
+    function measure(){ if(!o.fit||!slots.length) return; const W=stage.clientWidth||320; cw=Math.min(o.cw||320,Math.max(220,W-72));
+      stage.classList.add('hd-measure'); hs=slots.map(s=>{ s.style.display=''; s.style.width=cw+'px'; return Math.ceil(s.offsetHeight)||ch; }); stage.classList.remove('hd-measure'); layout(); }
+    let mRaf=0; const remeasure=()=>{ if(mRaf) return; mRaf=requestAnimationFrame(()=>{ mRaf=0; measure(); }); };
+    const mo = (o.fit&&window.MutationObserver) ? new MutationObserver(()=>{ if(!root.dataset.lock) remeasure(); }) : null;
     const wrap=d=>{ const n=n0(); return ((d%n)+n+n/2)%n-n/2; };
     function layout(){
       const W=stage.clientWidth||320; cw=Math.min(o.cw||320,Math.max(220,W-72)); const rm=rmode(); const n=n0();
       slots.forEach((s,i)=>{ let d=i-pos; if(o.loop&&n>2) d=wrap(d); const ad=Math.abs(d);
         if(ad>2.2){ s.style.display='none'; return; } s.style.display='';
         const tx=rm?0:d*cw*0.66, ry=rm?0:-d*26, sc=rm?1:1-Math.min(ad,2)*0.1;
-        s.style.width=cw+'px'; s.style.height=ch+'px'; s.style.marginLeft=(-cw/2)+'px';
+        s.style.width=cw+'px'; s.style.height=hOf(i)+'px'; s.style.marginLeft=(-cw/2)+'px';
         s.style.transform=`translateX(${tx}px) translateZ(${rm?0:-Math.min(ad,2)*80}px) rotateY(${ry}deg) scale(${sc})`;
         s.style.opacity=Math.max(0,rm?1-ad*1.6:1-ad*0.5).toFixed(3); s.style.zIndex=100-Math.round(ad*10);
         const act=ad<0.5; s.classList.toggle('hd-act',act); s.setAttribute('aria-hidden',act?'false':'true'); try{ s.inert=!act; }catch(_){}
       });
+      if(o.fit&&hs.length){ const a=Math.max(0,Math.min(n-1,Math.floor(pos))), b=Math.min(n-1,a+1), f=Math.max(0,Math.min(1,pos-a)); const H=hOf(a)+(hOf(b)-hOf(a))*f; stage.style.height=(Math.round(H)+8)+'px'; }
     }
     function idx(){ const n=n0(); let i=Math.round(pos); if(o.loop) i=((i%n)+n)%n; return Math.max(0,Math.min(n-1,i)); }
     let lastIdx=-1;
@@ -3259,9 +3385,9 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
       else if(!moved&&o.flipOnTap&&e.type==='pointerup'&&e.target.closest('.hd-slot.hd-act')) flip(); axis=null; }
     stage.addEventListener('pointerup',end); stage.addEventListener('pointercancel',end);
     stage.addEventListener('lostpointercapture',e=>{ if(e.target===stage&&dragging) end(e); });
-    const ro = window.ResizeObserver ? new ResizeObserver(()=>layout()) : null; if(ro) ro.observe(stage);
-    build(); target=pos; layout(); settleUI();
-    return { go, flip, index:idx, count:n0, slots:()=>slots, setItems(it,keep){ items=it.slice(); if(!keep) pos=target=0; else { pos=Math.min(pos,items.length-1); target=Math.round(pos); } lastIdx=-1; build(); settleUI(); }, relayout:layout, destroy(){ cancelAnimationFrame(raf); if(ro) ro.disconnect(); root.innerHTML=''; } };
+    const ro = window.ResizeObserver ? new ResizeObserver(()=>{ if(o.fit) remeasure(); else layout(); }) : null; if(ro) ro.observe(stage);
+    build(); if(o.fit){ measure(); if(mo) slots.forEach(sl=>mo.observe(sl,{childList:true,subtree:true,characterData:true})); } target=pos; layout(); settleUI();
+    return { go, flip, remeasure:measure, index:idx, count:n0, slots:()=>slots, setItems(it,keep){ items=it.slice(); if(!keep) pos=target=0; else { pos=Math.min(pos,items.length-1); target=Math.round(pos); } lastIdx=-1; build(); if(o.fit){ measure(); if(mo){ mo.disconnect(); slots.forEach(sl=>mo.observe(sl,{childList:true,subtree:true,characterData:true})); } } settleUI(); }, relayout:layout, destroy(){ cancelAnimationFrame(raf); if(ro) ro.disconnect(); if(mo) mo.disconnect(); root.innerHTML=''; } };
   };
   const NA = 'N/A';
   const disp = v => (v && String(v).trim()) ? v : NA;
@@ -3911,7 +4037,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
   const AUTH_HASH = ['login','signup','reset'];
   const grantedBack = HK.frame(`<div class="ag"><svg viewBox="0 0 48 48" class="ag-ck" aria-hidden="true"><circle cx="24" cy="24" r="20"/><path d="M14 25l7 7 13-15"/></svg><div class="ag-t">ACCESS GRANTED</div><div class="ag-s">Opening your family core…</div></div>`,{variant:'standard',intensity:'active',tick:true});
   let authDeckReady = false;
-  const authDeck = HK.deck($('authDeck'), { label:'Account access', ch:470, cw:392, loop:false, flipOnTap:false,
+  const authDeck = HK.deck($('authDeck'), { label:'Account access', ch:470, fit:true, cw:392, loop:false, flipOnTap:false,
     items: AUTH_CARDS.map(c=>({ label:c.label, front: HK.frame(`<div class="auth-eyebrow">${c.idx}</div>${c.html}`,{variant:'standard',intensity:'active',tick:true,glare:true,cls:'auth-card'}), back:grantedBack })),
     onChange(i){ authCardChanged(i); } });
   function authLockVisible(){ const ls=$('lockScreen'); return ls.style.display!=='none' && !ls.classList.contains('dissolve'); }
@@ -3929,11 +4055,17 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     if(l.dataset.authGo==='2' && $('authEmail').value && !$('authResetEmail').value) $('authResetEmail').value=$('authEmail').value; });
   $('authDeck').addEventListener('click', e=>{ const eye=e.target.closest('[data-eye]'); if(!eye) return; const inp=$(eye.dataset.eye); const on=inp.type==='password'; inp.type=on?'text':'password'; eye.setAttribute('aria-pressed',String(on)); eye.setAttribute('aria-label',on?'Hide password':'Show password'); eye.classList.toggle('on',on); inp.focus(); });
   function authActiveFrame(){ return document.querySelector('#authDeck .hd-slot.hd-act .hd-front .hf') || $('authNewPwWrap').querySelector('.hf'); }
+  // field-level feedback: amber scan on a field that needs attention
+  function authWarn(ids){ ids.forEach(id=>{ const f=$(id) && $(id).closest('.af'); if(!f) return; f.classList.remove('af-warn'); void f.offsetWidth; f.classList.add('af-warn'); setTimeout(()=>f.classList.remove('af-warn'),1000); }); }
+  // authenticating: rings spin up (smoothly, via playbackRate) and data streams up the beam
+  function authBusy(on){ const ls=$('lockScreen'); ls.classList.toggle('authing',on); if(on){ const fr=authActiveFrame(); if(fr) fr.classList.remove('hf-error','hf-shake','hf-glitch'); } AuthScene.authing=on?1:0;
+    try{ ls.querySelectorAll('.ar,.hp-r').forEach(r=>r.getAnimations().forEach(a=>a.updatePlaybackRate(on&&FX.level>=2?7:1))); }catch(_){} }
   function authFail(msgEl, text){
-    msgEl.textContent = text;
+    authBusy(false);
+    if(FX.level>=2 && !authRM()){ FX.decode(msgEl, text, 320); } else msgEl.textContent = text;
     const panel = authActiveFrame(); if(!panel) return; panel.classList.remove('hf-shake'); panel.classList.add('hf-error');
-    if(!authRM()){ void panel.offsetWidth; panel.classList.add('hf-shake'); }
-    clearTimeout(authFail._t); authFail._t = setTimeout(()=>panel.classList.remove('hf-error','hf-shake'), 2600);
+    if(!authRM()){ void panel.offsetWidth; panel.classList.add('hf-shake'); if(FX.level>=2){ panel.classList.remove('hf-glitch'); void panel.offsetWidth; panel.classList.add('hf-glitch'); } }
+    clearTimeout(authFail._t); authFail._t = setTimeout(()=>panel.classList.remove('hf-error','hf-shake','hf-glitch'), 2600);
   }
   function updatePwMeter(){
     const v = $('suPassword').value; let sc = 0;
@@ -3943,16 +4075,34 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     $('pwLabel').textContent = !v ? 'Use 8+ characters, mixed case and a number' : ['Too weak','Weak','Fair','Good','Strong'][sc];
   }
   $('suPassword').addEventListener('input', updatePwMeter);
-  // Load sequence (<1.5s, once per visit, skippable by tapping)
+  // Cinematic boot: spark > laser horizon > grid unfolds > constellation ignites > rings lock > beam > emblem traced
+  // > title decodes > card is projected (edges, glass, content) > side cards slide out > developer line.
+  // ~2.2s the first time, ~0.8s after that, once per session, skippable by tap or key. Never blocks the form.
+  let authTL = null;
   function authSeqPlay(){
-    const ls=$('lockScreen'); let played=false; try{ played = sessionStorage.getItem('ftSeq')==='1'; }catch(_){}
-    ls.classList.remove('seq-play','seq-skip','seq-done');
-    if(played || authRM()){ ls.classList.add('seq-done'); authDevName(true); return; }
-    try{ sessionStorage.setItem('ftSeq','1'); }catch(_){}
-    void ls.offsetWidth; ls.classList.add('seq-play'); authDevName(false);
-    const skip=()=>{ ls.classList.add('seq-skip','seq-done'); authDevName(true); ls.removeEventListener('pointerdown',skip); };
-    ls.addEventListener('pointerdown',skip,{once:true});
-    setTimeout(()=>{ ls.classList.add('seq-done'); ls.removeEventListener('pointerdown',skip); },1700);
+    const ls=$('lockScreen'); let played=false, seen=false;
+    try{ played = sessionStorage.getItem('ftSeq')==='1'; seen = localStorage.getItem('ftBooted')==='1'; }catch(_){}
+    if(authTL){ authTL.cancel(); authTL=null; }
+    ls.className = ls.className.replace(/\b(seq-[\w-]+|b-[\w-]+)\b/g,'').replace(/\s+/g,' ').trim();
+    $('authDeck').removeAttribute('data-lock'); AuthScene.bt=-1; AuthScene.fly=0; AuthScene.authing=0;
+    if(played || authRM() || FX.level<2){ ls.classList.add('seq-done'); authDevName(true); return; }
+    try{ sessionStorage.setItem('ftSeq','1'); localStorage.setItem('ftBooted','1'); }catch(_){}
+    const K = seen ? 0.36 : 1; AuthScene.K=K; AuthScene.bt=0;
+    ls.classList.add('seq-boot'); authDevName(false);
+    const stopClock = FX.tick(dt=>{ if(AuthScene.bt>=0) AuthScene.bt+=dt*1000; else return false; });
+    const add=c=>()=>ls.classList.add(c), T=ms=>ms*K, deck=$('authDeck');
+    const slot=()=>authDeck.slots()[authDeck.index()];
+    const dec=(sk,sel,ms,delay)=>{ if(sk) return; const el=slot() && slot().querySelector(sel); if(el) FX.decode(el, el.textContent, ms, {delay}); };
+    const tl=FX.timeline(); authTL=tl;
+    tl.at(T(700),add('b-rings')).at(T(950),add('b-beam')).at(T(1100),add('b-emblem'))
+      .at(T(1450),sk=>{ ls.classList.add('b-title'); if(!sk){ FX.decode(ls.querySelector('.auth-name'),'Family Tree',Math.max(260,T(400))); const tg=ls.querySelector('.auth-tag'); FX.decode(tg,tg.textContent,Math.max(300,T(420)),{}); } })
+      .at(T(1550),add('b-frame')).at(T(1700),add('b-glass'))
+      .at(T(1850),sk=>{ deck.dataset.lock='1'; ls.classList.add('b-content'); dec(sk,'.auth-eyebrow',260); dec(sk,'.ac-title',340); dec(sk,'p.sub',420,60); setTimeout(()=>{ delete deck.dataset.lock; try{authDeck.remeasure();}catch(_){} }, sk?0:520); })
+      .at(T(1900),add('b-side')).at(T(1980),add('b-dev'))
+      .at(T(2300),()=>{ ls.classList.remove('seq-boot'); AuthScene.bt=-1; stopClock(); ls.removeEventListener('pointerdown',skip); document.removeEventListener('keydown',skip); authTL=null; });
+    function skip(){ tl.skip(); }
+    ls.addEventListener('pointerdown',skip,{once:true}); document.addEventListener('keydown',skip,{once:true});
+    tl.play();
   }
   function authDevName(instant){
     const el=$('authDevName'); const txt='Ryan James Lim';
@@ -3982,9 +4132,9 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     const p = kind==='su' ? 'su' : 'auth';
     const email = $(p+'Email').value.trim(), password = $(p+'Password').value;
     $(p+'Error').textContent=''; $(p+'Success').textContent='';
-    if(!email || !password){ authFail($(p+'Error'), !email && !password ? 'Enter your email and password.' : (!email ? 'Enter your email.' : 'Enter your password.')); (!email?$(p+'Email'):$(p+'Password')).focus(); return; }
-    if(password.length<6){ authFail($(p+'Error'), 'Password must be at least 6 characters.'); return; }
-    const btn = $(p+'SubmitBtn'); setAuthBtn(btn, kind==='su' ? 'Creating account…' : 'Authenticating…', true);
+    if(!email || !password){ authFail($(p+'Error'), !email && !password ? 'Enter your email and password.' : (!email ? 'Enter your email.' : 'Enter your password.')); authWarn([!email&&p+'Email', !password&&p+'Password'].filter(Boolean)); (!email?$(p+'Email'):$(p+'Password')).focus(); return; }
+    if(password.length<6){ authFail($(p+'Error'), 'Password must be at least 6 characters.'); authWarn([p+'Password']); return; }
+    const btn = $(p+'SubmitBtn'); setAuthBtn(btn, kind==='su' ? 'Creating account…' : 'Authenticating…', true); authBusy(true);
     let ok = false;
     try{
       authSubmitting = true;
@@ -4008,9 +4158,11 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
       authFail($(p+'Error'), kind==='signin' && /incorrect email or password/i.test(raw) ? 'Email or password is incorrect.' : raw);
       if(kind==='signin'){ $('authPassword').value=''; }
     }finally{
-      if(!ok) setAuthBtn(btn, kind==='su' ? 'Create account' : 'Sign In', false);
+      if(!ok){ setAuthBtn(btn, kind==='su' ? 'Create account' : 'Sign In', false); authBusy(false); }
     }
   }
+  let authPulseT=0;
+  document.addEventListener('input', e=>{ const f=e.target && e.target.closest && e.target.closest('#lockScreen .af'); if(!f || FX.level<3) return; const n=performance.now(); if(n-authPulseT<340) return; authPulseT=n; f.classList.remove('af-pulse'); void f.offsetWidth; f.classList.add('af-pulse'); });
   $('authForm').addEventListener('submit', e=>authSubmitCred('signin', e));
   $('suForm').addEventListener('submit', e=>authSubmitCred('su', e));
   $('authResetRequestForm').addEventListener('submit', async (e)=>{
@@ -4057,16 +4209,20 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
   }
   // "Access granted": the panel confirms, rings expand, then it dissolves into the app (<1.5s total).
   async function playAccessGranted(){
-    const ls = $('lockScreen');
-    ls.classList.add('granted');
+    const ls = $('lockScreen'), wait=ms=>new Promise(r=>setTimeout(r,ms));
+    authBusy(false); ls.classList.add('granted');
     try{ authDeck.flip(); }catch(_){}
-    await new Promise(r=>setTimeout(r, authRM() ? 200 : 750));
-    ls.classList.add('dissolve');
-    await new Promise(r=>setTimeout(r, authRM() ? 0 : 350));
+    if(authRM() || FX.level<2){ await wait(200); ls.classList.add('dissolve'); return; }
+    await wait(480);                       // ACCESS GRANTED + ring shockwave
+    ls.classList.add('collapse');          // card collapses to a line, then into the beam
+    await wait(300);
+    // camera flies through the grid (spring-driven), ~0.6s, while the screen dissolves into the Home boot
+    AuthScene.fly = 0; const sp = FX.spring({ from:0, to:1, k:70, c:13, onUpdate:v=>{ AuthScene.fly=Math.max(0,Math.min(1.2,v)); } });
+    await wait(450); ls.classList.add('dissolve'); await wait(330); sp.stop(); AuthScene.fly=0;
   }
 
   // ---------- login scene: decorative only (no family data), pauses when hidden, static fallback ----------
-  const AuthScene = { raf:0, t0:0, running:false, nodes:[], edges:[], w:0, h:0, dpr:1 };
+  const AuthScene = { raf:0, t0:0, running:false, nodes:[], edges:[], w:0, h:0, dpr:1, bt:-1, K:1, fly:0, authing:0, motes:[], pulse:0 };
   function authBuildNetwork(){
     // a deterministic abstract binary-tree-like network (purely decorative)
     const nodes=[], edges=[]; const levels=5;
@@ -4087,17 +4243,41 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     const rm = authRM(); const t = rm ? 99 : (now-AuthScene.t0)/1000;
     // perspective grid floor fading into the distance
     const hz = h*0.58, vx = w/2;
+    // ---- cinematic boot / fly-through parameters (all 1/0 when idle) ----
+    const cl=x=>Math.max(0,Math.min(1,x)), eo=x=>1-Math.pow(1-cl(x),3);
+    const booting = AuthScene.bt>=0, B = booting ? AuthScene.bt/AuthScene.K : 1e9;
+    const gp = booting ? eo((B-350)/600) : 1, cg = booting ? eo((B-650)/700) : 1, fly = AuthScene.fly||0;
+    const fxHi = FX.level>=3;
+    ctx.save();
+    if(fly>0){ const z=1+fly*fly*1.6; ctx.translate(vx,hz); ctx.scale(z,z); ctx.translate(-vx,-hz); }
+    if(booting && gp<1){ ctx.beginPath(); ctx.rect(0,hz-1,w,(h-hz)*gp+2); ctx.clip(); }
     ctx.lineWidth=1;
     for(let i=-14;i<=14;i++){ const g=ctx.createLinearGradient(0,hz,0,h); g.addColorStop(0,'rgba(39,230,255,0)'); g.addColorStop(1,'rgba(39,230,255,0.22)'); ctx.strokeStyle=g; ctx.beginPath(); ctx.moveTo(vx+i*w*0.012,hz); ctx.lineTo(vx+i*w*0.16,h); ctx.stroke(); }
-    const scroll = rm ? 0 : (t*0.18)%1;
+    const scroll = rm ? 0 : (t*0.18 + fly*fly*4)%1;
     for(let k=0;k<12;k++){ const f=((k+scroll)/12); const y=hz+(h-hz)*Math.pow(f,2.2); ctx.strokeStyle=`rgba(39,230,255,${0.04+0.2*f})`; ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
     // constellation that gradually forms a tree-like network
-    const N=AuthScene.nodes, E=AuthScene.edges; const grow = Math.min(1, t/7);
+    const N=AuthScene.nodes, E=AuthScene.edges; const grow = booting ? Math.min(1,Math.max(cg,t/7)) : 1;
     const px=n=> n.x*w, py=n=> hz*0.12 + n.y*(hz*0.98);
     E.forEach(([a,b])=>{ const A=N[a],B=N[b]; const k=Math.max(0,Math.min(1,grow*(levelsOf(N)+1)-B.l+1)); if(k<=0) return;
       const x1=px(A),y1=py(A),x2=x1+(px(B)-x1)*k,y2=y1+(py(B)-y1)*k; ctx.strokeStyle=`rgba(39,230,255,${0.16+0.1*Math.sin(t+B.ph)})`; ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); });
     N.forEach(n=>{ const k=Math.max(0,Math.min(1,grow*(levelsOf(N)+1)-n.l)); if(k<=0) return; const r=(1.6+ (n.l<2?1.4:0))*(0.6+0.4*k)*(1+0.18*Math.sin(t*1.4+n.ph)); ctx.fillStyle=`rgba(143,245,255,${0.35+0.5*k})`; ctx.shadowColor='#27E6FF'; ctx.shadowBlur=8; ctx.beginPath(); ctx.arc(px(n),py(n),r,0,6.283); ctx.fill(); ctx.shadowBlur=0; });
+    ctx.restore();
+    // spark -> laser horizon (boot only, then a faint horizon line stays)
+    ctx.save(); ctx.globalCompositeOperation='lighter';
+    const lp = booting ? eo((B-150)/380) : 1, lineA = booting ? 0.9-0.72*cl((B-520)/520) : 0.18;
+    if(lp>0){ const g=ctx.createLinearGradient(vx-w/2*lp,0,vx+w/2*lp,0); g.addColorStop(0,'rgba(39,230,255,0)'); g.addColorStop(.5,`rgba(190,250,255,${lineA})`); g.addColorStop(1,'rgba(39,230,255,0)'); ctx.fillStyle=g; ctx.fillRect(vx-w/2*lp,hz-0.75,w*lp,1.5); }
+    if(booting && B<420){ const sp=Math.sin(Math.PI*cl(B/420)); const R=6+70*sp; const g=ctx.createRadialGradient(vx,hz,0,vx,hz,R); g.addColorStop(0,`rgba(255,255,255,${.95*sp})`); g.addColorStop(.25,`rgba(143,245,255,${.55*sp})`); g.addColorStop(1,'rgba(39,230,255,0)'); ctx.fillStyle=g; ctx.beginPath(); ctx.arc(vx,hz,R,0,6.283); ctx.fill(); }
+    // dust motes rising in the projection beam (and data streaming into it while authenticating)
+    if(fxHi || AuthScene.authing>0){
+      const M=AuthScene.motes; if(!M.length){ for(let i=0;i<28;i++) M.push({x:(Math.random()-.5),y:Math.random(),s:.05+Math.random()*.12,r:.6+Math.random()*1.3,p:Math.random()*6.28}); }
+      const ma = booting ? eo((B-900)/500) : 1, au=AuthScene.authing;
+      const top=Math.max(40,h*0.2), bot=hz+(h-hz)*0.28;
+      M.forEach(m=>{ const fall = au>0 ? 1 : 0; const yy=bot-(bot-top)*m.y, spread=(0.04+0.12*m.y)*w, xx=vx+m.x*spread*(au>0?(1-0.6*m.y):1)+Math.sin(t*0.8+m.p)*3;
+        ctx.fillStyle=`rgba(190,250,255,${(0.55*ma*(1-Math.abs(m.y-.5)*1.1))*(au>0?1.4:1)})`; ctx.beginPath(); ctx.arc(xx,yy,m.r*(au>0?1.25:1),0,6.283); ctx.fill(); });
+      if(!AuthScene.mStep){ AuthScene.mStep=true; } }
+    ctx.restore();
   }
+  function authMotes(dt){ const au=AuthScene.authing>0; AuthScene.motes.forEach(m=>{ m.y+= (au?-m.s*3:m.s*0.55)*dt*(au?1:1); if(m.y>1){ m.y=0; m.x=(Math.random()-.5);} if(m.y<0){ m.y=1; m.x=(Math.random()-.5)*2; } }); }
   const levelsOf = N=> 5;
   function authSceneStart(){
     const ls=$('lockScreen'); if(AuthScene.running) return;
@@ -4108,7 +4288,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
       const loop=now=>{
         if(!AuthScene.running) return;
         if(ls.style.display==='none'){ AuthScene.running=false; return; }
-        try{ authDraw(now); }catch(e){ AuthScene.running=false; ls.classList.add('static-bg'); return; }
+        try{ const dt=Math.min(.05,(now-(AuthScene.lt||now))/1000); AuthScene.lt=now; authMotes(dt); authDraw(now); }catch(e){ AuthScene.running=false; ls.classList.add('static-bg'); return; }
         AuthScene.raf=requestAnimationFrame(loop);
       };
       AuthScene.raf=requestAnimationFrame(loop);
@@ -4626,7 +4806,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     db.settings.motion=m; db.settings.animations = m!=='off'; $('toggleAnimations').checked = db.settings.animations;
     if(save) scheduleSave(); applyMotion(); RAIL.sig=''; railRefresh(); if(currentView==='home' && currentTreeId) renderHome();
   }
-  function applyMotion(){ const m=(db&&db.settings&&db.settings.motion)||'full'; document.documentElement.dataset.motion = (db&&db.settings&&db.settings.animations===false) ? 'off' : m;
+  function applyMotion(){ const m=(db&&db.settings&&db.settings.motion)||'full'; document.documentElement.dataset.motion = (db&&db.settings&&db.settings.animations===false) ? 'off' : m; FX.refresh();
     const t=$('railMotionT'); if(t){ const cur=document.documentElement.dataset.motion; t.textContent=cur.charAt(0).toUpperCase()+cur.slice(1); } }
   function railUpdate(){
     const sb_=$('sidebar'); if(!sb_ || !sb_.offsetParent || !currentTreeId) return; const c=railCounts(); if(!c) return;
