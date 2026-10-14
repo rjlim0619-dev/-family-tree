@@ -105,6 +105,13 @@ Deno.serve(async (req) => {
     db.from('gate_log').delete().lt('at', iso(now - 30 * DAY)),
   ]).then(() => {}, () => {});
 
+  if (body.action === 'diag') {              // the page reports its own screen state when something looks wrong (no personal data)
+    const ipH = await mac('ip:' + ip);
+    if ((await count('diag', ipH)) >= 30) return json({ status: 'limited' }, 429);
+    await mark('diag', ipH);
+    await db.from('gate_log').insert({ ip_hash: ipH, name: String(body.s || '').slice(0, 700), device: device(req.headers.get('user-agent') || ''), outcome: 'diag:' + String(body.r || '').slice(0, 16) });
+    return json({ status: 'ok' });
+  }
   if (body.action === 'info') {              // what the locked "Request goes to" field shows (the page never holds the address)
     const to = !CONFIG.DEVELOPER_EMAIL ? '' : CONFIG.SHOW_FULL_DEVELOPER_EMAIL ? CONFIG.DEVELOPER_EMAIL : maskEmail(CONFIG.DEVELOPER_EMAIL);
     return json({ status: 'ok', to, ask_name: CONFIG.ASK_NAME, human_check: !!CONFIG.TURNSTILE_SECRET });

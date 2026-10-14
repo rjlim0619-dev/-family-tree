@@ -4888,10 +4888,16 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
   }
   let appEntered = false;
   // If something breaks at startup or sign-out, say so on screen (so it can be screenshotted) instead of leaving a blank scene.
-  function diag(m){ try{ let d=document.getElementById('ftDiag'); if(!d){ d=document.createElement('div'); d.id='ftDiag'; d.setAttribute('role','alert'); d.style.cssText='position:fixed;left:10px;bottom:10px;z-index:99999;max-width:min(92vw,520px);padding:10px 12px;border:1px solid #ffb347;border-radius:8px;background:rgba(20,10,0,.92);color:#ffd9a0;font:12px/1.4 ui-monospace,Menlo,monospace;white-space:pre-wrap;'; d.innerHTML='<b>Something went wrong</b> — please send a screenshot of this.<div id="ftDiagT"></div>'; document.body.appendChild(d); } const t=document.getElementById('ftDiagT'); if(t && t.textContent.length<900) t.textContent += '\n• '+String(m).slice(0,240); }catch(_){} }
+  let diag=function(m){ try{ let d=document.getElementById('ftDiag'); if(!d){ d=document.createElement('div'); d.id='ftDiag'; d.setAttribute('role','alert'); d.style.cssText='position:fixed;left:10px;bottom:10px;z-index:99999;max-width:min(92vw,520px);padding:10px 12px;border:1px solid #ffb347;border-radius:8px;background:rgba(20,10,0,.92);color:#ffd9a0;font:12px/1.4 ui-monospace,Menlo,monospace;white-space:pre-wrap;'; d.innerHTML='<b>Something went wrong</b> — please send a screenshot of this.<div id="ftDiagT"></div>'; document.body.appendChild(d); } const t=document.getElementById('ftDiagT'); if(t && t.textContent.length<900) t.textContent += '\n• '+String(m).slice(0,240); }catch(_){} };
+  const BUILD='2026-10-15-d';
+  function snap(r){ try{ const g=id=>document.getElementById(id), cs=e=>e?getComputedStyle(e):null, ls=g('lockScreen'), em=g('authEmail'), st=document.querySelector('#authDeck .hd-stage');
+      const s={b:BUILD,r,ls:ls&&cs(ls).display,cls:ls&&ls.className,op:ls&&cs(ls).opacity,app:cs(g('app')).display,stageHid:g('authStage')&&g('authStage').hidden,stageOp:st&&cs(st).opacity,emailW:em?Math.round(em.getBoundingClientRect().width):-1,gate:g('accessGate')&&g('accessGate').hidden,entered:appEntered,hash:location.hash,sw:!!(navigator.serviceWorker&&navigator.serviceWorker.controller),on:navigator.onLine,vw:innerWidth+'x'+innerHeight,hid:document.hidden,err:(g('ftDiagT')||{}).textContent||''};
+      fetch(GATE_URL,{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_KEY},body:JSON.stringify({action:'diag',r,s:JSON.stringify(s)}),keepalive:true}).catch(()=>{}); }catch(_){} }
+  let diagSent=0; const diag0=diag; diag=function(m){ diag0(m); if(!diagSent++) setTimeout(()=>snap('error'),1500); };
   window.addEventListener('error',e=>diag((e.message||'error')+(e.lineno?' (line '+e.lineno+')':'')));
   window.addEventListener('unhandledrejection',e=>diag('promise: '+((e.reason&&e.reason.message)||e.reason)));
   async function boot(){
+    setTimeout(()=>snap('load'),6000);
     // startup watchdog: the lock screen starts hidden ("checking"); if nothing has revealed it or the app after 4s, force the Sign In screen
     setTimeout(()=>{ const ls=$('lockScreen'); if(ls && !appEntered && ls.classList.contains('checking') && getComputedStyle(ls).display!=='none' && getComputedStyle($('app')).display==='none'){ diag('startup stalled — showing Sign In'); try{ appEntered=false; currentUser=null; showAuthScreen(); }catch(err){ diag('showAuthScreen: '+err.message); ls.classList.remove('checking'); } } },4000);
     const { data: { session } } = await sb.auth.getSession();
@@ -4905,6 +4911,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
         return;
       }
       if(event==='SIGNED_OUT'){
+        setTimeout(()=>snap('signout'),6000);
         try{ AL.reset(); }catch(err){ diag('auto-lock reset: '+err.message); } appEntered=false; currentUser=null;
         try{ showAuthScreen(); }catch(err){ diag('sign-out screen: '+err.message); const ls=$('lockScreen'); ls.classList.remove('checking'); ls.style.display='flex'; authSeqFinish(); }
         return;
