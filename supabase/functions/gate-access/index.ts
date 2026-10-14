@@ -119,7 +119,7 @@ Deno.serve(async (req) => {
 
   if (body.action === 'request') {
     if (!CONFIG.DEVELOPER_EMAIL) return json({ status: 'not_configured' }, 503);
-    const key = Deno.env.get('RESEND_API_KEY'); if (!key) return json({ status: 'not_configured' }, 503);
+    let key = Deno.env.get('RESEND_API_KEY') || ''; if (!key) { const { data: rk } = await db.from('gate_settings').select('value').eq('key', 'RESEND_API_KEY').maybeSingle(); key = String(rk?.value || ''); } if (!key) return json({ status: 'not_configured' }, 503);
     const ipH = await mac('ip:' + ip);
     const devId = String(body.device || '').slice(0, 64), devH = /^[0-9a-f-]{16,64}$/i.test(devId) ? await mac('dev:' + devId) : '';
     const ua = req.headers.get('user-agent') || ''; const dev = device(ua);
