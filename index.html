@@ -1504,6 +1504,29 @@
   @keyframes glBurst{0%{transform:scale(1);}60%{transform:scale(1.18);opacity:1;}100%{transform:scale(1.4);opacity:0;}} @keyframes glFlash{0%{filter:brightness(1);}35%{filter:brightness(2.2);}100%{filter:brightness(1.2);}}
   html[data-fx="off"] .gl-f,html[data-fx="off"] .gl-r{animation:none;} html.hk-paused .gl-f,html.hk-paused .gl-r{animation-play-state:paused;}
   @media (prefers-reduced-motion:reduce){ .gl-f,.gl-r,#accessGate.unlocking *{animation:none !important;} }
+
+  #accessGate .gl-cv{position:absolute;left:0;top:0;pointer-events:none;z-index:0;}
+  .gl-scene{perspective:900px;z-index:1;} .gl-svg{transform:rotateX(calc(var(--py,0)*-7deg)) rotateY(calc(var(--px,0)*9deg)) translate3d(calc(var(--px,0)*6px),calc(var(--py,0)*4px),0);transform-style:preserve-3d;transition:transform .12s linear;will-change:transform;}
+  .gl-scene{height:min(44vh,400px);} 
+  .gl-radar{position:absolute;left:50%;top:50%;height:84%;aspect-ratio:1;translate:-50% -50%;border-radius:50%;background:conic-gradient(from 0deg,rgba(60,210,255,0) 0deg,rgba(60,210,255,0) 250deg,rgba(60,210,255,.0) 300deg,rgba(90,225,255,.38) 358deg,rgba(190,250,255,.7) 360deg);-webkit-mask:radial-gradient(circle,transparent 18%,#000 20%,#000 62%,transparent 70%);mask:radial-gradient(circle,transparent 18%,#000 20%,#000 62%,transparent 70%);animation:glSweep 4.6s linear infinite;mix-blend-mode:screen;}
+  @keyframes glSweep{to{rotate:360deg;}}
+  .gl-beam{position:absolute;left:12%;right:12%;height:2px;top:0;background:linear-gradient(90deg,transparent,rgba(120,240,255,.9),transparent);box-shadow:0 0 14px 3px rgba(60,210,255,.5);animation:glBeam 3.8s ease-in-out infinite;opacity:.0;}
+  @keyframes glBeam{0%{top:8%;opacity:0;}12%{opacity:.85;}50%{top:92%;opacity:.85;}62%,100%{top:92%;opacity:0;}}
+  .gl-hex{fill:none;stroke:rgba(90,210,255,.35);stroke-width:1.2;stroke-dasharray:6 8;transform-box:fill-box;transform-origin:center;animation:glSpin 90s linear infinite;}
+  .gl-arc{fill:none;stroke:rgba(120,235,255,.85);stroke-width:2.5;stroke-linecap:round;transform-box:fill-box;transform-origin:center;} .gl-arc.a1{stroke-dasharray:90 940;animation:glSpin 7s linear infinite;filter:drop-shadow(0 0 5px #27e6ff);} .gl-arc.a2{stroke-dasharray:60 630;animation:glSpin 5s linear infinite reverse;stroke:rgba(190,250,255,.9);}
+  .gl-orbit{transform-box:view-box;transform-origin:400px 170px;} .gl-orbit.o1{animation:glSpin 9s linear infinite;} .gl-orbit.o2{animation:glSpin 14s linear infinite reverse;} .gl-orbit circle{fill:#bff8ff;filter:drop-shadow(0 0 6px #27e6ff);} .gl-orbit .halo{fill:none;stroke:rgba(120,235,255,.5);stroke-width:1;}
+  .gl-lock{animation:glBreath 3s ease-in-out infinite;transform-box:fill-box;transform-origin:center;} @keyframes glBreath{50%{filter:drop-shadow(0 0 16px #27e6ff) brightness(1.2);}}
+  .gl-hud{position:absolute;font:600 9.5px/1.5 ui-monospace,Menlo,monospace;letter-spacing:.14em;color:rgba(110,225,255,.8);text-transform:uppercase;display:flex;flex-direction:column;gap:1px;pointer-events:none;} .gl-hud b{color:#bff8ff;font-weight:700;text-shadow:0 0 8px #27e6ff;} .gl-hud span{opacity:.75;}
+  .h-tl{left:calc(16px + 4%);top:6px;} .h-tr{right:calc(16px + 4%);top:6px;text-align:right;} .h-bl{left:calc(16px + 4%);bottom:2px;} .h-br{right:calc(16px + 4%);bottom:2px;text-align:right;}
+  .h-tl::before,.h-tr::before{content:"";width:34px;height:1px;background:linear-gradient(90deg,#4fe0ff,transparent);margin-bottom:3px;} .h-tr::before{align-self:flex-end;background:linear-gradient(270deg,#4fe0ff,transparent);}
+  .h-tl b::after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#ff5c7a;box-shadow:0 0 8px #ff5c7a;margin-left:8px;animation:glBlink 1.2s steps(2) infinite;vertical-align:1px;} #accessGate.unlocking .h-tl b::after{background:#5dffa8;box-shadow:0 0 8px #5dffa8;} @keyframes glBlink{50%{opacity:.15;}}
+  .ag-scan{position:absolute;left:-6px;right:-6px;height:2px;top:0;z-index:5;pointer-events:none;background:linear-gradient(90deg,transparent,#8ff2ff,transparent);box-shadow:0 0 16px 3px rgba(60,210,255,.6);animation:agScan 5.2s ease-in-out infinite;opacity:0;} @keyframes agScan{0%{top:2%;opacity:0;}10%{opacity:.8;}45%{top:98%;opacity:.8;}55%,100%{top:98%;opacity:0;}}
+  .gc-wrap{position:relative;margin:4px 0 12px;} .gc-cells{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;} .gc-cells i{height:54px;border-radius:10px;border:1px solid rgba(80,200,255,.35);background:rgba(4,20,38,.7);display:grid;place-items:center;font:700 24px ui-monospace,Menlo,monospace;color:#d8fbff;font-style:normal;text-shadow:0 0 10px #27e6ff;transition:border-color .15s,box-shadow .15s,transform .15s;} .gc-cells i.on{border-color:#6ee9ff;box-shadow:0 0 14px rgba(60,210,255,.45) inset,0 0 10px rgba(60,210,255,.35);animation:gcPop .18s ease-out;} .gc-cells i.cur{border-color:#bff8ff;box-shadow:0 0 0 2px rgba(120,235,255,.35);} .gc-cells i.cur::after{content:"";width:2px;height:24px;background:#8ff2ff;animation:glBlink 1s steps(2) infinite;} @keyframes gcPop{from{transform:scale(1.14);}}
+  #accessGate input.gc-in{position:absolute;inset:0;width:100%;height:100%;opacity:0;font-size:16px;letter-spacing:0;text-align:left;padding:0;cursor:text;} .gc-wrap.gc-warn{animation:gcShake .5s;} .gc-wrap.gc-warn .gc-cells i{border-color:#ff6b86;box-shadow:0 0 12px rgba(255,90,120,.5) inset;} @keyframes gcShake{20%{translate:-8px 0;}40%{translate:7px 0;}60%{translate:-5px 0;}80%{translate:3px 0;}}
+  html[data-fx="off"] .gl-radar,html[data-fx="off"] .gl-beam,html[data-fx="off"] .gl-arc,html[data-fx="off"] .gl-orbit,html[data-fx="off"] .gl-hex,html[data-fx="off"] .ag-scan,html[data-fx="off"] .gl-lock{animation:none;}
+  html[data-fx="calm"] .gl-svg{transition:none;transform:none;} html.hk-paused .gl-radar,html.hk-paused .gl-beam,html.hk-paused .gl-arc,html.hk-paused .gl-orbit,html.hk-paused .gl-hex,html.hk-paused .ag-scan,html.hk-paused .gl-lock{animation-play-state:paused;}
+  @media (prefers-reduced-motion:reduce){ .gl-radar,.gl-beam,.gl-arc,.gl-orbit,.gl-hex,.ag-scan,.gl-lock{animation:none !important;} .gl-svg{transform:none !important;} }
+  @media (max-width:520px){ .gl-hud{font-size:8.5px;letter-spacing:.1em;} .gc-cells i{height:48px;} .gl-scene{height:min(38vh,320px);} }
   @media (max-height:640px){ .gl-scene{height:150px;} }
   /* ---- Sign In: field life, authenticating, grant, failure ---- */
   .af::after{content:"";position:absolute;left:0;top:0;width:36px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#fff);box-shadow:0 0 10px var(--cy),0 0 22px var(--cy);offset-path:inset(0 round 12px);offset-rotate:auto;offset-distance:0%;opacity:0;pointer-events:none;z-index:3;}
@@ -4134,33 +4157,65 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     const nodes=[L[2],L[4],L[6],R[2],R[4],R[6],L2[2],L2[4],R2[2],R2[4],L3[2],L3[4],R3[2],R3[4]].map(p=>`<circle class="gl-n" cx="${p[0]}" cy="${p[1]}" r="4.5"/>`).join('');
     const sq=[[40,20,34],[690,24,30],[20,290,26],[720,280,36],[610,40,22],[150,35,18]].map(q=>`<rect class="gl-sq" x="${q[0]}" y="${q[1]}" width="${q[2]}" height="${q[2]*.8}"/>`).join('');
     return `<svg class="gl-svg" viewBox="0 0 800 340" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${sq}${pl(L,'a')}${pl(R,'a')}${pl(L2,'b')}${pl(R2,'b')}${pl(L3,'c')}${pl(R3,'c')}${nodes}
-      <g class="gl-rings"><circle class="gl-r r5" cx="400" cy="170" r="150"/><circle class="gl-r r4" cx="400" cy="170" r="122"/><circle class="gl-r r3" cx="400" cy="170" r="98"/><circle class="gl-r r2" cx="400" cy="170" r="76"/><circle class="gl-r r1" cx="400" cy="170" r="56"/></g>
+      <g class="gl-xtra"><polygon class="gl-hex" points="400,5 531,87.5 531,252.5 400,335 269,252.5 269,87.5"/><g class="gl-orbit o1"><circle cx="400" cy="30" r="3.2"/><circle cx="400" cy="30" r="8" class="halo"/></g><g class="gl-orbit o2"><circle cx="400" cy="318" r="2.6"/></g><circle class="gl-arc a1" cx="400" cy="170" r="165"/><circle class="gl-arc a2" cx="400" cy="170" r="110"/></g><g class="gl-rings"><circle class="gl-r r5" cx="400" cy="170" r="150"/><circle class="gl-r r4" cx="400" cy="170" r="122"/><circle class="gl-r r3" cx="400" cy="170" r="98"/><circle class="gl-r r2" cx="400" cy="170" r="76"/><circle class="gl-r r1" cx="400" cy="170" r="56"/></g>
       <g class="gl-lock"><path class="gl-shackle" d="M382 166v-12a18 18 0 0 1 36 0v12"/><rect class="gl-body" x="372" y="164" width="56" height="42" rx="6"/><circle class="gl-key" cx="400" cy="181" r="5"/><rect class="gl-key" x="397.8" y="183" width="4.4" height="12" rx="1.5"/></g></svg>`; })();
   const gate = document.createElement('div'); gate.id='accessGate'; gate.setAttribute('role','dialog'); gate.setAttribute('aria-modal','true'); gate.setAttribute('aria-label','Restricted access');
-  gate.innerHTML = `<div class="gl-scene">${LOCK_SVG}</div><div class="ag-box auth-newpw">${HK.frame(`<div class="auth-eyebrow">RESTRICTED · DEVELOPER APPROVAL</div><h1 class="ac-title" id="gateTitle">Access locked</h1><p class="sub" id="gateSub">Enter your email to request an access code. The code is sent to the developer's Gmail. Once you have it, the sign-up form opens.</p>
+  gate.innerHTML = `<canvas class="gl-cv" aria-hidden="true"></canvas><div class="gl-scene"><div class="gl-radar"></div>${LOCK_SVG}<div class="gl-beam"></div><div class="gl-hud h-tl" aria-hidden="true"><b id="ghA">LOCK ENGAGED</b><span id="ghB">KEY: NONE</span></div><div class="gl-hud h-tr" aria-hidden="true"><b id="ghC">--:--:--</b><span>LOCAL TIME</span></div><div class="gl-hud h-bl" aria-hidden="true"><span id="ghD">ATTEMPTS 0 / 5</span></div><div class="gl-hud h-br" aria-hidden="true"><span id="ghE">AWAITING EMAIL</span></div></div><div class="ag-box auth-newpw"><div class="ag-scan" aria-hidden="true"></div>${HK.frame(`<div class="auth-eyebrow">RESTRICTED · DEVELOPER APPROVAL</div><h1 class="ac-title" id="gateTitle">Access locked</h1><p class="sub" id="gateSub">Enter your email to request an access code. The code is sent to the developer's Gmail. Once you have it, the sign-up form opens.</p>
     <form id="gateForm" autocomplete="on" novalidate>
       <div id="gateStepEmail">${emailField('gateEmail')}</div>
-      <div id="gateStepCode" hidden><div class="af"><input type="text" id="gateCode" name="one-time-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" placeholder=" " aria-label="6-digit access code"><label for="gateCode">6-digit code</label></div></div>
+      <div id="gateStepCode" hidden><div class="gc-wrap" id="gcWrap"><div class="gc-cells" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div><input type="text" id="gateCode" class="gc-in" name="one-time-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" placeholder=" " aria-label="6-digit access code"></div></div>
       ${MSG('gate')}${BTN('gateBtn','Request code')}
       <div class="auth-secondary" id="gateLinks" hidden><a href="#" role="button" class="auth-sec-btn" id="gateResend">Send a new code</a><a href="#" role="button" class="auth-sec-btn" id="gateBack">Use a different email</a></div>
     </form>`,{variant:'standard',intensity:'active',tick:true,glare:true,cls:'auth-card gate-card'})}</div>`;
   $('lockScreen').appendChild(gate);
+  // ---- lock-screen engine: canvas grid floor, glyph rain, embers, shockwave, pointer parallax, live HUD ----
+  const GateFX = (function(){
+    const cv=gate.querySelector('.gl-cv'), cx=cv.getContext('2d'), sc=gate.querySelector('.gl-scene'); let W=0,H=0,dpr=1,un=null,t=0,running=false,hudT=0,px=0,py=0,tx=0,ty=0,lx=0,ly=0,lr=60; const E=[],R=[],WV=[]; const G='01ABCDEF0123456789<>/\\|'; let colsL=0;
+    function mk(){ E.length=0; R.length=0; const L=FX.level, n=L>=4?64:L>=3?42:L>=2?24:8, rc=L>=4?9:L>=3?7:L>=2?4:0; for(let i=0;i<n;i++) E.push(ember(true)); for(let s=0;s<2;s++) for(let i=0;i<rc;i++) R.push({x:(s?W-1:0)+(s?-1:1)*(8+i*(Math.min(W*.2,170)/Math.max(rc,1))),y:Math.random()*H,v:30+Math.random()*70,n:6+(Math.random()*8|0),ch:[]}); }
+    function ember(init){ const a=Math.random()*6.283, d=lr*(.9+Math.random()*1.6); return {a,d:init?d:lr*.9,v:8+Math.random()*22,s:.6+Math.random()*1.6,l:init?Math.random():0,life:2.5+Math.random()*3,sp:(Math.random()-.5)*.25}; }
+    function size(){ dpr=Math.min(window.devicePixelRatio||1,2); W=gate.clientWidth; H=gate.clientHeight; if(!W||!H) return; cv.width=W*dpr; cv.height=H*dpr; cv.style.width=W+'px'; cv.style.height=H+'px'; cx.setTransform(dpr,0,0,dpr,0,0); locate(); mk(); }
+    function locate(){ const k=gate.querySelector('.gl-lock'); if(!k) return; const a=k.getBoundingClientRect(), g=gate.getBoundingClientRect(); lx=a.left-g.left+a.width/2; ly=a.top-g.top+gate.scrollTop+a.height/2; lr=Math.max(50,a.width*1.9); }
+    function grid(){ const hor=Math.max(ly+lr*1.9,H*.5), horX=W/2+px*26; const g=cx.createLinearGradient(0,hor,0,H); g.addColorStop(0,'rgba(30,170,255,0)'); g.addColorStop(1,'rgba(30,170,255,.22)'); cx.lineWidth=1; cx.strokeStyle=g;
+      const n=14, ph=(t*.35)%1; for(let i=0;i<=n;i++){ const z=(i+ph)/n, y=hor+(H-hor)*z*z; cx.globalAlpha=Math.min(1,z*1.4); cx.beginPath(); cx.moveTo(0,y); cx.lineTo(W,y); cx.stroke(); }
+      cx.globalAlpha=1; for(let k=-14;k<=14;k++){ cx.beginPath(); cx.moveTo(horX+k*6,hor); cx.lineTo(W/2+k*W*.12+px*60,H); cx.stroke(); }
+      const gl=cx.createLinearGradient(0,hor-30,0,hor+30); gl.addColorStop(0,'rgba(40,200,255,0)'); gl.addColorStop(.5,'rgba(60,210,255,.16)'); gl.addColorStop(1,'rgba(40,200,255,0)'); cx.fillStyle=gl; cx.fillRect(0,hor-30,W,60); }
+    function rain(dt){ cx.font='11px ui-monospace,Menlo,monospace'; for(const c of R){ c.y+=c.v*dt; if(c.y-c.n*13>H){ c.y=-10; c.v=30+Math.random()*70; } for(let j=0;j<c.n;j++){ if(!c.ch[j]||Math.random()<.02) c.ch[j]=G[Math.random()*G.length|0]; const a=(1-j/c.n)*(j===0?.8:.28); cx.fillStyle=j===0?`rgba(190,248,255,${a})`:`rgba(60,200,255,${a})`; cx.fillText(c.ch[j],c.x,c.y-j*13); } } }
+    function embers(dt){ cx.globalCompositeOperation='lighter'; for(let i=0;i<E.length;i++){ const e=E[i]; e.l+=dt/e.life; e.d+=e.v*dt; e.a+=e.sp*dt; if(e.l>=1){ E[i]=ember(false); continue; } const a=Math.sin(e.l*Math.PI)*.8, x=lx+Math.cos(e.a)*e.d, y=ly+Math.sin(e.a)*e.d*.8; const g=cx.createRadialGradient(x,y,0,x,y,e.s*4); g.addColorStop(0,`rgba(150,240,255,${a})`); g.addColorStop(1,'rgba(40,190,255,0)'); cx.fillStyle=g; cx.fillRect(x-e.s*4,y-e.s*4,e.s*8,e.s*8); } cx.globalCompositeOperation='source-over'; }
+    function waves(dt){ for(let i=WV.length-1;i>=0;i--){ const w=WV[i]; w.r+=w.v*dt; w.a-=dt*.7; if(w.a<=0){ WV.splice(i,1); continue; } cx.strokeStyle=`rgba(${w.c},${w.a})`; cx.lineWidth=w.w*w.a+1; cx.beginPath(); cx.arc(lx,ly,w.r,0,6.283); cx.stroke(); } }
+    function frame(dt){ if(!W) return; t+=dt; px+=(tx-px)*Math.min(1,dt*5); py+=(ty-py)*Math.min(1,dt*5); sc.style.setProperty('--px',px.toFixed(3)); sc.style.setProperty('--py',py.toFixed(3));
+      cx.clearRect(0,0,W,H); if(FX.level>=1) grid(); if(R.length) rain(dt); embers(dt); waves(dt); hudT+=dt; if(hudT>=1){ hudT=0; hud(); } }
+    function hud(){ const d=new Date(); const p=n=>String(n).padStart(2,'0'); $('ghC').textContent=`${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+      $('ghA').textContent = gate.classList.contains('unlocking') ? 'ACCESS GRANTED' : 'LOCK ENGAGED'; $('ghB').textContent = GATE.step==='code' ? 'KEY: REQUESTED' : 'KEY: NONE';
+      $('ghD').textContent = `ATTEMPTS ${GATE.tries} / 5`;
+      if(GATE.step==='code' && GATE.exp){ const ms=GATE.exp-Date.now(); $('ghE').textContent = ms>0 ? `CODE EXPIRES ${p(Math.floor(ms/60000))}:${p(Math.floor(ms/1000)%60)}` : 'CODE EXPIRED'; } else $('ghE').textContent='AWAITING EMAIL'; }
+    function move(e){ const r=gate.getBoundingClientRect(); tx=((e.clientX-r.left)/r.width-.5)*2; ty=((e.clientY-r.top)/r.height-.5)*2; }
+    return {
+      start(){ if(running) return; running=true; size(); hud(); gate.addEventListener('pointermove',move,{passive:true}); window.addEventListener('resize',size);
+        if(FX.level<1||authRM()){ cx.clearRect(0,0,W,H); if(W) grid(); return; } un=FX.tick(dt=>{ frame(Math.min(dt,.05)); }); },
+      stop(){ running=false; if(un){ un(); un=null; } gate.removeEventListener('pointermove',move); window.removeEventListener('resize',size); },
+      hud, burst(){ locate(); if(FX.level<1||authRM()||!un) return; WV.push({r:lr*.6,v:420,a:1,w:6,c:'255,255,255'},{r:lr*.3,v:260,a:1,w:3,c:'80,225,255'}); setTimeout(()=>WV.push({r:lr*.4,v:520,a:.8,w:4,c:'120,235,255'}),160); for(let i=0;i<40;i++){ const e=ember(false); e.d=lr*.5; e.v=90+Math.random()*180; e.life=1+Math.random()*1.2; E.push(e); } }
+    };
+  })();
   const gateHas = ()=>{ try{ return localStorage.getItem('ftAccess')==='1'; }catch(_){ return false; } };
-  const GATE = { step:'email', email:'', busy:false };
+  const GATE = { step:'email', email:'', busy:false, tries:0, exp:0 }; const DEV_EMAIL='rjlim060719@gmail.com';
   function gateStep(step){ GATE.step=step; const code=step==='code'; $('gateStepEmail').hidden=code; $('gateStepCode').hidden=!code; $('gateLinks').hidden=!code;
     $('gateTitle').textContent = code ? 'Enter the access code' : 'Access locked';
     $('gateSub').textContent = code ? `A 6-digit code was sent to the developer's Gmail for ${GATE.email}. Ask the developer for it, then enter it here.` : "Enter your email to request an access code. The code is sent to the developer's Gmail. Once you have it, the sign-up form opens.";
     $('gateBtn').querySelector('.lb-t').textContent = code ? 'Unlock' : 'Request code'; $('gateError').textContent=''; $('gateSuccess').textContent='';
-    setTimeout(()=>{ try{ $(code?'gateCode':'gateEmail').focus({preventScroll:true}); }catch(_){} },60); }
-  function gateUpdate(){ const show=!gateHas(); gate.classList.remove('pass','gone','unlocking'); gate.hidden=!show; const w=document.querySelector('#lockScreen .auth-wrap'); if(w){ try{ w.inert=show; }catch(_){} } if(show){ gateStep('email'); } }
+    if(!code && !$('gateEmail').value) $('gateEmail').value=DEV_EMAIL; if(code) gateCells();
+    GateFX.hud(); const tt=$('gateTitle'); if(FX.level>=2&&!authRM()) FX.decode(tt, tt.textContent, 420);
+    setTimeout(()=>{ try{ const el=$(code?'gateCode':'gateEmail'); el.focus({preventScroll:true}); if(!code) el.select(); }catch(_){} },60); }
+  function gateCells(){ const v=$('gateCode').value.replace(/\D/g,'').slice(0,6), cs=$('gcWrap').querySelectorAll('.gc-cells i'); cs.forEach((c,i)=>{ c.textContent=v[i]||''; c.classList.toggle('on',i<v.length); c.classList.toggle('cur',i===v.length&&document.activeElement===$('gateCode')); }); }
+  function gateShake(el){ el.classList.remove('gc-warn'); void el.offsetWidth; el.classList.add('gc-warn'); setTimeout(()=>el.classList.remove('gc-warn'),700); }
+  function gateUpdate(){ const show=!gateHas(); gate.classList.remove('pass','gone','unlocking'); gate.hidden=!show; const w=document.querySelector('#lockScreen .auth-wrap'); if(w){ try{ w.inert=show; }catch(_){} } if(show){ GATE.tries=0; gateStep('email'); GateFX.start(); } else GateFX.stop(); }
   // unlock: the shackle lifts, rings flash outward, circuits ignite, then the gate dissolves into the next form
   function gatePass(email, go){ try{ localStorage.setItem('ftAccess','1'); }catch(_){} if(email){ ['authEmail','suEmail'].forEach(id=>{ if(!$(id).value) $(id).value=email; }); }
-    const w=document.querySelector('#lockScreen .auth-wrap'); const done=()=>{ gate.hidden=true; gate.classList.remove('pass','unlocking'); if(w){ try{ w.inert=false; }catch(_){} } if(go!=null){ authDeckReady=true; authDeck.go(go); } };
-    if(authRM()||/^(off|calm)$/.test(document.documentElement.dataset.fx||'')){ done(); return; } gate.classList.add('unlocking'); setTimeout(()=>gate.classList.add('pass'),900); setTimeout(done,1700); }
+    const w=document.querySelector('#lockScreen .auth-wrap'); const done=()=>{ GateFX.stop(); gate.hidden=true; gate.classList.remove('pass','unlocking'); if(w){ try{ w.inert=false; }catch(_){} } if(go!=null){ authDeckReady=true; authDeck.go(go); } };
+    if(authRM()||/^(off|calm)$/.test(document.documentElement.dataset.fx||'')){ done(); return; } gate.classList.add('unlocking'); GateFX.burst(); $('ghA').textContent='ACCESS GRANTED'; setTimeout(()=>gate.classList.add('pass'),1000); setTimeout(done,1800); }
   async function gateCall(body){ const r=await fetch(SUPABASE_URL+'/functions/v1/gate-access',{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_KEY},body:JSON.stringify(body)}); let j={}; try{ j=await r.json(); }catch(_){} return j; }
   async function gateRequest(resend){ const email=GATE.email; const j=await gateCall({action:'request',email});
     if(j.status==='approved'){ gatePass(email,0); return; }
-    if(j.status==='sent'){ gateStep('code'); $('gateSuccess').textContent = resend ? 'A new code was sent.' : 'Code sent. Ask the developer for it.'; return; }
+    if(j.status==='sent'){ GATE.exp=Date.now()+15*60000; GATE.tries=0; gateStep('code'); $('gateSuccess').textContent = resend ? 'A new code was sent.' : 'Code sent. Ask the developer for it.'; return; }
     $('gateError').textContent = j.status==='wait' ? 'Please wait a minute before asking for another code.' : j.status==='denied' ? 'This email was not approved.' : j.status==='not_configured' ? 'Access codes are not set up yet. Please try again later.' : 'Could not send the code. Please try again.'; }
   $('gateForm').addEventListener('submit', async e=>{ e.preventDefault(); if(GATE.busy) return; $('gateError').textContent=''; $('gateSuccess').textContent='';
     if(GATE.step==='email'){ const email=$('gateEmail').value.trim().toLowerCase();
@@ -4170,13 +4225,16 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
         if(st==='approved'){ gatePass(email,0); } else await gateRequest(false);
       }catch(err){ $('gateError').textContent='Could not reach the server. Check your connection.'; }
       finally{ GATE.busy=false; setAuthBtn($('gateBtn'),GATE.step==='code'?'Unlock':'Request code',false); } return; }
-    const code=$('gateCode').value.replace(/\D/g,''); if(code.length!==6){ $('gateError').textContent='Enter the 6-digit code.'; authWarn(['gateCode']); return; }
+    const code=$('gateCode').value.replace(/\D/g,''); if(code.length!==6){ $('gateError').textContent='Enter the 6-digit code.'; gateShake($('gcWrap')); return; }
     GATE.busy=true; setAuthBtn($('gateBtn'),'Verifying…',true);
     try{ const j=await gateCall({action:'verify',email:GATE.email,code});
       if(j.status==='approved'){ $('gateSuccess').textContent='Access granted.'; gatePass(GATE.email,1); }
-      else { $('gateError').textContent = j.status==='wrong' ? 'That code is not right.' : j.status==='expired' ? 'That code expired. Send a new one.' : j.status==='locked' ? 'Too many wrong tries. Send a new code.' : 'Could not verify the code.'; authWarn(['gateCode']); try{ $('gateCode').focus({preventScroll:true}); $('gateCode').setSelectionRange(0,6); }catch(_){} $('lockScreen').scrollLeft=0; }
+      else { $('gateError').textContent = j.status==='wrong' ? 'That code is not right.' : j.status==='expired' ? 'That code expired. Send a new one.' : j.status==='locked' ? 'Too many wrong tries. Send a new code.' : 'Could not verify the code.'; gateShake($('gcWrap')); GATE.tries++; GateFX.hud(); try{ $('gateCode').focus({preventScroll:true}); $('gateCode').setSelectionRange(0,6); }catch(_){} $('lockScreen').scrollLeft=0; }
     }catch(err){ $('gateError').textContent='Could not reach the server. Check your connection.'; }
     finally{ GATE.busy=false; setAuthBtn($('gateBtn'),'Unlock',false); } });
+  $('gateCode').addEventListener('input',()=>{ const i=$('gateCode'); i.value=i.value.replace(/\D/g,'').slice(0,6); gateCells(); if(i.value.length===6) setTimeout(()=>{ if(!GATE.busy&&GATE.step==='code'&&i.value.length===6) $('gateForm').requestSubmit(); },280); });
+  ['focus','blur'].forEach(ev=>$('gateCode').addEventListener(ev,gateCells));
+  $('gateEmail').addEventListener('focus',()=>{ try{ $('gateEmail').select(); }catch(_){} });
   $('gateResend').addEventListener('click',async e=>{ e.preventDefault(); if(GATE.busy) return; GATE.busy=true; try{ await gateRequest(true); }catch(_){ $('gateError').textContent='Could not reach the server.'; } GATE.busy=false; });
   $('gateBack').addEventListener('click',e=>{ e.preventDefault(); $('gateCode').value=''; gateStep('email'); });
   function authLockVisible(){ const ls=$('lockScreen'); return ls.style.display!=='none' && !ls.classList.contains('dissolve'); }
