@@ -1487,47 +1487,93 @@
   html[data-fx="ultra"] #authDeck .hd-slot:not(.hd-act) .hd-flip,html[data-fx="high"] #authDeck .hd-slot:not(.hd-act) .hd-flip{filter:blur(1.4px);}
 
   .acc-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--cy-line);} .acc-e{flex:1 1 180px;min-width:0;overflow-wrap:anywhere;font-size:.85rem;} .acc-s{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);} .acc-row[data-st="pending"] .acc-s{color:#ffb454;} .acc-row[data-st="approved"] .acc-s{color:var(--cy);} .acc-b{display:flex;gap:6px;} .acc-b .pz-mini{min-height:36px;}
-  #lockScreen{overflow-x:clip;} #accessGate{position:absolute;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;padding:calc(10px + env(safe-area-inset-top)) 16px 20px;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);background:radial-gradient(ellipse 80% 60% at 50% 22%,rgba(8,40,80,.55),rgba(2,6,14,.96) 70%),rgba(2,6,14,.9);transition:opacity .8s ease;overflow-y:auto;overflow-x:clip;}
+  /* ---- Access gate (holographic security gate) ---- */
+  #lockScreen{overflow-x:clip;}
+  #accessGate{position:absolute;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;padding:calc(6px + env(safe-area-inset-top)) 16px calc(14px + env(safe-area-inset-bottom));-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);background:radial-gradient(ellipse 80% 60% at 50% 22%,rgba(8,40,80,.55),rgba(2,6,14,.96) 70%),rgba(2,6,14,.92);transition:opacity .7s ease;overflow-y:auto;overflow-x:clip;--amb:#27e6ff;}
   #accessGate[hidden]{display:none;} #accessGate.pass{opacity:0;pointer-events:none;}
-  #accessGate .ag-box{width:100%;max-width:400px;margin:0 auto auto;position:relative;z-index:2;transition:opacity .4s,translate .6s;} #accessGate.unlocking .ag-box{opacity:0;translate:0 14px;}
-  #accessGate .gate-card{--c:20px;} #accessGate .lock-success{color:#9ff5c6;} #accessGate #gateCode{letter-spacing:.5em;font-size:22px;text-align:center;padding:22px 14px 6px;font-variant-numeric:tabular-nums;} #accessGate #gateCode + label{left:50%;translate:-50% 0;text-align:center;width:auto;} #accessGate .af #gateCode:focus + label,#accessGate .af #gateCode:not(:placeholder-shown) + label{left:14px;translate:0 0;}
-  #accessGate .auth-secondary{margin-top:10px;} #accessGate .auth-secondary[hidden]{display:none;} #accessGate .auth-eyebrow{margin-bottom:14px;display:block;padding-top:10px;line-height:1.4;} #accessGate h1.ac-title{line-height:1.2;margin-top:24px !important;} #accessGate .ac-title{font-family:inherit;font-weight:700;font-size:24px;margin:0 0 8px;}
-  .gl-scene{position:relative;flex:0 0 auto;width:calc(100% + 32px);margin:0 -16px 6px;height:min(38vh,340px);min-height:200px;pointer-events:none;} .gl-svg{width:100%;height:100%;display:block;overflow:visible;} .gl-scene{-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);}
-  .gl-t{fill:none;stroke:rgba(20,110,190,.55);stroke-width:5;stroke-linejoin:round;stroke-linecap:round;filter:blur(3px);} .gl-f{fill:none;stroke:#3bd6ff;stroke-width:2;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:14 120;animation:glFlow 3.2s linear infinite;}
+  #accessGate.denied{--amb:#ffb347;}
+  #accessGate .gl-cv{position:absolute;left:0;top:0;pointer-events:none;z-index:0;}
+  /* scene */
+  .gl-scene{position:relative;z-index:1;flex:0 0 auto;width:calc(100% + 32px);margin:0 -16px;height:min(40vh,380px);min-height:210px;pointer-events:none;perspective:900px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);}
+  .gl-svg{width:100%;height:100%;display:block;overflow:visible;transform:rotateX(calc(var(--py,0)*-7deg)) rotateY(calc(var(--px,0)*9deg)) translate3d(calc(var(--px,0)*6px),calc(var(--py,0)*4px),0);transform-style:preserve-3d;transition:transform .12s linear;will-change:transform;}
+  .gl-t{fill:none;stroke:rgba(20,110,190,.55);stroke-width:5;stroke-linejoin:round;stroke-linecap:round;filter:blur(3px);stroke-dasharray:1;stroke-dashoffset:0;transition:stroke-dashoffset .8s cubic-bezier(.3,.7,.2,1);}
+  .gl-f{fill:none;stroke:#3bd6ff;stroke-width:2;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:14 120;animation:glFlow 3.2s linear infinite;}
   .gl-t.b,.gl-t.c{opacity:.8;} .gl-f.b{animation-duration:4.4s;animation-direction:reverse;} .gl-f.c{animation-duration:5.4s;}
   @keyframes glFlow{to{stroke-dashoffset:-134;}}
-  .gl-n{fill:#041424;stroke:#4fe0ff;stroke-width:1.8;filter:drop-shadow(0 0 4px #27e6ff);} .gl-sq{fill:rgba(40,120,200,.28);stroke:rgba(80,180,255,.25);stroke-width:1;}
-  .gl-r{fill:none;stroke:rgba(70,200,255,.5);stroke-width:1.5;transform-box:fill-box;transform-origin:center;} .gl-r.r5{stroke-dasharray:2 5;stroke-width:6;stroke:rgba(70,200,255,.22);animation:glSpin 40s linear infinite;} .gl-r.r4{stroke-dasharray:60 9 12 9;animation:glSpin 26s linear infinite reverse;} .gl-r.r3{stroke:rgba(110,225,255,.8);stroke-width:2;filter:drop-shadow(0 0 6px #27e6ff);} .gl-r.r2{stroke-dasharray:1 4;stroke-width:5;stroke:rgba(70,200,255,.35);animation:glSpin 30s linear infinite;} .gl-r.r1{stroke:#7ff0ff;stroke-width:2.5;filter:drop-shadow(0 0 8px #27e6ff);}
+  .gl-n{fill:#041424;stroke:#4fe0ff;stroke-width:1.8;filter:drop-shadow(0 0 4px #27e6ff);animation:glNode 3.6s ease-in-out infinite;} .gl-n:nth-of-type(2n){animation-delay:.6s;} .gl-n:nth-of-type(3n){animation-delay:1.3s;} .gl-n:nth-of-type(5n){animation-delay:2.1s;} @keyframes glNode{50%{fill:#0d4a6e;}}
+  .gl-r{fill:none;stroke:rgba(70,200,255,.5);stroke-width:1.5;transform-box:fill-box;transform-origin:center;transition:stroke .3s;} .gl-r.r5{stroke-dasharray:2 5;stroke-width:6;stroke:rgba(70,200,255,.22);animation:glSpin 40s linear infinite;} .gl-r.r4{stroke-dasharray:60 9 12 9;animation:glSpin 26s linear infinite reverse;} .gl-r.r3{stroke:rgba(110,225,255,.8);stroke-width:2;filter:drop-shadow(0 0 6px #27e6ff);} .gl-r.r2{stroke-dasharray:1 4;stroke-width:5;stroke:rgba(70,200,255,.35);animation:glSpin 30s linear infinite;} .gl-r.r1{stroke:#7ff0ff;stroke-width:2.5;filter:drop-shadow(0 0 8px #27e6ff);}
   @keyframes glSpin{to{transform:rotate(360deg);}}
-  .gl-lock{filter:drop-shadow(0 0 8px #27e6ff);} .gl-shackle{fill:none;stroke:#aef6ff;stroke-width:6;stroke-linecap:round;transform-box:fill-box;transform-origin:100% 100%;transition:transform .55s cubic-bezier(.3,1.4,.4,1);} .gl-body{fill:#0a2a4a;stroke:#7ff0ff;stroke-width:3;} .gl-key{fill:#aef6ff;}
-  #accessGate.unlocking .gl-shackle{transform:translateY(-12px) rotate(-28deg);} #accessGate.unlocking .gl-r{stroke:#fff;animation:glBurst .9s ease-out;} #accessGate.unlocking .gl-f{stroke:#fff;stroke-dasharray:30 40;animation-duration:.6s;} #accessGate.unlocking .gl-svg{animation:glFlash .9s ease-out;}
-  @keyframes glBurst{0%{transform:scale(1);}60%{transform:scale(1.18);opacity:1;}100%{transform:scale(1.4);opacity:0;}} @keyframes glFlash{0%{filter:brightness(1);}35%{filter:brightness(2.2);}100%{filter:brightness(1.2);}}
-  html[data-fx="off"] .gl-f,html[data-fx="off"] .gl-r{animation:none;} html.hk-paused .gl-f,html.hk-paused .gl-r{animation-play-state:paused;}
-  @media (prefers-reduced-motion:reduce){ .gl-f,.gl-r,#accessGate.unlocking *{animation:none !important;} }
-
-  #accessGate .gl-cv{position:absolute;left:0;top:0;pointer-events:none;z-index:0;}
-  .gl-scene{perspective:900px;z-index:1;} .gl-svg{transform:rotateX(calc(var(--py,0)*-7deg)) rotateY(calc(var(--px,0)*9deg)) translate3d(calc(var(--px,0)*6px),calc(var(--py,0)*4px),0);transform-style:preserve-3d;transition:transform .12s linear;will-change:transform;}
-  .gl-scene{height:min(44vh,400px);} 
+  .gl-hex{fill:none;stroke:rgba(90,210,255,.35);stroke-width:1.2;stroke-dasharray:6 8;transform-box:fill-box;transform-origin:center;animation:glSpin 90s linear infinite;}
+  .gl-arc{fill:none;stroke:rgba(120,235,255,.85);stroke-width:2.5;stroke-linecap:round;transform-box:fill-box;transform-origin:center;} .gl-arc.a1{stroke-dasharray:90 940;animation:glSpin 7s linear infinite;filter:drop-shadow(0 0 5px #27e6ff);} .gl-arc.a2{stroke-dasharray:60 630;animation:glSpin 5s linear infinite reverse;stroke:rgba(190,250,255,.9);} .gl-arc.a3{stroke-dasharray:40 500;stroke:rgba(70,200,255,.8);animation:glSpin 3.4s linear infinite;}
+  .gl-gr{fill:none;stroke:rgba(70,200,255,.18);stroke-width:12;} .gl-gt{font:600 9px ui-monospace,Menlo,monospace;fill:rgba(160,240,255,.8);letter-spacing:.2em;} .gl-glyphs{transform-box:view-box;transform-origin:400px 170px;animation:glSpin 60s linear infinite reverse;}
+  .gl-orbit{transform-box:view-box;transform-origin:400px 170px;} .gl-orbit.o1{animation:glSpin 9s linear infinite;} .gl-orbit.o2{animation:glSpin 14s linear infinite reverse;} .gl-orbit circle{fill:#bff8ff;filter:drop-shadow(0 0 6px #27e6ff);} .gl-orbit .halo{fill:none;stroke:rgba(120,235,255,.5);stroke-width:1;}
+  .gl-lock{filter:drop-shadow(0 0 8px #27e6ff);animation:glBreath 3s ease-in-out infinite;transform-box:fill-box;transform-origin:center;} @keyframes glBreath{50%{filter:drop-shadow(0 0 16px #27e6ff) brightness(1.2);}}
+  .gl-shackle{fill:none;stroke:#aef6ff;stroke-width:6;stroke-linecap:round;stroke-dasharray:1;transform-box:fill-box;transform-origin:100% 100%;transition:transform .55s cubic-bezier(.3,1.4,.4,1),stroke-dashoffset .6s ease,stroke .3s;} .gl-body{fill:#0a2a4a;stroke:#7ff0ff;stroke-width:3;stroke-dasharray:1;transition:stroke-dashoffset .7s ease,stroke .3s;} .gl-key{fill:#aef6ff;} .gl-key.kc{animation:glKey 2.4s ease-in-out infinite;} @keyframes glKey{50%{fill:#fff;filter:drop-shadow(0 0 6px #fff);}}
+  .gl-tx{fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:0 1000;opacity:0;filter:drop-shadow(0 0 6px #27e6ff);} .gl-pk{fill:#fff;opacity:0;filter:drop-shadow(0 0 10px #27e6ff) drop-shadow(0 0 4px #fff);}
+  #accessGate.tx .gl-tx,#accessGate.tx .gl-pk{opacity:1;}
+  .gl-devn{opacity:.85;} .gl-devn .dn-ring{fill:none;stroke:rgba(110,225,255,.6);stroke-width:1.5;stroke-dasharray:3 4;transform-box:fill-box;transform-origin:center;animation:glSpin 12s linear infinite;} .gl-devn .dn-core{fill:#06223a;stroke:#6ee9ff;stroke-width:1.6;} .gl-devn .dn-env{fill:none;stroke:#bff8ff;stroke-width:1.4;stroke-linejoin:round;} .gl-devn text{font:700 11px ui-monospace,Menlo,monospace;letter-spacing:.14em;fill:#9ff3ff;}
+  #accessGate.txhit .gl-devn .dn-core{fill:#17d6ff;filter:drop-shadow(0 0 14px #27e6ff);} #accessGate.txhit .gl-devn .dn-env{stroke:#021a2c;}
   .gl-radar{position:absolute;left:50%;top:50%;height:84%;aspect-ratio:1;translate:-50% -50%;border-radius:50%;background:conic-gradient(from 0deg,rgba(60,210,255,0) 0deg,rgba(60,210,255,0) 250deg,rgba(60,210,255,.0) 300deg,rgba(90,225,255,.38) 358deg,rgba(190,250,255,.7) 360deg);-webkit-mask:radial-gradient(circle,transparent 18%,#000 20%,#000 62%,transparent 70%);mask:radial-gradient(circle,transparent 18%,#000 20%,#000 62%,transparent 70%);animation:glSweep 4.6s linear infinite;mix-blend-mode:screen;}
   @keyframes glSweep{to{rotate:360deg;}}
-  .gl-beam{position:absolute;left:12%;right:12%;height:2px;top:0;background:linear-gradient(90deg,transparent,rgba(120,240,255,.9),transparent);box-shadow:0 0 14px 3px rgba(60,210,255,.5);animation:glBeam 3.8s ease-in-out infinite;opacity:.0;}
-  @keyframes glBeam{0%{top:8%;opacity:0;}12%{opacity:.85;}50%{top:92%;opacity:.85;}62%,100%{top:92%;opacity:0;}}
-  .gl-hex{fill:none;stroke:rgba(90,210,255,.35);stroke-width:1.2;stroke-dasharray:6 8;transform-box:fill-box;transform-origin:center;animation:glSpin 90s linear infinite;}
-  .gl-arc{fill:none;stroke:rgba(120,235,255,.85);stroke-width:2.5;stroke-linecap:round;transform-box:fill-box;transform-origin:center;} .gl-arc.a1{stroke-dasharray:90 940;animation:glSpin 7s linear infinite;filter:drop-shadow(0 0 5px #27e6ff);} .gl-arc.a2{stroke-dasharray:60 630;animation:glSpin 5s linear infinite reverse;stroke:rgba(190,250,255,.9);}
-  .gl-orbit{transform-box:view-box;transform-origin:400px 170px;} .gl-orbit.o1{animation:glSpin 9s linear infinite;} .gl-orbit.o2{animation:glSpin 14s linear infinite reverse;} .gl-orbit circle{fill:#bff8ff;filter:drop-shadow(0 0 6px #27e6ff);} .gl-orbit .halo{fill:none;stroke:rgba(120,235,255,.5);stroke-width:1;}
-  .gl-lock{animation:glBreath 3s ease-in-out infinite;transform-box:fill-box;transform-origin:center;} @keyframes glBreath{50%{filter:drop-shadow(0 0 16px #27e6ff) brightness(1.2);}}
+  .gl-beam{position:absolute;left:12%;right:12%;height:2px;top:0;background:linear-gradient(90deg,transparent,rgba(120,240,255,.9),transparent);box-shadow:0 0 14px 3px rgba(60,210,255,.5);animation:glBeam 3.8s ease-in-out infinite;opacity:0;} @keyframes glBeam{0%{top:8%;opacity:0;}12%{opacity:.85;}50%{top:92%;opacity:.85;}62%,100%{top:92%;opacity:0;}}
+  /* micro-panels: only statuses that are true */
+  .gl-pan{position:absolute;width:128px;padding:7px 10px 9px;font:600 9px/1.4 ui-monospace,Menlo,monospace;letter-spacing:.14em;color:rgba(130,230,255,.75);background:linear-gradient(135deg,rgba(20,90,150,.32),rgba(6,24,48,.55));border:1px solid rgba(80,200,255,.32);clip-path:polygon(0 0,calc(100% - 9px) 0,100% 9px,100% 100%,9px 100%,0 calc(100% - 9px));text-transform:uppercase;} .gl-pan b{display:block;color:#d8fbff;font-size:10.5px;text-shadow:0 0 8px #27e6ff;margin-top:1px;} .gl-pan i{display:block;height:2px;margin-top:6px;background:linear-gradient(90deg,#27e6ff,transparent);animation:glPanBar 3.4s ease-in-out infinite;transform-origin:left;}
+  .gl-pan.pl{left:5%;} .gl-pan.pr{right:5%;} .gl-pan.p0{top:24%;} .gl-pan.p1{top:52%;margin-left:14px;} .gl-pan.p2{top:24%;} .gl-pan.p3{top:52%;margin-right:14px;} .gl-pan.p1{animation-delay:.4s;} .gl-pan.p2 i{animation-delay:.8s;} .gl-pan.p3 i{animation-delay:1.2s;} @keyframes glPanBar{50%{transform:scaleX(.35);}}
   .gl-hud{position:absolute;font:600 9.5px/1.5 ui-monospace,Menlo,monospace;letter-spacing:.14em;color:rgba(110,225,255,.8);text-transform:uppercase;display:flex;flex-direction:column;gap:1px;pointer-events:none;} .gl-hud b{color:#bff8ff;font-weight:700;text-shadow:0 0 8px #27e6ff;} .gl-hud span{opacity:.75;}
-  .h-tl{left:calc(16px + 4%);top:6px;} .h-tr{right:calc(16px + 4%);top:6px;text-align:right;} .h-bl{left:calc(16px + 4%);bottom:2px;} .h-br{right:calc(16px + 4%);bottom:2px;text-align:right;}
-  .h-tl::before,.h-tr::before{content:"";width:34px;height:1px;background:linear-gradient(90deg,#4fe0ff,transparent);margin-bottom:3px;} .h-tr::before{align-self:flex-end;background:linear-gradient(270deg,#4fe0ff,transparent);}
-  .h-tl b::after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#ff5c7a;box-shadow:0 0 8px #ff5c7a;margin-left:8px;animation:glBlink 1.2s steps(2) infinite;vertical-align:1px;} #accessGate.unlocking .h-tl b::after{background:#5dffa8;box-shadow:0 0 8px #5dffa8;} @keyframes glBlink{50%{opacity:.15;}}
-  .ag-scan{position:absolute;left:-6px;right:-6px;height:2px;top:0;z-index:5;pointer-events:none;background:linear-gradient(90deg,transparent,#8ff2ff,transparent);box-shadow:0 0 16px 3px rgba(60,210,255,.6);animation:agScan 5.2s ease-in-out infinite;opacity:0;} @keyframes agScan{0%{top:2%;opacity:0;}10%{opacity:.8;}45%{top:98%;opacity:.8;}55%,100%{top:98%;opacity:0;}}
-  .gc-wrap{position:relative;margin:4px 0 12px;} .gc-cells{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;} .gc-cells i{height:54px;border-radius:10px;border:1px solid rgba(80,200,255,.35);background:rgba(4,20,38,.7);display:grid;place-items:center;font:700 24px ui-monospace,Menlo,monospace;color:#d8fbff;font-style:normal;text-shadow:0 0 10px #27e6ff;transition:border-color .15s,box-shadow .15s,transform .15s;} .gc-cells i.on{border-color:#6ee9ff;box-shadow:0 0 14px rgba(60,210,255,.45) inset,0 0 10px rgba(60,210,255,.35);animation:gcPop .18s ease-out;} .gc-cells i.cur{border-color:#bff8ff;box-shadow:0 0 0 2px rgba(120,235,255,.35);} .gc-cells i.cur::after{content:"";width:2px;height:24px;background:#8ff2ff;animation:glBlink 1s steps(2) infinite;} @keyframes gcPop{from{transform:scale(1.14);}}
-  #accessGate input.gc-in{position:absolute;inset:0;width:100%;height:100%;opacity:0;font-size:16px;letter-spacing:0;text-align:left;padding:0;cursor:text;} .gc-wrap.gc-warn{animation:gcShake .5s;} .gc-wrap.gc-warn .gc-cells i{border-color:#ff6b86;box-shadow:0 0 12px rgba(255,90,120,.5) inset;} @keyframes gcShake{20%{translate:-8px 0;}40%{translate:7px 0;}60%{translate:-5px 0;}80%{translate:3px 0;}}
-  html[data-fx="off"] .gl-radar,html[data-fx="off"] .gl-beam,html[data-fx="off"] .gl-arc,html[data-fx="off"] .gl-orbit,html[data-fx="off"] .gl-hex,html[data-fx="off"] .ag-scan,html[data-fx="off"] .gl-lock{animation:none;}
-  html[data-fx="calm"] .gl-svg{transition:none;transform:none;} html.hk-paused .gl-radar,html.hk-paused .gl-beam,html.hk-paused .gl-arc,html.hk-paused .gl-orbit,html.hk-paused .gl-hex,html.hk-paused .ag-scan,html.hk-paused .gl-lock{animation-play-state:paused;}
-  @media (prefers-reduced-motion:reduce){ .gl-radar,.gl-beam,.gl-arc,.gl-orbit,.gl-hex,.ag-scan,.gl-lock{animation:none !important;} .gl-svg{transform:none !important;} }
-  @media (max-width:520px){ .gl-hud{font-size:8.5px;letter-spacing:.1em;} .gc-cells i{height:48px;} .gl-scene{height:min(38vh,320px);} }
-  @media (max-height:640px){ .gl-scene{height:150px;} }
+  .h-tl{left:calc(16px + 3%);top:4px;} .h-tr{right:calc(16px + 3%);top:4px;text-align:right;}
+  .h-tl b::after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#ff5c7a;box-shadow:0 0 8px #ff5c7a;margin-left:8px;vertical-align:1px;} #accessGate.unlocking .h-tl b::after{background:#5dffa8;box-shadow:0 0 8px #5dffa8;}
+  /* status label */
+  .ag-status{position:relative;z-index:2;display:flex;align-items:center;gap:9px;margin:-4px auto 12px;padding:6px 14px;font:700 11px ui-monospace,Menlo,monospace;letter-spacing:.2em;color:#9ff3ff;border:1px solid rgba(80,200,255,.35);background:rgba(4,22,42,.6);clip-path:polygon(8px 0,calc(100% - 8px) 0,100% 50%,calc(100% - 8px) 100%,8px 100%,0 50%);transition:color .3s,border-color .3s;} .ag-status i{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 10px currentColor;}
+  .ag-status.sending{color:#fff;animation:agPulse 1s ease-in-out infinite;} .ag-status.granted{color:#7dffb4;border-color:rgba(125,255,180,.6);text-shadow:0 0 12px #5dffa8;} .ag-status.denied{color:#ffb347;border-color:rgba(255,179,71,.6);} @keyframes agPulse{50%{opacity:.45;}}
+  /* card on a projection platform */
+  #accessGate .ag-box{width:100%;max-width:400px;margin:0 auto 62px;position:relative;z-index:2;transition:opacity .45s,translate .6s,scale .6s,clip-path .7s;}
+  .ag-plat{position:absolute;left:50%;bottom:-40px;width:128%;height:96px;translate:-50% 0;pointer-events:none;z-index:-1;} .ag-plat u{position:absolute;inset:6px 6% 0;border-radius:50%;background:radial-gradient(ellipse,rgba(40,200,255,.42),rgba(20,110,200,.14) 55%,transparent 72%);filter:blur(5px);}
+  .ag-plat{height:110px;bottom:-52px;} .ag-plat .pl3d{position:absolute;inset:0;transform:rotateX(76deg);transform-style:preserve-3d;}
+  .ag-plat i{position:absolute;left:50%;top:50%;aspect-ratio:1;border-radius:50%;border:1.5px solid rgba(90,215,255,.6);translate:-50% -50%;animation:agRing 14s linear infinite;box-shadow:0 0 14px rgba(40,200,255,.35);} .ag-plat .r1{width:46%;border-style:dashed;} .ag-plat .r2{width:64%;animation-direction:reverse;animation-duration:22s;border-color:rgba(90,215,255,.4);} .ag-plat .r3{width:84%;border-style:dotted;border-width:2px;border-color:rgba(90,215,255,.32);animation-duration:34s;}
+  @keyframes agRing{from{rotate:0deg;}to{rotate:360deg;}}
+  .ag-scan{position:absolute;left:-6px;right:-6px;height:2px;top:0;z-index:5;pointer-events:none;background:linear-gradient(90deg,transparent,#8ff2ff,transparent);box-shadow:0 0 16px 3px rgba(60,210,255,.6);animation:agScan 5.6s ease-in-out infinite;opacity:0;} @keyframes agScan{0%{top:2%;opacity:0;}10%{opacity:.8;}45%{top:98%;opacity:.8;}55%,100%{top:98%;opacity:0;}}
+  .ag-pkt{position:absolute;left:0;top:0;width:34px;height:3px;z-index:6;pointer-events:none;border-radius:3px;background:linear-gradient(90deg,transparent,#fff);box-shadow:0 0 12px 3px rgba(60,210,255,.8);offset-path:inset(0px round 18px);offset-rotate:auto;animation:agPkt 6.5s linear infinite;} @keyframes agPkt{from{offset-distance:0%;}to{offset-distance:100%;}}
+  #accessGate .gate-card{--c:20px;} .gate-card .hf-n{animation:agNode 2.8s ease-in-out infinite;} .gate-card .hf-n.n2{animation-delay:.7s;} .gate-card .hf-n.n3{animation-delay:1.4s;} .gate-card .hf-n.n4{animation-delay:2.1s;} @keyframes agNode{50%{transform:scale(1.7);filter:brightness(1.8);}}
+  .gate-card .hf-glare{animation:agGlare 7s ease-in-out infinite;} @keyframes agGlare{0%,70%{opacity:0;translate:-60% 0;}85%{opacity:.8;}100%{opacity:0;translate:60% 0;}}
+  .ag-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#5de0ff;box-shadow:0 0 8px #27e6ff;margin-right:8px;vertical-align:1px;} #accessGate.denied .ag-dot{background:#ffb347;box-shadow:0 0 8px #ffb347;}
+  #accessGate h1.ac-title{font-family:inherit;font-weight:700;font-size:24px;line-height:1.2;margin:24px 0 8px !important;} #accessGate .auth-eyebrow{display:block;padding-top:10px;line-height:1.4;margin-bottom:6px;} #accessGate .lock-success{color:#9ff5c6;}
+  .ag-rcpt{margin:-2px 2px 10px;font-size:12.5px;line-height:1.4;color:rgba(170,230,250,.8);} .ag-rcpt b{font-weight:700;color:#d8fbff;letter-spacing:.02em;}
+  #accessGate .af input{font-size:16px;} #accessGate .af-clear{position:absolute;right:8px;top:50%;translate:0 -50%;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;border:1px solid rgba(80,200,255,.3);background:rgba(8,40,70,.55);cursor:pointer;color:#9ff3ff;padding:0;} #accessGate .af-clear[hidden]{display:none;} #accessGate .af-clear svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;} #accessGate .af:has(.af-clear:not([hidden])) input{padding-right:48px;}
+  #accessGate .af.af-filled{animation:agFilled 1.1s ease-out;} @keyframes agFilled{0%{box-shadow:0 0 0 0 rgba(60,220,255,.9),0 0 22px 2px rgba(60,220,255,.7);}100%{box-shadow:0 0 0 8px rgba(60,220,255,0),0 0 0 0 rgba(60,220,255,0);}}
+  /* 6-box code */
+  .gc-row{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:6px 0 12px;} .gc-d{width:100%;min-width:0;height:54px;padding:0;text-align:center;font:700 24px ui-monospace,Menlo,monospace;color:#d8fbff;caret-color:#8ff2ff;background:rgba(4,20,38,.75);border:1px solid rgba(80,200,255,.35);border-radius:6px;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));text-shadow:0 0 10px #27e6ff;outline:none;transition:border-color .15s,box-shadow .15s,background .15s;font-size:max(16px,24px);}
+  .gc-d:focus{border-color:#bff8ff;box-shadow:0 0 0 2px rgba(120,235,255,.4),0 0 18px rgba(60,210,255,.4);background:rgba(10,44,76,.85);} .gc-d.on{border-color:#6ee9ff;animation:gcPop .22s ease-out;box-shadow:inset 0 0 14px rgba(60,210,255,.4);} @keyframes gcPop{0%{transform:scale(1.14);box-shadow:0 0 20px rgba(120,240,255,.9);}}
+  .gc-row.gc-warn{animation:gcShake .5s;} .gc-row.gc-warn .gc-d{border-color:#ffb347;box-shadow:inset 0 0 12px rgba(255,179,71,.4);} @keyframes gcShake{20%{translate:-8px 0;}40%{translate:7px 0;}60%{translate:-5px 0;}80%{translate:3px 0;}}
+  .gx{display:flex;align-items:center;gap:10px;margin:0 2px 12px;font:600 11px ui-monospace,Menlo,monospace;letter-spacing:.1em;color:rgba(160,235,255,.85);} .gx svg{width:26px;height:26px;rotate:-90deg;flex:none;} .gx circle{fill:none;stroke-width:3;} .gx-bg{stroke:rgba(80,200,255,.2);} .gx-fg{stroke:#4fe0ff;stroke-dasharray:100;stroke-dashoffset:0;stroke-linecap:round;transition:stroke-dashoffset 1s linear;filter:drop-shadow(0 0 3px #27e6ff);} .gx.low .gx-fg{stroke:#ffb347;} .gx.low{color:#ffc678;}
+  #accessGate .auth-secondary{margin-top:10px;} #accessGate .auth-secondary[hidden]{display:none;} #accessGate .auth-sec-btn.dis{opacity:.5;pointer-events:none;}
+  /* step tracker, back link, signature */
+  .gs-track{position:relative;z-index:2;display:flex;align-items:flex-start;width:100%;max-width:440px;margin:6px auto 0;padding:0;list-style:none;}
+  .gs-step{display:flex;flex-direction:column;align-items:center;gap:7px;flex:0 0 auto;width:82px;font:700 9px ui-monospace,Menlo,monospace;letter-spacing:.14em;color:rgba(120,210,240,.5);text-align:center;transition:color .3s;} .gs-step b{width:30px;height:30px;display:grid;place-items:center;font-size:13px;border:1px solid currentColor;clip-path:polygon(7px 0,calc(100% - 7px) 0,100% 7px,100% calc(100% - 7px),calc(100% - 7px) 100%,7px 100%,0 calc(100% - 7px),0 7px);background:rgba(4,22,42,.7);transition:all .3s;}
+  .gs-step[data-state="active"]{color:#d8fbff;} .gs-step[data-state="active"] b{border-color:#8ff2ff;box-shadow:0 0 16px rgba(60,210,255,.65);text-shadow:0 0 8px #27e6ff;animation:agPulse 2.4s ease-in-out infinite;} .gs-step[data-state="done"]{color:#7dffb4;} .gs-step[data-state="done"] b{font-size:0;} .gs-step[data-state="done"] b::before{content:"✓";font-size:15px;text-shadow:0 0 8px #5dffa8;}
+  .gs-line{flex:1;height:2px;margin:14px 2px 0;background:rgba(80,200,255,.2);position:relative;} .gs-line::after{content:"";position:absolute;inset:0;transform-origin:left;transform:scaleX(var(--f,0));transition:transform .8s cubic-bezier(.3,.7,.2,1);background:linear-gradient(90deg,#27e6ff,#9ff6ff);box-shadow:0 0 10px #27e6ff;}
+  .ag-back{position:relative;z-index:2;margin:14px auto 0;padding:8px 14px;font-size:13px;color:#8fe9ff;text-decoration:none;border-radius:20px;} .ag-back:hover,.ag-back:focus-visible{color:#fff;text-shadow:0 0 10px #27e6ff;outline:none;}
+  #accessGate .ag-dev{position:relative;z-index:2;margin:auto auto 0;padding-top:14px;}
+  /* unlock */
+  #accessGate.unlocking .gl-shackle{transform:translateY(-12px) rotate(-28deg);} #accessGate.unlocking .gl-r{stroke:#fff;animation:glBurst .9s ease-out;} #accessGate.unlocking .gl-f{stroke:#fff;stroke-dasharray:30 40;animation-duration:.6s;} #accessGate.unlocking .gl-svg{animation:glFlash .9s ease-out;}
+  #accessGate.flipout .ag-box{opacity:0;scale:.92;transform:perspective(800px) rotateY(88deg);transition:opacity .35s,transform .35s ease-in,scale .35s;} #accessGate.unlocking .gl-pan,#accessGate.unlocking .ag-status{filter:brightness(1.5);}
+  @keyframes glBurst{0%{transform:scale(1);}60%{transform:scale(1.18);opacity:1;}100%{transform:scale(1.4);opacity:0;}} @keyframes glFlash{0%{filter:brightness(1);}35%{filter:brightness(2.2);}100%{filter:brightness(1.2);}}
+  /* denied: lock shakes, rings flash amber */
+  #accessGate.denied .gl-lock{animation:glShake .5s;} #accessGate.denied .gl-r,#accessGate.denied .gl-arc{stroke:#ffb347;} #accessGate.denied .gl-body,#accessGate.denied .gl-shackle{stroke:#ffcf8a;} @keyframes glShake{20%{translate:-7px 0;}40%{translate:6px 0;}60%{translate:-4px 0;}80%{translate:2px 0;}}
+  /* boot sequence (skippable) */
+  #accessGate.boot:not(.k1) .gl-t{stroke-dashoffset:1;} #accessGate.boot:not(.k1) .gl-f,#accessGate.boot:not(.k1) .gl-n,#accessGate.boot:not(.k1) .gl-devn{opacity:0;} .gl-f,.gl-n,.gl-devn{transition:opacity .5s;}
+  #accessGate.boot:not(.k2) .gl-rings,#accessGate.boot:not(.k2) .gl-xtra,#accessGate.boot:not(.k2) .gl-radar{opacity:0;} .gl-rings,.gl-xtra{transform-box:view-box;transform-origin:400px 170px;transition:opacity .6s,transform .8s cubic-bezier(.2,.8,.2,1);} #accessGate.boot:not(.k2) .gl-rings,#accessGate.boot:not(.k2) .gl-xtra{transform:scale(.55) rotate(-40deg);}
+  #accessGate.boot:not(.k3) .gl-shackle,#accessGate.boot:not(.k3) .gl-body{stroke-dashoffset:1;} #accessGate.boot:not(.k3) .gl-key{opacity:0;} #accessGate.boot:not(.k3) .gl-body{fill:transparent;} .gl-key{transition:opacity .4s .5s;}
+  #accessGate.boot:not(.k4) .gl-pan,#accessGate.boot:not(.k4) .gl-hud,#accessGate.boot:not(.k4) .ag-status{opacity:0;} .gl-pan,.gl-hud,.ag-status{transition:opacity .5s;}
+  #accessGate.boot:not(.k5) .ag-box{opacity:0;translate:0 26px;clip-path:inset(0 0 100% 0);} #accessGate .ag-box{clip-path:inset(-60px -40px -90px -40px);}
+  #accessGate.boot:not(.k7) .gs-track,#accessGate.boot:not(.k7) .ag-back,#accessGate.boot:not(.k7) .ag-dev{opacity:0;} .gs-track,.ag-back,.ag-dev{transition:opacity .6s;}
+  /* reduced motion / motion Off / paused */
+  html[data-fx="off"] #accessGate *,html[data-fx="off"] #accessGate{animation:none !important;} html[data-fx="off"] .gl-svg{transform:none;transition:none;}
+  html[data-fx="calm"] .gl-svg{transition:none;transform:none;} html[data-fx="calm"] .ag-pkt,html[data-fx="calm"] .gl-glyphs{animation:none;}
+  html.hk-paused #accessGate *{animation-play-state:paused !important;}
+  @media (prefers-reduced-motion:reduce){ #accessGate *{animation:none !important;transition-duration:.01s !important;} .gl-svg{transform:none !important;} }
+  /* phones */
+  @media (max-width:700px){ .gl-pan{display:none;} .gl-scene{height:min(30vh,270px);min-height:190px;} .gl-hud{font-size:8.5px;letter-spacing:.1em;} .gl-devn text{font-size:19px;} .gc-d{height:48px;} .gs-step{width:70px;font-size:8px;letter-spacing:.08em;} #accessGate h1.ac-title{font-size:22px;} }
+  @media (max-height:700px){ .gl-scene{height:150px;min-height:150px;} }
   /* ---- Sign In: field life, authenticating, grant, failure ---- */
   .af::after{content:"";position:absolute;left:0;top:0;width:36px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#fff);box-shadow:0 0 10px var(--cy),0 0 22px var(--cy);offset-path:inset(0 round 12px);offset-rotate:auto;offset-distance:0%;opacity:0;pointer-events:none;z-index:3;}
   .af:focus-within::after{animation:afLaser .62s cubic-bezier(.4,0,.2,1) forwards;} @keyframes afLaser{0%{opacity:1;offset-distance:0%;}88%{opacity:1;}100%{opacity:0;offset-distance:100%;}}
@@ -3270,6 +3316,8 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
   const MAX_DIM = 220;
 
   // ---------- Supabase ----------
+  // One place to change the developer address (the access code is emailed here; also pre-filled on the gate).
+  const APP_CONFIG = { DEVELOPER_EMAIL: 'rjlim060719@gmail.com' };
   const SUPABASE_URL = 'https://jfnuqozxhljkhlcnfnxh.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_th-gd1or6hgy0XRMXhU4ew_Sg8rWmuv'; // publishable key — safe for client code, cannot bypass RLS
   // Guarded, not a bare top-level call: if the Supabase library's CDN script
@@ -4149,45 +4197,144 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
   const authDeck = HK.deck($('authDeck'), { label:'Account access', ch:470, fit:true, cw:392, loop:false, flipOnTap:false,
     items: AUTH_CARDS.map(c=>({ label:c.label, front: HK.frame(`<div class="auth-eyebrow">${c.idx}</div>${c.html}`,{variant:'standard',intensity:'active',tick:true,glare:true,cls:'auth-card'}), back:grantedBack })),
     onChange(i){ authCardChanged(i); } });
-  // ---- access gate: a lock screen. The visitor asks for a code; it is emailed to the developer only. The right code opens Create account. ----
+  // ---- access gate: a holographic security gate. The visitor asks for a code; the SERVER generates, hashes and emails it to the developer only.
+  //      The right code (verified on the server) unlocks Create account. Nothing about the code lives in this file. ----
   const LOCK_SVG = (()=>{ const L=[[400,170],[330,170],[300,140],[220,140],[190,110],[100,110],[70,80],[0,80]], R=L.map(p=>[800-p[0],p[1]]);
     const L2=[[400,185],[335,185],[305,215],[200,215],[170,245],[90,245],[60,275],[0,275]], R2=L2.map(p=>[800-p[0],p[1]]);
     const L3=[[400,200],[345,200],[320,180],[270,180],[245,200],[150,200],[120,170],[0,170]], R3=L3.map(p=>[800-p[0],p[1]]);
-    const pl=(P,c)=>`<polyline class="gl-t ${c}" points="${P.map(p=>p.join(',')).join(' ')}"/><polyline class="gl-f ${c}" points="${P.map(p=>p.join(',')).join(' ')}"/>`;
-    const nodes=[L[2],L[4],L[6],R[2],R[4],R[6],L2[2],L2[4],R2[2],R2[4],L3[2],L3[4],R3[2],R3[4]].map(p=>`<circle class="gl-n" cx="${p[0]}" cy="${p[1]}" r="4.5"/>`).join('');
-    const sq=[[40,20,34],[690,24,30],[20,290,26],[720,280,36],[610,40,22],[150,35,18]].map(q=>`<rect class="gl-sq" x="${q[0]}" y="${q[1]}" width="${q[2]}" height="${q[2]*.8}"/>`).join('');
-    return `<svg class="gl-svg" viewBox="0 0 800 340" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${sq}${pl(L,'a')}${pl(R,'a')}${pl(L2,'b')}${pl(R2,'b')}${pl(L3,'c')}${pl(R3,'c')}${nodes}
-      <g class="gl-xtra"><polygon class="gl-hex" points="400,5 531,87.5 531,252.5 400,335 269,252.5 269,87.5"/><g class="gl-orbit o1"><circle cx="400" cy="30" r="3.2"/><circle cx="400" cy="30" r="8" class="halo"/></g><g class="gl-orbit o2"><circle cx="400" cy="318" r="2.6"/></g><circle class="gl-arc a1" cx="400" cy="170" r="165"/><circle class="gl-arc a2" cx="400" cy="170" r="110"/></g><g class="gl-rings"><circle class="gl-r r5" cx="400" cy="170" r="150"/><circle class="gl-r r4" cx="400" cy="170" r="122"/><circle class="gl-r r3" cx="400" cy="170" r="98"/><circle class="gl-r r2" cx="400" cy="170" r="76"/><circle class="gl-r r1" cx="400" cy="170" r="56"/></g>
-      <g class="gl-lock"><path class="gl-shackle" d="M382 166v-12a18 18 0 0 1 36 0v12"/><rect class="gl-body" x="372" y="164" width="56" height="42" rx="6"/><circle class="gl-key" cx="400" cy="181" r="5"/><rect class="gl-key" x="397.8" y="183" width="4.4" height="12" rx="1.5"/></g></svg>`; })();
+    const pts=P=>P.map(p=>p.join(',')).join(' ');
+    const pl=(P,c)=>`<polyline class="gl-t ${c}" pathLength="1" points="${pts(P)}"/><polyline class="gl-f ${c}" points="${pts(P)}"/>`;
+    const nodes=[L[2],L[4],L[6],R[2],R[4],L2[2],L2[4],R2[2],R2[4],L3[2],L3[4],R3[2],R3[4]].map(p=>`<circle class="gl-n" cx="${p[0]}" cy="${p[1]}" r="4.5"/>`).join('');
+    const TX='M400 338 L400 170 L470 170 L500 140 L580 140 L610 110 L700 110 L730 80 L745 80';
+    return `<svg class="gl-svg" viewBox="0 0 800 340" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${pl(L,'a')}${pl(R,'a')}${pl(L2,'b')}${pl(R2,'b')}${pl(L3,'c')}${pl(R3,'c')}${nodes}
+      <path id="gTx" class="gl-tx" d="${TX}" pathLength="1000"/><circle id="gPk" class="gl-pk" r="6" cx="400" cy="338"/>
+      <g class="gl-devn"><circle class="dn-ring" cx="745" cy="80" r="15"/><circle class="dn-core" cx="745" cy="80" r="11"/><path class="dn-env" d="M738 76h14v9h-14zM738 76l7 5.5 7-5.5"/><text x="732" y="54" text-anchor="middle">DEVELOPER</text></g>
+      <g class="gl-xtra"><polygon class="gl-hex" points="400,5 531,87.5 531,252.5 400,335 269,252.5 269,87.5"/><g class="gl-orbit o1"><circle cx="400" cy="30" r="3.2"/><circle cx="400" cy="30" r="8" class="halo"/></g><g class="gl-orbit o2"><circle cx="400" cy="318" r="2.6"/></g><circle class="gl-arc a1" cx="400" cy="170" r="165"/><circle class="gl-arc a2" cx="400" cy="170" r="110"/><circle class="gl-arc a3" cx="400" cy="170" r="87"/><g class="gl-glyphs"><circle class="gl-gr" cx="400" cy="170" r="137" pathLength="1"/><text class="gl-gt"><textPath href="#gGl" startOffset="0">01 A7 F3 00 1B E4 5C 9D 02 B8 3F 6A 11 C0 7E 4D 0F 92 D5 38 A1 6B E2 54 </textPath></text><path id="gGl" d="M400 170 m-137 0 a137 137 0 1 1 274 0 a137 137 0 1 1 -274 0" fill="none"/></g></g>
+      <g class="gl-rings"><circle class="gl-r r5" cx="400" cy="170" r="150"/><circle class="gl-r r4" cx="400" cy="170" r="122"/><circle class="gl-r r3" cx="400" cy="170" r="98"/><circle class="gl-r r2" cx="400" cy="170" r="76"/><circle class="gl-r r1" cx="400" cy="170" r="56"/></g>
+      <g class="gl-lock"><path class="gl-shackle" pathLength="1" d="M382 166v-12a18 18 0 0 1 36 0v12"/><rect class="gl-body" pathLength="1" x="372" y="164" width="56" height="42" rx="6"/><circle class="gl-key kc" cx="400" cy="181" r="5"/><rect class="gl-key kb" x="397.8" y="183" width="4.4" height="12" rx="1.5"/></g></svg>`; })();
+  const maskEmail = e=>{ const [l,d]=String(e).split('@'); return (l||'').slice(0,2)+'•••••@'+(d||''); };
+  const DEVMAIL = APP_CONFIG.DEVELOPER_EMAIL;
+  const PAN = [['GATE','LOCKED','pg'],['CODES','SERVER-SIDE','pc'],['REQUESTS','RATE LIMITED','pr'],['TRANSPORT',location.protocol==='https:'?'HTTPS':'NOT SECURE','pt']];
+  const panHTML = PAN.map((p,i)=>`<div class="gl-pan ${i<2?'pl':'pr'} p${i}" id="${p[2]}"><span>${p[0]}</span><b data-v="${p[1]}">${p[1]}</b><i></i></div>`).join('');
+  const digits = Array.from({length:6},(_,i)=>`<input class="gc-d" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="${i?'off':'one-time-code'}" aria-label="Digit ${i+1} of 6" data-i="${i}">`).join('');
   const gate = document.createElement('div'); gate.id='accessGate'; gate.setAttribute('role','dialog'); gate.setAttribute('aria-modal','true'); gate.setAttribute('aria-label','Restricted access');
-  gate.innerHTML = `<canvas class="gl-cv" aria-hidden="true"></canvas><div class="gl-scene"><div class="gl-radar"></div>${LOCK_SVG}<div class="gl-beam"></div><div class="gl-hud h-tl" aria-hidden="true"><b id="ghA">LOCK ENGAGED</b><span id="ghB">KEY: NONE</span></div><div class="gl-hud h-tr" aria-hidden="true"><b id="ghC">--:--:--</b><span>LOCAL TIME</span></div><div class="gl-hud h-bl" aria-hidden="true"><span id="ghD">ATTEMPTS 0 / 5</span></div><div class="gl-hud h-br" aria-hidden="true"><span id="ghE">AWAITING EMAIL</span></div></div><div class="ag-box auth-newpw"><div class="ag-scan" aria-hidden="true"></div>${HK.frame(`<div class="auth-eyebrow">RESTRICTED · DEVELOPER APPROVAL</div><h1 class="ac-title" id="gateTitle">Access locked</h1><p class="sub" id="gateSub">Enter your email to request an access code. The code is sent to the developer's Gmail. Once you have it, the sign-up form opens.</p>
+  gate.innerHTML = `<canvas class="gl-cv" aria-hidden="true"></canvas>
+    <div class="gl-scene"><div class="gl-radar"></div>${LOCK_SVG}<div class="gl-beam"></div>${panHTML}
+      <div class="gl-hud h-tl" aria-hidden="true"><b id="ghA">LOCK ENGAGED</b><span id="ghB">KEY: NONE</span></div><div class="gl-hud h-tr" aria-hidden="true"><b id="ghC">--:--:--</b><span>LOCAL TIME</span></div></div>
+    <div class="ag-status" id="gStatus" aria-hidden="true"><i></i><span id="gStatusT">SECURE GATE · LOCKED</span></div><div class="sr-only" id="gLive" role="status" aria-live="polite"></div>
+    <div class="ag-box auth-newpw"><div class="ag-plat" aria-hidden="true"><u></u><div class="pl3d"><i class="r1"></i><i class="r2"></i><i class="r3"></i></div></div><div class="ag-scan" aria-hidden="true"></div><i class="ag-pkt" aria-hidden="true"></i>${HK.frame(`<div class="auth-eyebrow"><i class="ag-dot"></i>RESTRICTED · DEVELOPER APPROVAL</div><h1 class="ac-title" id="gateTitle">Access locked</h1><p class="sub" id="gateSub"></p>
     <form id="gateForm" autocomplete="on" novalidate>
-      <div id="gateStepEmail">${emailField('gateEmail')}</div>
-      <div id="gateStepCode" hidden><div class="gc-wrap" id="gcWrap"><div class="gc-cells" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div><input type="text" id="gateCode" class="gc-in" name="one-time-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" placeholder=" " aria-label="6-digit access code"></div></div>
-      ${MSG('gate')}${BTN('gateBtn','Request code')}
-      <div class="auth-secondary" id="gateLinks" hidden><a href="#" role="button" class="auth-sec-btn" id="gateResend">Send a new code</a><a href="#" role="button" class="auth-sec-btn" id="gateBack">Use a different email</a></div>
-    </form>`,{variant:'standard',intensity:'active',tick:true,glare:true,cls:'auth-card gate-card'})}</div>`;
+      <div id="gateStepEmail">${emailField('gateEmail').replace(/<\/div>$/,`<button type="button" class="af-clear" id="gateClear" aria-label="Use a different email" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>`)}<p class="ag-rcpt" id="gRcpt"></p></div>
+      <div id="gateStepCode" hidden><div class="gc-row" role="group" aria-label="6-digit access code">${digits}</div><div class="gx" id="gExp"><svg viewBox="0 0 36 36" aria-hidden="true"><circle class="gx-bg" cx="18" cy="18" r="15"/><circle class="gx-fg" id="gExpC" cx="18" cy="18" r="15" pathLength="100"/></svg><span id="gExpT">Code expires in 15:00</span></div></div>
+      ${MSG('gate')}${BTN('gateBtn','Request access code')}
+      <div class="auth-secondary" id="gateLinks" hidden><a href="#" role="button" class="auth-sec-btn" id="gateResend">Resend code</a><a href="#" role="button" class="auth-sec-btn" id="gateBack">Change email</a></div>
+    </form>`,{variant:'standard',intensity:'active',tick:true,glare:true,cls:'auth-card gate-card'})}</div>
+    <ol class="gs-track" id="gTrack" aria-label="Progress"><li class="gs-step" data-s="1"><b>1</b><span>REQUEST</span></li><li class="gs-line" aria-hidden="true"></li><li class="gs-step" data-s="2"><b>2</b><span>VERIFY</span></li><li class="gs-line" aria-hidden="true"></li><li class="gs-step" data-s="3"><b>3</b><span>CREATE ACCOUNT</span></li></ol>
+    <a href="#" role="button" class="ag-back" id="gateToSignin">← Back to sign in</a>
+    <footer class="auth-dev ag-dev" role="group" aria-label="Developer: Ryan James Lim"><div class="ad-rule" aria-hidden="true"><span class="ad-line l"><i></i></span><span class="ad-dia"></span><span class="ad-line r"><i></i></span></div><div class="ad-lab" aria-hidden="true">DEVELOPER</div><div class="ad-name" aria-hidden="true">Ryan James Lim</div></footer>`;
   $('lockScreen').appendChild(gate);
-  // ---- lock-screen engine: canvas grid floor, glyph rain, embers, shockwave, pointer parallax, live HUD ----
+  const gateHas = ()=>{ try{ return localStorage.getItem('ftAccess')==='1'; }catch(_){ return false; } };
+  const GATE = { step:'email', email:'', busy:false, tries:0, exp:0, expTotal:900, cool:0, booted:false, typed:false };
+  const RM = ()=> authRM() || FX.level<2;
+  const STAT = { locked:['SECURE GATE · LOCKED','locked','Secure gate locked'], sending:['TRANSMITTING…','sending','Transmitting request'], awaiting:['AWAITING CODE','awaiting','Awaiting code'], granted:['ACCESS GRANTED','granted','Access granted'], denied:['ACCESS DENIED','denied','Access denied'] };
+  function gateStatus(k){ const s=STAT[k]; const el=$('gStatus'); el.className='ag-status '+s[1]; $('gStatusT').textContent=s[0]; $('gLive').textContent=s[2]; GateFX.hud(); }
+  function gateTrack(n){ gate.querySelectorAll('.gs-step').forEach(li=>{ const i=+li.dataset.s; li.dataset.state=i<n?'done':i===n?'active':'todo'; if(i===n) li.setAttribute('aria-current','step'); else li.removeAttribute('aria-current'); }); gate.querySelectorAll('.gs-line').forEach((l,i)=>l.style.setProperty('--f',i+1<n?1:i+1===n?.0:0)); }
+  const syncClear = ()=>{ $('gateClear').hidden = !$('gateEmail').value; };
+  function typeFill(inp,text){ GATE.typed=true; const af=inp.closest('.af'); const fin=()=>{ inp.value=text; syncClear(); clearInterval(iv); inp.removeEventListener('keydown',fin); if(af){ af.classList.add('af-filled'); setTimeout(()=>af.classList.remove('af-filled'),1100); } };
+    if(RM()){ inp.value=text; syncClear(); return; } const G='abcdefghijklmnopqrstuvwxyz0123456789@.'; let i=0; inp.value=''; const iv=setInterval(()=>{ i++; inp.value=text.slice(0,i)+(i<text.length?G[Math.random()*G.length|0]:''); syncClear(); if(i>=text.length) fin(); },28); inp.addEventListener('keydown',fin,{once:true}); }
+  const getCode = ()=>[...gate.querySelectorAll('.gc-d')].map(d=>d.value).join('');
+  function clearCode(focus){ const ds=[...gate.querySelectorAll('.gc-d')]; ds.forEach(d=>{ d.value=''; d.classList.remove('on'); }); if(focus) ds[0].focus({preventScroll:true}); }
+  function gateStep(step){ GATE.step=step; const code=step==='code'; $('gateStepEmail').hidden=code; $('gateStepCode').hidden=!code; $('gateLinks').hidden=!code;
+    $('gateTitle').textContent = code ? 'Enter your access code' : 'Access locked';
+    $('gateSub').textContent = code ? `Request sent for ${GATE.email}. The developer will share your 6-digit access code. Enter it below.` : 'This app is invite-only. Request an access code — the developer will send it to you. Enter the code to create your account.';
+    $('gRcpt').innerHTML = `Code will be sent to: <b>${maskEmail(DEVMAIL)}</b> (Developer).`;
+    $('gateBtn').querySelector('.lb-t').textContent = code ? 'Unlock' : 'Request access code'; $('gateError').textContent=''; $('gateSuccess').textContent='';
+    GATE.retry=false; gateTrack(code?2:1); gateStatus(code?'awaiting':'locked'); if(code) clearCode(false);
+    const tt=$('gateTitle'); if(!RM() && GATE.booted) FX.decode(tt, tt.textContent, 420);
+    if(!code && !$('gateEmail').value){ let pre=DEVMAIL; try{ pre=localStorage.getItem('ftGateEmail')||DEVMAIL; }catch(_){} if(GATE.typed || !GATE.booted) $('gateEmail').value=pre; else typeFill($('gateEmail'),pre); }
+    syncClear(); setTimeout(()=>{ try{ if(code){ clearCode(true); } else { const e=$('gateEmail'); e.focus({preventScroll:true}); } }catch(_){} },80); }
+  // one 1-second heartbeat while the gate is on screen: clock, resend countdown, code-expiry ring
+  let gTimer=0;
+  function gateBeat(){ GateFX.hud(); const now=Date.now(); const rb=$('gateResend');
+    if(GATE.step==='code'){ const cd=Math.max(0,Math.ceil((GATE.cool-now)/1000)); rb.classList.toggle('dis',cd>0); rb.setAttribute('aria-disabled',String(cd>0)); rb.textContent = cd>0 ? `Resend code (${cd}s)` : 'Resend code';
+      const ms=GATE.exp-now, tot=GATE.expTotal*1000; const p=Math.max(0,Math.min(1,ms/tot)); $('gExpC').style.strokeDashoffset=String(100*(1-p));
+      $('gExpT').textContent = ms>0 ? `Code expires in ${Math.floor(ms/60000)}:${String(Math.floor(ms/1000)%60).padStart(2,'0')}` : 'Code expired — request a new one'; $('gExp').classList.toggle('low',ms>0&&ms<60000); } }
+  function gateUpdate(){ const show=!gateHas(); gate.classList.remove('pass','gone','unlocking','flipout','denied'); gate.hidden=!show; const w=document.querySelector('#lockScreen .auth-wrap'); if(w){ try{ w.inert=show; }catch(_){} }
+    if(show){ GATE.tries=0; GateFX.start(); gateVV(); clearInterval(gTimer); gTimer=setInterval(gateBeat,1000); gateBoot(); gateStep('email'); } else { GateFX.stop(); clearInterval(gTimer); } }
+  // boot sequence (under 2s, skippable by any click or key)
+  let bootTimers=[];
+  function gateBoot(){ if(GATE.booted || RM()){ GATE.booted=true; gate.classList.remove('boot'); return; } GATE.booted=false; gate.className=gate.className.replace(/\bk\d\b/g,'').trim(); gate.classList.add('boot');
+    const step=(n,ms,fn)=>bootTimers.push(setTimeout(()=>{ gate.classList.add('k'+n); fn&&fn(); },ms));
+    step(1,60); step(2,420); step(3,760); step(4,1050,()=>{ gate.querySelectorAll('.gl-pan b').forEach((b,i)=>FX.decode(b,b.dataset.v,380,{delay:i*90})); }); step(5,1180,()=>{ const tt=$('gateTitle'); FX.decode(tt,tt.textContent,520); });
+    step(6,1550,()=>{ GATE.booted=true; if(GATE.step==='email' && !$('gateEmail').value){ let pre=DEVMAIL; try{ pre=localStorage.getItem('ftGateEmail')||DEVMAIL; }catch(_){} typeFill($('gateEmail'),pre); } }); step(7,1700);
+    bootTimers.push(setTimeout(()=>{ gate.classList.remove('boot'); },2100));
+    const skip=()=>{ bootTimers.forEach(clearTimeout); bootTimers=[]; gate.classList.remove('boot'); const wasTyping=!GATE.booted; GATE.booted=true; if(GATE.step==='email' && !$('gateEmail').value){ let pre=DEVMAIL; try{ pre=localStorage.getItem('ftGateEmail')||DEVMAIL; }catch(_){} GATE.typed=true; $('gateEmail').value=pre; syncClear(); } gate.removeEventListener('pointerdown',skip,true); gate.removeEventListener('keydown',skip,true); };
+    gate.addEventListener('pointerdown',skip,true); gate.addEventListener('keydown',skip,true); }
+  // keep the focused field and the button above the on-screen keyboard
+  function gateVV(){ const vv=window.visualViewport; if(!vv||gateVV.on) return; gateVV.on=1; const fit=()=>{ if(gate.hidden) return; gate.style.height = (vv.height<window.innerHeight-80) ? vv.height+'px' : ''; const a=document.activeElement; if(a&&gate.contains(a)&&a!==document.body){ try{ a.scrollIntoView({block:'center',behavior:'smooth'}); }catch(_){} } }; vv.addEventListener('resize',fit); }
+  // transmit: a data packet leaves the card, rides up the circuit into the lock, then out along the right trace to the DEVELOPER node
+  function gateTransmit(){ return new Promise(res=>{ const p=$('gTx'), pk=$('gPk'); if(RM()||gate.hidden||!p.getTotalLength){ res(); return; } const L=p.getTotalLength(); gate.classList.add('tx'); GATE.txStop=false; let t=0; const dur=1.5; let un; un=FX.tick(dt=>{ if(GATE.txStop){ un(); gate.classList.remove('tx','txhit'); p.style.strokeDasharray=''; res(); return; } t+=dt; const k=Math.min(1,t/dur), e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2; const pt=p.getPointAtLength(L*e); pk.setAttribute('cx',pt.x); pk.setAttribute('cy',pt.y); p.style.strokeDasharray=`${L*e} ${L}`; if(k>=1){ un(); gate.classList.add('txhit'); setTimeout(()=>{ gate.classList.remove('tx','txhit'); p.style.strokeDasharray=''; res(); },420); } }); }); }
+  function gateDenied(){ gateStatus('denied'); gate.classList.add('denied'); const fr=gate.querySelector('.hf'); if(fr&&!RM()){ fr.classList.remove('hf-shake'); void fr.offsetWidth; fr.classList.add('hf-shake'); } setTimeout(()=>{ gate.classList.remove('denied'); if(GATE.step==='code') gateStatus('awaiting'); else gateStatus('locked'); },1700); }
+  // unlock: shackle opens, rings burst, circuits flood, "ACCESS GRANTED" decodes, the card flips into the sign-up form
+  function gatePass(email, go){ try{ localStorage.setItem('ftAccess','1'); }catch(_){} if(email){ ['authEmail','suEmail'].forEach(id=>{ if(!$(id).value) $(id).value=email; }); }
+    gateTrack(3); gateStatus('granted'); const tt=$('gateTitle'); tt.textContent='ACCESS GRANTED'; if(!RM()) FX.decode(tt,'ACCESS GRANTED',600);
+    const w=document.querySelector('#lockScreen .auth-wrap'); const done=()=>{ GateFX.stop(); clearInterval(gTimer); gate.hidden=true; gate.classList.remove('pass','unlocking','flipout'); if(w){ try{ w.inert=false; }catch(_){} } if(go!=null){ authDeckReady=true; authDeck.go(go); } if(go===1&&email){ const se=$('suEmail'); se.value=email; se.readOnly=true; se.title='Verified by the developer'; } };
+    if(RM()){ done(); return; } gate.classList.add('unlocking'); GateFX.burst(); $('ghA').textContent='ACCESS GRANTED'; setTimeout(()=>gate.classList.add('flipout'),1000); setTimeout(()=>gate.classList.add('pass'),1350); setTimeout(done,2000); }
+  async function gateCall(body){ try{ const r=await fetch(SUPABASE_URL+'/functions/v1/gate-access',{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_KEY},body:JSON.stringify(body)}); let j={}; try{ j=await r.json(); }catch(_){ j={status:'error'}; } return j; }catch(_){ return null; } }
+  const NETERR = "Couldn't send the request — check your connection and try again.";
+  async function gateRequest(resend){ const email=GATE.email; gateStatus('sending'); const tx = gateTransmit(); const j = await gateCall({action:'request',email}); if(!(j&&(j.status==='sent'||j.status==='approved'))) GATE.txStop=true; await tx;
+    if(!j){ $('gateError').textContent=NETERR; gateStatus(GATE.step==='code'?'awaiting':'locked'); GATE.retry=true; setAuthBtn($('gateBtn'),'Retry',false); return; }
+    if(j.status==='approved'){ gatePass(email,0); return; }
+    if(j.status==='sent'){ try{ localStorage.setItem('ftGateEmail',email); }catch(_){} const was=GATE.step; GATE.expTotal=j.expires_in||900; GATE.retry=false; GATE.exp=Date.now()+GATE.expTotal*1000; GATE.cool=Date.now()+(j.cooldown||60)*1000; GATE.tries=0; gateStep('code'); gateBeat(); $('gateSuccess').textContent = resend ? 'A new code was requested.' : 'Request sent. The developer will share your access code.'; return; }
+    const m = j.status==='wait' ? `Please wait ${j.retry_after||60}s before asking again.` : j.status==='limited' ? 'Too many requests. Please try again later.' : j.status==='not_configured' ? 'Access codes are not set up yet. Please try again later.' : j.status==='invalid_email' ? 'Enter a valid email address.' : NETERR;
+    if(j.status==='wait'){ GATE.cool=Date.now()+(j.retry_after||60)*1000; } $('gateError').textContent=m; gateDenied(); if(GATE.step==='email'){ GATE.retry=true; setAuthBtn($('gateBtn'),'Retry',false); } }
+  $('gateForm').addEventListener('submit', async e=>{ e.preventDefault(); if(GATE.busy) return; $('gateError').textContent=''; $('gateSuccess').textContent='';
+    if(GATE.step==='email'){ const email=$('gateEmail').value.trim().toLowerCase();
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ $('gateError').textContent='Enter a valid email address.'; authWarn(['gateEmail']); $('gateEmail').focus(); return; }
+      GATE.email=email; GATE.busy=true; setAuthBtn($('gateBtn'),'Transmitting…',true);
+      try{ let st='none'; try{ const r=await sb.rpc('check_access',{p_email:email}); st=r&&r.data||'none'; }catch(_){}
+        if(st==='approved'){ gatePass(email,0); } else await gateRequest(false);
+      }finally{ GATE.busy=false; setAuthBtn($('gateBtn'),GATE.retry?'Retry':GATE.step==='code'?'Unlock':'Request access code',false); } return; }
+    const code=getCode(); if(code.length!==6){ $('gateError').textContent='Enter the 6-digit code.'; gateShake(); return; }
+    GATE.busy=true; setAuthBtn($('gateBtn'),'Verifying…',true);
+    try{ const j=await gateCall({action:'verify',email:GATE.email,code});
+      if(j&&j.status==='approved'){ $('gateSuccess').textContent='Access granted.'; gatePass(GATE.email,1); }
+      else { GATE.tries++; GateFX.hud(); const st=j&&j.status; $('gateError').textContent = !j ? "Couldn't verify — check your connection and try again." : st==='wrong' ? `That code isn't valid. ${j.left} attempt${j.left===1?'':'s'} left.` : st==='expired' ? 'That code expired. Request a new one.' : st==='locked' ? 'Too many wrong tries. Request a new code.' : st==='wait' ? 'Please try again in a moment.' : st==='limited' ? 'Too many attempts. Please try again later.' : "Couldn't verify the code. Please try again."; gateDenied(); gateShake(); if(st==='wrong'||st==='wait'){ clearCode(true); } }
+    }finally{ GATE.busy=false; setAuthBtn($('gateBtn'),'Unlock',false); } });
+  function gateShake(){ const r=gate.querySelector('.gc-row'); r.classList.remove('gc-warn'); void r.offsetWidth; r.classList.add('gc-warn'); setTimeout(()=>r.classList.remove('gc-warn'),700); }
+  // 6-box code: type advances, Backspace goes back, paste fills every box
+  (function(){ const ds=()=>[...gate.querySelectorAll('.gc-d')]; const auto=()=>{ if(getCode().length===6) setTimeout(()=>{ if(!GATE.busy&&GATE.step==='code'&&getCode().length===6) $('gateForm').requestSubmit(); },260); };
+    const fill=(start,str)=>{ const a=ds(); str.split('').forEach((ch,k)=>{ const d=a[start+k]; if(d){ d.value=ch; d.classList.add('on'); } }); const n=Math.min(5,start+str.length); a[n].focus({preventScroll:true}); auto(); };
+    gate.querySelector('.gc-row').addEventListener('input',e=>{ const d=e.target; if(!d.classList.contains('gc-d')) return; const v=d.value.replace(/\D/g,''); if(v.length>1){ d.value=''; fill(+d.dataset.i,v.slice(0,6-(+d.dataset.i))); return; } d.value=v; d.classList.toggle('on',!!v); if(v&&+d.dataset.i<5) ds()[+d.dataset.i+1].focus({preventScroll:true}); auto(); });
+    gate.querySelector('.gc-row').addEventListener('keydown',e=>{ const d=e.target, i=+d.dataset.i; if(e.key==='Backspace'&&!d.value&&i>0){ e.preventDefault(); const p=ds()[i-1]; p.value=''; p.classList.remove('on'); p.focus(); } else if(e.key==='ArrowLeft'&&i>0){ e.preventDefault(); ds()[i-1].focus(); } else if(e.key==='ArrowRight'&&i<5){ e.preventDefault(); ds()[i+1].focus(); } });
+    gate.querySelector('.gc-row').addEventListener('paste',e=>{ const t=(e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,''); if(!t) return; e.preventDefault(); clearCode(false); fill(0,t.slice(0,6)); });
+    gate.querySelector('.gc-row').addEventListener('focusin',e=>{ if(e.target.select) e.target.select(); }); })();
+  $('gateEmail').addEventListener('input',syncClear);
+  $('gateEmail').addEventListener('focus',()=>{ try{ $('gateEmail').select(); }catch(_){} });
+  $('gateClear').addEventListener('click',()=>{ $('gateEmail').value=''; syncClear(); $('gateEmail').focus(); });
+  $('gateResend').addEventListener('click',async e=>{ e.preventDefault(); if(GATE.busy||Date.now()<GATE.cool) return; GATE.busy=true; try{ await gateRequest(true); }finally{ GATE.busy=false; } });
+  $('gateBack').addEventListener('click',e=>{ e.preventDefault(); clearCode(false); gateStep('email'); });
+  $('gateToSignin').addEventListener('click',e=>{ e.preventDefault(); GateFX.stop(); clearInterval(gTimer); gate.hidden=true; const w=document.querySelector('#lockScreen .auth-wrap'); if(w){ try{ w.inert=false; }catch(_){} } authDeckReady=false; authDeck.go(0); authDeckReady=true; });
+  // ---- gate engine: canvas grid floor, glyph rain, constellation, embers, shockwaves, pointer parallax, live HUD ----
   const GateFX = (function(){
-    const cv=gate.querySelector('.gl-cv'), cx=cv.getContext('2d'), sc=gate.querySelector('.gl-scene'); let W=0,H=0,dpr=1,un=null,t=0,running=false,hudT=0,px=0,py=0,tx=0,ty=0,lx=0,ly=0,lr=60; const E=[],R=[],WV=[]; const G='01ABCDEF0123456789<>/\\|'; let colsL=0;
-    function mk(){ E.length=0; R.length=0; const L=FX.level, n=L>=4?64:L>=3?42:L>=2?24:8, rc=L>=4?9:L>=3?7:L>=2?4:0; for(let i=0;i<n;i++) E.push(ember(true)); for(let s=0;s<2;s++) for(let i=0;i<rc;i++) R.push({x:(s?W-1:0)+(s?-1:1)*(8+i*(Math.min(W*.2,170)/Math.max(rc,1))),y:Math.random()*H,v:30+Math.random()*70,n:6+(Math.random()*8|0),ch:[]}); }
+    const cv=gate.querySelector('.gl-cv'), cx=cv.getContext('2d'), sc=gate.querySelector('.gl-scene'); let W=0,H=0,dpr=1,un=null,t=0,running=false,hudT=0,px=0,py=0,tx=0,ty=0,lx=0,ly=0,lr=60; const E=[],R=[],WV=[],N=[]; const G='01ABCDEF0123456789<>/\\|';
+    function mk(){ E.length=0; R.length=0; N.length=0; const L=FX.level, n=L>=4?64:L>=3?42:L>=2?24:8, rc=L>=4?9:L>=3?7:L>=2?4:0, nn=L>=4?26:L>=3?18:0; for(let i=0;i<n;i++) E.push(ember(true)); for(let i=0;i<nn;i++) N.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*14,vy:(Math.random()-.5)*14}); for(let s=0;s<2;s++) for(let i=0;i<rc;i++) R.push({x:(s?W-1:0)+(s?-1:1)*(8+i*(Math.min(W*.2,170)/Math.max(rc,1))),y:Math.random()*H,v:30+Math.random()*70,n:6+(Math.random()*8|0),ch:[]}); }
     function ember(init){ const a=Math.random()*6.283, d=lr*(.9+Math.random()*1.6); return {a,d:init?d:lr*.9,v:8+Math.random()*22,s:.6+Math.random()*1.6,l:init?Math.random():0,life:2.5+Math.random()*3,sp:(Math.random()-.5)*.25}; }
     function size(){ dpr=Math.min(window.devicePixelRatio||1,2); W=gate.clientWidth; H=gate.clientHeight; if(!W||!H) return; cv.width=W*dpr; cv.height=H*dpr; cv.style.width=W+'px'; cv.style.height=H+'px'; cx.setTransform(dpr,0,0,dpr,0,0); locate(); mk(); }
     function locate(){ const k=gate.querySelector('.gl-lock'); if(!k) return; const a=k.getBoundingClientRect(), g=gate.getBoundingClientRect(); lx=a.left-g.left+a.width/2; ly=a.top-g.top+gate.scrollTop+a.height/2; lr=Math.max(50,a.width*1.9); }
-    function grid(){ const hor=Math.max(ly+lr*1.9,H*.5), horX=W/2+px*26; const g=cx.createLinearGradient(0,hor,0,H); g.addColorStop(0,'rgba(30,170,255,0)'); g.addColorStop(1,'rgba(30,170,255,.22)'); cx.lineWidth=1; cx.strokeStyle=g;
+    function grid(){ const hor=Math.max(ly+lr*2.1,H*.5), horX=W/2+px*26; const g=cx.createLinearGradient(0,hor,0,H); g.addColorStop(0,'rgba(30,170,255,0)'); g.addColorStop(1,'rgba(30,170,255,.22)'); cx.lineWidth=1; cx.strokeStyle=g;
       const n=14, ph=(t*.35)%1; for(let i=0;i<=n;i++){ const z=(i+ph)/n, y=hor+(H-hor)*z*z; cx.globalAlpha=Math.min(1,z*1.4); cx.beginPath(); cx.moveTo(0,y); cx.lineTo(W,y); cx.stroke(); }
       cx.globalAlpha=1; for(let k=-14;k<=14;k++){ cx.beginPath(); cx.moveTo(horX+k*6,hor); cx.lineTo(W/2+k*W*.12+px*60,H); cx.stroke(); }
       const gl=cx.createLinearGradient(0,hor-30,0,hor+30); gl.addColorStop(0,'rgba(40,200,255,0)'); gl.addColorStop(.5,'rgba(60,210,255,.16)'); gl.addColorStop(1,'rgba(40,200,255,0)'); cx.fillStyle=gl; cx.fillRect(0,hor-30,W,60); }
+    function consts(dt){ cx.lineWidth=1; for(const a of N){ a.x+=a.vx*dt; a.y+=a.vy*dt; if(a.x<0||a.x>W) a.vx*=-1; if(a.y<0||a.y>H) a.vy*=-1; }
+      for(let i=0;i<N.length;i++){ const a=N[i]; for(let j=i+1;j<N.length;j++){ const b=N[j], d=Math.hypot(a.x-b.x,a.y-b.y); if(d<130){ cx.strokeStyle=`rgba(80,200,255,${(1-d/130)*.16})`; cx.beginPath(); cx.moveTo(a.x,a.y); cx.lineTo(b.x,b.y); cx.stroke(); } } cx.fillStyle='rgba(130,230,255,.45)'; cx.fillRect(a.x-1,a.y-1,2,2); } }
     function rain(dt){ cx.font='11px ui-monospace,Menlo,monospace'; for(const c of R){ c.y+=c.v*dt; if(c.y-c.n*13>H){ c.y=-10; c.v=30+Math.random()*70; } for(let j=0;j<c.n;j++){ if(!c.ch[j]||Math.random()<.02) c.ch[j]=G[Math.random()*G.length|0]; const a=(1-j/c.n)*(j===0?.8:.28); cx.fillStyle=j===0?`rgba(190,248,255,${a})`:`rgba(60,200,255,${a})`; cx.fillText(c.ch[j],c.x,c.y-j*13); } } }
     function embers(dt){ cx.globalCompositeOperation='lighter'; for(let i=0;i<E.length;i++){ const e=E[i]; e.l+=dt/e.life; e.d+=e.v*dt; e.a+=e.sp*dt; if(e.l>=1){ E[i]=ember(false); continue; } const a=Math.sin(e.l*Math.PI)*.8, x=lx+Math.cos(e.a)*e.d, y=ly+Math.sin(e.a)*e.d*.8; const g=cx.createRadialGradient(x,y,0,x,y,e.s*4); g.addColorStop(0,`rgba(150,240,255,${a})`); g.addColorStop(1,'rgba(40,190,255,0)'); cx.fillStyle=g; cx.fillRect(x-e.s*4,y-e.s*4,e.s*8,e.s*8); } cx.globalCompositeOperation='source-over'; }
     function waves(dt){ for(let i=WV.length-1;i>=0;i--){ const w=WV[i]; w.r+=w.v*dt; w.a-=dt*.7; if(w.a<=0){ WV.splice(i,1); continue; } cx.strokeStyle=`rgba(${w.c},${w.a})`; cx.lineWidth=w.w*w.a+1; cx.beginPath(); cx.arc(lx,ly,w.r,0,6.283); cx.stroke(); } }
     function frame(dt){ if(!W) return; t+=dt; px+=(tx-px)*Math.min(1,dt*5); py+=(ty-py)*Math.min(1,dt*5); sc.style.setProperty('--px',px.toFixed(3)); sc.style.setProperty('--py',py.toFixed(3));
-      cx.clearRect(0,0,W,H); if(FX.level>=1) grid(); if(R.length) rain(dt); embers(dt); waves(dt); hudT+=dt; if(hudT>=1){ hudT=0; hud(); } }
-    function hud(){ const d=new Date(); const p=n=>String(n).padStart(2,'0'); $('ghC').textContent=`${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
-      $('ghA').textContent = gate.classList.contains('unlocking') ? 'ACCESS GRANTED' : 'LOCK ENGAGED'; $('ghB').textContent = GATE.step==='code' ? 'KEY: REQUESTED' : 'KEY: NONE';
-      $('ghD').textContent = `ATTEMPTS ${GATE.tries} / 5`;
-      if(GATE.step==='code' && GATE.exp){ const ms=GATE.exp-Date.now(); $('ghE').textContent = ms>0 ? `CODE EXPIRES ${p(Math.floor(ms/60000))}:${p(Math.floor(ms/1000)%60)}` : 'CODE EXPIRED'; } else $('ghE').textContent='AWAITING EMAIL'; }
+      cx.clearRect(0,0,W,H); if(FX.level>=1) grid(); if(N.length) consts(dt); if(R.length) rain(dt); embers(dt); waves(dt); hudT+=dt; if(hudT>=1){ hudT=0; hud(); } }
+    function hud(){ if(!$('ghC')) return; const d=new Date(); const p=n=>String(n).padStart(2,'0'); $('ghC').textContent=`${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+      $('ghA').textContent = gate.classList.contains('unlocking') ? 'ACCESS GRANTED' : 'LOCK ENGAGED'; $('ghB').textContent = GATE.step==='code' ? 'KEY: REQUESTED' : 'KEY: NONE'; }
     function move(e){ const r=gate.getBoundingClientRect(); tx=((e.clientX-r.left)/r.width-.5)*2; ty=((e.clientY-r.top)/r.height-.5)*2; }
     return {
       start(){ if(running) return; running=true; size(); hud(); gate.addEventListener('pointermove',move,{passive:true}); window.addEventListener('resize',size);
@@ -4196,50 +4343,10 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
       hud, burst(){ locate(); if(FX.level<1||authRM()||!un) return; WV.push({r:lr*.6,v:420,a:1,w:6,c:'255,255,255'},{r:lr*.3,v:260,a:1,w:3,c:'80,225,255'}); setTimeout(()=>WV.push({r:lr*.4,v:520,a:.8,w:4,c:'120,235,255'}),160); for(let i=0;i<40;i++){ const e=ember(false); e.d=lr*.5; e.v=90+Math.random()*180; e.life=1+Math.random()*1.2; E.push(e); } }
     };
   })();
-  const gateHas = ()=>{ try{ return localStorage.getItem('ftAccess')==='1'; }catch(_){ return false; } };
-  const GATE = { step:'email', email:'', busy:false, tries:0, exp:0 }; const DEV_EMAIL='rjlim060719@gmail.com';
-  function gateStep(step){ GATE.step=step; const code=step==='code'; $('gateStepEmail').hidden=code; $('gateStepCode').hidden=!code; $('gateLinks').hidden=!code;
-    $('gateTitle').textContent = code ? 'Enter the access code' : 'Access locked';
-    $('gateSub').textContent = code ? `A 6-digit code was sent to the developer's Gmail for ${GATE.email}. Ask the developer for it, then enter it here.` : "Enter your email to request an access code. The code is sent to the developer's Gmail. Once you have it, the sign-up form opens.";
-    $('gateBtn').querySelector('.lb-t').textContent = code ? 'Unlock' : 'Request code'; $('gateError').textContent=''; $('gateSuccess').textContent='';
-    if(!code && !$('gateEmail').value) $('gateEmail').value=DEV_EMAIL; if(code) gateCells();
-    GateFX.hud(); const tt=$('gateTitle'); if(FX.level>=2&&!authRM()) FX.decode(tt, tt.textContent, 420);
-    setTimeout(()=>{ try{ const el=$(code?'gateCode':'gateEmail'); el.focus({preventScroll:true}); if(!code) el.select(); }catch(_){} },60); }
-  function gateCells(){ const v=$('gateCode').value.replace(/\D/g,'').slice(0,6), cs=$('gcWrap').querySelectorAll('.gc-cells i'); cs.forEach((c,i)=>{ c.textContent=v[i]||''; c.classList.toggle('on',i<v.length); c.classList.toggle('cur',i===v.length&&document.activeElement===$('gateCode')); }); }
-  function gateShake(el){ el.classList.remove('gc-warn'); void el.offsetWidth; el.classList.add('gc-warn'); setTimeout(()=>el.classList.remove('gc-warn'),700); }
-  function gateUpdate(){ const show=!gateHas(); gate.classList.remove('pass','gone','unlocking'); gate.hidden=!show; const w=document.querySelector('#lockScreen .auth-wrap'); if(w){ try{ w.inert=show; }catch(_){} } if(show){ GATE.tries=0; gateStep('email'); GateFX.start(); } else GateFX.stop(); }
-  // unlock: the shackle lifts, rings flash outward, circuits ignite, then the gate dissolves into the next form
-  function gatePass(email, go){ try{ localStorage.setItem('ftAccess','1'); }catch(_){} if(email){ ['authEmail','suEmail'].forEach(id=>{ if(!$(id).value) $(id).value=email; }); }
-    const w=document.querySelector('#lockScreen .auth-wrap'); const done=()=>{ GateFX.stop(); gate.hidden=true; gate.classList.remove('pass','unlocking'); if(w){ try{ w.inert=false; }catch(_){} } if(go!=null){ authDeckReady=true; authDeck.go(go); } };
-    if(authRM()||/^(off|calm)$/.test(document.documentElement.dataset.fx||'')){ done(); return; } gate.classList.add('unlocking'); GateFX.burst(); $('ghA').textContent='ACCESS GRANTED'; setTimeout(()=>gate.classList.add('pass'),1000); setTimeout(done,1800); }
-  async function gateCall(body){ const r=await fetch(SUPABASE_URL+'/functions/v1/gate-access',{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_KEY},body:JSON.stringify(body)}); let j={}; try{ j=await r.json(); }catch(_){} return j; }
-  async function gateRequest(resend){ const email=GATE.email; const j=await gateCall({action:'request',email});
-    if(j.status==='approved'){ gatePass(email,0); return; }
-    if(j.status==='sent'){ GATE.exp=Date.now()+15*60000; GATE.tries=0; gateStep('code'); $('gateSuccess').textContent = resend ? 'A new code was sent.' : 'Code sent. Ask the developer for it.'; return; }
-    $('gateError').textContent = j.status==='wait' ? 'Please wait a minute before asking for another code.' : j.status==='denied' ? 'This email was not approved.' : j.status==='not_configured' ? 'Access codes are not set up yet. Please try again later.' : 'Could not send the code. Please try again.'; }
-  $('gateForm').addEventListener('submit', async e=>{ e.preventDefault(); if(GATE.busy) return; $('gateError').textContent=''; $('gateSuccess').textContent='';
-    if(GATE.step==='email'){ const email=$('gateEmail').value.trim().toLowerCase();
-      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ $('gateError').textContent='Enter a valid email address.'; authWarn(['gateEmail']); return; }
-      GATE.email=email; GATE.busy=true; setAuthBtn($('gateBtn'),'Checking…',true);
-      try{ let st='none'; try{ const r=await sb.rpc('check_access',{p_email:email}); st=r&&r.data||'none'; }catch(_){}
-        if(st==='approved'){ gatePass(email,0); } else await gateRequest(false);
-      }catch(err){ $('gateError').textContent='Could not reach the server. Check your connection.'; }
-      finally{ GATE.busy=false; setAuthBtn($('gateBtn'),GATE.step==='code'?'Unlock':'Request code',false); } return; }
-    const code=$('gateCode').value.replace(/\D/g,''); if(code.length!==6){ $('gateError').textContent='Enter the 6-digit code.'; gateShake($('gcWrap')); return; }
-    GATE.busy=true; setAuthBtn($('gateBtn'),'Verifying…',true);
-    try{ const j=await gateCall({action:'verify',email:GATE.email,code});
-      if(j.status==='approved'){ $('gateSuccess').textContent='Access granted.'; gatePass(GATE.email,1); }
-      else { $('gateError').textContent = j.status==='wrong' ? 'That code is not right.' : j.status==='expired' ? 'That code expired. Send a new one.' : j.status==='locked' ? 'Too many wrong tries. Send a new code.' : 'Could not verify the code.'; gateShake($('gcWrap')); GATE.tries++; GateFX.hud(); try{ $('gateCode').focus({preventScroll:true}); $('gateCode').setSelectionRange(0,6); }catch(_){} $('lockScreen').scrollLeft=0; }
-    }catch(err){ $('gateError').textContent='Could not reach the server. Check your connection.'; }
-    finally{ GATE.busy=false; setAuthBtn($('gateBtn'),'Unlock',false); } });
-  $('gateCode').addEventListener('input',()=>{ const i=$('gateCode'); i.value=i.value.replace(/\D/g,'').slice(0,6); gateCells(); if(i.value.length===6) setTimeout(()=>{ if(!GATE.busy&&GATE.step==='code'&&i.value.length===6) $('gateForm').requestSubmit(); },280); });
-  ['focus','blur'].forEach(ev=>$('gateCode').addEventListener(ev,gateCells));
-  $('gateEmail').addEventListener('focus',()=>{ try{ $('gateEmail').select(); }catch(_){} });
-  $('gateResend').addEventListener('click',async e=>{ e.preventDefault(); if(GATE.busy) return; GATE.busy=true; try{ await gateRequest(true); }catch(_){ $('gateError').textContent='Could not reach the server.'; } GATE.busy=false; });
-  $('gateBack').addEventListener('click',e=>{ e.preventDefault(); $('gateCode').value=''; gateStep('email'); });
   function authLockVisible(){ const ls=$('lockScreen'); return ls.style.display!=='none' && !ls.classList.contains('dissolve'); }
   function authCardChanged(i){
     if(!authDeckReady) return;
+    if(i===1 && !gateHas()){ authDeckReady=false; authDeck.go(0); authDeckReady=true; gateUpdate(); return; }
     $('lockScreen').classList.toggle('on-signup', i===1);
     try{ if(authLockVisible() && !(history.state && history.state.authCard===i)) history.pushState({authCard:i},'',location.pathname+location.search+'#'+AUTH_HASH[i]); }catch(_){}
   }
@@ -5228,7 +5335,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     };
   }
   let meSyncVol = null;
-  const OWNER_EMAIL = 'rjlim060719@gmail.com';
+  const OWNER_EMAIL = APP_CONFIG.DEVELOPER_EMAIL;
   async function renderAccess(){
     const blk=$('meSecAccess'); if(!blk) return; const owner=!!(currentUser&&currentUser.email&&currentUser.email.toLowerCase()===OWNER_EMAIL); blk.hidden=!owner; if(!owner) return;
     const box=$('accessList'); let rows=[]; try{ const r=await sb.from('access_requests').select('email,status,created_at').order('created_at',{ascending:false}); if(r.error) throw r.error; rows=r.data||[]; }catch(e){ box.innerHTML='<p class="me-note">Could not load requests.</p>'; return; }

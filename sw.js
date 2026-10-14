@@ -1,4 +1,4 @@
-const CACHE_NAME = 'family-tree-cache-v2';
+const CACHE_NAME = 'family-tree-cache-v3';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', (e) => {
@@ -18,7 +18,7 @@ self.addEventListener('fetch', (e) => {
   // immediately instead of being stuck behind an old cached copy.
   if (e.request.mode === 'navigate') {
     e.respondWith(
-      fetch(e.request)
+      fetch(e.request, { cache: 'reload' })
         .then(res => {
           caches.open(CACHE_NAME).then(cache => cache.put(e.request, res.clone()));
           return res;
