@@ -1487,9 +1487,24 @@
   html[data-fx="ultra"] #authDeck .hd-slot:not(.hd-act) .hd-flip,html[data-fx="high"] #authDeck .hd-slot:not(.hd-act) .hd-flip{filter:blur(1.4px);}
 
   .acc-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--cy-line);} .acc-e{flex:1 1 180px;min-width:0;overflow-wrap:anywhere;font-size:.85rem;} .acc-s{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);} .acc-row[data-st="pending"] .acc-s{color:#ffb454;} .acc-row[data-st="approved"] .acc-s{color:var(--cy);} .acc-b{display:flex;gap:6px;} .acc-b .pz-mini{min-height:36px;}
-  #accessGate{position:absolute;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px;-webkit-backdrop-filter:blur(18px) brightness(.55);backdrop-filter:blur(18px) brightness(.55);background:rgba(3,8,16,.35);transition:opacity .75s ease,backdrop-filter .75s ease,-webkit-backdrop-filter .75s ease;overflow-y:auto;}
-  #accessGate[hidden]{display:none;} #accessGate.pass{opacity:0;-webkit-backdrop-filter:blur(0) brightness(1);backdrop-filter:blur(0) brightness(1);pointer-events:none;}
-  #accessGate .ag-box{width:100%;max-width:400px;margin:auto;} #accessGate .gate-card{--c:20px;} #accessGate .lock-success{color:#9ff5c6;}
+  #lockScreen{overflow-x:clip;} #accessGate{position:absolute;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;padding:calc(10px + env(safe-area-inset-top)) 16px 20px;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);background:radial-gradient(ellipse 80% 60% at 50% 22%,rgba(8,40,80,.55),rgba(2,6,14,.96) 70%),rgba(2,6,14,.9);transition:opacity .8s ease;overflow-y:auto;overflow-x:clip;}
+  #accessGate[hidden]{display:none;} #accessGate.pass{opacity:0;pointer-events:none;}
+  #accessGate .ag-box{width:100%;max-width:400px;margin:0 auto auto;position:relative;z-index:2;transition:opacity .4s,translate .6s;} #accessGate.unlocking .ag-box{opacity:0;translate:0 14px;}
+  #accessGate .gate-card{--c:20px;} #accessGate .lock-success{color:#9ff5c6;} #accessGate #gateCode{letter-spacing:.5em;font-size:22px;text-align:center;padding:22px 14px 6px;font-variant-numeric:tabular-nums;} #accessGate #gateCode + label{left:50%;translate:-50% 0;text-align:center;width:auto;} #accessGate .af #gateCode:focus + label,#accessGate .af #gateCode:not(:placeholder-shown) + label{left:14px;translate:0 0;}
+  #accessGate .auth-secondary{margin-top:10px;} #accessGate .auth-secondary[hidden]{display:none;} #accessGate .auth-eyebrow{margin-bottom:14px;display:block;padding-top:10px;line-height:1.4;} #accessGate h1.ac-title{line-height:1.2;margin-top:24px !important;} #accessGate .ac-title{font-family:inherit;font-weight:700;font-size:24px;margin:0 0 8px;}
+  .gl-scene{position:relative;flex:0 0 auto;width:calc(100% + 32px);margin:0 -16px 6px;height:min(38vh,340px);min-height:200px;pointer-events:none;} .gl-svg{width:100%;height:100%;display:block;overflow:visible;} .gl-scene{-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);}
+  .gl-t{fill:none;stroke:rgba(20,110,190,.55);stroke-width:5;stroke-linejoin:round;stroke-linecap:round;filter:blur(3px);} .gl-f{fill:none;stroke:#3bd6ff;stroke-width:2;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:14 120;animation:glFlow 3.2s linear infinite;}
+  .gl-t.b,.gl-t.c{opacity:.8;} .gl-f.b{animation-duration:4.4s;animation-direction:reverse;} .gl-f.c{animation-duration:5.4s;}
+  @keyframes glFlow{to{stroke-dashoffset:-134;}}
+  .gl-n{fill:#041424;stroke:#4fe0ff;stroke-width:1.8;filter:drop-shadow(0 0 4px #27e6ff);} .gl-sq{fill:rgba(40,120,200,.28);stroke:rgba(80,180,255,.25);stroke-width:1;}
+  .gl-r{fill:none;stroke:rgba(70,200,255,.5);stroke-width:1.5;transform-box:fill-box;transform-origin:center;} .gl-r.r5{stroke-dasharray:2 5;stroke-width:6;stroke:rgba(70,200,255,.22);animation:glSpin 40s linear infinite;} .gl-r.r4{stroke-dasharray:60 9 12 9;animation:glSpin 26s linear infinite reverse;} .gl-r.r3{stroke:rgba(110,225,255,.8);stroke-width:2;filter:drop-shadow(0 0 6px #27e6ff);} .gl-r.r2{stroke-dasharray:1 4;stroke-width:5;stroke:rgba(70,200,255,.35);animation:glSpin 30s linear infinite;} .gl-r.r1{stroke:#7ff0ff;stroke-width:2.5;filter:drop-shadow(0 0 8px #27e6ff);}
+  @keyframes glSpin{to{transform:rotate(360deg);}}
+  .gl-lock{filter:drop-shadow(0 0 8px #27e6ff);} .gl-shackle{fill:none;stroke:#aef6ff;stroke-width:6;stroke-linecap:round;transform-box:fill-box;transform-origin:100% 100%;transition:transform .55s cubic-bezier(.3,1.4,.4,1);} .gl-body{fill:#0a2a4a;stroke:#7ff0ff;stroke-width:3;} .gl-key{fill:#aef6ff;}
+  #accessGate.unlocking .gl-shackle{transform:translateY(-12px) rotate(-28deg);} #accessGate.unlocking .gl-r{stroke:#fff;animation:glBurst .9s ease-out;} #accessGate.unlocking .gl-f{stroke:#fff;stroke-dasharray:30 40;animation-duration:.6s;} #accessGate.unlocking .gl-svg{animation:glFlash .9s ease-out;}
+  @keyframes glBurst{0%{transform:scale(1);}60%{transform:scale(1.18);opacity:1;}100%{transform:scale(1.4);opacity:0;}} @keyframes glFlash{0%{filter:brightness(1);}35%{filter:brightness(2.2);}100%{filter:brightness(1.2);}}
+  html[data-fx="off"] .gl-f,html[data-fx="off"] .gl-r{animation:none;} html.hk-paused .gl-f,html.hk-paused .gl-r{animation-play-state:paused;}
+  @media (prefers-reduced-motion:reduce){ .gl-f,.gl-r,#accessGate.unlocking *{animation:none !important;} }
+  @media (max-height:640px){ .gl-scene{height:150px;} }
   /* ---- Sign In: field life, authenticating, grant, failure ---- */
   .af::after{content:"";position:absolute;left:0;top:0;width:36px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#fff);box-shadow:0 0 10px var(--cy),0 0 22px var(--cy);offset-path:inset(0 round 12px);offset-rotate:auto;offset-distance:0%;opacity:0;pointer-events:none;z-index:3;}
   .af:focus-within::after{animation:afLaser .62s cubic-bezier(.4,0,.2,1) forwards;} @keyframes afLaser{0%{opacity:1;offset-distance:0%;}88%{opacity:1;}100%{opacity:0;offset-distance:100%;}}
@@ -3380,7 +3395,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     function empty(title, text, actionHtml){ return `<div class="he"><div class="he-seed"><i class="he-node"></i>${platform('S',true)}</div><h3>${esc(title)}</h3><p>${esc(text)}</p>${actionHtml||''}</div>`; }
     function constellation(n, seed, rad){ let x=seed||7; const rnd=()=>{x=(x*16807)%2147483647;return x/2147483647;}; const pts=[]; for(let i=0;i<(n||16);i++) pts.push([6+rnd()*88,6+rnd()*88]); let l='';
       pts.forEach((p,i)=>{ const q=pts[(i+3)%pts.length]; l+=`<line x1="${p[0].toFixed(1)}" y1="${p[1].toFixed(1)}" x2="${q[0].toFixed(1)}" y2="${q[1].toFixed(1)}"/>`; });
-      return `<svg class="hk-const" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g>${l}${pts.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${rad||.7}"/>`).join('')}</g></svg>`; }
+      return `<svg class="hk-const" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><g>${l}${pts.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${rad||.7}"/>`).join('')}</g></svg>`; }
     // ScanReveal: call on a container; children with .sr get revealed in sequence
     function scanReveal(root, stagger){
       const els=[...(root||document).querySelectorAll('.sr')]; if(!els.length) return;
@@ -4111,27 +4126,59 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
   const authDeck = HK.deck($('authDeck'), { label:'Account access', ch:470, fit:true, cw:392, loop:false, flipOnTap:false,
     items: AUTH_CARDS.map(c=>({ label:c.label, front: HK.frame(`<div class="auth-eyebrow">${c.idx}</div>${c.html}`,{variant:'standard',intensity:'active',tick:true,glare:true,cls:'auth-card'}), back:grantedBack })),
     onChange(i){ authCardChanged(i); } });
-  // ---- access gate: the whole sign-in screen stays blurred until this visitor's email is approved ----
-  const gate = document.createElement('div'); gate.id='accessGate'; gate.setAttribute('role','dialog'); gate.setAttribute('aria-modal','true'); gate.setAttribute('aria-label','Private app: access required');
-  gate.innerHTML = `<div class="ag-box auth-newpw">${HK.frame(`<div class="auth-eyebrow">PRIVATE · ACCESS REQUIRED</div><h1 class="ac-title">Private family tree</h1><p class="sub">Enter your email to check your access. If you are new, your request goes to the owner for approval.</p>
-    <form id="gateForm" autocomplete="on" novalidate>${emailField('gateEmail')}${MSG('gate')}${BTN('gateBtn','Check access')}</form>`,{variant:'standard',intensity:'active',tick:true,glare:true,cls:'auth-card gate-card'})}</div>`;
+  // ---- access gate: a lock screen. The visitor asks for a code; it is emailed to the developer only. The right code opens Create account. ----
+  const LOCK_SVG = (()=>{ const L=[[400,170],[330,170],[300,140],[220,140],[190,110],[100,110],[70,80],[0,80]], R=L.map(p=>[800-p[0],p[1]]);
+    const L2=[[400,185],[335,185],[305,215],[200,215],[170,245],[90,245],[60,275],[0,275]], R2=L2.map(p=>[800-p[0],p[1]]);
+    const L3=[[400,200],[345,200],[320,180],[270,180],[245,200],[150,200],[120,170],[0,170]], R3=L3.map(p=>[800-p[0],p[1]]);
+    const pl=(P,c)=>`<polyline class="gl-t ${c}" points="${P.map(p=>p.join(',')).join(' ')}"/><polyline class="gl-f ${c}" points="${P.map(p=>p.join(',')).join(' ')}"/>`;
+    const nodes=[L[2],L[4],L[6],R[2],R[4],R[6],L2[2],L2[4],R2[2],R2[4],L3[2],L3[4],R3[2],R3[4]].map(p=>`<circle class="gl-n" cx="${p[0]}" cy="${p[1]}" r="4.5"/>`).join('');
+    const sq=[[40,20,34],[690,24,30],[20,290,26],[720,280,36],[610,40,22],[150,35,18]].map(q=>`<rect class="gl-sq" x="${q[0]}" y="${q[1]}" width="${q[2]}" height="${q[2]*.8}"/>`).join('');
+    return `<svg class="gl-svg" viewBox="0 0 800 340" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${sq}${pl(L,'a')}${pl(R,'a')}${pl(L2,'b')}${pl(R2,'b')}${pl(L3,'c')}${pl(R3,'c')}${nodes}
+      <g class="gl-rings"><circle class="gl-r r5" cx="400" cy="170" r="150"/><circle class="gl-r r4" cx="400" cy="170" r="122"/><circle class="gl-r r3" cx="400" cy="170" r="98"/><circle class="gl-r r2" cx="400" cy="170" r="76"/><circle class="gl-r r1" cx="400" cy="170" r="56"/></g>
+      <g class="gl-lock"><path class="gl-shackle" d="M382 166v-12a18 18 0 0 1 36 0v12"/><rect class="gl-body" x="372" y="164" width="56" height="42" rx="6"/><circle class="gl-key" cx="400" cy="181" r="5"/><rect class="gl-key" x="397.8" y="183" width="4.4" height="12" rx="1.5"/></g></svg>`; })();
+  const gate = document.createElement('div'); gate.id='accessGate'; gate.setAttribute('role','dialog'); gate.setAttribute('aria-modal','true'); gate.setAttribute('aria-label','Restricted access');
+  gate.innerHTML = `<div class="gl-scene">${LOCK_SVG}</div><div class="ag-box auth-newpw">${HK.frame(`<div class="auth-eyebrow">RESTRICTED · DEVELOPER APPROVAL</div><h1 class="ac-title" id="gateTitle">Access locked</h1><p class="sub" id="gateSub">Enter your email to request an access code. The code is sent to the developer's Gmail. Once you have it, the sign-up form opens.</p>
+    <form id="gateForm" autocomplete="on" novalidate>
+      <div id="gateStepEmail">${emailField('gateEmail')}</div>
+      <div id="gateStepCode" hidden><div class="af"><input type="text" id="gateCode" name="one-time-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" placeholder=" " aria-label="6-digit access code"><label for="gateCode">6-digit code</label></div></div>
+      ${MSG('gate')}${BTN('gateBtn','Request code')}
+      <div class="auth-secondary" id="gateLinks" hidden><a href="#" role="button" class="auth-sec-btn" id="gateResend">Send a new code</a><a href="#" role="button" class="auth-sec-btn" id="gateBack">Use a different email</a></div>
+    </form>`,{variant:'standard',intensity:'active',tick:true,glare:true,cls:'auth-card gate-card'})}</div>`;
   $('lockScreen').appendChild(gate);
   const gateHas = ()=>{ try{ return localStorage.getItem('ftAccess')==='1'; }catch(_){ return false; } };
-  function gateUpdate(){ const show=!gateHas(); gate.classList.remove('pass','gone'); gate.hidden=!show; const w=document.querySelector('#lockScreen .auth-wrap'); if(w){ try{ w.inert=show; }catch(_){} } if(show) setTimeout(()=>{ try{ $('gateEmail').focus({preventScroll:true}); }catch(_){} },400); }
-  function gatePass(email){ try{ localStorage.setItem('ftAccess','1'); }catch(_){} if(email){ ['authEmail','suEmail'].forEach(id=>{ if(!$(id).value) $(id).value=email; }); }
-    const w=document.querySelector('#lockScreen .auth-wrap'); if(w){ try{ w.inert=false; }catch(_){} }
-    if(authRM()||FX.level<2){ gate.hidden=true; return; } gate.classList.add('pass'); setTimeout(()=>{ gate.hidden=true; gate.classList.remove('pass'); },800); }
-  $('gateForm').addEventListener('submit', async e=>{ e.preventDefault(); const email=$('gateEmail').value.trim().toLowerCase(); $('gateError').textContent=''; $('gateSuccess').textContent='';
-    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ $('gateError').textContent='Enter a valid email address.'; authWarn(['gateEmail']); return; }
-    const btn=$('gateBtn'); setAuthBtn(btn,'Checking…',true);
-    try{ let r=await sb.rpc('check_access',{p_email:email}); if(r.error) throw r.error; let st=r.data;
-      if(st==='none'){ const q=await sb.rpc('request_access',{p_email:email}); if(q.error) throw q.error; st='requested'; }
-      if(st==='approved'){ $('gateSuccess').textContent='Access approved. Unlocking…'; setTimeout(()=>gatePass(email),450); }
-      else if(st==='requested') $('gateSuccess').textContent='Request sent to the owner. Come back once it is approved and enter this email again.';
-      else if(st==='pending') $('gateSuccess').textContent='Your request is still waiting for approval.';
-      else $('gateError').textContent='This request was not approved.';
-    }catch(err){ $('gateError').textContent='Could not check access. Check your connection and try again.'; }
-    finally{ setAuthBtn(btn,'Check access',false); } });
+  const GATE = { step:'email', email:'', busy:false };
+  function gateStep(step){ GATE.step=step; const code=step==='code'; $('gateStepEmail').hidden=code; $('gateStepCode').hidden=!code; $('gateLinks').hidden=!code;
+    $('gateTitle').textContent = code ? 'Enter the access code' : 'Access locked';
+    $('gateSub').textContent = code ? `A 6-digit code was sent to the developer's Gmail for ${GATE.email}. Ask the developer for it, then enter it here.` : "Enter your email to request an access code. The code is sent to the developer's Gmail. Once you have it, the sign-up form opens.";
+    $('gateBtn').querySelector('.lb-t').textContent = code ? 'Unlock' : 'Request code'; $('gateError').textContent=''; $('gateSuccess').textContent='';
+    setTimeout(()=>{ try{ $(code?'gateCode':'gateEmail').focus({preventScroll:true}); }catch(_){} },60); }
+  function gateUpdate(){ const show=!gateHas(); gate.classList.remove('pass','gone','unlocking'); gate.hidden=!show; const w=document.querySelector('#lockScreen .auth-wrap'); if(w){ try{ w.inert=show; }catch(_){} } if(show){ gateStep('email'); } }
+  // unlock: the shackle lifts, rings flash outward, circuits ignite, then the gate dissolves into the next form
+  function gatePass(email, go){ try{ localStorage.setItem('ftAccess','1'); }catch(_){} if(email){ ['authEmail','suEmail'].forEach(id=>{ if(!$(id).value) $(id).value=email; }); }
+    const w=document.querySelector('#lockScreen .auth-wrap'); const done=()=>{ gate.hidden=true; gate.classList.remove('pass','unlocking'); if(w){ try{ w.inert=false; }catch(_){} } if(go!=null){ authDeckReady=true; authDeck.go(go); } };
+    if(authRM()||/^(off|calm)$/.test(document.documentElement.dataset.fx||'')){ done(); return; } gate.classList.add('unlocking'); setTimeout(()=>gate.classList.add('pass'),900); setTimeout(done,1700); }
+  async function gateCall(body){ const r=await fetch(SUPABASE_URL+'/functions/v1/gate-access',{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_KEY},body:JSON.stringify(body)}); let j={}; try{ j=await r.json(); }catch(_){} return j; }
+  async function gateRequest(resend){ const email=GATE.email; const j=await gateCall({action:'request',email});
+    if(j.status==='approved'){ gatePass(email,0); return; }
+    if(j.status==='sent'){ gateStep('code'); $('gateSuccess').textContent = resend ? 'A new code was sent.' : 'Code sent. Ask the developer for it.'; return; }
+    $('gateError').textContent = j.status==='wait' ? 'Please wait a minute before asking for another code.' : j.status==='denied' ? 'This email was not approved.' : j.status==='not_configured' ? 'Access codes are not set up yet. Please try again later.' : 'Could not send the code. Please try again.'; }
+  $('gateForm').addEventListener('submit', async e=>{ e.preventDefault(); if(GATE.busy) return; $('gateError').textContent=''; $('gateSuccess').textContent='';
+    if(GATE.step==='email'){ const email=$('gateEmail').value.trim().toLowerCase();
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ $('gateError').textContent='Enter a valid email address.'; authWarn(['gateEmail']); return; }
+      GATE.email=email; GATE.busy=true; setAuthBtn($('gateBtn'),'Checking…',true);
+      try{ let st='none'; try{ const r=await sb.rpc('check_access',{p_email:email}); st=r&&r.data||'none'; }catch(_){}
+        if(st==='approved'){ gatePass(email,0); } else await gateRequest(false);
+      }catch(err){ $('gateError').textContent='Could not reach the server. Check your connection.'; }
+      finally{ GATE.busy=false; setAuthBtn($('gateBtn'),GATE.step==='code'?'Unlock':'Request code',false); } return; }
+    const code=$('gateCode').value.replace(/\D/g,''); if(code.length!==6){ $('gateError').textContent='Enter the 6-digit code.'; authWarn(['gateCode']); return; }
+    GATE.busy=true; setAuthBtn($('gateBtn'),'Verifying…',true);
+    try{ const j=await gateCall({action:'verify',email:GATE.email,code});
+      if(j.status==='approved'){ $('gateSuccess').textContent='Access granted.'; gatePass(GATE.email,1); }
+      else { $('gateError').textContent = j.status==='wrong' ? 'That code is not right.' : j.status==='expired' ? 'That code expired. Send a new one.' : j.status==='locked' ? 'Too many wrong tries. Send a new code.' : 'Could not verify the code.'; authWarn(['gateCode']); try{ $('gateCode').focus({preventScroll:true}); $('gateCode').setSelectionRange(0,6); }catch(_){} $('lockScreen').scrollLeft=0; }
+    }catch(err){ $('gateError').textContent='Could not reach the server. Check your connection.'; }
+    finally{ GATE.busy=false; setAuthBtn($('gateBtn'),'Unlock',false); } });
+  $('gateResend').addEventListener('click',async e=>{ e.preventDefault(); if(GATE.busy) return; GATE.busy=true; try{ await gateRequest(true); }catch(_){ $('gateError').textContent='Could not reach the server.'; } GATE.busy=false; });
+  $('gateBack').addEventListener('click',e=>{ e.preventDefault(); $('gateCode').value=''; gateStep('email'); });
   function authLockVisible(){ const ls=$('lockScreen'); return ls.style.display!=='none' && !ls.classList.contains('dissolve'); }
   function authCardChanged(i){
     if(!authDeckReady) return;
@@ -8063,7 +8110,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
       (p.parents||[]).forEach(pid=>{ if(layout.positions[pid]) lines += `<line x1="${X(pid)}" y1="${Y(pid)}" x2="${X(p.id)}" y2="${Y(p.id)}"/>`; });
       dots += `<circle cx="${X(p.id)}" cy="${Y(p.id)}" r="0.9"/>`;
     });
-    return `<svg class="pz-const" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g>${lines}${dots}</g></svg>`;
+    return `<svg class="pz-const" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><g>${lines}${dots}</g></svg>`;
   }
 
   function renderPersona(keepPlace){
