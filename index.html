@@ -1880,11 +1880,11 @@
   #linesFx{position:absolute;left:0;top:0;pointer-events:none;overflow:visible;}
   #linesSvg.svg-intro>line,#linesSvg.svg-intro>circle{animation:cdFade .6s ease .9s backwards;}
   .cd-draw{stroke-dasharray:1;animation:cdDraw .85s cubic-bezier(.4,0,.2,1) var(--cd,0s) backwards;} @keyframes cdDraw{from{stroke-dashoffset:1;}to{stroke-dashoffset:0;}}
-  .cd-ph{stroke:rgba(225,254,255,.95);stroke-width:2;stroke-dasharray:5 75;animation:cdFade .35s ease var(--cd-d,0s) backwards,cdFlow var(--cd-t,1.9s) linear var(--cd-d,0s) infinite;filter:drop-shadow(0 0 3px #27e6ff);}
-  .cd-ph.hot{stroke-width:2.6;stroke-dasharray:6 44;filter:drop-shadow(0 0 5px #7ff3ff);} @keyframes cdFlow{to{stroke-dashoffset:-80;}} @keyframes cdFade{from{opacity:0;}}
+  .cd-ph{stroke:rgba(225,254,255,.95);stroke-width:2;stroke-dasharray:5 75;animation:cdFade .35s ease var(--cd-d,0s) backwards,cdFlow var(--cd-t,1.9s) linear var(--cd-d,0s) infinite;}
+  .cd-ph.hot{stroke-width:2.8;stroke-dasharray:6 44;stroke:#fff;} @keyframes cdFlow{to{stroke-dashoffset:-80;}} @keyframes cdFade{from{opacity:0;}}
   .cd-trace{stroke:#fff;stroke-width:3.2;stroke-dasharray:.16 1.6;stroke-dashoffset:.16;filter:drop-shadow(0 0 7px #27e6ff);opacity:0;animation:cdTrace .75s cubic-bezier(.4,0,.2,1) var(--cd-d,0s) both;}
   .cd-trace.up{animation-name:cdTraceUp;} @keyframes cdTrace{0%{stroke-dashoffset:.16;opacity:1;}100%{stroke-dashoffset:-1;opacity:1;}} @keyframes cdTraceUp{0%{stroke-dashoffset:-1;opacity:1;}100%{stroke-dashoffset:.16;opacity:1;}}
-  .cd-junc{fill:none;stroke:#bff;stroke-width:1.5;transform-box:fill-box;transform-origin:center;animation:cdJunc 3.2s ease-in-out var(--cd-d,0s) infinite;filter:drop-shadow(0 0 4px #27e6ff);} @keyframes cdJunc{0%,100%{transform:scale(1);opacity:.55;}8%{transform:scale(2.4);opacity:1;}30%{transform:scale(1);opacity:.55;}}
+  .cd-junc{fill:none;stroke:#bff;stroke-width:1.5;transform-box:fill-box;transform-origin:center;animation:cdJunc 3.2s ease-in-out var(--cd-d,0s) infinite;} @keyframes cdJunc{0%,100%{transform:scale(1);opacity:.55;}8%{transform:scale(2.4);opacity:1;}30%{transform:scale(1);opacity:.55;}}
   html[data-fx="off"] .cd-ph,html[data-fx="off"] .cd-trace,html[data-fx="off"] .cd-junc{display:none;} html[data-fx="calm"] .cd-ph{animation-duration:.35s,4.4s;} html[data-fx="calm"] .cd-junc{animation:none;opacity:.7;}
   html.hk-paused .cd-ph,html.hk-paused .cd-junc{animation-play-state:paused;}
   /* card lasers, lock-on brackets, far-zoom orbs */
@@ -3332,9 +3332,11 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     }
     // ---- count/number roll ----
     function roll(el, to, ms){ const from=parseFloat(el.textContent)||0; to=+to; if(LV[tier]<2||from===to){ el.textContent=to; return; } let t=0; const T=(ms||600)/1000; tick(dt=>{ t+=dt; const p=Math.min(1,t/T), e=1-Math.pow(1-p,3); el.textContent=Math.round(from+(to-from)*e); if(p>=1) return false; }); }
+    // keep the FPS monitor running during CSS-driven entrances too (a no-op subscriber is enough to sample frames)
+    function watch(ms){ const t0=performance.now(); tick(()=>{ if(performance.now()-t0>ms) return false; }); }
     mq.addEventListener && mq.addEventListener('change',compute);
     compute();
-    return { tick, spring, decode, timeline, flip, roll, refresh:compute,
+    return { tick, spring, decode, timeline, flip, roll, watch, refresh:compute,
       get tier(){ return tier; }, get level(){ return LV[tier]; }, get fps(){ return fpsNow; }, get on(){ return LV[tier]>=2; }, get log(){ return downLog.slice(); },
       get coarse(){ return coarse; }, get subs(){ return subs.size; }, get looping(){ return !!raf; }, forceCap(t){ cap=t; compute(); }, settle(ms){ settleUntil=performance.now()+(ms||1500); } };
   })();
@@ -4147,7 +4149,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     $('authDeck').removeAttribute('data-lock'); AuthScene.bt=-1; AuthScene.fly=0; AuthScene.authing=0;
     if(played || authRM() || FX.level<2){ ls.classList.add('seq-done'); authDevName(true); return; }
     try{ sessionStorage.setItem('ftSeq','1'); localStorage.setItem('ftBooted','1'); }catch(_){}
-    const K = seen ? 0.36 : 1; AuthScene.K=K; AuthScene.bt=0;
+    const K = seen ? 0.36 : 1; AuthScene.K=K; AuthScene.bt=0; FX.watch(3200*K+500);
     ls.classList.add('seq-boot'); authDevName(false);
     const stopClock = FX.tick(dt=>{ if(AuthScene.bt>=0) AuthScene.bt+=dt*1000; else return false; });
     const add=c=>()=>ls.classList.add(c), T=ms=>ms*K, deck=$('authDeck');
@@ -5282,7 +5284,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     maybeShowFirstRunTip(hasPeople);
     if(!hasPeople) return;
 
-    const intro = treeIntro && FX.level>=2 && peopleArr().length<=80; treeIntro=false;
+    const intro = treeIntro && FX.level>=2 && peopleArr().length<=80; treeIntro=false; if(intro) FX.watch(4200);
     if(treeFx.tid!==currentTreeId){ treeFx.tid=currentTreeId; treeFx.units=null; treeFx.traceSel=null; }
     const layout = computeLayout();
     const pad = 80;
@@ -8260,7 +8262,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
   function pzEnter(){
     if(isRM()){ PZ.spread = 1; pzLayout(); return; }
     const root = $('personaRoot'); root.classList.remove('pz-entering'); void root.offsetWidth; root.classList.add('pz-entering');
-    PZ.spread = 0; pzLayout();
+    PZ.spread = 0; pzLayout(); FX.watch(3200);
     const t0 = performance.now(), delay = 520, dur = 520;
     const tick = now=>{
       const t = Math.max(0, Math.min(1, (now - t0 - delay)/dur)); const eased = 1-Math.pow(1-t,3);
