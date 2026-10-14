@@ -1537,6 +1537,16 @@
   .gate-card .hf-glare{animation:agGlare 7s ease-in-out infinite;} @keyframes agGlare{0%,70%{opacity:0;translate:-60% 0;}85%{opacity:.8;}100%{opacity:0;translate:60% 0;}}
   .ag-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#5de0ff;box-shadow:0 0 8px #27e6ff;margin-right:8px;vertical-align:1px;} #accessGate.denied .ag-dot{background:#ffb347;box-shadow:0 0 8px #ffb347;}
   #accessGate h1.ac-title{font-family:inherit;font-weight:700;font-size:24px;line-height:1.2;margin:24px 0 8px !important;} #accessGate .auth-eyebrow{display:block;padding-top:10px;line-height:1.4;margin-bottom:6px;} #accessGate .lock-success{color:#9ff5c6;}
+  /* locked developer recipient: a display element (not an input), secured not disabled */
+  .ag-lockf{position:relative;overflow:hidden;display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 12px 8px 12px;margin:2px 0 0;background:linear-gradient(180deg,rgba(2,10,20,.95),rgba(4,18,34,.92));border:1px solid #27e6ff;border-radius:10px;box-shadow:inset 0 0 20px rgba(10,90,140,.45),0 0 14px rgba(39,230,255,.2);cursor:default;-webkit-user-select:text;user-select:text;outline:none;}
+  .ag-lockf:focus-visible{box-shadow:inset 0 0 20px rgba(10,90,140,.45),0 0 0 2px rgba(190,250,255,.7),0 0 18px rgba(39,230,255,.5);}
+  .ag-lockf .lf-ic{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid rgba(80,220,255,.45);background:rgba(8,50,80,.6);} .ag-lockf .lf-ic .af-ico{position:static;margin:0;width:18px;height:18px;opacity:1;}
+  .ag-lockf .lf-b{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;} .ag-lockf .lf-l{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(150,225,245,.78);} .ag-lockf .lf-v{font:600 16px ui-monospace,Menlo,monospace;color:#e4fcff;text-shadow:0 0 10px rgba(39,230,255,.6);overflow-wrap:break-word;}
+  .ag-lockf .lf-badge{flex:none;align-self:flex-start;font:700 9px/1.2 ui-monospace,Menlo,monospace;letter-spacing:.1em;padding:4px 7px;border-radius:4px;color:#06222f;background:linear-gradient(90deg,#5de8ff,#7fb6ff);box-shadow:0 0 10px rgba(60,220,255,.5);white-space:nowrap;}
+  .ag-lockf .lf-scan{position:absolute;top:0;bottom:0;left:0;width:34%;pointer-events:none;background:linear-gradient(90deg,rgba(60,225,255,0),rgba(100,235,255,.28),rgba(60,225,255,0));translate:-120% 0;animation:agLf 5s ease-in-out infinite;} @keyframes agLf{0%,62%{translate:-120% 0;}100%{translate:330% 0;}}
+  .ag-lockf{flex-wrap:wrap;row-gap:8px;} .ag-lockf .lf-b{flex:1 1 calc(100% - 50px);} .ag-lockf .lf-badge{order:3;margin-left:46px;align-self:flex-start;}
+  @media (prefers-reduced-motion:reduce){ .ag-lockf .lf-scan{animation:none;opacity:0;} }
+  #accessGate .ag-lockf + .ag-rcpt{margin-top:0;} #gateNameWrap{margin-top:10px;} #gateNameWrap .ag-rcpt{margin:4px 2px 8px;} #gateNameWrap[hidden],#gateTs[hidden]{display:none;} #gateTs{margin:8px 0;min-height:65px;}
   .ag-rcpt{margin:-2px 2px 10px;font-size:12.5px;line-height:1.4;color:rgba(170,230,250,.8);} .ag-rcpt b{font-weight:700;color:#d8fbff;letter-spacing:.02em;}
   #accessGate .af input{font-size:16px;} #accessGate .af-clear{position:absolute;right:8px;top:50%;translate:0 -50%;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;border:1px solid rgba(80,200,255,.3);background:rgba(8,40,70,.55);cursor:pointer;color:#9ff3ff;padding:0;} #accessGate .af-clear[hidden]{display:none;} #accessGate .af-clear svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;} #accessGate .af:has(.af-clear:not([hidden])) input{padding-right:48px;}
   #accessGate .af.af-filled{animation:agFilled 1.1s ease-out;} @keyframes agFilled{0%{box-shadow:0 0 0 0 rgba(60,220,255,.9),0 0 22px 2px rgba(60,220,255,.7);}100%{box-shadow:0 0 0 8px rgba(60,220,255,0),0 0 0 0 rgba(60,220,255,0);}}
@@ -3348,7 +3358,10 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
 
   // ---------- Supabase ----------
   // One place to change the developer address (the access code is emailed here; also pre-filled on the gate).
-  const APP_CONFIG = { DEVELOPER_EMAIL: 'rjlim060719@gmail.com' };
+  // The developer's address is NOT in this file. It is a server secret (DEVELOPER_EMAIL); the page only asks the server what to display.
+  // To change what the locked field shows (masked or full), set the Supabase secret SHOW_FULL_DEVELOPER_EMAIL=true|false.
+  const APP_CONFIG = { ASK_NAME: true,  // the optional "Your name" box on the gate (the server must agree: secret ASK_NAME=false turns it off there)
+    TURNSTILE_SITE_KEY: '' };            // optional Cloudflare Turnstile site key (public). Empty = no human check. Needs the secret TURNSTILE_SECRET too.
   const SUPABASE_URL = 'https://jfnuqozxhljkhlcnfnxh.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_th-gd1or6hgy0XRMXhU4ew_Sg8rWmuv'; // publishable key — safe for client code, cannot bypass RLS
   // Guarded, not a bare top-level call: if the Supabase library's CDN script
@@ -4203,7 +4216,8 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     btn.querySelector('.lb-t').textContent = label;
   }
   const AIC = { mail:'<svg viewBox="0 0 24 24" aria-hidden="true" class="af-ico"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
-    lock:'<svg viewBox="0 0 24 24" aria-hidden="true" class="af-ico"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>' };
+    lock:'<svg viewBox="0 0 24 24" aria-hidden="true" class="af-ico"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+    user:'<svg viewBox="0 0 24 24" aria-hidden="true" class="af-ico"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>' };
   const EYE = id=>`<button type="button" class="af-eye" data-eye="${id}" aria-label="Show password" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" class="eye-open"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" class="eye-off"><path d="M3 3l18 18M10.6 5.1A10.6 10.6 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4M6.5 6.6A16.6 16.6 0 0 0 2 12s3.6 7 10 7a10 10 0 0 0 4.2-.9M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></button>`;
   const emailField = (id,label)=>`<div class="af">${AIC.mail}<input type="email" id="${id}" name="email" autocomplete="email" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder=" " required><label for="${id}">${label||'Email'}</label></div>`;
   const pwField = (id,label,auto)=>`<div class="af">${AIC.lock}<input type="password" id="${id}" name="password" autocomplete="${auto}" placeholder=" " minlength="6" required><label for="${id}">${label||'Password'}</label>${EYE(id)}</div>`;
@@ -4243,8 +4257,6 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
       <g class="gl-xtra"><polygon class="gl-hex" points="400,5 531,87.5 531,252.5 400,335 269,252.5 269,87.5"/><g class="gl-orbit o1"><circle cx="400" cy="30" r="3.2"/><circle cx="400" cy="30" r="8" class="halo"/></g><g class="gl-orbit o2"><circle cx="400" cy="318" r="2.6"/></g><circle class="gl-arc a1" cx="400" cy="170" r="165"/><circle class="gl-arc a2" cx="400" cy="170" r="110"/><circle class="gl-arc a3" cx="400" cy="170" r="87"/><g class="gl-glyphs"><circle class="gl-gr" cx="400" cy="170" r="137" pathLength="1"/><text class="gl-gt"><textPath href="#gGl" startOffset="0">01 A7 F3 00 1B E4 5C 9D 02 B8 3F 6A 11 C0 7E 4D 0F 92 D5 38 A1 6B E2 54 </textPath></text><path id="gGl" d="M400 170 m-137 0 a137 137 0 1 1 274 0 a137 137 0 1 1 -274 0" fill="none"/></g></g>
       <g class="gl-rings"><circle class="gl-r r5" cx="400" cy="170" r="150"/><circle class="gl-r r4" cx="400" cy="170" r="122"/><circle class="gl-r r3" cx="400" cy="170" r="98"/><circle class="gl-r r2" cx="400" cy="170" r="76"/><circle class="gl-r r1" cx="400" cy="170" r="56"/></g>
       <g class="gl-lock"><path class="gl-shackle" pathLength="1" d="M382 166v-12a18 18 0 0 1 36 0v12"/><rect class="gl-body" pathLength="1" x="372" y="164" width="56" height="42" rx="6"/><circle class="gl-key kc" cx="400" cy="181" r="5"/><rect class="gl-key kb" x="397.8" y="183" width="4.4" height="12" rx="1.5"/></g></svg>`; })();
-  const maskEmail = e=>{ const [l,d]=String(e).split('@'); return (l||'').slice(0,2)+'•••••@'+(d||''); };
-  const DEVMAIL = APP_CONFIG.DEVELOPER_EMAIL;
   const PAN = [['GATE','LOCKED','pg'],['CODES','SERVER-SIDE','pc'],['REQUESTS','RATE LIMITED','pr'],['TRANSPORT',location.protocol==='https:'?'HTTPS':'NOT SECURE','pt']];
   const panHTML = PAN.map((p,i)=>`<div class="gl-pan ${i<2?'pl':'pr'} p${i}" id="${p[2]}"><span>${p[0]}</span><b data-v="${p[1]}">${p[1]}</b><i></i></div>`).join('');
   const digits = Array.from({length:6},(_,i)=>`<input class="gc-d" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="${i?'off':'one-time-code'}" aria-label="Digit ${i+1} of 6" data-i="${i}">`).join('');
@@ -4255,51 +4267,57 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     <div class="ag-status" id="gStatus" aria-hidden="true"><i></i><span id="gStatusT">SECURE GATE · LOCKED</span></div><div class="sr-only" id="gLive" role="status" aria-live="polite"></div>
     <div class="ag-box auth-newpw"><div class="ag-plat" aria-hidden="true"><u></u><div class="pl3d"><i class="r1"></i><i class="r2"></i><i class="r3"></i></div></div><div class="ag-scan" aria-hidden="true"></div><i class="ag-pkt" aria-hidden="true"></i>${HK.frame(`<div class="ag-banner" id="gBanner" role="status" hidden><b></b><span></span></div><div class="auth-eyebrow"><i class="ag-dot"></i>RESTRICTED · DEVELOPER APPROVAL</div><h1 class="ac-title" id="gateTitle">Access locked</h1><p class="sub" id="gateSub"></p>
     <form id="gateForm" autocomplete="on" novalidate>
-      <div id="gateStepEmail">${emailField('gateEmail').replace(/<\/div>$/,`<button type="button" class="af-clear" id="gateClear" aria-label="Use a different email" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>`)}<p class="ag-rcpt" id="gRcpt"></p></div>
+      <div id="gateStepEmail">
+        <div class="ag-lockf" id="gateTo" role="group" tabindex="0" aria-label="Request goes to the developer's Gmail. Locked." title="Access codes are only sent to the developer. Ask the developer for your code.">
+          <span class="lf-ic">${AIC.lock}</span><span class="lf-b"><span class="lf-l">Request goes to</span><span class="lf-v" id="gToV">••••••••@•••••</span></span><span class="lf-badge">LOCKED · DEVELOPER</span><i class="lf-scan" aria-hidden="true"></i></div>
+        <div id="gateNameWrap"><div class="af">${AIC.user}<input type="text" id="gateName" name="name" autocomplete="name" autocapitalize="words" maxlength="40" spellcheck="false" placeholder=" "><label for="gateName">Your name (optional)</label></div><p class="ag-rcpt">So the developer knows who's asking.</p></div>
+        <div id="gateTs" hidden></div></div>
       <div id="gateStepCode" hidden><div class="gc-row" role="group" aria-label="6-digit access code">${digits}</div><div class="gx" id="gExp"><svg viewBox="0 0 36 36" aria-hidden="true"><circle class="gx-bg" cx="18" cy="18" r="15"/><circle class="gx-fg" id="gExpC" cx="18" cy="18" r="15" pathLength="100"/></svg><span id="gExpT">Code expires in 15:00</span></div></div>
       ${MSG('gate')}${BTN('gateBtn','Request access code')}
-      <div class="auth-secondary" id="gateLinks" hidden><a href="#" role="button" class="auth-sec-btn" id="gateResend">Resend code</a><a href="#" role="button" class="auth-sec-btn" id="gateBack">Change email</a></div>
+      <div class="auth-secondary" id="gateLinks" hidden><a href="#" role="button" class="auth-sec-btn" id="gateResend">Send another request</a></div>
     </form>`,{variant:'standard',intensity:'active',tick:true,glare:true,cls:'auth-card gate-card'})}</div>
     <ol class="gs-track" id="gTrack" aria-label="Progress"><li class="gs-step" data-s="1"><b>1</b><span>REQUEST</span></li><li class="gs-line" aria-hidden="true"></li><li class="gs-step" data-s="2"><b>2</b><span>VERIFY</span></li><li class="gs-line" aria-hidden="true"></li><li class="gs-step" data-s="3"><b>3</b><span>CREATE ACCOUNT</span></li></ol>
-    <a href="#" role="button" class="ag-back" id="gateToSignin">← Back to sign in</a>
     <footer class="auth-dev ag-dev" role="group" aria-label="Developer: Ryan James Lim"><div class="ad-rule" aria-hidden="true"><span class="ad-line l"><i></i></span><span class="ad-dia"></span><span class="ad-line r"><i></i></span></div><div class="ad-lab" aria-hidden="true">DEVELOPER</div><div class="ad-name" aria-hidden="true">Ryan James Lim</div></footer>`;
   $('lockScreen').appendChild(gate);
   const gateHas = ()=>GS.valid;
-  const GATE = { step:'email', email:'', busy:false, tries:0, exp:0, expTotal:900, cool:0, booted:false, typed:false };
+  const GATE = { step:'email', rid:'', name:'', busy:false, tries:0, exp:0, expTotal:900, cool:0, booted:false, want:false, to:'', askName:APP_CONFIG.ASK_NAME, ts:'' };
   const RM = ()=> authRM() || FX.level<2;
   const STAT = { relocked:['GATE RELOCKED','locked','Gate relocked'], locked:['SECURE GATE · LOCKED','locked','Secure gate locked'], sending:['TRANSMITTING…','sending','Transmitting request'], awaiting:['AWAITING CODE','awaiting','Awaiting code'], granted:['ACCESS GRANTED','granted','Access granted'], denied:['ACCESS DENIED','denied','Access denied'] };
   function gateStatus(k){ const s=STAT[k]; const el=$('gStatus'); el.className='ag-status '+s[1]; $('gStatusT').textContent=s[0]; $('gLive').textContent=s[2]; GateFX.hud(); }
   function gateTrack(n){ gate.querySelectorAll('.gs-step').forEach(li=>{ const i=+li.dataset.s; li.dataset.state=i<n?'done':i===n?'active':'todo'; if(i===n) li.setAttribute('aria-current','step'); else li.removeAttribute('aria-current'); }); gate.querySelectorAll('.gs-line').forEach((l,i)=>l.style.setProperty('--f',i+1<n?1:i+1===n?.0:0)); }
-  const syncClear = ()=>{ $('gateClear').hidden = !$('gateEmail').value; };
-  function typeFill(inp,text){ GATE.typed=true; const af=inp.closest('.af'); const fin=()=>{ inp.value=text; syncClear(); clearInterval(iv); inp.removeEventListener('keydown',fin); if(af){ af.classList.add('af-filled'); setTimeout(()=>af.classList.remove('af-filled'),1100); } };
-    if(RM()){ inp.value=text; syncClear(); return; } const G='abcdefghijklmnopqrstuvwxyz0123456789@.'; let i=0; inp.value=''; const iv=setInterval(()=>{ i++; inp.value=text.slice(0,i)+(i<text.length?G[Math.random()*G.length|0]:''); syncClear(); if(i>=text.length) fin(); },28); inp.addEventListener('keydown',fin,{once:true}); }
   const getCode = ()=>[...gate.querySelectorAll('.gc-d')].map(d=>d.value).join('');
   function clearCode(focus){ const ds=[...gate.querySelectorAll('.gc-d')]; ds.forEach(d=>{ d.value=''; d.classList.remove('on'); }); if(focus) ds[0].focus({preventScroll:true}); }
   function gateStep(step){ GATE.step=step; const code=step==='code'; $('gateStepEmail').hidden=code; $('gateStepCode').hidden=!code; $('gateLinks').hidden=!code;
-    $('gateTitle').textContent = code ? 'Enter your access code' : 'Access locked';
-    $('gateSub').textContent = code ? `Request sent for ${GATE.email}. The developer will share your 6-digit access code. Enter it below.` : 'This app is invite-only. Request an access code — the developer will send it to you. Enter the code to create your account.';
-    $('gRcpt').innerHTML = `Code will be sent to: <b>${maskEmail(DEVMAIL)}</b> (Developer).`;
-    $('gateBtn').querySelector('.lb-t').textContent = code ? 'Unlock' : 'Request access code'; $('gateError').textContent=''; $('gateSuccess').textContent='';
+    $('gateTitle').textContent = code ? 'Enter developer code' : 'Access locked';
+    $('gateSub').textContent = code ? "A code was sent to the developer's Gmail. Ask the developer for the code, then enter it below." : 'Access codes are only sent to the developer. Ask the developer for your code.';
+    $('gateBtn').querySelector('.lb-t').textContent = code ? 'Verify code' : 'Request access code'; $('gateError').textContent=''; $('gateSuccess').textContent='';
     GATE.retry=false; gateTrack(code?2:1); gateStatus(code?'awaiting':'locked'); if(code) clearCode(false);
     const tt=$('gateTitle'); if(!RM() && GATE.booted) FX.decode(tt, tt.textContent, 420);
-    if(!code && !$('gateEmail').value){ let pre=DEVMAIL; try{ pre=localStorage.getItem('ftGateEmail')||DEVMAIL; }catch(_){} if(GATE.typed || !GATE.booted) $('gateEmail').value=pre; else typeFill($('gateEmail'),pre); }
-    syncClear(); setTimeout(()=>{ try{ if(code){ clearCode(true); } else { const e=$('gateEmail'); e.focus({preventScroll:true}); } }catch(_){} },80); }
+    $('gateNameWrap').hidden = !(GATE.askName && APP_CONFIG.ASK_NAME);
+    setTimeout(()=>{ try{ if(code){ clearCode(true); } else if(!$('gateNameWrap').hidden){ $('gateName').focus({preventScroll:true}); } else { $('gateBtn').focus({preventScroll:true}); } }catch(_){} },80); }
+  // what the locked "Request goes to" field shows comes from the SERVER (masked or full, its choice). The page never holds the address.
+  async function gateInfo(){ const j=await gateCall({action:'info'}); if(j&&j.status==='ok'){ GATE.askName=!!j.ask_name; $('gateNameWrap').hidden=!(GATE.askName&&APP_CONFIG.ASK_NAME)||GATE.step==='code'; if(j.to){ GATE.to=j.to; $('gToV').textContent=j.to; $('gateTo').setAttribute('aria-label',"Request goes to "+j.to+", the developer's Gmail. Locked."); } else $('gToV').textContent="The developer's Gmail";
+      if(j.human_check&&APP_CONFIG.TURNSTILE_SITE_KEY) gateHuman(); } else if(!GATE.to) $('gToV').textContent="The developer's Gmail"; }
+  function gateHuman(){ const box=$('gateTs'); if(box.dataset.on) return; box.dataset.on=1; box.hidden=false; const go=()=>{ try{ window.turnstile.render(box,{sitekey:APP_CONFIG.TURNSTILE_SITE_KEY,theme:'dark',callback:t=>{ GATE.ts=t; },'expired-callback':()=>{ GATE.ts=''; }}); }catch(_){} };
+    if(window.turnstile){ go(); return; } const sc=document.createElement('script'); sc.src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'; sc.async=true; sc.onload=go; document.head.appendChild(sc); }
   // one 1-second heartbeat while the gate is on screen: clock, resend countdown, code-expiry ring
   let gTimer=0;
   function gateBeat(){ GateFX.hud(); const now=Date.now(); const rb=$('gateResend');
-    if(GATE.step==='code'){ const cd=Math.max(0,Math.ceil((GATE.cool-now)/1000)); rb.classList.toggle('dis',cd>0); rb.setAttribute('aria-disabled',String(cd>0)); rb.textContent = cd>0 ? `Resend code (${cd}s)` : 'Resend code';
+    if(GATE.step==='code'){ const cd=Math.max(0,Math.ceil((GATE.cool-now)/1000)); rb.classList.toggle('dis',cd>0); rb.setAttribute('aria-disabled',String(cd>0)); rb.textContent = cd>0 ? `Send another request in ${Math.floor(cd/60)}:${String(cd%60).padStart(2,'0')}` : 'Send another request';
       const ms=GATE.exp-now, tot=GATE.expTotal*1000; const p=Math.max(0,Math.min(1,ms/tot)); $('gExpC').style.strokeDashoffset=String(100*(1-p));
       $('gExpT').textContent = ms>0 ? `Code expires in ${Math.floor(ms/60000)}:${String(Math.floor(ms/1000)%60).padStart(2,'0')}` : 'Code expired — request a new one'; $('gExp').classList.toggle('low',ms>0&&ms<60000); } }
-  function gateUpdate(){ const show=!gateHas(); gate.classList.remove('pass','gone','unlocking','flipout','denied'); gate.hidden=!show; const w=document.querySelector('#lockScreen .auth-wrap'); if(w){ try{ w.inert=show; }catch(_){} }
-    if(show){ GATE.tries=0; GateFX.start(); gateVV(); clearInterval(gTimer); gTimer=setInterval(gateBeat,1000); gateBoot(); gateStep('email'); } else { GateFX.stop(); clearInterval(gTimer); } }
+  function gateUpdate(){ const show=!gateHas() && GATE.want;   // Sign In is the starting page; the gate only appears when someone asks to create an account
+     const was=!gate.hidden; if(show&&was&&GATE.step==='code') return;   // already asking for the code: leave it alone (a hash change must not reset Step 2)
+     gate.classList.remove('pass','gone','unlocking','flipout','denied'); gate.hidden=!show; const w=document.querySelector('#lockScreen .auth-wrap'); if(w){ try{ w.inert=show; }catch(_){} }
+    if(show){ GATE.tries=0; GateFX.start(); gateVV(); clearInterval(gTimer); gTimer=setInterval(gateBeat,1000); gateBoot(); gateStep('email'); gateInfo(); } else { GateFX.stop(); clearInterval(gTimer); } }
   // boot sequence (under 2s, skippable by any click or key)
   let bootTimers=[];
   function gateBoot(){ if(GATE.booted || RM()){ GATE.booted=true; gate.classList.remove('boot'); return; } GATE.booted=false; gate.className=gate.className.replace(/\bk\d\b/g,'').trim(); gate.classList.add('boot');
     const step=(n,ms,fn)=>bootTimers.push(setTimeout(()=>{ gate.classList.add('k'+n); fn&&fn(); },ms));
     step(1,60); step(2,420); step(3,760); step(4,1050,()=>{ gate.querySelectorAll('.gl-pan b').forEach((b,i)=>FX.decode(b,b.dataset.v,380,{delay:i*90})); }); step(5,1180,()=>{ const tt=$('gateTitle'); FX.decode(tt,tt.textContent,520); });
-    step(6,1550,()=>{ GATE.booted=true; if(GATE.step==='email' && !$('gateEmail').value){ let pre=DEVMAIL; try{ pre=localStorage.getItem('ftGateEmail')||DEVMAIL; }catch(_){} typeFill($('gateEmail'),pre); } }); step(7,1700);
+    step(6,1550,()=>{ GATE.booted=true; }); step(7,1700);
     bootTimers.push(setTimeout(()=>{ gate.classList.remove('boot'); },2100));
-    const skip=()=>{ bootTimers.forEach(clearTimeout); bootTimers=[]; gate.classList.remove('boot'); const wasTyping=!GATE.booted; GATE.booted=true; if(GATE.step==='email' && !$('gateEmail').value){ let pre=DEVMAIL; try{ pre=localStorage.getItem('ftGateEmail')||DEVMAIL; }catch(_){} GATE.typed=true; $('gateEmail').value=pre; syncClear(); } gate.removeEventListener('pointerdown',skip,true); gate.removeEventListener('keydown',skip,true); };
+    const skip=()=>{ bootTimers.forEach(clearTimeout); bootTimers=[]; gate.classList.remove('boot'); GATE.booted=true; gate.removeEventListener('pointerdown',skip,true); gate.removeEventListener('keydown',skip,true); };
     gate.addEventListener('pointerdown',skip,true); gate.addEventListener('keydown',skip,true); }
   // keep the focused field and the button above the on-screen keyboard
   function gateVV(){ const vv=window.visualViewport; if(!vv||gateVV.on) return; gateVV.on=1; const fit=()=>{ if(gate.hidden) return; gate.style.height = (vv.height<window.innerHeight-80) ? vv.height+'px' : ''; const a=document.activeElement; if(a&&gate.contains(a)&&a!==document.body){ try{ a.scrollIntoView({block:'center',behavior:'smooth'}); }catch(_){} } }; vv.addEventListener('resize',fit); }
@@ -4307,29 +4325,31 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
   function gateTransmit(){ return new Promise(res=>{ const p=$('gTx'), pk=$('gPk'); if(RM()||gate.hidden||!p.getTotalLength){ res(); return; } const L=p.getTotalLength(); gate.classList.add('tx'); GATE.txStop=false; let t=0; const dur=1.5; let un; un=FX.tick(dt=>{ if(GATE.txStop){ un(); gate.classList.remove('tx','txhit'); p.style.strokeDasharray=''; res(); return; } t+=dt; const k=Math.min(1,t/dur), e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2; const pt=p.getPointAtLength(L*e); pk.setAttribute('cx',pt.x); pk.setAttribute('cy',pt.y); p.style.strokeDasharray=`${L*e} ${L}`; if(k>=1){ un(); gate.classList.add('txhit'); setTimeout(()=>{ gate.classList.remove('tx','txhit'); p.style.strokeDasharray=''; res(); },420); } }); }); }
   function gateDenied(){ gateStatus('denied'); gate.classList.add('denied'); const fr=gate.querySelector('.hf'); if(fr&&!RM()){ fr.classList.remove('hf-shake'); void fr.offsetWidth; fr.classList.add('hf-shake'); } setTimeout(()=>{ gate.classList.remove('denied'); if(GATE.step==='code') gateStatus('awaiting'); else gateStatus('locked'); },1700); }
   // unlock: shackle opens, rings burst, circuits flood, "ACCESS GRANTED" decodes, the card flips into the sign-up form
-  function gatePass(email, go, quick){ if(email){ ['authEmail','suEmail'].forEach(id=>{ if(!$(id).value) $(id).value=email; }); }
+  function gatePass(email, go, quick){
     gateTrack(3); gateStatus('granted'); const tt=$('gateTitle'); tt.textContent='ACCESS GRANTED'; if(!RM()) FX.decode(tt,'ACCESS GRANTED',600);
     const w=document.querySelector('#lockScreen .auth-wrap'); const done=()=>{ GateFX.stop(); clearInterval(gTimer); gate.hidden=true; gate.classList.remove('pass','unlocking','flipout'); if(w){ try{ w.inert=false; }catch(_){} } if(go!=null){ authDeckReady=true; authDeck.go(go); } if(go===1&&email){ const se=$('suEmail'); se.value=email; se.readOnly=true; se.title='Verified by the developer'; } };
     if(quick||RM()){ done(); return; } gate.classList.add('unlocking'); GateFX.burst(); $('ghA').textContent='ACCESS GRANTED'; setTimeout(()=>gate.classList.add('flipout'),1000); setTimeout(()=>gate.classList.add('pass'),1350); setTimeout(done,2000); }
   async function gateCall(body){ try{ const r=await fetch(SUPABASE_URL+'/functions/v1/gate-access',{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_KEY},body:JSON.stringify(body)}); let j={}; try{ j=await r.json(); }catch(_){ j={status:'error'}; } return j; }catch(_){ return null; } }
   const NETERR = "Couldn't send the request — check your connection and try again.";
-  async function gateRequest(resend){ const email=GATE.email; gateStatus('sending'); const tx = gateTransmit(); const j = await gateCall({action:'request',email}); if(!(j&&(j.status==='sent'||j.status==='approved'))) GATE.txStop=true; await tx;
+  const devId = ()=>{ try{ let d=localStorage.getItem('ftDev'); if(!d){ d=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random().toString(16).slice(2)+Math.random().toString(16).slice(2)); localStorage.setItem('ftDev',d); } return d; }catch(_){ return ''; } };
+  const fmtWait = sec=>{ sec=Math.max(1,Math.round(sec)); if(sec<60) return sec+' second'+(sec===1?'':'s'); const m=Math.ceil(sec/60); if(m<120) return m+' minute'+(m===1?'':'s'); const h=Math.ceil(m/60); return h+' hour'+(h===1?'':'s'); };
+  // The page only says "request a code" (plus an optional name). It never says where the code goes; the server decides that.
+  async function gateRequest(resend){ gateStatus('sending'); const tx = gateTransmit(); const j = await gateCall({action:'request',name:GATE.name,device:devId(),prev:GATE.rid,turnstile:GATE.ts}); if(!(j&&j.status==='sent')) GATE.txStop=true; await tx;
+    try{ if(window.turnstile&&GATE.ts){ window.turnstile.reset(); GATE.ts=''; } }catch(_){}
     if(!j){ $('gateError').textContent=NETERR; gateStatus(GATE.step==='code'?'awaiting':'locked'); GATE.retry=true; setAuthBtn($('gateBtn'),'Retry',false); return; }
-    if(j.status==='sent'){ try{ localStorage.setItem('ftGateEmail',email); }catch(_){} const was=GATE.step; GATE.expTotal=j.expires_in||900; GATE.retry=false; setBanner(null); GATE.exp=Date.now()+GATE.expTotal*1000; GATE.cool=Date.now()+(j.cooldown||60)*1000; GATE.tries=0; gateStep('code'); gateBeat(); $('gateSuccess').textContent = resend ? 'A new code was requested.' : 'Request sent. The developer will share your access code.'; return; }
-    const m = j.status==='wait' ? `Please wait ${j.retry_after||60}s before asking again.` : j.status==='limited' ? 'Too many requests. Please try again later.' : j.status==='not_configured' ? 'Access codes are not set up yet. Please try again later.' : j.status==='invalid_email' ? 'Enter a valid email address.' : NETERR;
-    if(j.status==='wait'){ GATE.cool=Date.now()+(j.retry_after||60)*1000; } $('gateError').textContent=m; gateDenied(); if(GATE.step==='email'){ GATE.retry=true; setAuthBtn($('gateBtn'),'Retry',false); } }
+    if(j.status==='sent'){ GATE.rid=j.rid||''; GATE.expTotal=j.expires_in||900; GATE.retry=false; setBanner(null); GATE.exp=Date.now()+GATE.expTotal*1000; GATE.cool=Date.now()+(j.cooldown||60)*1000; GATE.tries=0; gateStep('code'); gateBeat(); $('gateSuccess').textContent = resend ? 'Another request was sent to the developer.' : ''; return; }
+    const m = j.status==='wait' ? `Please wait ${fmtWait(j.retry_after||60)} before asking again.` : j.status==='limited' ? `Too many requests. Try again in ${fmtWait(j.retry_after||3600)}.` : j.status==='not_configured' ? 'Access codes are not set up yet. Please try again later.' : j.status==='bad_name' ? 'Please enter your real name, or leave it empty.' : j.status==='human_check' ? 'Please complete the human check, then try again.' : j.status==='send_failed' ? "The request couldn't be delivered. Please try again." : NETERR;
+    if(j.status==='wait'||j.status==='limited'){ GATE.cool=Date.now()+(j.retry_after||60)*1000; } $('gateError').textContent=m; gateDenied(); if(GATE.step==='email'){ GATE.retry=true; setAuthBtn($('gateBtn'),'Retry',false); } }
   $('gateForm').addEventListener('submit', async e=>{ e.preventDefault(); if(GATE.busy) return; $('gateError').textContent=''; $('gateSuccess').textContent='';
-    if(GATE.step==='email'){ const email=$('gateEmail').value.trim().toLowerCase();
-      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ $('gateError').textContent='Enter a valid email address.'; authWarn(['gateEmail']); $('gateEmail').focus(); return; }
-      GATE.email=email; GATE.busy=true; setAuthBtn($('gateBtn'),'Transmitting…',true);
+    if(GATE.step==='email'){ GATE.name=($('gateName').value||'').trim().slice(0,40); GATE.busy=true; setAuthBtn($('gateBtn'),'Transmitting…',true);
       try{ await gateRequest(false);
-      }finally{ GATE.busy=false; setAuthBtn($('gateBtn'),GATE.retry?'Retry':GATE.step==='code'?'Unlock':'Request access code',false); } return; }
+      }finally{ GATE.busy=false; setAuthBtn($('gateBtn'),GATE.retry?'Retry':GATE.step==='code'?'Verify code':'Request access code',false); } return; }
     const code=getCode(); if(code.length!==6){ $('gateError').textContent='Enter the 6-digit code.'; gateShake(); return; }
     GATE.busy=true; setAuthBtn($('gateBtn'),'Verifying…',true);
-    try{ const j=await gateCall({action:'verify',email:GATE.email,code});
-      if(j&&j.status==='approved'&&j.token){ GS.grant(j,GATE.email); setBanner(null); $('gateSuccess').textContent='Access granted.'; gatePass(GATE.email,1); }
+    try{ const j=await gateCall({action:'verify',rid:GATE.rid,code});
+      if(j&&j.status==='approved'&&j.token){ GS.grant(j,''); GATE.rid=''; setBanner(null); $('gateSuccess').textContent='Access granted.'; gatePass('',1); }
       else { GATE.tries++; GateFX.hud(); const st=j&&j.status; $('gateError').textContent = !j ? "Couldn't verify — check your connection and try again." : st==='wrong' ? `That code isn't valid. ${j.left} attempt${j.left===1?'':'s'} left.` : st==='expired' ? 'That code expired. Request a new one.' : st==='locked' ? 'Too many wrong tries. Request a new code.' : st==='wait' ? 'Please try again in a moment.' : st==='limited' ? 'Too many attempts. Please try again later.' : "Couldn't verify the code. Please try again."; gateDenied(); gateShake(); if(st==='wrong'||st==='wait'){ clearCode(true); } }
-    }finally{ GATE.busy=false; setAuthBtn($('gateBtn'),'Unlock',false); } });
+    }finally{ GATE.busy=false; setAuthBtn($('gateBtn'),'Verify code',false); } });
   function gateShake(){ const r=gate.querySelector('.gc-row'); r.classList.remove('gc-warn'); void r.offsetWidth; r.classList.add('gc-warn'); setTimeout(()=>r.classList.remove('gc-warn'),700); }
   // 6-box code: type advances, Backspace goes back, paste fills every box
   (function(){ const ds=()=>[...gate.querySelectorAll('.gc-d')]; const auto=()=>{ if(getCode().length===6) setTimeout(()=>{ if(!GATE.busy&&GATE.step==='code'&&getCode().length===6) $('gateForm').requestSubmit(); },260); };
@@ -4338,12 +4358,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     gate.querySelector('.gc-row').addEventListener('keydown',e=>{ const d=e.target, i=+d.dataset.i; if(e.key==='Backspace'&&!d.value&&i>0){ e.preventDefault(); const p=ds()[i-1]; p.value=''; p.classList.remove('on'); p.focus(); } else if(e.key==='ArrowLeft'&&i>0){ e.preventDefault(); ds()[i-1].focus(); } else if(e.key==='ArrowRight'&&i<5){ e.preventDefault(); ds()[i+1].focus(); } });
     gate.querySelector('.gc-row').addEventListener('paste',e=>{ const t=(e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,''); if(!t) return; e.preventDefault(); clearCode(false); fill(0,t.slice(0,6)); });
     gate.querySelector('.gc-row').addEventListener('focusin',e=>{ if(e.target.select) e.target.select(); }); })();
-  $('gateEmail').addEventListener('input',syncClear);
-  $('gateEmail').addEventListener('focus',()=>{ try{ $('gateEmail').select(); }catch(_){} });
-  $('gateClear').addEventListener('click',()=>{ $('gateEmail').value=''; syncClear(); $('gateEmail').focus(); });
   $('gateResend').addEventListener('click',async e=>{ e.preventDefault(); if(GATE.busy||Date.now()<GATE.cool) return; GATE.busy=true; try{ await gateRequest(true); }finally{ GATE.busy=false; } });
-  $('gateBack').addEventListener('click',e=>{ e.preventDefault(); clearCode(false); gateStep('email'); });
-  $('gateToSignin').addEventListener('click',e=>{ e.preventDefault(); GateFX.stop(); clearInterval(gTimer); gate.hidden=true; const w=document.querySelector('#lockScreen .auth-wrap'); if(w){ try{ w.inert=false; }catch(_){} } authDeckReady=false; authDeck.go(0); authDeckReady=true; });
   // ---- gate engine: canvas grid floor, glyph rain, constellation, embers, shockwaves, pointer parallax, live HUD ----
   const GateFX = (function(){
     const cv=gate.querySelector('.gl-cv'), cx=cv.getContext('2d'), sc=gate.querySelector('.gl-scene'); let W=0,H=0,dpr=1,un=null,t=0,running=false,hudT=0,px=0,py=0,tx=0,ty=0,lx=0,ly=0,lr=60; const E=[],R=[],WV=[],N=[]; const G='01ABCDEF0123456789<>/\\|';
@@ -4444,7 +4459,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     $('suPassword').value=''; const se=$('suEmail'); se.readOnly=false;
     relockT.forEach(clearTimeout); relockT=[]; const anim=!RM()&&!document.hidden; const at=(ms,fn)=>relockT.push(setTimeout(fn,ms));
     gate.classList.remove('rl1','rl2','rl3'); if(anim) gate.classList.add('relock');
-    gateUpdate(); gateStatus('locked');
+    GATE.want=true; gateUpdate(); gateStatus('locked');
     const finish=()=>{ gate.classList.remove('relock','rl1','rl2','rl3'); authDeckReady=false; authDeck.go(0); authDeckReady=true; };
     if(!anim){ finish(); return; }
     gateTrack(3); at(40,()=>gate.classList.add('rl1')); at(560,()=>{ gate.classList.add('rl2'); gateTrack(2); }); at(950,()=>gateTrack(1)); at(1250,()=>{ gate.classList.add('rl3'); gateStatus('relocked'); }); at(2100,finish); }
@@ -4502,7 +4517,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
   function authLockVisible(){ const ls=$('lockScreen'); return ls.style.display!=='none' && !ls.classList.contains('dissolve'); }
   function authCardChanged(i){
     if(!authDeckReady) return;
-    if(i===1 && !gateHas()){ authDeckReady=false; authDeck.go(0); authDeckReady=true; gateUpdate(); return; }
+    if(i===1 && !gateHas()){ authDeckReady=false; authDeck.go(0); authDeckReady=true; GATE.want=true; gateUpdate(); return; }
     $('lockScreen').classList.toggle('on-signup', i===1);
     try{ if(authLockVisible() && !(history.state && history.state.authCard===i)) history.pushState({authCard:i},'',location.pathname+location.search+'#'+AUTH_HASH[i]); }catch(_){}
   }
@@ -4585,7 +4600,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     updatePwMeter();
     ['authSubmitBtn','suSubmitBtn'].forEach(id=>setAuthBtn($(id), id==='suSubmitBtn'?'Create account':'Sign In', false));
     try{ history.replaceState({authCard:0},'',location.pathname+location.search+'#login'); }catch(_){}
-    authSceneStart(); authSeqPlay(); gateUpdate();
+    authSceneStart(); authSeqPlay(); GATE.want=false; gateUpdate();
   }
   async function authSubmitCred(kind, e){
     e.preventDefault();
@@ -5494,9 +5509,10 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     };
   }
   let meSyncVol = null;
-  const OWNER_EMAIL = APP_CONFIG.DEVELOPER_EMAIL;
+  let OWNER_EMAIL = '';   // learned from the server for the developer only; the page never contains the address
+  async function whoIsOwner(){ try{ const ss=await sb.auth.getSession(); const tk=ss&&ss.data&&ss.data.session&&ss.data.session.access_token; if(!tk) return ''; const r=await fetch(GATE_URL,{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_KEY,Authorization:'Bearer '+tk},body:JSON.stringify({action:'owner'})}); const j=await r.json(); return j&&j.owner?String(j.owner_email||''):''; }catch(_){ return ''; } }
   async function renderAccess(){
-    const blk=$('meSecAccess'); if(!blk) return; const owner=!!(currentUser&&currentUser.email&&currentUser.email.toLowerCase()===OWNER_EMAIL); blk.hidden=!owner; if(!owner) return;
+    const blk=$('meSecAccess'); if(!blk) return; if(!currentUser||!currentUser.email){ blk.hidden=true; return; } OWNER_EMAIL=await whoIsOwner(); const owner=!!OWNER_EMAIL; blk.hidden=!owner; if(!owner) return;
     const box=$('accessList'); let rows=[]; try{ const r=await sb.from('access_requests').select('email,status,created_at').order('created_at',{ascending:false}); if(r.error) throw r.error; rows=r.data||[]; }catch(e){ box.innerHTML='<p class="me-note">Could not load requests.</p>'; return; }
     const order={pending:0,denied:1,approved:2}; rows.sort((a,b)=>order[a.status]-order[b.status]);
     box.innerHTML = rows.length ? rows.map(r=>`<div class="acc-row" data-st="${r.status}"><span class="acc-e">${escapeHtml(r.email)}</span><span class="acc-s">${r.status}</span><span class="acc-b">${r.status!=='approved'?`<button type="button" class="pz-mini" data-acc="approved" data-e="${escapeHtml(r.email)}">Approve</button>`:''}${r.status==='pending'?`<button type="button" class="pz-mini pz-mini-d" data-acc="denied" data-e="${escapeHtml(r.email)}">Deny</button>`:''}${r.email!==OWNER_EMAIL?`<button type="button" class="pz-mini pz-mini-d" data-acc="remove" data-e="${escapeHtml(r.email)}" aria-label="Remove ${escapeHtml(r.email)}">Remove</button>`:''}</span></div>`).join('') : '<p class="me-note">No requests yet.</p>';

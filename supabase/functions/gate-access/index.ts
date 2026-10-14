@@ -2,7 +2,12 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 
 // =====================  GATE CONFIG  (the ONE place to change gate timings; the app follows these)  =====================
 const CONFIG = {
-  DEVELOPER_EMAIL: Deno.env.get('DEVELOPER_EMAIL') || 'rjlim060719@gmail.com', // the access code is emailed here, only here
+  // The ONLY place a code is ever sent. It lives in the Supabase secret DEVELOPER_EMAIL (never in the repo, never in the page).
+  DEVELOPER_EMAIL: (Deno.env.get('DEVELOPER_EMAIL') || '').trim().toLowerCase(),
+  SHOW_FULL_DEVELOPER_EMAIL: Deno.env.get('SHOW_FULL_DEVELOPER_EMAIL') === 'true', // false = the page shows "rj•••••@gmail.com"
+  ASK_NAME: Deno.env.get('ASK_NAME') !== 'false',   // optional "Your name" field (secret ASK_NAME=false turns it off)
+  TURNSTILE_SECRET: Deno.env.get('TURNSTILE_SECRET') || '', // optional Cloudflare Turnstile; empty = no human check
+  TIMEZONE: 'Asia/Manila',
   CODE_TTL_S: 15 * 60,      // how long an emailed code can be entered
   COOLDOWN_S: 60,          // wait between code requests for one email
   MAX_ATTEMPTS: 5,         // wrong guesses per code
@@ -11,10 +16,10 @@ const CONFIG = {
   MAX_WINDOW_S: 15 * 60,   // total access time after the code was verified, even while active (default 15 min)
   LEAVE_GRACE_S: 15,       // page refresh tolerance after the tab says it is leaving
   HEARTBEAT_S: 30,         // how often the open tab pings the server
-  EMAIL_PER_HOUR: 3, IP_PER_HOUR: 6, VERIFY_IP_PER_HOUR: 30,
+  REQ_IP_PER_HOUR: 3, REQ_DEVICE_PER_HOUR: 3, REQ_GLOBAL_PER_DAY: 30, VERIFY_IP_PER_HOUR: 30,
 };
 // =======================================================================================================================
-const HOUR = 3_600_000;
+const HOUR = 3_600_000, DAY = 24 * HOUR;
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -27,6 +32,19 @@ const sha256 = async (s: string) => hex(await crypto.subtle.digest('SHA-256', ne
 const hmacKey = (() => { let k: Promise<CryptoKey> | null = null; return () => k ??= crypto.subtle.importKey('raw', new TextEncoder().encode(Deno.env.get('GATE_PEPPER') || Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']); })();
 const mac = async (s: string) => hex(await crypto.subtle.sign('HMAC', await hmacKey(), new TextEncoder().encode(s)));
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
+const maskEmail = (e: string) => { const [l, d] = e.split('@'); return (l || '').slice(0, 2) + '•••••@' + (d || ''); };
+// Visitor-supplied name: strip HTML/links/addresses/odd characters, cap the length, refuse abusive words.
+const BAD = /\b(fuck\w*|shit\w*|bitch\w*|asshole|bastard|cunt|dick\w*|nigg\w*|puta\w*|tangina\w*|gago|ulol|bobo|tanga)\b/i;
+const cleanName = (raw: unknown): string | null => {
+  const n = String(raw ?? '').normalize('NFKC').replace(/<[^>]*>/g, ' ').replace(/(https?:\/\/|www\.)\S*/gi, ' ').replace(/\S+@\S+/g, ' ')
+    .replace(/[^\p{L}\p{N} .'\-]/gu, ' ').replace(/\s+/g, ' ').trim().slice(0, 40);
+  return BAD.test(n) ? null : n;
+};
+const device = (ua: string) => {
+  const b = /Edg\//.test(ua) ? 'Edge' : /OPR\//.test(ua) ? 'Opera' : /Firefox\//.test(ua) ? 'Firefox' : /Chrome\//.test(ua) ? 'Chrome' : /Safari\//.test(ua) ? 'Safari' : 'Unknown browser';
+  const o = /Android/.test(ua) ? 'Android' : /iPhone|iPad|iPod/.test(ua) ? 'iOS' : /Windows/.test(ua) ? 'Windows' : /Mac OS X/.test(ua) ? 'macOS' : /Linux/.test(ua) ? 'Linux' : 'Unknown OS';
+  return `${b} on ${o}${/Mobi/.test(ua) ? ' (mobile)' : ''}`;
+};
 const iso = (ms: number) => new Date(ms).toISOString();
 const policy = () => ({ expires_in: CONFIG.MAX_WINDOW_S, grace: CONFIG.GRACE_S, idle: CONFIG.IDLE_S, heartbeat: CONFIG.HEARTBEAT_S, leave_grace: CONFIG.LEAVE_GRACE_S });
 
@@ -69,45 +87,83 @@ Deno.serve(async (req) => {
   }
 
   // ---- access code actions ----
-  const email = String(body.email || '').trim().toLowerCase();
-  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || email.length > 254) return json({ status: 'invalid_email' }, 400);
-  const since = () => iso(Date.now() - HOUR);
-  const count = async (kind: string, key: string) => (await db.from('gate_rate').select('id', { count: 'exact', head: true }).eq('kind', kind).eq('key', key).gte('at', since())).count || 0;
+  // The page NEVER chooses a recipient. Any "email" field in the request body is ignored, on purpose.
+  const count = async (kind: string, key: string, win = HOUR) => (await db.from('gate_rate').select('id', { count: 'exact', head: true }).eq('kind', kind).eq('key', key).gte('at', iso(Date.now() - win))).count || 0;
   const mark = (kind: string, key: string) => db.from('gate_rate').insert({ kind, key });
-  // housekeeping on every call: expired rate rows, codes and tokens are deleted
+  // seconds until the oldest hit in the window falls out, i.e. when the visitor may try again
+  const waitFor = async (kind: string, key: string, win: number) => { const { data } = await db.from('gate_rate').select('at').eq('kind', kind).eq('key', key).gte('at', iso(now - win)).order('at', { ascending: true }).limit(1); return data?.length ? Math.max(1, Math.ceil((new Date(data[0].at).getTime() + win - now) / 1000)) : 60; };
+  // housekeeping on every call: expired rate rows, codes, tokens and old log lines are deleted
   Promise.all([
-    db.from('gate_rate').delete().lt('at', iso(now - 2 * HOUR)),
+    db.from('gate_rate').delete().lt('at', iso(now - DAY - HOUR)),
     db.from('gate_codes').delete().lt('expires_at', iso(now - HOUR)),
     db.from('gate_tokens').delete().lt('valid_until', iso(now - HOUR)),
+    db.from('gate_log').delete().lt('at', iso(now - 30 * DAY)),
   ]).then(() => {}, () => {});
 
+  if (body.action === 'info') {              // what the locked "Request goes to" field shows (the page never holds the address)
+    const to = !CONFIG.DEVELOPER_EMAIL ? '' : CONFIG.SHOW_FULL_DEVELOPER_EMAIL ? CONFIG.DEVELOPER_EMAIL : maskEmail(CONFIG.DEVELOPER_EMAIL);
+    return json({ status: 'ok', to, ask_name: CONFIG.ASK_NAME, human_check: !!CONFIG.TURNSTILE_SECRET });
+  }
+  if (body.action === 'owner') {             // is the signed-in user the developer? (decided here, so the page needs no address)
+    const jwt = (req.headers.get('authorization') || '').replace(/^Bearer\s+/i, '');
+    const { data } = jwt ? await db.auth.getUser(jwt) : { data: null as any };
+    const me = String(data?.user?.email || '').toLowerCase();
+    const owner = !!CONFIG.DEVELOPER_EMAIL && me === CONFIG.DEVELOPER_EMAIL;
+    return json({ status: 'ok', owner, owner_email: owner ? me : null });
+  }
+
   if (body.action === 'request') {
-    const { data: acc } = await db.from('access_requests').select('status').eq('email', email).maybeSingle();
-    const denied = acc?.status === 'denied';   // a denied email gets the same reply as everyone, so nothing is revealed
-    const { data: prev } = await db.from('gate_codes').select('created_at').eq('email', email).maybeSingle();
-    if (prev) { const w = CONFIG.COOLDOWN_S * 1000 - (now - new Date(prev.created_at).getTime()); if (w > 0) return json({ status: 'wait', retry_after: Math.ceil(w / 1000) }, 429); }
-    if ((await count('req_email', email)) >= CONFIG.EMAIL_PER_HOUR || (await count('req_ip', ip)) >= CONFIG.IP_PER_HOUR) return json({ status: 'limited', retry_after: 3600 }, 429);
-    await Promise.all([mark('req_email', email), mark('req_ip', ip)]);
-    if (denied) return json({ status: 'sent', cooldown: CONFIG.COOLDOWN_S, expires_in: CONFIG.CODE_TTL_S });
-    const key = Deno.env.get('RESEND_API_KEY');
-    if (!key) return json({ status: 'not_configured' }, 503);
+    if (!CONFIG.DEVELOPER_EMAIL) return json({ status: 'not_configured' }, 503);
+    const key = Deno.env.get('RESEND_API_KEY'); if (!key) return json({ status: 'not_configured' }, 503);
+    const ipH = await mac('ip:' + ip);
+    const devId = String(body.device || '').slice(0, 64), devH = /^[0-9a-f-]{16,64}$/i.test(devId) ? await mac('dev:' + devId) : '';
+    const ua = req.headers.get('user-agent') || ''; const dev = device(ua);
+    const log = (outcome: string, name = '') => db.from('gate_log').insert({ ip_hash: ipH, device_hash: devH || null, name: name || null, device: dev, outcome });
+    let name = '';
+    if (CONFIG.ASK_NAME) { const n = cleanName(body.name); if (n === null) { await log('bad_name'); return json({ status: 'bad_name' }, 400); } name = n; }
+    if (CONFIG.TURNSTILE_SECRET) {            // optional human check
+      let ok = false; const t = String(body.turnstile || '');
+      if (t) { try { const r = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', { method: 'POST', body: new URLSearchParams({ secret: CONFIG.TURNSTILE_SECRET, response: t, remoteip: ip }) }); ok = !!(await r.json()).success; } catch { ok = false; } }
+      if (!ok) { await log('human_check'); return json({ status: 'human_check' }, 403); }
+    }
+    // cooldown first (a visitor can't hammer the button), then the hourly and daily ceilings
+    for (const [k, v] of [['req_dev', devH], ['req_ip', ipH]] as const) {
+      if (!v) continue;
+      const { data: last } = await db.from('gate_rate').select('at').eq('kind', k).eq('key', v).gte('at', iso(now - CONFIG.COOLDOWN_S * 1000)).order('at', { ascending: false }).limit(1);
+      if (last?.length) { const w = Math.max(1, Math.ceil((new Date(last[0].at).getTime() + CONFIG.COOLDOWN_S * 1000 - now) / 1000)); await log('wait'); return json({ status: 'wait', retry_after: w }, 429); }
+    }
+    let lim = 0;
+    if ((await count('req_ip', ipH)) >= CONFIG.REQ_IP_PER_HOUR) lim = await waitFor('req_ip', ipH, HOUR);
+    else if (devH && (await count('req_dev', devH)) >= CONFIG.REQ_DEVICE_PER_HOUR) lim = await waitFor('req_dev', devH, HOUR);
+    else if ((await count('req_all', 'all', DAY)) >= CONFIG.REQ_GLOBAL_PER_DAY) lim = await waitFor('req_all', 'all', DAY);
+    if (lim) { await log('limited'); return json({ status: 'limited', retry_after: lim }, 429); }
+    await Promise.all([mark('req_ip', ipH), devH ? mark('req_dev', devH) : null, mark('req_all', 'all')]);
+    if (body.prev && /^rid:[0-9a-f]{32}$/.test(String(body.prev))) await db.from('gate_codes').delete().eq('email', String(body.prev)); // an older code from this visitor dies when they ask again
     const code = String(100000 + (crypto.getRandomValues(new Uint32Array(1))[0] % 900000));
-    await db.from('gate_codes').upsert({ email, code_hash: await mac(code + ':' + email), expires_at: iso(now + CONFIG.CODE_TTL_S * 1000), attempts: 0, created_at: iso(now) });
-    await db.from('access_requests').upsert({ email, status: 'pending' }, { onConflict: 'email', ignoreDuplicates: true });
+    const rid = 'rid:' + hex(crypto.getRandomValues(new Uint8Array(16)).buffer);   // opaque id the page keeps in sessionStorage; the key for this code
+    await db.from('gate_codes').insert({ email: rid, code_hash: await mac(code + ':' + rid), expires_at: iso(now + CONFIG.CODE_TTL_S * 1000), attempts: 0, created_at: iso(now) });
+    const when = new Date(now).toLocaleString('en-PH', { timeZone: CONFIG.TIMEZONE, dateStyle: 'medium', timeStyle: 'short' });
+    const who = name || 'Someone';
+    const mins = CONFIG.CODE_TTL_S / 60;
     const r = await fetch('https://api.resend.com/emails', {
       method: 'POST', headers: { Authorization: 'Bearer ' + key, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from: 'Family Tree <onboarding@resend.dev>', to: [CONFIG.DEVELOPER_EMAIL], subject: 'Family Tree access code: ' + code,
-        html: `<div style="font-family:system-ui,sans-serif"><p><b>${esc(email)}</b> is asking for access to your Family Tree.</p><p style="font-size:32px;letter-spacing:6px;font-weight:700">${code}</p><p>Give them this code only if you approve. It expires in ${CONFIG.CODE_TTL_S / 60} minutes and works once. After they enter it, access closes by itself when they leave, go idle, or after ${CONFIG.MAX_WINDOW_S / 60} minutes.</p><p style="color:#666;font-size:12px">Request from IP ${esc(ip)} at ${iso(now)}. If you do not know them, ignore this email.</p></div>` }),
+      body: JSON.stringify({ from: 'Family Tree <onboarding@resend.dev>', to: [CONFIG.DEVELOPER_EMAIL], subject: 'Family Tree access request — ' + code,
+        text: `${who} requested access.\nCode: ${code} · valid for ${mins} minutes.\n\nWhen: ${when} (${CONFIG.TIMEZONE})\nDevice: ${dev}\n\nIf you don't recognize this request, ignore this email.`,
+        html: `<div style="font-family:system-ui,sans-serif;max-width:480px"><p style="font-size:16px"><b>${esc(who)}</b> requested access.</p><p style="font-size:32px;letter-spacing:6px;font-weight:700;margin:12px 0">${code}</p><p>Code: <b>${code}</b> · valid for ${mins} minutes. It works once.</p><p style="color:#555;font-size:13px">When: ${esc(when)} (${CONFIG.TIMEZONE})<br>Device: ${esc(dev)}</p><p style="color:#666;font-size:12px">If you don't recognize this request, ignore this email. Give the code only to someone you approve.</p></div>` }),
     });
-    if (!r.ok) { await db.from('gate_codes').delete().eq('email', email); return json({ status: 'send_failed' }, 502); }
-    return json({ status: 'sent', cooldown: CONFIG.COOLDOWN_S, expires_in: CONFIG.CODE_TTL_S });
+    if (!r.ok) { await db.from('gate_codes').delete().eq('email', rid); await log('send_failed', name); return json({ status: 'send_failed' }, 502); }
+    await log('sent', name);   // the code itself is never logged
+    return json({ status: 'sent', rid, cooldown: CONFIG.COOLDOWN_S, expires_in: CONFIG.CODE_TTL_S });
   }
 
   if (body.action === 'verify') {
     const code = String(body.code || '').replace(/\D/g, '');
+    const email = String(body.rid || '');     // "email" column = the opaque request id
+    if (!/^rid:[0-9a-f]{32}$/.test(email)) return json({ status: 'expired' }, 410);
     if (code.length !== 6) return json({ status: 'bad_code' }, 400);
-    if ((await count('ver_ip', ip)) >= CONFIG.VERIFY_IP_PER_HOUR) return json({ status: 'limited', retry_after: 3600 }, 429);
-    await mark('ver_ip', ip);
+    const vIp = await mac('ip:' + ip);
+    if ((await count('ver_ip', vIp)) >= CONFIG.VERIFY_IP_PER_HOUR) return json({ status: 'limited', retry_after: 3600 }, 429);
+    await mark('ver_ip', vIp);
     const { data: row } = await db.from('gate_codes').select('*').eq('email', email).maybeSingle();
     if (!row || new Date(row.expires_at).getTime() < now) { if (row) await db.from('gate_codes').delete().eq('email', email); return json({ status: 'expired' }, 410); }
     if (row.attempts >= CONFIG.MAX_ATTEMPTS) { await db.from('gate_codes').delete().eq('email', email); return json({ status: 'locked' }, 429); }
@@ -121,7 +177,6 @@ Deno.serve(async (req) => {
     // One-time code: deleted the moment it is accepted. It is exchanged for a short-lived gate token (stored only as a hash).
     const { data: used } = await db.from('gate_codes').delete().eq('email', email).eq('code_hash', row.code_hash).select('email');
     if (!used || !used.length) return json({ status: 'expired' }, 410);
-    await db.from('gate_tokens').delete().eq('email', email); // one live gate per email
     const tok = hex(crypto.getRandomValues(new Uint8Array(32)).buffer);
     await db.from('gate_tokens').insert({ token_hash: await sha256(tok), email, expires_at: iso(now + CONFIG.MAX_WINDOW_S * 1000), valid_until: iso(now + Math.min(CONFIG.GRACE_S, CONFIG.IDLE_S) * 1000) });
     return json({ status: 'approved', token: tok, server_now: now, ...policy() });
