@@ -4588,7 +4588,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     silenceMusicPlayer();
     $('app').style.display='none';
     const ls=$('lockScreen');
-    ls.classList.remove('checking','granted','dissolve','kb-open');
+    ls.classList.remove('checking','granted','dissolve','collapse','kb-open');   // 'collapse'/'granted' are left by the sign-in animation; without this the card stays squeezed flat after sign-out
     ls.style.display='flex';
     $('authNewPwWrap').hidden=true; $('authStage').hidden=false;
     authSubmitting=false; homeBooted=false;
@@ -4912,6 +4912,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
       }
       if(event==='SIGNED_OUT'){
         setTimeout(()=>snap('signout'),6000);
+        try{ sessionStorage.removeItem('ftSeq'); }catch(_){}   // play the (short) intro again so the sign-in card eases in after sign-out
         try{ AL.reset(); }catch(err){ diag('auto-lock reset: '+err.message); } appEntered=false; currentUser=null;
         try{ showAuthScreen(); }catch(err){ diag('sign-out screen: '+err.message); const ls=$('lockScreen'); ls.classList.remove('checking'); ls.style.display='flex'; authSeqFinish(); }
         return;
