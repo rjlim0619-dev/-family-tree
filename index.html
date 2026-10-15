@@ -3989,19 +3989,25 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     const b = $('authSound'); if(b){ b.setAttribute('aria-pressed', on?'true':'false'); b.classList.toggle('on', on); b.querySelector('span').textContent = on ? 'Music on' : 'Tap for music'; }
     try{ $('builtinPlayBtn').textContent = on ? '⏸️' : '▶️'; $('musicFab').classList.toggle('playing', on); $('toggleMusic').checked = on; }catch(e){}
   }
-  function authSoundToggle(){
+  function authSoundToggle(auto){
     if(musicNodes){ stopMusic(); bgAudioPlaying=false; try{ localStorage.setItem(AUTH_SOUND_KEY,'0'); }catch(e){} }
-    else { musicScene = musicSceneNow(); startMusic(); bgAudioPlaying=!!musicNodes; try{ localStorage.setItem(AUTH_SOUND_KEY,'1'); }catch(e){} }
+    else { musicScene = musicSceneNow(); startMusic(); bgAudioPlaying=!!musicNodes; if(auto!==true){ try{ localStorage.setItem(AUTH_SOUND_KEY,'1'); }catch(e){} } }
     reflectMusicUI();
   }
   (function(){
     const b = $('authSound'); if(!b) return;
     b.addEventListener('click', e=>{ e.stopPropagation(); authSoundToggle(); });
-    // if they turned sound on last time, start it on their first tap on this screen
-    let want=false; try{ want = localStorage.getItem(AUTH_SOUND_KEY)==='1'; }catch(e){}
+    // Music is ON by default on the login screen (only an explicit "off" from the button is remembered).
+    // Browsers block sound until the visitor interacts, so: try right away, and if the browser refuses,
+    // start on the very first tap / key press on this screen instead.
+    let want=true; try{ want = localStorage.getItem(AUTH_SOUND_KEY)!=='0'; }catch(e){}
     if(want){
-      const first = e=>{ if(e.target.closest && e.target.closest('#authSound')) return; ls.removeEventListener('pointerdown',first,true); ls.removeEventListener('keydown',first,true); if(!musicNodes) authSoundToggle(); };
-      const ls = $('lockScreen'); ls.addEventListener('pointerdown',first,true); ls.addEventListener('keydown',first,true);
+      const ls = $('lockScreen'); const evs=['pointerdown','keydown','touchend','click'];
+      const disarm = ()=>evs.forEach(n=>ls.removeEventListener(n,first,true));
+      function first(e){ if(e.target.closest && e.target.closest('#authSound')) return; disarm(); if(!musicNodes) authSoundToggle(true); else { try{ actx&&actx.resume(); }catch(_){} } }
+      evs.forEach(n=>ls.addEventListener(n,first,true));
+      // immediate attempt (works when the browser already trusts the site)
+      try{ const c=getCtx(); if(c){ c.resume&&c.resume(); setTimeout(()=>{ if(c.state==='running' && !musicNodes){ disarm(); authSoundToggle(true); } },400); } }catch(e){}
     }
   })();
 
