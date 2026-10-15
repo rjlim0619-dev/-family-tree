@@ -2186,8 +2186,8 @@
         <path d="M38 34C38 26 28 24 26 16" class="em-p" pathLength="100"/><path d="M38 34C38 26 48 24 50 16" class="em-p" pathLength="100"/><path d="M82 34C82 26 72 24 70 16" class="em-p" pathLength="100"/><path d="M82 34C82 26 92 24 94 16" class="em-p" pathLength="100"/>
         <g class="em-n"><circle cx="60" cy="104" r="3.4"/><circle cx="60" cy="64" r="4.2"/><circle cx="38" cy="34" r="3.6"/><circle cx="82" cy="34" r="3.6"/><circle cx="26" cy="16" r="3"/><circle cx="50" cy="16" r="3"/><circle cx="70" cy="16" r="3"/><circle cx="94" cy="16" r="3"/></g>
       </svg>
-      <div class="auth-name">Family Tree</div>
-      <div class="auth-tag">Your family's story, mapped in light.</div>
+      <div class="auth-name">Nexora</div>
+      <div class="auth-tag">Secure access, mapped in light.</div>
     </header>
     <div class="auth-stagewrap" id="authStage">
       <div class="hp hp-M auth-plat" aria-hidden="true"><i class="hp-beam"></i><i class="hp-r r1"></i><i class="hp-r r2"></i><i class="hp-r r3"></i></div>
@@ -4570,7 +4570,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     const dec=(sk,sel,ms,delay)=>{ if(sk) return; const el=slot() && slot().querySelector(sel); if(el) FX.decode(el, el.textContent, ms, {delay}); };
     const tl=FX.timeline(); authTL=tl;
     tl.at(T(700),add('b-rings')).at(T(950),add('b-beam')).at(T(1100),add('b-emblem'))
-      .at(T(1450),sk=>{ ls.classList.add('b-title'); if(!sk){ FX.decode(ls.querySelector('.auth-name'),'Family Tree',Math.max(260,T(400))); const tg=ls.querySelector('.auth-tag'); FX.decode(tg,tg.textContent,Math.max(300,T(420)),{}); } })
+      .at(T(1450),sk=>{ ls.classList.add('b-title'); if(!sk){ FX.decode(ls.querySelector('.auth-name'),'Nexora',Math.max(260,T(400))); const tg=ls.querySelector('.auth-tag'); FX.decode(tg,tg.textContent,Math.max(300,T(420)),{}); } })
       .at(T(1550),add('b-frame')).at(T(1700),add('b-glass'))
       .at(T(1850),sk=>{ deck.dataset.lock='1'; ls.classList.add('b-content'); dec(sk,'.auth-eyebrow',260); dec(sk,'.ac-title',340); dec(sk,'p.sub',420,60); setTimeout(()=>{ delete deck.dataset.lock; try{authDeck.remeasure();}catch(_){} }, sk?0:520); })
       .at(T(1900),add('b-side')).at(T(1980),add('b-dev'))
