@@ -1254,6 +1254,14 @@
   .auth-wrap{position:relative;z-index:1;width:100%;max-width:440px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center;gap:14px;
     padding:calc(22px + env(safe-area-inset-top)) calc(18px + env(safe-area-inset-right)) calc(26px + env(safe-area-inset-bottom)) calc(18px + env(safe-area-inset-left));transition:opacity .35s;}
   #lockScreen.checking .auth-wrap,#lockScreen.checking .auth-rings{opacity:0;}
+  .auth-sound{position:absolute;top:14px;right:14px;z-index:6;display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;border:1px solid rgba(39,230,255,.35);background:rgba(6,22,38,.55);color:#9fe9ff;font:600 .68rem/1 var(--font-mono,ui-monospace,monospace);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;backdrop-filter:blur(6px);transition:opacity .4s,border-color .2s,box-shadow .2s;}
+  .auth-sound:hover,.auth-sound:focus-visible{border-color:rgba(39,230,255,.8);box-shadow:0 0 14px rgba(39,230,255,.35);outline:none;}
+  .auth-sound i{display:inline-flex;align-items:flex-end;gap:2px;height:12px;} .auth-sound i b{display:block;width:2px;height:3px;background:currentColor;border-radius:1px;opacity:.6;}
+  .auth-sound.on{color:#27e6ff;border-color:rgba(39,230,255,.7);} .auth-sound.on i b{opacity:1;animation:authEq 1.1s ease-in-out infinite;}
+  .auth-sound.on i b:nth-child(2){animation-delay:.18s;} .auth-sound.on i b:nth-child(3){animation-delay:.36s;} .auth-sound.on i b:nth-child(4){animation-delay:.54s;}
+  @keyframes authEq{0%,100%{height:3px}50%{height:12px}}
+  #lockScreen.checking .auth-sound,#lockScreen.seq-boot .auth-sound{opacity:0;pointer-events:none;}
+  @media (prefers-reduced-motion:reduce){.auth-sound.on i b{animation:none;height:8px}}
   .auth-brand{text-align:center;}
   .auth-emblem{width:92px;height:92px;display:block;margin:0 auto 6px auto;overflow:visible;filter:drop-shadow(0 0 10px rgba(39,230,255,.55));}
   .em-p{fill:none;stroke:var(--cy);stroke-width:2.2;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100;animation:emDraw 1.5s var(--ease) .1s forwards;} .em-ring{stroke:rgba(39,230,255,.5);stroke-width:1.2;animation-duration:2s;}
@@ -2177,6 +2185,7 @@
 <!-- ============ AUTH SCREEN (sign in / sign up / forgot password / reset password) ============ -->
 <div id="lockScreen" class="checking seq-boot">
   <canvas id="authCanvas" aria-hidden="true"></canvas>
+  <button type="button" class="auth-sound" id="authSound" aria-pressed="false" title="Ambient background music"><i aria-hidden="true"><b></b><b></b><b></b><b></b></i><span>Sound off</span></button>
   <div class="auth-rings" aria-hidden="true"><i class="ar r1"></i><i class="ar r2"></i><i class="ar r3"></i></div>
   <div class="auth-wrap">
     <header class="auth-brand">
@@ -3882,26 +3891,118 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     error: ()=>playTone(160,0.2,0.05,'sawtooth')
   };
 
-  // ambient background tone
+  // ambient background music — generated live with Web Audio (no audio files, no copyright issues).
+  // Slow evolving pads + a soft echo + occasional high "starlight" notes. The mood morphs per screen:
+  //   login = serene & floating · dashboard = calm & steady · tree editor = deeper & quieter (focus).
   let musicNodes = null;
+  let musicScene = 'login';
+  const MUSIC_SCENES = {
+    login:     { mul:1.00, cut:2600, ping:[2800,6500], pingVol:.20, scale:[587.33,659.25,739.99,880,987.77],
+                 chords:[[146.83,220,329.63,369.99],[123.47,185,293.66,369.99],[98,146.83,220,246.94],[164.81,246.94,293.66,369.99]] },
+    dashboard: { mul:.85, cut:2000, ping:[5000,11000], pingVol:.12, scale:[440,493.88,554.37,659.25,739.99],
+                 chords:[[110,164.81,246.94,369.99],[110,164.81,220,329.63],[146.83,220,246.94,329.63]] },
+    editor:    { mul:.60, cut:900,  ping:[9000,18000], pingVol:.07, scale:[587.33,698.46,783.99,880,1046.5],
+                 chords:[[73.42,110,130.81,174.61],[58.27,116.54,174.61,220],[65.41,98,130.81,196]] }
+  };
   function startMusic(){
     if(musicNodes) return;
     const ctx = getCtx(); if(!ctx) return;
-    const g = ctx.createGain(); g.gain.value = db.settings.musicVolume;
-    const o1 = ctx.createOscillator(); o1.type='sine'; o1.frequency.value=110;
-    const o2 = ctx.createOscillator(); o2.type='sine'; o2.frequency.value=165.5;
-    const lfo = ctx.createOscillator(); lfo.frequency.value=0.05;
-    const lfoGain = ctx.createGain(); lfoGain.gain.value=0.03;
-    lfo.connect(lfoGain); lfoGain.connect(g.gain);
-    o1.connect(g); o2.connect(g); g.connect(ctx.destination);
-    o1.start(); o2.start(); lfo.start();
-    musicNodes = {g,o1,o2,lfo};
+    try{ if(ctx.state==='suspended') ctx.resume(); }catch(e){}
+    const sc = MUSIC_SCENES[musicScene] || MUSIC_SCENES.login;
+    const now = ctx.currentTime;
+    const g = ctx.createGain(); g.gain.value = db.settings.musicVolume;        // user volume (the slider / mute)
+    const fade = ctx.createGain(); fade.gain.setValueAtTime(0.0001, now); fade.gain.linearRampToValueAtTime(sc.mul, now+3);
+    const lp = ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=sc.cut; lp.Q.value=.4;
+    const pad = ctx.createGain(); pad.gain.value = .26;
+    const echo = ctx.createGain(); echo.gain.value = .5;
+    const d1 = ctx.createDelay(1.5); d1.delayTime.value=.37; const f1 = ctx.createGain(); f1.gain.value=.45;
+    const d2 = ctx.createDelay(1.5); d2.delayTime.value=.53; const f2 = ctx.createGain(); f2.gain.value=.4;
+    const ep = ctx.createBiquadFilter(); ep.type='lowpass'; ep.frequency.value=2400;
+    const pingBus = ctx.createGain(); pingBus.gain.value = 1;
+    pad.connect(lp); lp.connect(fade); lp.connect(d1); lp.connect(d2);
+    pingBus.connect(fade); pingBus.connect(d1); pingBus.connect(d2);
+    d1.connect(f1); f1.connect(d1); d2.connect(f2); f2.connect(d2);
+    d1.connect(ep); d2.connect(ep); ep.connect(echo); echo.connect(fade);
+    fade.connect(g); g.connect(ctx.destination);
+    const nodes = []; const voices = [];
+    const chord = sc.chords[0];
+    for(let i=0;i<4;i++){
+      const vg = ctx.createGain(); vg.gain.value = .5; vg.connect(pad);
+      const o1 = ctx.createOscillator(); o1.type='sine'; o1.frequency.value = chord[i];
+      const o2 = ctx.createOscillator(); o2.type = i<2 ? 'triangle' : 'sine'; o2.frequency.value = chord[i]; o2.detune.value = 6+i*2;
+      const lfo = ctx.createOscillator(); lfo.frequency.value = .03+i*.017;
+      const lg = ctx.createGain(); lg.gain.value = .22; lfo.connect(lg); lg.connect(vg.gain);
+      o1.connect(vg); o2.connect(vg); o1.start(); o2.start(); lfo.start();
+      voices.push({o1,o2}); nodes.push(o1,o2,lfo);
+    }
+    const M = { g, fade, lp, voices, nodes, ci:0, timers:[], stopped:false };
+    const ping = ()=>{
+      if(M.stopped) return;
+      const cur = MUSIC_SCENES[musicScene] || sc;
+      if(!document.hidden){
+        try{
+          const t = ctx.currentTime, f = cur.scale[Math.floor(Math.random()*cur.scale.length)];
+          const o = ctx.createOscillator(); o.type='sine'; o.frequency.value=f;
+          const pg = ctx.createGain(); pg.gain.setValueAtTime(.0001,t); pg.gain.exponentialRampToValueAtTime(cur.pingVol,t+.03); pg.gain.exponentialRampToValueAtTime(.0001,t+3.2);
+          o.connect(pg); pg.connect(pingBus); o.start(t); o.stop(t+3.3);
+        }catch(e){}
+      }
+      M.timers.push(setTimeout(ping, cur.ping[0]+Math.random()*(cur.ping[1]-cur.ping[0])));
+    };
+    const evolve = ()=>{
+      if(M.stopped) return;
+      const cur = MUSIC_SCENES[musicScene] || sc;
+      M.ci = (M.ci+1) % cur.chords.length; glideTo(M, cur.chords[M.ci], 2.6);
+      M.timers.push(setTimeout(evolve, 13000+Math.random()*5000));
+    };
+    M.timers.push(setTimeout(ping, 2500), setTimeout(evolve, 14000));
+    musicNodes = M;
+  }
+  function glideTo(M, chord, tc){
+    const ctx = getCtx(); if(!ctx || !M) return; const t = ctx.currentTime;
+    M.voices.forEach((v,i)=>{ try{ v.o1.frequency.setTargetAtTime(chord[i],t,tc); v.o2.frequency.setTargetAtTime(chord[i],t,tc); }catch(e){} });
+  }
+  // switch the mood (called when the screen changes) — a slow glide, never a cut
+  function setMusicScene(name){
+    if(!MUSIC_SCENES[name] || name===musicScene) return;
+    musicScene = name;
+    const M = musicNodes, ctx = actx; if(!M || !ctx) return;
+    const sc = MUSIC_SCENES[name], t = ctx.currentTime;
+    try{ M.lp.frequency.setTargetAtTime(sc.cut,t,2); M.fade.gain.setTargetAtTime(sc.mul,t,1.8); }catch(e){}
+    M.ci = 0; glideTo(M, sc.chords[0], 2.4);
   }
   function stopMusic(){
-    if(!musicNodes) return;
-    try{ musicNodes.o1.stop(); musicNodes.o2.stop(); musicNodes.lfo.stop(); }catch(e){}
-    musicNodes = null;
+    const M = musicNodes; if(!M) return;
+    musicNodes = null; M.stopped = true; M.timers.forEach(clearTimeout);
+    const ctx = actx;
+    try{ const t=ctx.currentTime; M.fade.gain.cancelScheduledValues(t); M.fade.gain.setValueAtTime(Math.max(M.fade.gain.value,.0001),t); M.fade.gain.linearRampToValueAtTime(.0001,t+.9); }catch(e){}
+    setTimeout(()=>{ M.nodes.forEach(n=>{ try{ n.stop(); }catch(e){} }); try{ M.g.disconnect(); }catch(e){} }, 1000);
   }
+  function musicSceneNow(){ const ls=$('lockScreen'); if(ls && ls.style.display!=='none') return 'login'; return currentTreeId ? 'editor' : 'dashboard'; }
+  setInterval(()=>{ try{ setMusicScene(musicSceneNow()); }catch(e){} }, 800);
+
+  // login-screen Sound switch (browsers only allow audio after a tap, so it starts off)
+  const AUTH_SOUND_KEY = 'ftAmbient';
+  function reflectMusicUI(){
+    const on = !!musicNodes;
+    const b = $('authSound'); if(b){ b.setAttribute('aria-pressed', on?'true':'false'); b.classList.toggle('on', on); b.querySelector('span').textContent = on ? 'Sound on' : 'Sound off'; }
+    try{ $('builtinPlayBtn').textContent = on ? '⏸️' : '▶️'; $('musicFab').classList.toggle('playing', on); $('toggleMusic').checked = on; }catch(e){}
+  }
+  function authSoundToggle(){
+    if(musicNodes){ stopMusic(); bgAudioPlaying=false; try{ localStorage.setItem(AUTH_SOUND_KEY,'0'); }catch(e){} }
+    else { musicScene = musicSceneNow(); startMusic(); bgAudioPlaying=!!musicNodes; try{ localStorage.setItem(AUTH_SOUND_KEY,'1'); }catch(e){} }
+    reflectMusicUI();
+  }
+  (function(){
+    const b = $('authSound'); if(!b) return;
+    b.addEventListener('click', e=>{ e.stopPropagation(); authSoundToggle(); });
+    // if they turned sound on last time, start it on their first tap on this screen
+    let want=false; try{ want = localStorage.getItem(AUTH_SOUND_KEY)==='1'; }catch(e){}
+    if(want){
+      const first = e=>{ if(e.target.closest && e.target.closest('#authSound')) return; ls.removeEventListener('pointerdown',first,true); ls.removeEventListener('keydown',first,true); if(!musicNodes) authSoundToggle(); };
+      const ls = $('lockScreen'); ls.addEventListener('pointerdown',first,true); ls.addEventListener('keydown',first,true);
+    }
+  })();
 
   // ---------- music player (floating: Spotify + built-in background music) ----------
   // "ambient-generated" reuses the oscillator drone above (startMusic/stopMusic) —
@@ -4067,7 +4168,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     currentBuiltinTrack = BUILTIN_TRACKS.find(t=>t.id===db.settings.builtinTrack) || BUILTIN_TRACKS[0];
     $('builtinTrackName').textContent = currentBuiltinTrack.name;
     $('builtinVolume').value = db.settings.musicVolume;
-    applyMusicVolume();
+    applyMusicVolume(); reflectMusicUI();   // music started on the login screen keeps playing; show it as playing
     // Restore a saved Spotify link so it's ready — but Spotify's own embed
     // still requires a tap on ITS play button, so this never auto-plays audio.
     if(db.settings.spotifyLink){
@@ -4083,7 +4184,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     bgAudioPlaying = false;
     try{ $('builtinPlayBtn').textContent='▶️'; $('musicFab').classList.remove('playing'); }catch(e){}
     stopSpotifyPlayback();
-    closeMusicPanel();
+    closeMusicPanel(); reflectMusicUI();
   }
 
   // ---------- particles ----------
