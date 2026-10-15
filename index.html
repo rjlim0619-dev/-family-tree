@@ -4889,7 +4889,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
   let appEntered = false;
   // If something breaks at startup or sign-out, say so on screen (so it can be screenshotted) instead of leaving a blank scene.
   let diag=function(m){ try{ let d=document.getElementById('ftDiag'); if(!d){ d=document.createElement('div'); d.id='ftDiag'; d.setAttribute('role','alert'); d.style.cssText='position:fixed;left:10px;bottom:10px;z-index:99999;max-width:min(92vw,520px);padding:10px 12px;border:1px solid #ffb347;border-radius:8px;background:rgba(20,10,0,.92);color:#ffd9a0;font:12px/1.4 ui-monospace,Menlo,monospace;white-space:pre-wrap;'; d.innerHTML='<b>Something went wrong</b> — please send a screenshot of this.<div id="ftDiagT"></div>'; document.body.appendChild(d); } const t=document.getElementById('ftDiagT'); if(t && t.textContent.length<900) t.textContent += '\n• '+String(m).slice(0,240); }catch(_){} };
-  const BUILD='2026-10-15-d';
+  const BUILD='2026-10-15-e';
   function snap(r){ try{ const g=id=>document.getElementById(id), cs=e=>e?getComputedStyle(e):null, ls=g('lockScreen'), em=g('authEmail'), st=document.querySelector('#authDeck .hd-stage');
       const s={b:BUILD,r,ls:ls&&cs(ls).display,cls:ls&&ls.className,op:ls&&cs(ls).opacity,app:cs(g('app')).display,stageHid:g('authStage')&&g('authStage').hidden,stageOp:st&&cs(st).opacity,emailW:em?Math.round(em.getBoundingClientRect().width):-1,gate:g('accessGate')&&g('accessGate').hidden,entered:appEntered,hash:location.hash,sw:!!(navigator.serviceWorker&&navigator.serviceWorker.controller),on:navigator.onLine,vw:innerWidth+'x'+innerHeight,hid:document.hidden,err:(g('ftDiagT')||{}).textContent||''};
       fetch(GATE_URL,{method:'POST',headers:{'Content-Type':'application/json',apikey:SUPABASE_KEY},body:JSON.stringify({action:'diag',r,s:JSON.stringify(s)}),keepalive:true}).catch(()=>{}); }catch(_){} }
@@ -4911,6 +4911,14 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
         return;
       }
       if(event==='SIGNED_OUT'){
+        // Signing out of a live session: do a clean page reload so the Sign In card always starts from a fresh page.
+        if(appEntered){
+          try{ AL.reset(); }catch(_){}
+          try{ sessionStorage.removeItem('ftSeq'); }catch(_){}
+          try{ history.replaceState(null,'',location.pathname+location.search+'#login'); }catch(_){}
+          location.reload();
+          return;
+        }
         setTimeout(()=>snap('signout'),6000);
         try{ sessionStorage.removeItem('ftSeq'); }catch(_){}   // play the (short) intro again so the sign-in card eases in after sign-out
         try{ AL.reset(); }catch(err){ diag('auto-lock reset: '+err.message); } appEntered=false; currentUser=null;
