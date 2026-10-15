@@ -1257,11 +1257,12 @@
   .auth-sound{position:absolute;top:14px;right:14px;z-index:6;display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;border:1px solid rgba(39,230,255,.35);background:rgba(6,22,38,.55);color:#9fe9ff;font:600 .68rem/1 var(--font-mono,ui-monospace,monospace);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;backdrop-filter:blur(6px);transition:opacity .4s,border-color .2s,box-shadow .2s;}
   .auth-sound:hover,.auth-sound:focus-visible{border-color:rgba(39,230,255,.8);box-shadow:0 0 14px rgba(39,230,255,.35);outline:none;}
   .auth-sound i{display:inline-flex;align-items:flex-end;gap:2px;height:12px;} .auth-sound i b{display:block;width:2px;height:3px;background:currentColor;border-radius:1px;opacity:.6;}
+  .auth-sound:not(.on){animation:authSoundHint 2.4s ease-in-out infinite;} @keyframes authSoundHint{0%,100%{box-shadow:0 0 0 0 rgba(39,230,255,0)}50%{box-shadow:0 0 16px 2px rgba(39,230,255,.5)}}
   .auth-sound.on{color:#27e6ff;border-color:rgba(39,230,255,.7);} .auth-sound.on i b{opacity:1;animation:authEq 1.1s ease-in-out infinite;}
   .auth-sound.on i b:nth-child(2){animation-delay:.18s;} .auth-sound.on i b:nth-child(3){animation-delay:.36s;} .auth-sound.on i b:nth-child(4){animation-delay:.54s;}
   @keyframes authEq{0%,100%{height:3px}50%{height:12px}}
   #lockScreen.checking .auth-sound,#lockScreen.seq-boot .auth-sound{opacity:0;pointer-events:none;}
-  @media (prefers-reduced-motion:reduce){.auth-sound.on i b{animation:none;height:8px}}
+  @media (prefers-reduced-motion:reduce){.auth-sound.on i b{animation:none;height:8px}.auth-sound:not(.on){animation:none}}
   .auth-brand{text-align:center;}
   .auth-emblem{width:92px;height:92px;display:block;margin:0 auto 6px auto;overflow:visible;filter:drop-shadow(0 0 10px rgba(39,230,255,.55));}
   .em-p{fill:none;stroke:var(--cy);stroke-width:2.2;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100;animation:emDraw 1.5s var(--ease) .1s forwards;} .em-ring{stroke:rgba(39,230,255,.5);stroke-width:1.2;animation-duration:2s;}
@@ -2185,7 +2186,7 @@
 <!-- ============ AUTH SCREEN (sign in / sign up / forgot password / reset password) ============ -->
 <div id="lockScreen" class="checking seq-boot">
   <canvas id="authCanvas" aria-hidden="true"></canvas>
-  <button type="button" class="auth-sound" id="authSound" aria-pressed="false" title="Ambient background music"><i aria-hidden="true"><b></b><b></b><b></b><b></b></i><span>Sound off</span></button>
+  <button type="button" class="auth-sound" id="authSound" aria-pressed="false" title="Ambient background music"><i aria-hidden="true"><b></b><b></b><b></b><b></b></i><span>Tap for music</span></button>
   <div class="auth-rings" aria-hidden="true"><i class="ar r1"></i><i class="ar r2"></i><i class="ar r3"></i></div>
   <div class="auth-wrap">
     <header class="auth-brand">
@@ -3897,7 +3898,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
   let musicNodes = null;
   let musicScene = 'login';
   const MUSIC_SCENES = {
-    login:     { mul:1.00, cut:2600, ping:[2800,6500], pingVol:.20, scale:[587.33,659.25,739.99,880,987.77],
+    login:     { mul:1.00, cut:2600, ping:[2800,6500], pingVol:.30, scale:[587.33,659.25,739.99,880,987.77],
                  chords:[[146.83,220,329.63,369.99],[123.47,185,293.66,369.99],[98,146.83,220,246.94],[164.81,246.94,293.66,369.99]] },
     dashboard: { mul:.85, cut:2000, ping:[5000,11000], pingVol:.12, scale:[440,493.88,554.37,659.25,739.99],
                  chords:[[110,164.81,246.94,369.99],[110,164.81,220,329.63],[146.83,220,246.94,329.63]] },
@@ -3913,7 +3914,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
     const g = ctx.createGain(); g.gain.value = db.settings.musicVolume;        // user volume (the slider / mute)
     const fade = ctx.createGain(); fade.gain.setValueAtTime(0.0001, now); fade.gain.linearRampToValueAtTime(sc.mul, now+3);
     const lp = ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=sc.cut; lp.Q.value=.4;
-    const pad = ctx.createGain(); pad.gain.value = .26;
+    const pad = ctx.createGain(); pad.gain.value = .42;
     const echo = ctx.createGain(); echo.gain.value = .5;
     const d1 = ctx.createDelay(1.5); d1.delayTime.value=.37; const f1 = ctx.createGain(); f1.gain.value=.45;
     const d2 = ctx.createDelay(1.5); d2.delayTime.value=.53; const f2 = ctx.createGain(); f2.gain.value=.4;
@@ -3985,7 +3986,7 @@ root.FTImport={ImportError:A.ImportError,readDocx:A.readDocx,parse:C.parse,build
   const AUTH_SOUND_KEY = 'ftAmbient';
   function reflectMusicUI(){
     const on = !!musicNodes;
-    const b = $('authSound'); if(b){ b.setAttribute('aria-pressed', on?'true':'false'); b.classList.toggle('on', on); b.querySelector('span').textContent = on ? 'Sound on' : 'Sound off'; }
+    const b = $('authSound'); if(b){ b.setAttribute('aria-pressed', on?'true':'false'); b.classList.toggle('on', on); b.querySelector('span').textContent = on ? 'Music on' : 'Tap for music'; }
     try{ $('builtinPlayBtn').textContent = on ? '⏸️' : '▶️'; $('musicFab').classList.toggle('playing', on); $('toggleMusic').checked = on; }catch(e){}
   }
   function authSoundToggle(){
