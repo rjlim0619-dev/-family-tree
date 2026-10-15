@@ -1,4 +1,4 @@
-const CACHE_NAME = 'family-tree-cache-v10';
+const CACHE_NAME = 'family-tree-cache-v11';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', (e) => {
